@@ -977,3 +977,35 @@ class Users(models.Model):
 #     class Meta:
 #         db_table = 'student_view_log'
 #         managed = True
+
+
+from django_ckeditor_5.fields import CKEditor5Field
+
+class VisaService(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    thumbnail_image = models.ImageField(upload_to='services/thumbnails/', help_text='Image for homepage card')
+    banner_image = models.ImageField(upload_to='services/banners/', help_text='Image for detail page hero section')
+    short_description = models.TextField(max_length=200, help_text='Short description for homepage card (max 200 chars)')
+    main_content = CKEditor5Field('Main Content', config_name='default')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'visa_services'
+        ordering = ['-created_at']
+        verbose_name = 'Visa Service'
+        verbose_name_plural = 'Visa Services'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('service_detail', kwargs={'slug': self.slug})

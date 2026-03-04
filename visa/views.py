@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic import DetailView
 from .models import *
 from django.contrib.auth import authenticate, login, logout
 from .emailBackend import EmailBackend
@@ -60,6 +61,8 @@ def home(request):
         details = ConsultantDetails.objects.filter(consultant_id=consultant.id).first()
         consultant_details.append(details)
 
+    visa_services = VisaService.objects.filter(is_active=True)
+
     context = {
         'top_consultants': zip(top_consultants, consultant_details),
         'customize': customize,
@@ -67,7 +70,8 @@ def home(request):
         'clients': clients,
         'page_name': page_name,
         'page_description': page_description,
-        'page_keywords': page_keywords
+        'page_keywords': page_keywords,
+        'visa_services': visa_services,
         
     }
     
@@ -3823,4 +3827,20 @@ def feedback_view(request):
 
     return render(request, 'feedback_home.html', {'page_name': page_name,'page_description':page_description,'page_keywords':page_keywords,'category_choices': category_choices })
         
-        
+
+class ServiceDetailView(DetailView):
+    model = VisaService
+    template_name = 'service_detail.html'
+    context_object_name = 'service'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+
+    def get_queryset(self):
+        return VisaService.objects.filter(is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_name'] = self.object.title
+        context['page_description'] = self.object.short_description
+        context['page_keywords'] = 'visa service, ' + self.object.title
+        return context

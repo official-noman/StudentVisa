@@ -20,3 +20,12 @@ admin.site.register(CountryWises)
 admin.site.register(Customizes)
 admin.site.register(Users)
 admin.site.register(Students)
+
+
+class VisaServiceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'is_active', 'created_at')
+    prepopulated_fields = {'slug': ('title',)}
+    list_filter = ('is_active',)
+    search_fields = ('title',)
+
+admin.site.register(VisaService, VisaServiceAdmin)

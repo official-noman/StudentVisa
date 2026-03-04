@@ -46,3 +46,4 @@ urllib3
 webencodings
 zipp
 whitenoise #add whitenoise for static files handling
+django-ckeditor-5

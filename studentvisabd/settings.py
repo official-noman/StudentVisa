@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "visa",
+    "django_ckeditor_5",
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
@@ -192,3 +193,47 @@ EMAIL_PORT = 465  # SMTP port
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "info@studentvisabd.com"  # Your email username
 EMAIL_HOST_PASSWORD = "studentvisabd"  # Your email password
+
+# CKEditor 5 Configuration
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.default_storage"
+customColorPalette = [
+    {"color": "hsl(4, 90%, 58%)", "label": "Red"},
+    {"color": "hsl(340, 82%, 52%)", "label": "Pink"},
+    {"color": "hsl(291, 64%, 42%)", "label": "Purple"},
+    {"color": "hsl(262, 52%, 47%)", "label": "Deep Purple"},
+    {"color": "hsl(231, 48%, 48%)", "label": "Indigo"},
+    {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
+]
+
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+            "|",
+            "imageUpload",
+            "mediaEmbed",
+            "|",
+            "insertTable",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "undo",
+            "redo",
+            "|",
+            "fontSize",
+            "fontColor",
+            "fontBackgroundColor",
+            "highlight",
+            "|",
+            "sourceEditing",
+        ],
+    },
+}
