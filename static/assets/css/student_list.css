@@ -1,0 +1,98 @@
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.custom-table th,
+.custom-table td {
+    border: 1px solid #ddd; /* Add border to table cells */
+    padding: 8px;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #f2f2f2; /* Add background color to header cells */
+}
+
+.lead-table .btn-info {
+    font-size: 16px; /* Increase font size */
+    padding: 10px 15px; /* Adjust padding */
+}
+
+.lead-btn.active {
+    background-color: #130e6d;
+}
+.alert-danger {
+    color: red !important;
+    background-color: #f8d7da !important;
+    border: 1px solid #f5c6cb !important;
+    border-radius: .25rem !important;
+    padding: .75rem 1.25rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 1.2em !important; /* Adjust the font size as needed */
+}
+
+.student-details-modal {
+    --bs-modal-width: 90%;
+}
+
+.modal-body-scroll{
+    overflow-x: scroll;
+}
+
+.certificate-images-div {
+    display: inline-block;
+    width: 200px; /* Set width of the container div */
+    margin-right: 20px; /* Add some margin between the images */
+}
+
+.certificate-images {
+    width: 100%; /* Ensure the image takes up the full width of its container */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Popup styles */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.popup-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.close-img {
+    color: #fff;
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.close-img:hover,
+.close-img:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+@media(max-width:768px){
+    .student-details-modal {
+        --bs-modal-width: 100%;
+    }
+}

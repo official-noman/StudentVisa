@@ -1,0 +1,408 @@
+.container-xl{
+    background-color: rgb(255, 255, 255);
+}
+.page-header{
+    height: 50px;
+    background: rgb(62,7,75);
+    background: linear-gradient(180deg, rgba(62,7,75,0.3) 0%, rgba(40,10,69,0.3) 63%);
+
+}
+
+.page-header h4{
+    color: rgb(250, 250, 250);
+}
+    
+.img-account-profile {
+    width: 200px;
+    height: 200px;
+    border-radius: inherit;
+}
+/* .rounded-circle {
+    border-radius: 50% !important;
+}*/
+
+.profile-pic-div{
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.camera-icon{
+    position: absolute;
+    height: 50px;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.24);
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    z-index: 99;
+}
+
+.camera-icon i{
+    font-size: 40px;
+    color: rgb(108, 73, 122);
+}
+
+.profile-pic-div .input-pic input[type="file"] {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0 !important;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: transparent;
+    z-index: 999;
+}
+
+.img-account-profile {
+    width: 100%;
+
+}
+
+.card-container{
+    padding-left: 35px;
+    border-radius: 20px;
+}
+
+.card {
+    border-radius: 20px;
+    /* box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%); */
+    box-shadow: 12px 16px 22px 9px rgba(0,0,0,0.1);
+}
+
+.card .card-header {
+    font-weight: 500;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+
+.card-body{
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    background-color: rgb(247, 247, 247);
+}
+
+.card-body label{
+    padding-top: 3px;
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: rgb(73, 73, 73);
+}
+
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+
+/* .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #69707a;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgb(235, 235, 235);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control::placeholder{
+    font-weight: 300;
+    color: rgb(187, 187, 187);
+}
+
+.nav-borders .nav-link.active {
+    color: #0061f2;
+    border-bottom-color: #0061f2;
+}
+.nav-borders .nav-link {
+    color: #69707a;
+    border-bottom-width: 0.125rem;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+} */
+
+input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+/* .form-label{
+    display: block !important;
+    text-align: start;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+} */
+
+.user-profile-form label{
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: rgb(54, 54, 54);
+}
+
+.btn-primary{
+    padding: 15px 20px;
+    font-weight: 400 !important;
+    color: rgb(236, 236, 236);
+    border-radius: 10px;
+    background: rgb(62,7,75) !important;
+    background: linear-gradient(180deg, rgba(62,7,75,1) 0%, rgba(40,10,69,1) 63%) !important;
+    border: none;
+}
+
+.password-card-header{
+    cursor: pointer;
+    border-bottom: none;
+}
+
+.password-card-header.border{
+    border-bottom: rgba(33, 40, 50, 0.125);
+}
+
+.password-card-body{
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    background-color: transparent;
+}
+
+.password-card-body.show{
+    padding: 15px 15px;
+    max-height: 500px;
+    padding: 20px;
+    background-color: rgb(247, 247, 247);
+    transition: 0.3s;
+}
+
+.card .card-body{
+    padding: 0 15px;
+}
+
+.radio-btn{
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+}
+
+
+/* .password-card-body{
+    
+} */
+
+
+/* Date picker starts */
+.datepicker{
+    z-index: 999 !important;
+}
+
+.date-input {
+    /* background-color: #fff;
+    border: none; */
+
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+.datepicker-dropdown {
+    top: 0;
+    left: 0;
+}
+
+.datepicker table tr td.today, span.focused {
+    border-radius: 50% !important;
+}
+
+thead tr:nth-child(2) {
+    /* background: rgb(62,7,75); */
+    background: rgb(7, 59, 88);
+    background: linear-gradient(180deg, rgba(7, 59, 88, 1) 0%, rgb(4, 68, 83) 63%);
+}
+
+thead tr:nth-child(3) th {
+    /* color: #400053 !important; */
+    color: rgb(7, 59, 88);
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.dow, .old-day, .day, .new-day {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 0px !important;
+}
+
+.old-day:hover, .day:hover, .new-day:hover, .month:hover, .year:hover, .decade:hover, .century:hover {
+    border-radius: 50% !important;
+    background-color: #eee;
+}
+
+.day.active {
+    border-radius: 50% !important;
+    background-image: linear-gradient(#054c75, #0c5580) !important;
+    color: #fff !important;
+}
+
+.prev, .next, .datepicker-switch {
+    border-radius: 0 !important;
+    padding: 20px 10px !important;
+    text-transform: uppercase;
+    font-size: 20px;
+    color: #fff;
+    opacity: 0.8; 
+}
+
+.prev:hover, .next:hover, .datepicker-switch:hover {
+    background-color: inherit !important;
+    opacity: 1;
+}
+/* Date picker ends */
+
+.error-message-div{
+    width: 100%;
+    max-height: 0;
+    opacity: 0;
+    background-color: rgba(255, 0, 0, 0.233);
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.error-message-div p{
+    margin: 14px 16px;
+}
+
+.message-text{
+    font-size: 15px;
+    font-weight: 500;
+    color: red;
+}
+
+.error-message-div.error-message-show{
+    max-height: 50px;
+    opacity: 1;
+}
+
+/* Popup container starts */
+.popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 999999999;
+}
+
+.popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.delete-popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 99;
+}
+
+.delete-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.popup {
+    position: relative;
+    background-color: rgb(30, 56, 59);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 235px;
+    width: 300px;
+}
+
+.delete-popup {
+    position: relative;
+    background-color: rgb(59, 30, 30);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 250px;
+    width: 300px;
+}
+
+.success-tick{
+    position: absolute;
+    top: -50px;
+    height: 150px;
+    width: 150px;
+}
+
+.registration-success-div{
+    position: absolute;
+    top: 120px;
+}
+
+.registration-success-div p span{
+    color: rgb(245, 245, 245);
+}
+
+.close-icon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.successful-text{
+    font-size: 18px;
+}
+/* Popup container ends */

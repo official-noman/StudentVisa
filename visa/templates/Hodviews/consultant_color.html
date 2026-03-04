@@ -1,0 +1,201 @@
+{% extends "Hodviews/base.html" %}
+{% load static %}
+{% block custom_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
+
+<style>
+    .pickr .pcr-button {
+        position: relative;
+        height: 2em;
+        width: 23em;
+        padding: .5em;
+        cursor: pointer;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif;
+        border-radius: .15em;
+        background: url(data:image/svg+xml;utf8, <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" stroke=\"%2342445A\" stroke-width=\"5px\" stroke-linecap=\"round\"><path d=\"M45,45L5,5\"></path><path d=\"M45,5L5,45\"></path></svg>) no-repeat center;
+        background-size: 0;
+        transition: all .3s;
+    }
+
+    .color-preview {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        margin-left: 10px;
+        border: 1px solid #ccc;
+    }
+</style>
+{% endblock custom_css %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Consultant Color</h4>
+            <div id="successMessage" class="alert alert-success mt-3" role="alert" style="display: none;"></div>
+            <div id="errorMessage" class="alert alert-danger mt-3" role="alert" style="display: none;"></div>
+
+            <form method="post" action="{% url 'consultant_color' %}" id="colorForm">
+              {% csrf_token %}
+
+              <div class="form-group color-group">
+                <label for="header_color">Header Color:</label>
+                <input type="text" id="header_color" name="header_color" class="color-picker" value={{consultant_colors.header_color}} required>
+        
+              </div>
+            
+              <div class="form-group color-group">
+                <label for="content_color">Content Color:</label>
+                <input type="text" id="content_color" name="content_color"  value={{consultant_colors.content_color}}class="color-picker" required>
+              
+              </div>
+            
+              <div class="form-group color-group">
+                <label for="footer_color">Footer Color:</label>
+                <input type="text" id="footer_color" name="footer_color"  value={{consultant_colors.footer_color}} class="color-picker" required>
+            
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block custom_js %}
+  <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to create Pickr instance
+        function createPickr(targetId, previewId, initialColor) {
+            var pickr = Pickr.create({
+                el: targetId,
+                theme: 'classic',
+                comparison: false,
+                default: initialColor,  // Set the initial color
+                components: getPickrComponents(),
+            });
+
+            pickr.on('change', function () {
+                updateColorInput(pickr, targetId, previewId);
+            });
+
+            // Use the 'init' event to trigger color update after initialization
+            pickr.on('init', function () {
+                updateColorInput(pickr, targetId, previewId);
+            });
+
+            return pickr;
+        }
+
+        // Function to get Pickr components
+        function getPickrComponents() {
+            return {
+                preview: true,
+                opacity: false,
+                hue: true,
+                interaction: {
+                    hex: true,
+                    rgba: true,
+                    hsla: true,
+                    hsva: true,
+                    cmyk: true,
+                    input: true,
+                    clear: true,
+                    save: true
+                }
+            };
+        }
+
+        // Function to update color input and preview
+        function updateColorInput(pickr, inputId, previewId) {
+            var color = pickr.getColor().toHEXA().toString();
+            console.log(`Color updated - Input ID: ${inputId}, Color: ${color}`);
+            $(inputId).val(color);
+            $(previewId).css('background-color', color);
+        }
+
+        // Fetch saved colors from backend
+        var savedColors = {
+            header_color: "{{ consultant_colors.header_color }}",
+            content_color: "{{ consultant_colors.content_color }}",
+            footer_color: "{{ consultant_colors.footer_color }}"
+        };
+
+        // Create Pickr instances with saved colors
+        var pickrHeader = createPickr('#header_color', 'preview_header_color', savedColors.header_color);
+        var pickrContent = createPickr('#content_color', 'preview_content_color', savedColors.content_color);
+        var pickrFooter = createPickr('#footer_color', 'preview_footer_color', savedColors.footer_color);
+
+        // Form submission
+        $('#colorForm').submit(function (e) {
+          e.preventDefault(); // Prevent the default form submission behavior
+          saveColors();
+      });
+
+      // Function to save colors to backend
+      function saveColors() {
+          pickrHeader.applyColor();
+          pickrContent.applyColor();
+          pickrFooter.applyColor();
+
+          // Send the color data to the Django backend using AJAX
+          $.ajax({
+              type: 'POST',
+              url: '{% url "consultant_color" %}',  // Replace with the actual URL
+              data: {
+                  header_color: pickrHeader.getColor().toHEXA().toString(),
+                  content_color: pickrContent.getColor().toHEXA().toString(),
+                  footer_color: pickrFooter.getColor().toHEXA().toString(),
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+              },
+              success: function (response) {
+                  console.log('Colors saved successfully:', response);
+
+                  // Display success message
+                  showSuccessMessage('Colors saved successfully!');
+              },
+              error: function (error) {
+                  console.error('Error saving colors:', error);
+
+                  // Display error message
+                  showErrorMessage('Error saving colors. Please try again.');
+              }
+          });
+      }
+
+      // Function to show success message
+      function showSuccessMessage(message) {
+          $('#successMessage').text(message).show();
+
+          // Hide after 5 seconds (adjust as needed)
+          setTimeout(function () {
+              $('#successMessage').hide();
+          }, 5000);
+
+          $('#errorMessage').hide();
+      }
+
+      // Function to show error message
+      function showErrorMessage(message) {
+          $('#errorMessage').text(message).show();
+
+          // Hide after 5 seconds (adjust as needed)
+          setTimeout(function () {
+              $('#errorMessage').hide();
+          }, 5000);
+
+          $('#successMessage').hide();
+      }
+
+      // Optional: Trigger the change event on page load to initialize color values
+      $('.color-picker').trigger('change');
+  });
+</script>
+{% endblock custom_js %}

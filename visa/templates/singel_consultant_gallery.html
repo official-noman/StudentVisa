@@ -1,0 +1,210 @@
+
+{% extends "consultant_base.html" %}
+{% block custom_css %}
+
+{% load static %}
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+<!-- Stylesheets -->
+<link href={% static "assets/css/font-awesome-all.css"%} rel="stylesheet">
+<link href={% static "assets/css/flaticon.css"%} rel="stylesheet">
+<link href={% static "assets/css/owl.css"%} rel="stylesheet">
+<link href={% static "assets/css/bootstrap.css"%} rel="stylesheet">
+<link href={% static "assets/css/jquery.fancybox.min.css"%} rel="stylesheet">
+<link href={% static "assets/css/animate.css"%} rel="stylesheet">
+<link href={% static "assets/css/color/theme-color.css"%} id="jssDefault" rel="stylesheet">
+<link href={% static "assets/css/switcher-style.css"%} rel="stylesheet">
+<link href={% static "assets/css/single_consultant_gallery.css"%} rel="stylesheet">
+{% comment %} <link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/responsive.css" rel="stylesheet"> {% endcomment %}
+<style>
+
+    .news-block-one .inner-box {
+
+        border-radius: 10px;
+
+    }
+</style>
+
+{% endblock custom_css %}
+
+{% block content %}
+    <!--Page Title-->
+    {% comment %} <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg'%});">
+        <div class="auto-container">
+            <div class="content-box">
+                <div class="title-box">
+                    <h1>Consultant List</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="index.html">Home</a></li>
+                    <li>List</li>
+                </ul>
+            </div>
+        </div>
+    </section> {% endcomment %}
+    <!--End Page Title-->
+
+
+    <!-- team-section -->
+    
+    <section class="page-title " style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box my-2">
+                <div class="title-box">
+                    <h1>Gallery</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a></li>
+                    <li>{{consultant.company_name}}</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--End Page Title-->
+
+    <!-- about-section -->
+    <section class="news-section sec-pad-2" style="padding-top: 40px;">
+        <div class="auto-container px-0">
+            <div class="row clearfix">
+                {% for image in consultant_images %}
+                    <div class="mb-3 news-block">
+                        <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <!-- Add the image-box class to the figure element -->
+                                <figure class="image-box mb-0">
+                                    <img src="{{ image.image.url }}" class="gallery-images" onclick="openPopup('{{ image.image.url }}', {{ forloop.counter0 }})" alt="{{ consultant.company_name }}">
+                                </figure>
+                                <div class="lower-content image-caption-div">
+                                    <p class="image-caption-text text-center">{{ image.caption }}</p>
+                                    <!-- Add other content if needed -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+    
+            </div>
+        </div>
+    </section>
+    <!-- team-section end -->
+            
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup">
+            <div class="popup-image-div">
+                <img id="popup-image" src="{% static 'img/404-tick.png' %}" alt="" class="success-tick popup-image-gallery">
+
+                <button class="slideshow-arrow left-arrow" onclick="prevImage()"><i class="fa-solid fa-angle-left"></i></button>
+                <button class="slideshow-arrow right-arrow" onclick="nextImage()"><i class="fa-solid fa-angle-right"></i></button>
+
+                <div class="close-icon-div">
+                    <span class="close-icon mx-auto"><i class="fa-solid fa-xmark fa-xl"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $("#photos").change(function(){
+        readURL(this);
+    });
+
+    var imagesArray = [
+        {% for image in images %}
+            { imageUrl: '{{ image.image.url }}', caption: '{{ image.caption }}' },
+        {% endfor %}
+    ];
+    
+    console.log('imagesArray: ', imagesArray);
+
+    /*if($('#popup-container').hasClass('show')){
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.popup').length) {
+                console.log('clicked outside')
+                $('#popup-container').removeClass('show');
+            }
+        });
+    }*/
+
+    function showImage(index, imageUrl) {
+        // Set the image and caption based on the current index
+        $('#popup-image').attr('src', imageUrl);
+        //$('#popupCaption').text(caption);
+
+        // Add and remove the 'show' class to trigger the transition
+        $('.popup-image').removeClass('show');
+        setTimeout(function () {
+            $('.popup-image').addClass('show');
+        }, 50);
+    
+        // Disable left arrow if it's the first image
+        $('.left-arrow').prop('disabled', index === 0);
+    
+        // Disable right arrow if it's the last image
+        $('.right-arrow').prop('disabled', index === imagesArray.length - 1);
+    }
+
+    //var currentImageIndex = 0;
+    
+    function nextImage() {
+        console.log('nextImage clicked')
+        // Show the next image in the slideshow
+        if (currentImageIndex < imagesArray.length - 1) {
+            currentImageIndex++;
+            console.log('currentImageIndex: ', currentImageIndex)
+            showImage(currentImageIndex, imagesArray[currentImageIndex].imageUrl);
+        }
+    }
+    
+    function prevImage() {
+        console.log('prevImage clicked')
+        // Show the previous image in the slideshow
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            console.log('currentImageIndex: ', currentImageIndex)
+            showImage(currentImageIndex, imagesArray[currentImageIndex].imageUrl);
+        }
+    }
+
+
+    function openPopup(imageUrl, index) {
+        console.log('clicked')
+        //$('#popup-image').attr('src', imageUrl);
+        currentImageIndex = index;
+        console.log('currentImageIndex: ', currentImageIndex)
+        showImage(currentImageIndex, imageUrl);
+
+        // Add and remove the 'show' class to trigger the transition
+        $('.popup').removeClass('show');
+        setTimeout(function () {
+            $('.popup').addClass('show');
+        }, 50);
+
+        $('#popup-container').addClass('show');
+        //$('#popupCaption').text(caption);
+    }
+
+    $('.close-icon').on('click', function(){
+        $('#popup-container').removeClass('show');
+    })
+
+</script>
+
+{% endblock js %}

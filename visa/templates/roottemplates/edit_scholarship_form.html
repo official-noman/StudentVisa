@@ -1,0 +1,156 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container{
+      margin-top: 10px !important;
+  }
+  .select2-container--default .select2-selection--single{
+      border: 1px solid !important;
+      padding: 12px 15px !important;
+      height: 40px !important;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444 !important;
+    line-height: 17px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow{
+      top: 7px !important;
+      right: 5px !important;
+  }
+  .select2-container--open .select2-dropdown--below{
+      border-radius: 5px !important;
+      border: 1px solid !important;
+  }
+  .select2-container--default .select2-search--dropdown .select2-search__field{
+      border-radius: 4px !important;
+      border: 1px solid  !important
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+      color: #707070 !important;
+      font-size: 15px !important;
+  }
+  label {
+    display: block;
+  }
+  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
+    font-size: 0.812rem;
+    border-radius: 6px;
+  }
+  </style>
+{% endblock custom_css %}
+
+
+{% load static %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Edit Scholarship</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <!-- Add a form for editing scholarships here -->
+            <form id="editScholarshipForm{{ scw_id }}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <input type="hidden" id="scw_id{{ scw_id }}" name="scw_id" value="{{ scw_id }}">
+
+              <div class="form-group">
+                <label for="scw_country_id">Country</label>
+                <select class="form-control" id="scw_country_id" name="scw_country_id">
+                  {% for country in countries %}
+                    <option value="{{ country.country_id }}" {% if scholarship_data.scw_country_id == country.country_id %} selected {% endif %}>{{ country.country_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="scw_title{{ scw_id }}">Title</label>
+                <input type="text" class="form-control" id="scw_title{{ scw_id }}" name="scw_title" value="{{ scholarship_data.scw_title }}">
+            </div>
+              <div class="form-group">
+                <label for="scw_text{{ scw_id }}">Text</label>
+                <textarea class="form-control" id="scw_text{{ scw_id }}" name="scw_text" rows="3">{{ scholarship_data.scw_text }}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="scw_whocanapply{{ scw_id }}">Who Can Apply</label>
+                <textarea class="form-control" id="scw_whocanapply{{ scw_id }}" name="scw_whocanapply" rows="3">{{ scholarship_data.scw_whocanapply }}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="scw_status{{ scw_id }}">Status</label>
+                <select class="form-control" id="scw_status{{ scw_id }}" name="scw_status">
+                  <option value="1" {% if scholarship_data.scw_status == 1 %} selected {% endif %}>Active</option>
+                  <option value="0" {% if scholarship_data.scw_status == 0 %} selected {% endif %}>Inactive</option>
+                </select>
+              </div>
+
+              {% if scholarship_data.scw_image %}
+                <div class="form-group">
+                  <label>Current Image</label>
+                  <img src="{{ scholarship_data.scw_image.url }}" alt="Current Image" class="img-fluid">
+                </div>
+              {% endif %}
+
+              <div class="form-group">
+                <label for="scw_image{{ scw_id }}">Upload New Image</label>
+                <input type="file" class="form-control-file" id="scw_image{{ scw_id }}" name="scw_image">
+              </div>
+
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+  CKEDITOR.replace('scw_text{{ scw_id }}');
+  CKEDITOR.replace('scw_whocanapply{{ scw_id }}');
+
+  $(document).ready(function() {
+    console.log('Select2 initialization script executed.');
+    $('#scw_country_id').select2();
+  });
+
+  function submitEditForm(scwId) {
+    var form = document.getElementById('editScholarshipForm' + scwId);
+
+    fetch(form.action, {
+      method: form.method,
+      body: new FormData(form),
+    })
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        return response.json();
+      }
+    })
+    .then(data => {
+      console.log('Form submission successful:', data);
+      alert('Scholarship successfully updated!');
+    })
+    .catch(error => {
+      console.error('Form submission error:', error);
+      alert('Error updating scholarship. Please try again.');
+    });
+  }
+</script>
+{% endblock custom_js %}

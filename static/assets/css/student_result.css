@@ -1,0 +1,625 @@
+.radio-inline{
+    cursor: pointer;
+}
+
+.radio-input{
+    cursor: pointer;
+}
+
+.select2-container--default .select2-selection--single{
+    height: 37px;
+    border: 1px solid #ced4da;
+}
+
+.nice-select.wide{
+    height: 38px;
+}
+
+.nice-select.wide .list {
+    max-height: 200px !important;
+    overflow-y: scroll;
+}
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    flex: 0 0 180px; /* Set the width to 180px */
+}
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    display: flex;
+    justify-content: center;
+    /* padding: 10px; */
+
+    margin-bottom: 20px;
+}
+.signin-left-ad-div img,
+.signin-right-ad-div img {
+    max-width: 100%;
+}
+
+.content-div {
+    flex-grow: 1; /* Take up the remaining space */
+}
+
+.education-rows{
+    background-color: white;
+    max-height: 0;
+    overflow: hidden; /* Hide overflow content */
+    transition: 0.4s linear; /* Add smooth transition effect */
+    box-shadow: 0px 3px 15px 12px rgba(0,0,0,0.1);
+}
+
+.max-height {
+    padding: 20px 10px;
+    max-height: 1000px; /* Set the maximum height to reveal the content */
+    overflow-y: scroll;
+}
+
+.radio-select-div{
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.education-row-add{
+    width: 100%;
+    max-height: 50px;
+    margin: 10px 0;
+    background-color: white;
+    box-shadow: 5px 0px 10px 1px rgba(0,0,0,0.1);
+    /* cursor: pointer; */
+    transition: transform 0.3s linear;
+}
+.education-title-text{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.education-row-add:hover{
+    transform: scale(1.02);
+}
+
+.education-add-text{
+    font-size: 20px;
+    color: rgb(58, 58, 58);
+}
+
+.plus-icon{
+    font-size: 20px;
+    margin-left: 10px;
+    color: rgb(58, 58, 58);
+}
+
+.unclickable {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.clickable {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.higher-equivqalent-div{
+    position: relative;
+    border-bottom: 1px solid rgb(218, 216, 216);
+}
+
+.masters-education-div{
+    position: relative;
+    border-bottom: 1px solid rgb(218, 216, 216);
+}
+
+.other-courses-education-div{
+    position: relative;
+    border-bottom: 1px solid rgb(218, 216, 216);
+}
+
+.add-row-btn{
+    padding: 10px 15px;
+    color: rgb(236, 236, 236);
+    background-color: rgb(185, 26, 87) !important;
+    border-radius: 15px;
+    transition: 0.3s linear;
+}
+
+.add-row-btn:hover{
+    background-color: rgb(228, 13, 95) !important;
+}
+
+.close-div-btn{
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    width: 27px;
+    height: 27px;
+    background-color: rgb(150, 30, 30);
+    border-radius: 50%;
+    transition: 0.3s linear;
+}
+
+.close-div-btn:hover{
+    background-color: rgb(235, 4, 4);
+}
+
+.close-div-btn span{
+    color: rgb(233, 233, 233);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Popup container starts */
+.popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 999999999;
+}
+
+.popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.delete-popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 99;
+}
+
+.delete-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.popup {
+    position: relative;
+    background-color: rgb(30, 56, 59);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 280px;
+    width: 320px;
+}
+
+.delete-popup {
+    position: relative;
+    background-color: rgb(59, 30, 30);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 250px;
+    width: 300px;
+}
+
+.success-tick{
+    position: absolute;
+    top: -50px;
+    height: 150px;
+    width: 150px;
+}
+
+.registration-success-div{
+    position: absolute;
+    top: 120px;
+}
+
+.registration-success-div p span{
+    color: rgb(245, 245, 245);
+}
+
+.close-icon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.successful-text{
+    font-size: 18px;
+}
+/* Popup container ends */
+
+/* Image Popup container starts */
+/* .image-popup-container{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center; 
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 9999;
+}
+
+.image-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.delete-image-popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+}
+
+.delete-image-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.image-popup {
+    position: relative;
+    top: 0;
+    width: 1180px;
+    height: 788px;
+    border-radius: 10px;
+    max-width: 1400px;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out; 
+    opacity: 0; 
+}
+
+.image-popup.show {
+    opacity: 1;
+}
+
+.popup-image{
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.popup-image.show {
+    opacity: 1;
+}
+
+
+.popup-image-gallery{
+    position: relative;
+    width: 100%;
+    top: 50%;
+    max-height: 90vh;
+    transform: translateY(-50%);
+}
+
+
+.image-close-icon-div{
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 0, 0, 0.699);
+    align-items: center;
+    cursor: pointer;
+    transition: linear 0.2s;
+}
+
+.image-close-icon-div:hover{
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.image-close-icon-div:hover .close-icon {
+    color: rgb(240, 240, 240);
+}
+
+.image-close-icon{
+    font-size: 30px;
+    color: rgb(240, 240, 240);
+    cursor: pointer;
+} */
+
+.image-popup-container{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center; /* Center vertically */
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 9999;
+}
+
+.image-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.image-popup {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    top: 0;
+    width: 1180px;
+    
+    border-radius: 10px;
+    max-width: 1400px;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out; 
+    opacity: 0; 
+}
+
+.image-popup.show {
+    opacity: 1; /* Set opacity to 1 when the popup has the 'show' class */
+}
+
+.image-container{
+    position: relative;
+}
+
+.popup-image{
+    transition: opacity 0.3s ease-in-out; /* Add transition for opacity */
+    opacity: 0; /* Initial opacity set to 0 */
+}
+
+.popup-image.show {
+    opacity: 1; /* Set opacity to 1 when the popup has the 'show' class */
+}
+
+.popup-image-gallery{
+    position: relative;
+    width: 100%;
+    top: 50%;
+    max-height: 90vh;
+    transform: translateY(-50%);
+}
+
+.image-close-icon-div{
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 0, 0, 0.699);
+    align-items: center;
+    cursor: pointer;
+    transition: linear 0.2s;
+}
+
+.image-close-icon-div:hover{
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.image-close-icon-div:hover .close-icon {
+    color: rgb(240, 240, 240);
+}
+
+.image-close-icon{
+    font-size: 30px;
+    color: rgb(240, 240, 240);
+    cursor: pointer;
+}
+/* Image Popup container ends */
+
+/* Custom Select dropdown starts */
+.custom-select-btn, li{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .custom-select-btn{
+    position: relative;
+    height: 38px;
+    padding: 0 20px;
+    font-size: 14px;
+    background: #fff;
+    border-radius: 3px;
+    justify-content: space-between;
+    /* box-shadow: 0 10px 25px rgba(0,0,0,0.1); */
+    border: 1px solid #e4e4e4;
+  }
+  .custom-select-btn span i{
+    position: absolute;
+    right: 2px;
+    font-size: 11px;
+    transition: transform 0.3s linear;
+  }
+  .wrapper.active .custom-select-btn span i{
+    transform: rotate(-180deg);
+  }
+  .custom-dropdown-content{
+    display: none;
+    padding: 20px;
+    margin-top: 15px;
+    background: #fff;
+    border-radius: 7px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  .wrapper.active .custom-dropdown-content{
+    display: block;
+  }
+  .custom-dropdown-content .custom-dropdown-search{
+    position: relative;
+  }
+  .custom-dropdown-search i{
+    top: 50%;
+    left: 15px;
+    color: #999;
+    font-size: 20px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    position: absolute;
+  }
+  .custom-dropdown-search input{
+    height: 50px;
+    width: 100%;
+    outline: none;
+    font-size: 17px;
+    border-radius: 5px;
+    padding: 0 20px 0 43px;
+    border: 1px solid #B3B3B3;
+  }
+  .custom-dropdown-search input:focus{
+    padding-left: 42px;
+    border: 2px solid #4285f4;
+  }
+  .custom-dropdown-search input::placeholder{
+    color: #bfbfbf;
+  }
+  .custom-dropdown-content .options{
+    margin-top: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 7px;
+  }
+  .options::-webkit-scrollbar{
+    width: 7px;
+  }
+  .options::-webkit-scrollbar-track{
+    background: #f1f1f1;
+    border-radius: 25px;
+  }
+  .options::-webkit-scrollbar-thumb{
+    background: #ccc;
+    border-radius: 25px;
+  }
+  .options::-webkit-scrollbar-thumb:hover{
+    background: #b3b3b3;
+  }
+  .options li{
+    height: 50px;
+    padding: 0 13px;
+    font-size: 21px;
+  }
+  .options li:hover, li.selected{
+    border-radius: 5px;
+    background: #f2f2f2;
+  }
+/* Custom Select dropdown ends */
+
+.error-message-div{
+    width: 100%;
+    max-height: 0;
+    opacity: 0;
+    background-color: rgba(255, 0, 0, 0.233);
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.error-message-div p{
+    margin: 14px 16px;
+}
+
+.message-text{
+    font-size: 15px;
+    font-weight: 500;
+    color: red;
+}
+
+.error-message-div.error-message-show{
+    max-height: 100px;
+    opacity: 1;
+}
+
+.profile-save-btn{
+    padding: 10px 15px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(244, 94, 72);
+    border: none;
+    border-radius: 15px;
+    transition: 0.3s linear;
+}
+
+.profile-save-btn:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 34, 0);
+    border: none;
+}
+
+.secondary-view-certificate-para{
+    margin-right: 5px;
+}
+
+.file-size-text{
+    color: rgb(145, 0, 0);
+    font-size: 12px !important;
+}
+
+.reject-error-div{
+    background-color: rgba(255, 0, 0, 0.226);
+    padding: 10px 5px;
+}
+
+.reject-error-div p{
+    margin: 0;
+    padding: 5px;
+}
+
+.reject-error-div p span{
+    color: red;
+}
+
+@media(max-width: 597px){
+    .container{
+        padding: 0;
+    }
+    .inner-midcontent{
+        padding: 0;
+    }
+    .image-popup-container{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .signin-left-ad-div, .signin-right-ad-div{
+        display: none;
+    }
+}

@@ -1,0 +1,963 @@
+{% extends "Hodviews/base.html" %}
+{% load static %}
+
+{% block custom_css %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@10"></link>
+  <link rel="stylesheet" href="{% static 'assets/css/student_list.css' %}">
+  <style>
+    
+    .close-icon-div{
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 0, 0, 0.699);
+        align-items: center;
+        cursor: pointer;
+        transition: linear 0.2s;
+    }
+    
+    .close-icon-div:hover{
+        background-color: rgba(255, 0, 0, 1);
+    }
+    
+    .close-icon-div:hover .close-icon {
+        color: rgb(240, 240, 240);
+    }
+    
+    .close-icon{
+        font-size: 30px;
+        color: rgb(240, 240, 240);
+        cursor: pointer;
+    }
+
+    @media(max-width: 597px){
+        .popup-container{
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+
+    .dropdown-menu-static-demo .dropdown-menu{
+        z-index: 1;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        line-height: 1;
+        white-space: nowrap;
+        padding: 1.125rem 0.375rem !important;
+    }
+  </style>
+
+{% endblock custom_css %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Your Student List</h4>
+                    <!-- Lead Buttons -->
+                    <div class="mb-3">
+                        <button class="btn btn-primary lead-btn active" data-lead="0">My Lead</button>
+                        <button class="btn btn-primary lead-btn" data-lead="1">First Lead</button>
+                        <button class="btn btn-primary lead-btn" data-lead="2">Second Lead</button>
+                        <button class="btn btn-primary lead-btn" data-lead="3">Third Lead</button>
+                        <button class="btn btn-primary lead-btn" data-lead="4">Fourth Lead</button>
+                        <button class="btn btn-primary lead-btn" data-lead="5">Fifth Lead</button>
+                    </div>
+                    <!-- Student Tables -->
+                    <div class="lead-tables">
+                        <!-- My Lead Table -->
+                        <div class="lead-table lead-0" style="display: none;">
+                            <table id="studentList_0" class="custom-table table table-bordered">
+                                <!-- Include your table headers here -->
+                                <thead>
+                                    <tr>
+                                        <th class="hide">Student ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                        <th>Target Country</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if my_lead_included %}
+                                        {% for lead in my_lead_included %}
+                                            <tr>
+                                                <td>{{ lead.id }}</td>
+                                                <td>{{ lead.full_name }}</td>
+                                                <td>{{ lead.address }}</td>
+                                                <td>{{ lead.country_name }}</td>
+                                                <td>
+                                                    {% if lead.id >= 1 and lead.id <= 5 %}
+                                                        <button class="btn btn-info view-btn"
+                                                                data-toggle="modal"
+                                                                data-target="#studentDetailsModalmt_{{ lead.id }}"
+                                                                data-lead="{{ lead.id }}"
+                                                                data-student-id="{{ lead.id }}">
+                                                            View
+                                                        </button>
+                                                    {% else %}
+                                                        <!-- Render an alternative content or no content based on your needs -->
+                                                        <span>Invalid Lead ID</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Other Lead Tables -->
+                        {% for lead in "12345" %}
+                            <div class="lead-table lead-{{ lead }}" style="display: none; overflow-x: scroll;">
+                                <table id="studentList_{{ lead }}" class="custom-table table table-bordered">
+                                    <!-- Include your table headers here -->
+                                    <thead>
+                                        <tr>
+                                            <th>Student ID</th>
+                                            <th>Name</th>
+                                            <th>Location</th>
+                                            <th>Target Country</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for student_level in student_levels %}
+                                            {% if student_level.level == lead|add:"0" %}
+                                                <tr>
+                                                    <td>{{ student_level.student.id }}</td>
+                                                    <td>{{ student_level.student.full_name }}{% if student_level.is_favorite %}
+                                                        <span style="color: gold;">★</span>
+                                                    {% endif %}</td>
+                                                    <td>{{ student_level.student.address }}</td>
+                                                    <!--<td>{{ student_level.student.countries.first.country_name  }}</td>-->
+                                                    <td>{% for country in student_level.student.countries.all %}{{ country.country_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                                                    <td>
+                                                        <button class="btn btn-info view-btn"
+                                                                data-toggle="modal"
+                                                                data-target="#studentDetailsModal_{{ student_level.student.id }}"
+                                                                data-lead="{{ student_level.level }}"
+                                                                data-student-id="{{ student_level.student.id }}">
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% for lead in my_lead_included %}
+<div class="modal fade" id="studentDetailsModalmt_{{ lead.id }}" tabindex="-1" role="dialog" aria-labelledby="studentDetailsModalmtTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="studentDetailsModalmtTitle">{{ lead.full_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body modal-body-scroll">
+                {% if lead.error %}
+                    <!-- Display error message -->
+                    <div class="alert alert-danger" role="alert" style="font-size: 18px; color: red; background-color: #f8d7da; border-color: #f5c6cb; margin-bottom: 15px; padding: 15px; border-radius: 5px;">
+                        {{ lead.error }}
+                    </div>
+                {% else %}
+                    <!-- Student details section -->
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Name:</th>
+                                <td>{{ lead.full_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email:</th>
+                                <td>{{ lead.email }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Phone:</th>
+                                <td>{{ lead.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gender:</th>
+                                <td>{% if lead.gender == "1" %}
+                                    Male
+                                {% elif lead.gender == 0 %}
+                                    Female
+                                {% else %}
+                                    Unknown
+                                {% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address:</th>
+                                <td>{{ lead.address }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                <div class="mt-4 mb-2 px-3">
+                    <div class="row">
+                        <div class="certificate-images-div">
+                            <img src="{{ lead.secondary_certificate_copy }}" id="ssc-certificate-img-myLead" class="certificate-images" alt="">
+                        </div>
+    
+                        <div class="certificate-images-div">
+                            <img src="{{ lead.higher_certificate_copy }}" id="hsc-certificate-img-myLead" class="certificate-images" alt="">
+                        </div>
+                        <div class="certificate-images-div">
+                            <img src="{{ lead.course_certificate_copy }}" id="hsc-certificate-img-myLead" class="certificate-images" alt="">
+                        </div>
+                       
+                        <div class="certificate-images-div">
+                            <img src="{{ lead.undergraduation_certificate_copy }}" id="hsc-certificate-img-myLead" class="certificate-images" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Bootstrap Modal -->
+{% for student_level in student_levels %}
+    <!-- Bootstrap Modal -->
+    <div class="modal student-details-modal fade p-2" id="studentDetailsModal_{{ student_level.student.id }}" tabindex="-1" role="dialog" aria-labelledby="studentDetailsModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentDetailsModalTitle">{{ student_level.student.full_name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="window.location.reload()"  >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-body-scroll">
+                    {% if error_message %}
+                        <!-- Display error message -->
+                        <div class="alert alert-danger" role="alert" style="font-size: 18px; color: red; background-color: #F8D7DA; border-color: #F5C6CB; margin-bottom: 15px; padding: 15px; border-radius: 5px;">
+                            {{ error_message }}
+                        </div>
+                    {% else %}
+                        <!-- Student details section -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>HSC Result</strong></th>
+                                    <th><strong>SSC Result</strong></th>
+                                    <th><strong>IELTS</strong></th>
+                                    <th><strong>Countries</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="studentFullName"></td>
+                                    <td id="higherResult"></td>
+                                    <td id="secondaryResult"></td>
+                                    <td id="ieltsResult"></td>
+                                    <td id="studentCountries"></td>
+                                </tr>
+                            </tbody>
+                            <!--<tbody>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Name:</th>
+                                    <td id="studentFullName"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Email:</th>
+                                    <td id="studentEmail"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Phone:</th>
+                                    <td id="studentPhone"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Gender:</th>
+                                    <td id="studentGender"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Address:</th>
+                                    <td id="studentAddress"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">HSC Result:</th>
+                                    <td id="higherResult"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">SSC Result:</th>
+                                    <td id="secondaryResult"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="font-weight: bold;">Secondary Certificate Copy:</th>
+                                    <td><img id="secondaryCertificateCopy" src="" alt="Secondary Certificate Copy" style="max-width: 200px; max-height: 200px;"></td>
+                                    <th scope="row" style="font-weight: bold;">Higher Certificate Copy:</th>
+                                    <td><img id="higherCertificateCopy" src="" alt="Higher Certificate Copy" style="max-width: 200px; max-height: 200px;"></td>
+                                </tr>
+                            </tbody>-->
+                        </table>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4 mb-2 px-3">
+                    <div class="row">
+                        <div class="certificate-images-div">
+                            <img src="" id="ssc-certificate-img" class="certificate-images" alt="">
+                        </div>
+    
+                        <div class="certificate-images-div">
+                            <img src="" id="hsc-certificate-img" class="certificate-images" alt="">
+                        </div>
+                        
+                        <div class="certificate-images-div">
+                            <img src="" id="undergraduation-certificate-img" class="certificate-images" alt="">
+                        </div>
+
+                        <div class="certificate-images-div">
+                            <img src="" id="masters-certificate-img" class="certificate-images" alt="">
+                        </div>
+
+                        <div class="certificate-images-div">
+                            <img src="" id="other-courses-certificate-img" class="certificate-images" alt="">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button id="view-contact-btn_{{ student_level.student.id }}" type="button" class="btn btn-info view-contact-btn" data-lead="" data-student-id="" data-dismiss="modal">View Contact</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="window.location.reload()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- Popup container -->
+<div id="imagePopup" class="popup">
+    <span class="close-img">&times;</span>
+    <img id="popupImg" class="popup-content" src="" alt="">
+</div>
+
+<div class="modal fade" id="view-student-confirmation" tabindex="-1" role="dialog" aria-labelledby="viewContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="viewContactLabel">Confirmation Message</h5>
+                <button type="button" id="viewContactModalConfirmationClose" class="close close-button" aria-label="Close">
+                    <span aria-hidden="true" class="fs-3">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h5 id="student-contact-confirmation-text" class="text-center" style="line-height: 25px; font-size: 18px;"></h5>
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="px-2">
+                        <button type="button" id="proceed-btn" class="btn btn-success" data-lead="" data-student-id="" >Proceed</button>
+                    </div>
+                    <div class="px-2">
+                        <button type="button" id="view-cancel-btn" class="btn btn-danger cancel-btn" data-lead="" data-student-id="" >Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="view-student-contact-modal-error" tabindex="-1" role="dialog" aria-labelledby="viewContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="viewContactLabel" style="color: red; font-size: 18px;">Fetch Error</h5>
+                <button type="button" id="viewContactModalConfirmationClose" class="close close-button" aria-label="Close">
+                    <span aria-hidden="true" class="fs-3">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h5 id="student-contact-confirmation-text-error" class="text-center" style="line-height: 25px; font-size: 15px; color: red;"></h5>
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="px-2">
+                        <button type="button" id="view-cancel-btn-error" class="btn btn-danger cancel-btn" data-lead="" data-student-id="" >Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal student-details-modal fade" id="view-student-contact-modal" tabindex="-1" role="dialog" aria-labelledby="viewContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="contact-modal-title text-center" id="viewContactLabel">Confirmation Message</h5>
+                <button type="button" id="viewContactModalClose" class="close close-button" aria-label="Close" onclick="window.location.reload()">
+                    <span aria-hidden="true" class="fs-3">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body modal-body-scroll">
+                <!-- Student details section -->
+
+                <div class="row">
+                    <div class="col-md-2">
+                   
+                        <img id="studentDetailsImage" alt="Student Image" class="img-fluid"  style="max-width: 200px; max-height: 200px;">
+                   
+                         
+                     
+                    </div>
+                    <div class="col-md-10">
+                        <h2>Details</h2>
+                        <!-- Table for student details -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Email</strong></th>
+                                    <th><strong>Phone</strong></th>
+                                    <th><strong>Address</strong></th>
+                                    <th><strong>Countries</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="studentDetailsFullName"></td>
+                                    <td id="studentDetailsEmail"></td>
+                                    <td id="studentDetailsPhone"></td>
+                                    <td id="studentDetailsAddress"></td>
+                                    <td id="studentDetailsStudentCountries"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                    <h2>Result</h2>
+                    <br>
+                        <!-- Table for other certifications/courses -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                            <!--<th id="exam-type-${student.id}">Course</th>-->
+                            <th id="course-name">Course Name</th>
+                            <th id="institution-name">Institution Name</th>
+                            <th id="exam-board">Board</th>
+                            <th id="exam-result">Result</th>
+                            <th id="exam-roll-no">Roll No</th>
+                            <th id="exam-reg-no">Reg No</th>
+                            <th id="exam-certificate-no">Certificate No</th>
+                            <th id="exam-passing-year-no">Passing Year</th>
+                            <!--<th id="exam-university-name-${student.id}">University Name</th>-->
+                            <!--<th id="exam-certificate-copy">Certificate Copy</th>-->
+                            <th id="exam-created-at">Submitted At</th>
+                            <th id="exam-updated-at">Updated At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="educationTableBody">
+                                <!-- Rows for other certifications/courses will be dynamically added here using JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+             
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="popup-container" class="popup-container">
+    <div class="popup">
+        <div class="image-container" style="height: auto;">
+            <img id="popup-image" src="{% static 'img/404-tick.png' %}" alt="" class="success-tick popup-image-gallery">
+            <div class="close-icon-div">
+                <span class="close-icon mx-auto"><i class="fa-solid fa-xmark fa-xl"></i></span>
+            </div>
+        </div>
+        
+
+        
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block custom_js %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+    $(document).ready(function () {
+        // Function to initialize DataTable for a given lead
+        
+        function initializeLeadTable(lead) {
+            $(`#studentList_${lead}`).DataTable({
+                dom: 'Bfrtip',
+                buttons: [],
+                columns: [
+                    { data: 'id' },  // Assuming 'id' is a direct attribute of student_level.student
+                    { data: 'full_name' },
+                    { data: 'address' },
+                    { data: 'country_name' },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            return '<button class="btn btn-info view-btn" data-toggle="modal" data-target="#studentDetailsModal_' +
+                                row.id + '" data-lead="' + lead + '" data-student-id="' + row.id + '" data-higher-certificate="' + row.higher_certificate_copy + '" data-secondary-certificate="' + row.secondary_certificate_copy + '">View</button>';
+                        }
+                    },
+                ],
+            });
+        }
+        
+
+        // Initialize DataTable for 'My Lead' when the page loads
+
+        for (let lead = 1; lead <= 5; lead++) {
+            initializeLeadTable(lead);
+        }
+    
+        // jQuery script to handle lead buttons and show/hide tables
+        const leadButtons = document.querySelectorAll(".lead-btn");
+        leadButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                // Remove the 'active' class from all lead buttons
+                leadButtons.forEach((btn) => {
+                    btn.classList.remove("active");
+                });
+
+                // Add the 'active' class to the clicked button
+                this.classList.add("active");
+
+                const selectedLead = this.getAttribute("data-lead");
+                const selectedTable = document.querySelector(`.lead-${selectedLead}`);
+                const tables = document.querySelectorAll(".lead-table");
+                tables.forEach((table) => {
+                    table.style.display = "none";
+                });
+                selectedTable.style.display = "block";
+
+                // Update 'My Lead' table when a lead button is clicked
+                if (selectedLead === "0") {
+                    updateMyLeadTable();
+                }
+            });
+        });
+
+        let reloadPage = false;
+        const viewButtons = document.querySelectorAll(".view-btn");
+
+        viewButtons.forEach((button) => {
+            $(button).off("click").on("click", function (event) {
+                event.preventDefault();
+
+                const lead = this.getAttribute("data-lead");
+                const studentId = this.getAttribute("data-student-id");
+
+                // Disable the click event to ensure it's handled only once
+                $(button).off("click");
+
+                // Close any existing open modals
+                $('.modal').modal('hide');
+
+                // Make an AJAX request to fetch student details
+                $.ajax({
+                    url: `/view_students_by_consultant/${lead}/${studentId}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.error) {
+                            // Handle server-side error
+                            handleServerError(response.error, studentId);
+                        } else if (response && response.student_level && response.student_level.student) {
+                            // Update the modal content with student details
+                            const student = response.student_level.student;
+                            console.log('student details: ', student)
+
+
+
+
+
+                            // Set the correct modal ID dynamically
+                            const modalId = `#studentDetailsModal_${student.id}`;
+                            const modal = $(modalId);
+
+                            // Check if the modal exists
+                            if (modal.length) {
+
+                                
+                                // Update the modal title
+                                const countries = student.student_countries || [];
+                                console.log('countries: ', countries)
+                                var studentCountries = '';
+                                console.log('studentCountries: ', studentCountries)
+
+                                var studentId = student.id
+                                var lead = student.lead
+
+                                console.log('studentId to view: ', studentId)
+                                console.log('lead to view: ', lead)
+                                console.log('view-contact-btn: ', $('#view-contact-btn'))
+
+                                $('#view-contact-btn_' + studentId).attr('data-student-id', studentId);
+                                $('#view-contact-btn_' + studentId).attr('data-lead', lead);
+
+                                if (countries.length > 0) {
+                                    studentCountries = countries.map(country => country).join(', ');
+                                } else {
+                                    studentCountries = 'N/A'; // Set to 'N/A' if no countries are found
+                                }
+
+                                $(`${modalId} .modal-title`).text(`Student : ${student.full_name}`);
+
+                                // Display other student details in the modal
+                                $(`${modalId} #studentFullName`).text(`${student.full_name || 'N/A'}`);
+                                $(`${modalId} #studentCountries`).text(studentCountries || 'N/A');
+                                $(`${modalId} #studentPhone`).text(`${student.phone || 'N/A'}`);
+                                $(`${modalId} #studentGender`).text(`${student.gender === 0 ? 'Male' : 'Female'}`);
+                                $(`${modalId} #studentAddress`).text(`${student.address || 'N/A'}`);
+
+                                // Certificates images
+                                if (response.secondary_certificate_copy) {
+                                    $(`${modalId} #ssc-certificate-img`).attr('src', response.secondary_certificate_copy);
+                                }
+                                if (response.higher_certificate_copy) {
+                                    $(`${modalId} #hsc-certificate-img`).attr('src', response.higher_certificate_copy);
+                                }
+                                if (response.undergraduation_certificate_copy) {
+                                    $(`${modalId} #undergraduation-certificate-img`).attr('src', response.undergraduation_certificate_copy);
+                                }
+
+                                if (response.student_results) {
+                                    const studentResults = response.student_results;
+                    
+                                    // Display student results in the modal
+                                    $(`${modalId} #secondaryResult`).text(`${studentResults.secondary_result || 'N/A'}`);
+                                    $(`${modalId} #higherResult`).text(`${studentResults.higher_result || 'N/A'}`);
+                                    // Add more lines for other result fields as needed
+                    
+                                    // Display images in the modal
+                                    if (studentResults.secondary_certificate_copy) {
+                                        $(`${modalId} #secondaryCertificateCopy`).attr('src', studentResults.secondary_certificate_copy);
+                                    }
+                                    if (studentResults.higher_certificate_copy) {
+                                        $(`${modalId} #higherCertificateCopy`).attr('src', studentResults.higher_certificate_copy);
+                                    }
+                                }
+                                $(".certificate-images").click(function(){
+                                    var imgSrc = $(this).attr("src");
+                                    $("#popupImg").attr("src", imgSrc);
+                                    $("#imagePopup").css("display", "block");
+                                });
+                            
+                                // Close popup when close button is clicked
+                                $(".close-img").click(function(event){
+                                    event.preventDefault(); // Prevent default action (in this case, page reload)
+                                    $("#imagePopup").css("display", "none");
+                                });
+                            
+                                // Close popup when clicking outside the popup
+                                $(document).on("click", function(event){
+                                    if (!$(event.target).closest("#imagePopup").length && !$(event.target).hasClass("certificate-images")) {
+                                        $("#imagePopup").css("display", "none");
+                                    }
+                                });
+                            
+                                // Show the modal
+                                modal.modal('show');
+
+                                console.log('Fetched Student Details:', student);
+
+                                $('#view-contact-btn_' + studentId).on('click', function(event){
+                                    $('#proceed-btn').attr('data-student-id', studentId);
+                                    $('#proceed-btn').attr('data-lead', lead);
+                                    $('#view-student-confirmation').modal('show');
+                                    
+                                    // Fetch data from Django view
+                                    fetch('/compare_balance_with_lead/' + lead + '/' + studentId + '/')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if(data.success){
+                                            var confirmationMessage = data.message
+                                            $('#student-contact-confirmation-text').text(confirmationMessage);
+                                        }
+                                        else if(data.insufficient_balance){
+                                            var confirmationMessage = data.insufficient_balance
+                                            $('#proceed-btn').hide();
+                                            $('#student-contact-confirmation-text').text(confirmationMessage).css('color', 'red');
+                                        }
+
+                                        else{
+                                            console.log('no data found')
+                                        }
+                                    })
+                                    .catch(error => console.error('Error fetching data:', error));
+
+                                    // handle update balance
+                                    $('#proceed-btn').on('click', function(event){
+                                        event.preventDefault();
+
+                                        const lead = this.getAttribute("data-lead");
+                                        const studentId = this.getAttribute("data-student-id");
+
+                                        // Disable the click event to ensure it's handled only once
+                                        //$(button).off("click");
+
+                                        // Close any existing open modals
+                                        $('.modal').modal('hide');
+
+                                        // Make an AJAX request to fetch student details
+                                        $.ajax({
+                                            url: `/update-balance/${lead}/${studentId}/`,
+                                            type: 'GET',
+                                            dataType: 'json',
+                                            success: function (response) {
+                                                if (response.error) {
+                                                    console.log('response error: ', response.error)
+                                                    $('#view-student-contact-modal-error').modal('show');
+                                                    $('#student-contact-confirmation-text-error').text(response.error);
+                                                    //handleServerError(response.error, studentId);
+                                                    $('#view-cancel-btn-error').on('click', function(){
+                                                        location.reload();
+                                                    });
+                                                } 
+                                                else if (response && response.student_level && response.student_level.student && response.education_data) {
+                                                    // Update the modal content with student details
+                                                    const student = response.student_level.student;
+                                                    const educationData = response.education_data;
+                                                    const result = response.result;
+                                        
+                                                    console.log('result: ', result);
+                                        
+                                                    // Set the correct modal ID dynamically
+                                                    const modalId = `#studentDetailsModal_${student.id}`;
+                                                    const modal = $(modalId);
+                                        
+                                                    // Check if the modal exists
+                                                    if (modal.length) {
+                                                        // Update the modal title
+                                                        $('#contact-modal-title').text(`Student : ${student.full_name}`);
+                                        
+                                                        // Display other student details in the modal
+                                                        $('#studentDetailsFullName').text(`${student.full_name || 'N/A'}`);
+                                                        $('#studentDetailsEmail').text(` ${student.email || 'N/A'}`);
+                                                        $('#studentDetailsPhone').text(`${student.phone || 'N/A'}`);
+                                                        $('#educationTableBody').empty(); // Clear existing rows
+                                                        educationData.forEach(function(course) {
+                                                            const row = `
+                                                                <tr>
+                                                                    <td>${course.level || 'N/A'}</td>
+                                                                    <td>${course.institute_name || 'N/A'}</td>
+                                                                    <td>${course.board || 'N/A'}</td>
+                                                                    <td>${course.result || 'N/A'}</td>
+                                                                    <td>${course.roll_no || 'N/A'}</td>
+                                                                    <td>${course.reg_no || 'N/A'}</td>
+                                                                    <td>${course.certificate_no || 'N/A'}</td>
+                                                                    <td>${course.passing_year || 'N/A'}</td>
+                                                              
+                                                               
+                                                                    <td>${course.created_at || 'N/A'}</td>
+                                                                    <td>${course.updated_at || 'N/A'}</td>
+                                                                </tr>
+                                                            `;
+                                                            $('#educationTableBody').append(row); // Append new row
+                                                        });
+                                        
+                                                        if (response.student_level.student.student_image_url) {
+                                                            $('#studentDetailsImage').attr('src', response.student_level.student.student_image_url);
+                                                        } else {
+                                                            // Set default image source if no student image
+                                                            $('#studentDetailsImage').attr('src', '{% static "assets/images/images.jpg" %}');
+                                                        }
+                                        
+                                                        $('#studentDetailsIeltsResult').text('N/A');
+                                                        $('#studentDetailsStudentCountries').text(`${student.countries || 'N/A'}`);
+                                                        $('#studentDetailsAddress').text(`${student.address || 'N/A'}`);
+                                        
+                                                        $('#view-student-contact-modal').modal('show');
+                                                        $('#view-student-contact-modal').on('click', function() {
+                                                            location.reload(); // Reload the page
+                                                        });
+                                                        console.log('Fetched Student Details:', student);
+                                        
+                                                        // Attach click event to view certificate button
+                                                        $(document).on('click', '.certificate-view-btn', function() {
+                                                            var certificateUrl = $(this).data('certificate-url');
+                                                            console.log('image data url: ', certificateUrl)
+                                                        
+                                                            // Set the image source in the popup
+                                                            $('#popup-image').attr('src', certificateUrl);
+                                                        
+                                                            $('.popup-image').removeClass('show');
+                                                            setTimeout(function () {
+                                                                $('.popup-image').addClass('show');
+                                                            }, 50);
+                                
+                                                            // Add and remove the 'show' class to trigger the transition
+                                                            $('.popup').removeClass('show');
+                                                            setTimeout(function () {
+                                                                $('.popup').addClass('show');
+                                                            }, 50);
+                                
+                                                            $('#popup-container').addClass('show');
+                                                        });
+                                                        $('.close-icon').on('click', function(){
+                                                            $('#popup-container').removeClass('show');
+                                                        })
+                                        
+                                                        $('.close-button').on('click', function(event){
+                                                            event.preventDefault();
+                                                            $('.modal').modal('hide');
+                                                        });
+                                                    } else {
+                                                        console.error('Modal not found:', modalId);
+                                                    }
+                                                } else {
+                                                    console.error('Invalid response format:', response);
+                                                }
+                                            },
+                                            error: function (error) {
+                                                // Handle AJAX request error
+                                                handleServerError('Error fetching student details. Please try again later.', studentId);
+                                            }
+                                        });
+                                    });
+
+                                    $('.close-button, .cancel-btn').on('click', function(event){
+                                        event.preventDefault();
+                                        $('.modal').modal('hide');
+                                
+                                    })
+                                });
+
+                                
+                            } else {
+                                console.error('Modal not found:', modalId);
+                            }
+                        } else {
+                            console.error('Invalid response format:', response);
+                        }
+                    },
+                    error: function (error) {
+                        // Handle AJAX request error
+                        handleServerError('Error fetching student details. Please try again later.', studentId);
+                    }
+                });
+            });
+        });
+
+        function handleServerError(errorMessage, studentId) {
+            const modalId = `#studentDetailsModal_${studentId}`;
+            const modal = $(modalId);
+
+            if (modal.length) {
+                // Update the modal title
+                $(`${modalId} .modal-title`).text('Error');
+
+                // Display the error message in the modal body
+                $(`${modalId} .modal-body`).html('<h2 style="color:red;">' + errorMessage + '</h2>');
+
+                // Show the modal
+                modal.modal('show');
+            } else {
+                console.error('Modal not found:', modalId);
+            }
+        }
+
+        $('.modal').on('shown.bs.modal', function () {
+            // Check if the modal has the class 'show'
+            if ($(this).hasClass('show')) {
+                // Your custom code here
+                console.log('Modal is shown');
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest('.modal-dialog').length) {
+                        // Clicked outside modal-dialog, reload the page
+                        console.log('Modal clicked outside mod')
+                   
+                    }
+                });
+            }
+        });
+        
+    
+        // Add this code to reload the page after the modal is closed
+        $('#studentDetailsModal').on('hidden.bs.modal', function () {
+            if (reloadPage) {
+                location.reload();
+            }
+        });
+      
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Assuming you have included the DataTables library script
+    
+        // Initialize DataTable for 'My Lead'
+        $('#studentList_0').DataTable({
+            dom: 'Bfrtip',
+            buttons: [],  // Add buttons if needed
+            columns: [
+                { data: 'id' },  // Assuming 'id' is a direct attribute of lead
+                { data: 'full_name' },
+                { data: 'address' },
+                { data: 'country_name' },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        // Render the "View" button with appropriate data attributes
+                        return '<button class="btn btn-info view-btn"'
+                            + ' data-toggle="modal"'
+                            + ' data-target="#studentDetailsModalmt_' + row.id + '"'
+                            + ' data-lead="' + row.id + '"'
+                            + ' data-student-id="' + row.id + '">'
+                            + ' View'
+                            + '</button>';
+                    }
+                },
+            ],
+        });
+    });
+</script>
+
+{% endblock custom_js %}

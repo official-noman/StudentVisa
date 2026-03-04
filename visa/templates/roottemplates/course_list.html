@@ -1,0 +1,194 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+<style>
+    /* Your custom CSS styles here */
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Course List</h4>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <div class="mb-3">
+                        <button id="addCourseBtn" class="btn btn-info">Add Course</button>
+                    </div>
+                    <table id="courseTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Course Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr data-id="{{ course.id }}">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ course.name }}</td>
+                                <td>
+                                    <button class="editBtn btn btn-sm btn-primary" data-id="{{ course.id }}">Edit</button>
+                                    <button class="deleteBtn btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Course Modal -->
+<div class="modal fade" id="editCourseModal" tabindex="-1" role="dialog" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editCourseName">New Course Name</label>
+                    <input type="text" class="form-control" id="editCourseName" placeholder="Enter new course name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="saveEditCourseBtn" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const courseTable = document.getElementById('courseTable');
+        const editCourseModal = document.getElementById('editCourseModal');
+        const editCourseNameInput = document.getElementById('editCourseName');
+        const saveEditCourseBtn = document.getElementById('saveEditCourseBtn');
+
+        let courseIdToEdit = null;
+
+        courseTable.addEventListener('click', function (event) {
+            if (event.target.classList.contains('editBtn')) {
+                const row = event.target.closest('tr');
+                courseIdToEdit = row.getAttribute('data-id');
+                console.log("Course ID to edit:", courseIdToEdit);
+                const courseName = row.cells[1].textContent.trim();
+                editCourseNameInput.value = courseName;
+                $('#editCourseModal').modal('show');
+            }
+        });
+
+        saveEditCourseBtn.addEventListener('click', function () {
+            const newCourseName = editCourseNameInput.value.trim();
+            if (newCourseName) {
+                fetch(`/edit_course/${courseIdToEdit}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ new_course_name: newCourseName })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Success!',
+                            'Course updated successfully',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error!',
+                        'Something went wrong.',
+                        'error'
+                    );
+                });
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'New course name cannot be empty.',
+                    'error'
+                );
+            }
+        });
+
+        courseTable.addEventListener('click', function (event) {
+            if (event.target.classList.contains('deleteBtn')) {
+                const row = event.target.closest('tr');
+                const courseId = row.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/delete_course/${courseId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire('Deleted!', data.message, 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error!', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error!', 'Something went wrong.', 'error');
+                        });
+                    }
+                });
+            }
+        });
+
+        const addCourseBtn = document.getElementById('addCourseBtn');
+        addCourseBtn.addEventListener('click', function () {
+            window.location.href = '/add_course/';
+        });
+    });
+</script>
+{% endblock %}

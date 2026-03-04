@@ -1,0 +1,258 @@
+
+{% extends "base.html" %}
+{% block custom_css %}
+
+{% load static %}
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+<!-- Stylesheets -->
+<link href={% static "assets/css/font-awesome-all.css"%} rel="stylesheet">
+<link href={% static "assets/css/flaticon.css"%} rel="stylesheet">
+<link href={% static "assets/css/owl.css"%} rel="stylesheet">
+<link href={% static "assets/css/bootstrap.css"%} rel="stylesheet">
+<link href={% static "assets/css/jquery.fancybox.min.css"%} rel="stylesheet">
+<link href={% static "assets/css/animate.css"%} rel="stylesheet">
+<link href={% static "assets/css/color/theme-color.css"%} id="jssDefault" rel="stylesheet">
+<link href={% static "assets/css/switcher-style.css"%} rel="stylesheet">
+<link href={% static "assets/css/ad_columns.css"%} rel="stylesheet">
+{% comment %} <link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/responsive.css" rel="stylesheet"> {% endcomment %}
+
+
+<style>
+    #image_block_1 .image-box .box .inner{
+        width: 220px;
+        height: 220px;
+        padding: 0;
+    }
+
+    #image_block_1 .image-box .box .consultant-logo{
+        width: 100%;
+        height: 100%;
+        padding: 5px;
+    }
+
+    .consultant-logo-img{
+        width: 200px;
+        height: 200px;
+    }
+
+    .image-column{
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 60px;
+        width: 500px;
+    }
+
+    .content-column::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .consultant-intro-text{
+        color: rgb(0, 0, 0);
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 16;
+        -webkit-box-orient: vertical;
+    }
+
+    
+
+    @media (max-width: 600px) {
+        .float-left {
+            float: none;
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            box-sizing: border-box; /* To include padding and border in the total width */
+        }
+
+        .image-column{
+            width: 100%;
+        }
+    }
+    
+    .sec-title:before {
+    position: absolute;
+    content: '';
+    width: 40px;
+    height: 3px;
+    right: 322px !important;
+    bottom: 0px;
+}
+.theme-btn-four {
+    position: relative;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 10px;
+    font-family: 'Cabin', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 21.5px 31px;
+    z-index: 1;
+}
+.theme-btn-four {
+    background: #7c0391;
+}
+
+.theme-btn-two{
+    margin-right: 5px;
+}
+    {% comment %} #image_block_1 .image-box .box .consultant-logo {
+        position: absolute;
+        top: 50%; /* Align vertically to the center */
+        left: 50%; /* Align horizontally to the center */
+        transform: translate(-50%, -50%); /* Center the logo */
+        width: 154px;
+            height: 208px; /* Adjust the height as needed */
+        {% if consultant_details.consultant_logo %}
+            background-image: url('{{ consultant_details.consultant_logo.url }}');
+        {% endif %}
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    } {% endcomment %}
+
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+        <!--Page Title-->
+        {% comment %} <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg'%});">
+            <div class="auto-container">
+                <div class="content-box">
+                    <div class="title-box">
+                        <h1>Consultant List</h1>
+                        <div class="dotted-box">
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                        </div>
+                    </div>
+                    <ul class="bread-crumb clearfix">
+                        <li><i class="flaticon-home-1"></i><a href="index.html">Home</a></li>
+                        <li>List</li>
+                    </ul>
+                </div>
+            </div>
+        </section> {% endcomment %}
+        <!--End Page Title-->
+
+
+        <!-- team-section -->
+
+                    <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+                        <div class="auto-container">
+                            <div class="content-box ml-0">
+                                <div class="title-box">
+                                    <h1>Information For <br>{{ consultant.company_name }}</h1>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <ul class="bread-crumb clearfix">
+                                    <li><i class="flaticon-home-1"></i><a href="index.html">Home</a></li>
+                                    <li>{{ consultant.company_name }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <!--End Page Title-->
+            
+            
+                    <!-- about-section -->
+                    <section class="about-section">
+                        <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-1.png' %});"></div>
+                        <div class="auto-container">
+                            {% comment %} <div class="row align-items-center clearfix"> {% endcomment %}
+                                <div class="image-column">
+                                    <div id="image_block_1">
+                                        <div class="image-box">
+                                            <figure class="image">
+                                                {% if random_image %}
+                                                    <img src="{{ random_image.image.url }}" alt="Consultant Image">
+                                                {% else %}
+                                                    <!-- Fallback image -->
+                                                    <img src="{% static 'assets/images/resource/about-1.jpg' %}" alt="Fallback Image">
+                                                {% endif %}
+                                            </figure>
+                                            <div class="box" style="width: auto;">
+                                                <div class="inner">
+                                                    <div class="consultant-logo">
+                                                        {% if consultant_details.consultant_logo %}
+                                                            <img src="{{ consultant_details.consultant_logo.url }}" class="consultant-logo-img" alt="">
+                                                        {% else %}
+                                                            <img src="{% static 'assets/images/default-logo.png' %}" class="consultant-logo-img" alt="">
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-column">
+                                    <div id="content_block_1">
+                                        <div class="content-box">
+                                            <div class="sec-title">
+                                                <p>who are {{ consultant.company_name }}</p>
+                                                <H4><span>{{ consultant_details.consultant_intro|truncatewords:30|safe }}</span></H4>
+                                                <div class="dotted-box">
+                                                    <span class="dotted"></span>
+                                                    <span class="dotted"></span>
+                                                    <span class="dotted"></span>
+                                                </div>
+                                            </div>
+                                            {% comment %} <div class="bold-text">
+                                                <p>{{ consultant_details.consultant_description|safe }}</p>
+                                            </div> {% endcomment %}
+                                            <div class="text">
+                                                <p>{{ consultant_details.consultant_description|truncatewords:40|safe }}
+                                                    {% if consultant_details.consultant_description|wordcount > 40 %}...{% endif %}
+                                                </p>
+                                            </div>
+
+
+                                           <div class="btn-box d-flex justify-content-center mt-4">
+    <a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}" class="theme-btn-two" target="_blank" style="position: relative; right: 0;">Learn More<i class="flaticon-send"></i></a>
+                        {% if request.user.is_authenticated and request.user.user_type == 2 %}
+                                                                                {% if consultant.id not in fav_consultant_ids %}
+                                                                                    <a href="{% url 'add_to_favorite' consultant_id=consultant.id %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                                {% endif %}
+
+                                                                            {% elif request.user.is_authenticated %}
+                                                                                {% if request.user.user_type == 0 or request.user.user_type == 1 %}{% endif %}
+
+                                                                            {% else %}
+                                                                                <a href="{% url 'login_student' %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                            {% endif %}
+                                                  
+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% comment %} </div> {% endcomment %}
+                        </div>
+                    </section>
+                    <!-- team-section end -->
+          
+
+       
+
+
+{% endblock content %}
+
+{% block content_js %}
+
+
+{% endblock content_js %}

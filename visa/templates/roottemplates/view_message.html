@@ -1,0 +1,94 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Message Details</h4>
+
+        {% if message %}
+          <div class="alert alert-info">
+            <strong>Subject:</strong> {{ message.subject }}
+          </div>
+          <div class="alert alert-success">
+            <strong>Message:</strong> {{ message.message }}
+          </div>
+
+          {% if replies %}
+            <div class="mb-4">
+              <h5>Replies:</h5>
+              <ul>
+                {% for reply in replies %}
+                  <li>{{ reply.reply_text }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <form method="post" id="replyForm">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="reply_text">Reply:</label>
+              <textarea class="form-control" id="reply_text" name="reply_text" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Reply</button>
+          </form>
+        {% else %}
+          <div class="alert alert-danger">
+            <strong>Error:</strong> Message not found.
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to handle submitting replies for the view_message.html template
+    document.addEventListener('DOMContentLoaded', function() {
+      var replyForm = document.getElementById('replyForm');
+
+      // Submit reply form
+      replyForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        fetch('', {  // Use the appropriate URL for submitting replies
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              // Reset the form and update the replies list
+              this.reset();
+              // Fetch details for the selected message after submitting a reply
+              var messageId = message.id;  // Adjust based on your actual model and data structure
+              fetch('/view_message/' + messageId + '/')
+                .then(response => response.json())
+                .then(data => {
+                  if (data.status === 'success') {
+                    // Update the list of replies
+                    var repliesList = document.querySelector('#replies-list');
+                    repliesList.innerHTML = '';
+                    data.replies.forEach(function(reply) {
+                      var li = document.createElement('li');
+                      li.textContent = reply.reply_text;
+                      repliesList.appendChild(li);
+                    });
+                  } else {
+                    console.error('Error fetching message details');
+                  }
+                })
+                .catch(error => console.error('Error fetching message details:', error));
+            } else {
+              console.error('Error submitting reply');
+            }
+          })
+          .catch(error => console.error('Error submitting reply:', error));
+      });
+    });
+  </script>
+{% endblock content %}

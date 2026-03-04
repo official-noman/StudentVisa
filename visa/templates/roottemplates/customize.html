@@ -1,0 +1,95 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Home Page</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'root_customize' %}" enctype="multipart/form-data">
+              {% csrf_token %}
+<div class="form-group">
+  <label for="description">Customize Description:</label>
+  <textarea id="description" name="description">{% if instance %}{{ instance.description }}{% endif %}</textarea>
+</div>
+      
+
+        <div class="form-group row justify-content-between">
+                
+                    <label for="image">Upload Image:</label>
+                    <input id="wizard-picture" type="file" id="image" name="image">
+                    {% if instance.image %}
+                    <img src="{{ instance.image.url }}" alt="Customization Image" style="max-width: 400px;">
+                {% endif %}
+     
+              </div>
+                <div>
+                <p style="font-size: 14px; font-weight: 600; color:red !important;">Width: 960px; Height: 300px</p>
+                </div>
+
+              <button type="submit" class="btn btn-primary">{% if instance %}Update{% else %}Create{% endif %}</button>
+            </form>
+
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endblock content %}
+
+{% block custom_js %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<!-- Include CKEditor library -->
+
+<script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
+<script>
+  tinymce.init({
+    selector: '#description'
+  });
+</script>
+<script>
+  tinymce.init({
+    selector: '#description',
+    plugins: 'image code link',
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image link',
+    menubar: 'file edit view insert format tools table help',
+    toolbar_mode: 'floating',
+    height: 400
+  });
+</script>
+
+<script>
+    $(document).ready(function(){
+        console.log('page loaded')
+        // Prepare the preview for profile picture
+        $("#wizard-picture").change(function(){
+            console.log('something changed')
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+        
+                reader.onload = function (e) {
+                    $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    });
+    
+</script>
+{% endblock custom_js %}

@@ -1,0 +1,138 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+{% block custom_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container{
+      margin-top: 10px !important;
+  }
+  .select2-container--default .select2-selection--single{
+      border: 1px solid !important;
+      padding: 12px 15px !important;
+      height: 40px !important;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444 !important;
+    line-height: 17px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow{
+      top: 7px !important;
+      right: 5px !important;
+  }
+  .select2-container--open .select2-dropdown--below{
+      border-radius: 5px !important;
+      border: 1px solid !important;
+  }
+  .select2-container--default .select2-search--dropdown .select2-search__field{
+      border-radius: 4px !important;
+      border: 1px solid  !important
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+      color: #707070 !important;
+      font-size: 15px !important;
+  }
+  label {
+    display: block;
+  }
+  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
+    font-size: 0.812rem;
+    border-radius: 6px;
+  }
+  </style>
+{% endblock custom_css %}
+{% load static %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">University Wise Scholarship</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'university_wise' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="university_id">Select University:</label>
+                  <select id="university_id" name="uw_university_name" class="form-control" required>
+                      <option value="">Select University</option>
+                  </select>
+              </div>
+                <div class="form-group">
+                  <label for="uw_text">Description:</label>
+                  <textarea id="uw_text" name="uw_text" class="form-control" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label for="uw_whocanapply">Who Can Apply:</label>
+                  <textarea id="uw_whocanapply" name="uw_whocanapply" class="form-control"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Save</button>
+              </form>
+            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+            <script>
+              CKEDITOR.replace('uw_text');
+              CKEDITOR.replace('uw_whocanapply');
+            </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+{% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<!-- Use an alternative CDN link for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- If the CDN link does not work, download select2.min.js and host it locally -->
+<!-- <script src="{% static 'path/to/select2.min.js' %}"></script> -->
+<script>
+    // Initialize Select2 for the dropdown element
+    $(document).ready(function() {
+        console.log('Select2 initialization script executed.');
+        $('#university_id').select2();
+    });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Fetch JSON data from the file
+    fetch('/static/assets/json/universities.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Fetched data:', data); // Log the fetched data
+
+            // Get the select element
+            const selectElement = document.getElementById("university_id");
+
+            // Loop through the JSON data and create option elements
+            data.forEach(function(university) {
+                const option = document.createElement("option");
+                option.text = university;
+                option.value = university; // You may assign a different value here if needed
+                selectElement.appendChild(option);
+            });
+
+            // Initialize Select2 for the dropdown element
+            $('#university_id').select2();
+        })
+        .catch(error => console.error('Error fetching JSON:', error));
+});
+</script>
+{% endblock custom_js %}

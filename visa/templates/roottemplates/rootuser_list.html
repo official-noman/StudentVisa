@@ -1,0 +1,250 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+<style>
+  .form-check {
+    margin-bottom: 13px;
+  }
+
+  .form-check-label {
+    cursor: pointer;
+  }
+
+  .toggle-button {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 58px;
+    height: 26px;
+    background-color: #ddd;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+.toggle-button:checked {
+    background-color: #05a34a;
+}
+
+
+
+  .toggle-button::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+  }
+
+  .toggle-button:checked::before {
+    left: 37px;
+  }
+
+  .form-check .form-check-label {
+    min-height: 18px;
+    display: block;
+    margin-left: 2.75rem;
+    font-size: 0.812rem;
+    line-height: 2.5;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">All Root Users</h4>
+
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+          {% endif %}
+          <div class="mb-3">
+            <a href="{% url 'create_root' %}" class="btn btn-info">Add Root User</a>
+          </div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for root_user in root_users %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ root_user.full_name }}</td>
+                <td>{{ root_user.email }}</td>
+                <td>{{ root_user.phone }}</td>
+                <td>
+                  <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#permissionModal{{ root_user.id }}">
+                    Grant Permission
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Permission Modal -->
+              <div class="modal fade" id="permissionModal{{ root_user.id }}" tabindex="-1" role="dialog" aria-labelledby="permissionModalLabel" aria-hidden="true" data-user-id="{{ root_user.id }}">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="permissionModalLabel">Grant Permission</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="grantPermissionForm{{ root_user.id }}">
+                        {% csrf_token %}
+                        <div class="row">
+                          {% for group_name, permissions in grouped_permissions.items %}
+                          {% if forloop.counter0|divisibleby:3 %}
+                          </div><div class="row">
+                          {% endif %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <div class="form-check">
+                                <input class="form-check-input toggle-button" type="checkbox" id="group_{{ group_name }}" name="groups" value="{{ group_name }}">
+                                <label class="form-check-label" for="group_{{ group_name }}">{{ group_name }}</label>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %}
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <button type="button" class="btn btn-primary grant-permission-btn" data-userid="{{ root_user.id }}">Grant Permission</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Permission Modal -->
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+<!-- Include your JavaScript links here -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+</script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js">
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js">
+</script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+  $(document).ready(function() {
+    // Function to handle modal shown event
+    $('.modal').on('shown.bs.modal', function () {
+        var modal = $(this);
+        var userId = modal.data('user-id'); // Assuming you pass user id to the modal via data attribute
+        // Make AJAX call to fetch existing permissions
+        $.ajax({
+            url: '/get_existing_permissions/' + userId + '/',
+            type: 'GET',
+            success: function(response) {
+                var existingPermissions = response.existing_permissions;
+                // Find all toggle buttons within the modal
+                modal.find('.toggle-button').each(function() {
+                    var toggleButton = $(this);
+                    var groupName = toggleButton.val();
+                    // Check if the group name matches any existing permission
+                    if (existingPermissions.includes(groupName)) {
+                        toggleButton.prop('checked', true); // Check the toggle button
+                    } else {
+                        toggleButton.prop('checked', false); // Uncheck the toggle button
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching existing permissions:', error);
+                // Handle error if needed
+            }
+        });
+    });
+    // Function to handle grant permission button click
+    $(document).on('click', '.grant-permission-btn', function() {
+      var userId = $(this).data('userid');
+      var groups = [];
+      // Find selected permissions for the user
+      $('#permissionModal' + userId + ' input[name="groups"]:checked').each(function() {
+          groups.push($(this).val());
+      });
+      // Print the data before sending it via AJAX
+      console.log('User ID:', userId);
+      console.log('Selected Groups:', groups);
+      // Prepare data for the Fetch request
+      var formData = new FormData();
+      formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
+      groups.forEach(function(group) {
+          formData.append('groups', group);
+      });
+      // Send Fetch request to grant permissions
+      fetch('/grant_permission/' + userId + '/', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+        // Display success message with OK button
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: data.message,
+            showConfirmButton: true,
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            // Reload the page or perform any other action as needed
+            if (result.isConfirmed) {
+                location.reload(); // Reload the page
+            }
+        });
+    })
+      .catch(error => {
+          // Display error message in console
+          console.error('Error:', error);
+          // Show error message in a popup
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred while granting permissions. Please try again.',
+          });
+      });
+  });
+});
+</script>
+{% endblock %}

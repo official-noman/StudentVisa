@@ -1,0 +1,189 @@
+{% extends "roottemplates/base.html" %}
+{% block custom_css %}
+<style>
+  .close-button {
+    font-size: 2rem; /* Adjust the font size as needed */
+    padding: 0.5rem; /* Adjust the padding as needed */
+  }
+</style>{% endblock custom_css %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Consultant Rates</h4>
+            {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>SL</th>
+                  <th>Consultant Name</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for consultant in consultants %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ consultant.company_name }} ({{ consultant.full_name }})</td>
+                    <td>
+                      <!-- Add Rates Button with data-consultant-id attribute -->
+                      <button class="btn btn-info add-rates-btn" data-consultant-id="{{ consultant.id }}">Add Rates</button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Add Rates -->
+  {% for consultant in consultants %}
+    <div class="modal fade" id="addRatesModal{{ consultant.id }}" tabindex="-1" role="dialog" aria-labelledby="addRatesModal{{ consultant.id }}Label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addRatesModal{{ consultant.id }}Label">Add Rates for {{ consultant.full_name }}</h5>
+            <button type="button"  class="close close-button" id="closeModalButton" aria-label="Close">
+              <span aria-hidden="true" class="fs-3">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="addRatesForm{{ consultant.id }}">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="first_rate">First Rate:</label>
+                <input type="text" class="form-control" id="first_rate" name="first_rate" placeholder="Enter first rate">
+              </div>
+              <div class="form-group">
+                <label for="second_rate">Second Rate:</label>
+                <input type="text" class="form-control" id="second_rate" name="second_rate" placeholder="Enter second rate">
+              </div>
+              <div class="form-group">
+                <label for="third_rate">Third Rate:</label>
+                <input type="text" class="form-control" id="third_rate" name="third_rate" placeholder="Enter third rate">
+              </div>
+              <div class="form-group">
+                <label for="four_rate">Four Rate:</label>
+                <input type="text" class="form-control" id="four_rate" name="four_rate" placeholder="Enter four rate">
+              </div>
+              <div class="form-group">
+                <label for="five_rate">Five Rate:</label>
+                <input type="text" class="form-control" id="five_rate" name="five_rate" placeholder="Enter five rate">
+              </div>
+              <button type="submit" class="btn btn-primary">Save Rates</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  {% endfor %}
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <script>
+    $(document).ready(function() {
+      // Handle click on "Add Rates" button
+      $('.add-rates-btn').on('click', function() {
+        var consultantId = $(this).data('consultant-id');
+        var modalId = '#addRatesModal' + consultantId;
+  
+        // Clear previous form data
+        $(modalId + ' form')[0].reset();
+  
+        // Make AJAX request to get existing rates
+        $.ajax({
+          url: '/get_existing_rates/' + consultantId + '/',
+          type: 'GET',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Update form with existing rates
+              var existingRates = response.existing_rates;
+              $.each(existingRates, function(key, value) {
+                // Set the value in the corresponding input field
+                $(modalId + ' form input[name=' + key + ']').val(value);
+              });
+            }
+          },
+          error: function(error) {
+            console.log('Error:', error);
+          }
+        });
+  
+        // Show the modal
+        $(modalId).modal('show');
+      });
+  
+      // Handle form submission for adding/updating rates
+      $('[id^=addRatesForm]').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var consultantId = form.attr('id').replace('addRatesForm', '');
+  
+        // Make AJAX request to add or update rates
+        $.ajax({
+          url: '/add_or_update_rates/' + consultantId + '/',
+          type: 'POST',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Close the modal on success
+              $('#addRatesModal' + consultantId).modal('hide');
+  
+              // Show SweetAlert2 success message
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message,
+              });
+  
+              // Optionally, you can update the UI or show a success message
+            } else {
+              // Optionally, you can handle errors or show an error message
+            }
+          },
+          error: function(error) {
+            console.log('Error:', error);
+          }
+        });
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Handle click on any close button within a modal
+      $(document).on('click', '[id^=closeModalButton]', function() {
+        // Find the parent modal of the clicked close button
+        var modal = $(this).closest('.modal');
+        
+        // Close the modal
+        modal.modal('hide');
+      });
+    });
+  </script>
+    <script>
+    $(document).ready(function() {
+      $('.form-control').on('input', function() {
+          // Remove any non-numeric characters from the input
+          var sanitized = $(this).val().replace(/\D/g, '');
+          $(this).val(sanitized);
+      });
+  });
+  </script>
+{% endblock content %}

@@ -1,0 +1,133 @@
+{% extends 'consultant_base.html' %}
+{% load static %}
+{% block custom_css %}
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="{% static 'assets/css/font-awesome-all.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/owl.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+<link href="{% static 'assets/css/switcher-style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/review.css' %}" rel="stylesheet">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<style>
+    .testimonial-block-one .inner-box {
+        min-height: 200px;
+        max-height: 200px;
+    }
+    
+   .bg-color-3{
+        background: #185fa5 !important;
+      }
+      
+      .content-div{
+        max-width: 970px;
+    }
+    
+    .testimonial-block-one{
+        padding: 15px 20px 35px 35px;
+    }
+    
+</style>
+
+{% endblock custom_css %}
+
+{% block content %}
+    <section class="page-title " style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box my-2">
+                <div class="title-box">
+                    <h1>Reviews</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a></li>
+                    <li>{{consultant.company_name}}</li>
+                    <li>Review</li>
+                </ul>
+            </div>
+        </div> 
+    </section>
+
+    <section class="all-comment-section mt-2 mb-5 testimonial-style-two">
+        {% comment %} <div class="pattern-layer" style="background-image: url(assets/images/shape/pattern-6.png);"></div> {% endcomment %}
+        <div class="auto-container">
+            <div class="row clearfix justify-content-center">
+                {% for review in reviews_data %}
+                    <div class="all-reviews-div">
+                        <div class="testimonial-block-one inner-comment">
+                            <div class="inner-box">
+                                <div class="author-inner">
+                                    <figure class="image-box">
+                                                {% if review.student_image %}
+                                                    <img src="{{ review.student_image }}" class="img-fluid rounded mb-3" alt="{{ review.student_name }}">
+                                                {% else %}
+                                                    <img src="{% static 'assets/images/images.jpg' %}" class="img-fluid rounded mb-3" alt="Demo Image">
+                                                {% endif %}
+                                            </figure>
+                                    <h5>{{ review.student_name }}</h5>
+                                    <span class="designation">{{ review.address }}</span>
+                                </div>
+                                <div class="content-inner">
+                                    <div class="rating-box">
+                                        <ul class="rating">
+                                            {% for _ in "x"|ljust:review.rating %}
+                                                <li><i class="fas fa-star"></i></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="text">
+                                        <p>{{ review.comment|truncatewords:30|safe }}
+                                            {% if review.comment|wordcount > 25 %}...{% endif %}
+                                        </p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="pagination-wrapper centred">
+                    <ul class="pagination">
+                        {% if reviews_data.has_previous %}
+                            <li><a href="?page=1"><i class="fa-solid fa-angles-left"></i></a></li>
+                            <li><a href="?page={{ reviews_data.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+                        {% endif %}
+                
+                        {% for i in reviews_data.paginator.page_range %}
+                            {% if i == reviews_data.number %}
+                                <li class="all-reviews-pagination-active-li"><a href="?page={{ i }}" class="all-reviews-pagination-active">{{ i }}</a></li>
+                            {% elif i > reviews_data.number|add:"-2" and i < reviews_data.number|add:"2" %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                
+                        {% if reviews_data.has_next %}
+                            <li><a href="?page={{ reviews_data.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+                            <li><a href="?page={{ reviews_data.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block js %}
+   
+{% endblock js %}
+        

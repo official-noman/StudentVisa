@@ -1,0 +1,1511 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">-->
+
+<link rel="stylesheet" href={% static "assets/dist/vendors/feather/feather.css"%}>
+<link rel="stylesheet" href={% static "assets/dist/vendors/mdi/css/materialdesignicons.min.css"%}>
+<link rel="stylesheet" href={% static "assets/dist/vendors/ti-icons/css/themify-icons.css"%}>
+<link rel="stylesheet" href={% static "assets/dist/vendors/typicons/typicons.css"%}>
+<link rel="stylesheet" href={% static "assets/dist/vendors/simple-line-icons/css/simple-line-icons.css"%}>
+<link rel="stylesheet" href={% static "assets/dist/vendors/css/vendor.bundle.base.css"%}>
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<!-- endinject -->
+<!-- Plugin css for this page -->
+<!-- End plugin css for this page -->
+<!-- inject:css -->
+<link rel="stylesheet" href={% static "assets/dist/css/vertical-layout-light/style.css"%}>
+<!-- endinject -->
+<link rel="shortcut icon" href={% static "assets/dist/images/favicon.png" %}/>
+
+<style>
+    /* Add custom styles for DataTables */
+    #active-consultant-table,
+    #suspend-consultant-table,
+    #rootStudentList,
+    #activeStudentList {
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    #active-consultant-table th,
+    #activeStudentList th,
+    #activeStudentList td,
+    #rootStudentList th,
+    #rootStudentList td,
+    #active-consultant-table td,
+    #suspend-consultant-table th,
+    #suspend-consultant-table td {
+    border: 1px solid #ddd; /* Add border to table cells */
+    padding: 8px;
+    text-align: left;
+    }
+
+    #active-consultant-table th,
+    #rootStudentList th,
+    #suspend-consultant-table th {
+    background-color: #f2f2f2; /* Add background color to header cells */
+    }
+    .dataTables_wrapper .dataTable .btn, .dataTables_wrapper .dataTable .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .dataTables_wrapper .dataTable .swal2-styled, .dataTables_wrapper .dataTable .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .dataTables_wrapper .dataTable .ajax-file-upload {
+    padding: 0.5rem 1rem;
+    vertical-align: top;
+}
+
+    .badge-text-black {
+        color: black;
+    }
+    /* Add styles for maintaining distance between tables */
+    #secondaryResultsTable_${student.id}, #higherResultsTable_${student.id} {
+    margin-top: 20px; /* Adjust the margin as needed */
+    }
+
+
+    .popup-container{
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100vw;
+        height: 100vh;
+        align-items: center; /* Center vertically */
+        pointer-events: none;
+        transition: linear 0.3s;
+        z-index: 9999;
+    }
+    
+    .popup-container.show {
+        pointer-events: auto;
+        opacity: 1;
+        transition: 0.3s;
+    }
+    
+    .popup {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        top: 0;
+        width: 1180px;
+        
+        border-radius: 10px;
+        max-width: 1400px;
+        overflow: hidden;
+        transition: opacity 0.3s ease-in-out; 
+        opacity: 0; 
+    }
+    
+    .popup.show {
+        opacity: 1; /* Set opacity to 1 when the popup has the 'show' class */
+    }
+
+    .image-container{
+        position: relative;
+    }
+    
+    .popup-image{
+        transition: opacity 0.3s ease-in-out; /* Add transition for opacity */
+        opacity: 0; /* Initial opacity set to 0 */
+    }
+    
+    .popup-image.show {
+        opacity: 1; /* Set opacity to 1 when the popup has the 'show' class */
+    }
+    
+    .popup-image-gallery{
+        position: relative;
+        width: 100%;
+        top: 50%;
+        max-height: 90vh;
+        transform: translateY(-50%);
+    }
+
+    .close-icon-div{
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 0, 0, 0.699);
+        align-items: center;
+        cursor: pointer;
+        transition: linear 0.2s;
+    }
+    
+    .close-icon-div:hover{
+        background-color: rgba(255, 0, 0, 1);
+    }
+    
+    .close-icon-div:hover .close-icon {
+        color: rgb(240, 240, 240);
+    }
+    
+    .close-icon{
+        font-size: 30px;
+        color: rgb(240, 240, 240);
+        cursor: pointer;
+    }
+
+    @media(max-width: 597px){
+        .popup-container{
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+
+    .dropdown-menu-static-demo .dropdown-menu{
+        z-index: 1;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        line-height: 1;
+        white-space: nowrap;
+        padding: 1.125rem 0.375rem !important;
+    }
+
+</style>
+
+
+{% endblock custom_css %}
+
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+<div class="row justify-content-center">
+    <div class="col-md-12">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="tabs">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending"
+                aria-selected="true">Suspended Student</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active"
+                aria-selected="false">Active Student</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="Verified-tab" data-toggle="tab" href="#Verified" role="tab" aria-controls="Verified"
+                aria-selected="false">Verified Student</a>
+            </li>
+        
+        
+        
+        
+        
+        </ul>
+        </div>
+    </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="home-tab">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title mb-4">Student</h4>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <table id="rootStudentList" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Student Name</th>
+                    <th>Student Phone</th>
+                    <th>Student Email</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in suspend_students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info details-btn"
+                                data-toggle="modal" data-target="#detailsModal" data-student-id="{{ user.id }}">
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% for user in suspend_students %}
+            <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detailsModalTitle"> Student Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Name:</strong></td>
+                                        <td id="studentname"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email:</strong></td>
+                                        <td id="studentEmail"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Phone:</strong></td>
+                                        <td id="studentPhone"></td>
+                                    </tr>
+                            
+                                    <tr>
+                                        <td><strong>Gender:</strong></td>
+                                        <td id="studentGender"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Status:</strong></td>
+                                        <td id="studentStatus">
+                                            <!-- Badge to display the status dynamically -->
+                                            <span class="badge" id="statusBadge"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Created At:</strong></td>
+                                        <td id="studentCreatedAt"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success activate-student-btn" data-student-id="{{ user.id }}">
+                                Activate Account
+                            </button>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        </div>
+    
+        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title mb-4">Active Students</h4>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            <table id="activeStudentList" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Student Name</th>
+                    <th>Student Phone</th>
+                    <th>Student Email</th>
+            
+                    <th>Gender</th>
+                    
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="activeStudentListBody">
+                <!-- Placeholder for dynamic content -->
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </div>
+
+        <div class="tab-pane fade" id="Verified" role="tabpanel" aria-labelledby="Verified-tab">
+        <table class="table" id="verifiedStudentList">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Created At</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="verifiedStudentListBody">
+            <!-- Placeholder for dynamic content -->
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+<div id="popup-container" class="popup-container">
+    <div class="popup">
+        <div class="image-container" style="height: auto;">
+            <img id="popup-image" src="{% static 'img/404-tick.png' %}" alt="" class="popup-image-gallery">
+            <div class="close-icon-div">
+                <span class="close-icon mx-auto"><i class="fa-solid fa-xmark fa-xl"></i></span>
+            </div>
+        </div>
+        
+
+        
+    </div>
+</div>
+
+<div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectionModalLabel">Enter Rejection Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rejectionNote" class="form-control" rows="4" placeholder="Enter rejection note"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="submitRejection()">Submit Rejection</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% csrf_token %}
+
+
+{% endblock content %}
+
+
+{% block custom_js %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#rootStudentList').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'csv', 'excel', 'pdf', 'print'
+        ]
+        });
+    }
+    )
+</script>
+<script>
+    function showStudentDetails(studentId) {
+        $.ajax({
+            url: `/inactive_students_details/${studentId}/`, // Replace with your API endpoint
+            type: 'GET',
+            success: function(response) {
+                var studentDetails = response.student_details;
+    
+                // Update the modal content with the fetched student details
+                $('#studentname').text(studentDetails.full_name);
+                $('#studentEmail').text(studentDetails.email);
+                $('#studentPhone').text(studentDetails.phone);
+            
+                var genderText = studentDetails.gender == 0 ? 'Male' : 'Female';
+                $('#studentGender').text(genderText);
+    
+    
+                // Set the status badge dynamically based on the value of status
+                var statusBadge = $('#statusBadge');
+                statusBadge.text(studentDetails.status);
+                
+                // Apply different styling based on the status value
+                if (studentDetails.status == 0) {
+                    statusBadge.addClass('badge-warning').addClass('badge-text-black').text('Pending');
+                } else if (studentDetails.status == 1) {
+                    statusBadge.addClass('badge-success').addClass('badge-text-black').text('Active');
+                } else if (studentDetails.status == 2) {
+                    statusBadge.addClass('badge-info').addClass('badge-text-black').text('Verified');
+                }
+    
+                $('#studentCreatedAt').text(studentDetails.created_at);
+    
+                // Show the modal
+                $('#detailsModal').modal('show');
+            },
+            
+            error: function(error) {
+                console.error('Error fetching student details:', error);
+            }
+        });
+    }
+    
+    $('.details-btn').on('click', function() {
+        var studentId = $(this).data('student-id');
+        showStudentDetails(studentId);
+    });
+    
+
+    // Attach click event handler to the "Close" button in the modal
+    $('#detailsModal').on('hidden.bs.modal', function () {
+        // Reload the page when the modal is closed
+        location.reload();
+    });
+    </script>
+    <script>
+        function activateStudentAccount(studentId) {
+            // Check if studentId is defined
+            if (studentId === undefined) {
+                console.error('Student ID is undefined.');
+                return;
+            }
+    
+            // Display a SweetAlert2 confirmation dialog
+            Swal.fire({
+                title: 'Activate Confirmation',
+                text: 'Are you sure you want to activate this student account?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#007bff',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Activate'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Fetch the activation view for the selected student
+                    fetch(`/activate_student_account/${studentId}/`, {
+                        method: 'POST',  // Assuming your activation view handles POST requests
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')  // Ensure to include the CSRF token
+                        },
+                        // Additional headers or body if needed
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Display a success message using SweetAlert2
+                        Swal.fire({
+                            title: 'Success',
+                            text: data.message,
+                            icon: 'success'
+                        }).then((result) => {
+                            // Reload the page after the SweetAlert2 modal is closed
+                            location.reload();
+                        });
+                        // Optionally, you can perform additional actions after activation
+                    })
+                    .catch(error => {
+                        // Display an error message using SweetAlert2
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Error activating student account',
+                            icon: 'error'
+                        });
+                        console.error('Error activating student account:', error);
+                    });
+                }
+            });
+        }
+    
+        // Attach click event to the "Activate Account" button
+        $('.activate-student-btn').on('click', function() {
+            var studentId = $(this).data('student-id');
+            activateStudentAccount(studentId);
+        });
+    
+        // Function to get the CSRF token from the cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchActiveStudents();
+        });
+    
+        function fetchActiveStudents() {
+            fetch('/active_student_list/')
+                .then(response => response.json())
+                .then(data => {
+                    updateActiveStudentsTable(data.active_students_details);
+    
+                    // Initialize DataTables with export buttons
+                    $('#activeStudentList').DataTable({
+                        dom: 'Bfrtip', // 'B' for buttons
+                        buttons: [
+                            'excelHtml5',
+                            'csvHtml5',
+                            'pdfHtml5'
+                        ]
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching active students:', error);
+                });
+        }
+    
+        function updateActiveStudentsTable(activeStudentsDetails) {
+            var tableBody = document.getElementById('activeStudentListBody');
+            tableBody.innerHTML = '';
+    
+            var genderMap = { 0: 'Male', 1: 'Female' };
+    
+            activeStudentsDetails.forEach(function (student, index) {
+                var secondaryValue = student.secondary_value
+                var higherValue = student.higher_value
+                
+                console.log('secondaryValue: ', secondaryValue)
+
+                var row = tableBody.insertRow(index);
+                row.insertCell(0).textContent = index + 1;
+                row.insertCell(1).textContent = student.full_name;
+                row.insertCell(2).textContent = student.phone;
+                row.insertCell(3).textContent = student.email;
+                row.insertCell(4).textContent = genderMap[student.gender];
+                row.insertCell(5).textContent = student.created_at;
+    
+                var actionButtonCell = row.insertCell(6);
+                var viewDetailsButton = document.createElement('button');
+                viewDetailsButton.type = 'button';
+                viewDetailsButton.className = 'btn btn-info view-details-btn';
+                viewDetailsButton.textContent = 'View Details';
+                viewDetailsButton.dataset.studentId = student.id;
+                viewDetailsButton.dataset.toggle = 'modal';
+                viewDetailsButton.dataset.target = '#detailsactiveModal_' + student.id; // Unique ID for each modal
+                actionButtonCell.appendChild(viewDetailsButton);
+
+                // Add a modal for each student
+                var modalHtml = `
+                    <div class="modal fade" id="detailsactiveModal_${student.id}" tabindex="-1" role="dialog" aria-labelledby="detailsactiveModalTitle_${student.id}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detailsactiveModalTitle_${student.id}">Active Student Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" style="overflow-x: scroll;">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th><strong>Name:</strong></th>
+                                                <th><strong>Email:</strong></th>
+                                                <th><strong>Phone:</strong></th>
+                                                <th><strong>Address:</strong></th>
+                                                <th><strong>Status:</strong></th>
+                                                <th><strong>Created At:</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td id="studentname_${student.id}"></td>
+                                                <td id="studentEmail_${student.id}"></td>
+                                                <td id="studentPhone_${student.id}"></td>
+                                                <td id="studentGender_${student.id}"></td>
+                                                <td id="studentStatus_${student.id}">
+                                                    <!-- Badge to display the status dynamically -->
+                                                    <span class="badge" id="statusBadge_${student.id}"></span>
+                                                </td>
+                                                <td id="studentCreatedAt_${student.id}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <br>
+                                    <!-- Results table -->
+                                    <h5>Results</h5>
+                                    
+                                    <!--<div class="d-flex mb-3">
+                                        <div class="col-lg-5 col-md-5 col-12 px-0">
+                                            <select class="form-select" style="width: 38%;" id="resultType_${student.id}" onchange="populateResults(${student.id})">
+                                                <option value="secondary">Secondary</option>
+                                                <option value="higher">Higher</option>
+                                                <option value="undergraduation">Undergraduation</option>
+                                                <option value="other_certification">Other Certifications</option>
+                                            </select>
+                                        </div>
+                                    </div>-->
+                                    
+                                    <table class="table table-bordered" id="resultsTable_${student.id}">
+                                        <thead>
+                                            <tr>
+                                                <!--<th id="exam-type-${student.id}">Course</th>-->
+                                                <th id="serial-number-${student.id}">#</th>
+                                                <th id="course-name-${student.id}">Course Name</th>
+                                                <th id="institution-name-${student.id}">Institution Name</th>
+                                                <th id="exam-board-${student.id}">Board</th>
+                                                <th id="exam-result-${student.id}">Result</th>
+                                                <th id="exam-roll-no-${student.id}">Roll No</th>
+                                                <th id="exam-reg-no-${student.id}">Reg No</th>
+                                                <th id="exam-certificate-no-${student.id}">Certificate No</th>
+                                                <th id="exam-passing-year-no-${student.id}">Passing Year</th>
+                                                <!--<th id="exam-university-name-${student.id}">University Name</th>-->
+                                                <th id="exam-certificate-copy-${student.id}">Certificate Copy</th>
+                                                <th id="exam-created-at-${student.id}">Submitted At</th>
+                                                <th id="exam-updated-at-${student.id}">Updated At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultsTableBody_${student.id}">
+                                            
+                                        </tbody>
+                                    </table>
+
+                            
+
+
+                                </div>
+                                <div id="verification-btns-div-${student.id}" class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeModal()">Close</button>
+                                    <button class="btn btn-warning suspend-student-btn"  data-student-id="${student.id}">Suspend</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                $('body').append(modalHtml);
+
+            });
+        }
+    
+        function closeModal() {
+            $('.modal').modal('hide');
+        }
+    
+        function showactiveStudentDetails(studentId) {
+            $.ajax({
+                url: `/active_student_details/${studentId}/`,
+                type: 'GET',
+                success: function (response) {
+                    var studentDetails = response.student_details;
+                    var resultsDetails = response.results_details;
+                    var educationData = response.education_data
+
+                    var secondaryValue = response.secondary_value
+                    var higherValue = response.higher_value
+                    var undergraduationValue = response.undergraduation_value
+
+                    console.log('secondaryValue: ', secondaryValue)
+                    console.log('undergraduationValue: ', undergraduationValue)
+    
+                    // Populate fields in the modal for student details
+                    $('#studentname_' + studentId).text(studentDetails.full_name);
+                    $('#studentEmail_' + studentId).text(studentDetails.email);
+                    $('#studentPhone_' + studentId).text(studentDetails.phone);
+                    $('#studentGender_' + studentId).text(studentDetails.address);
+    
+                    var statusBadge = $('#statusBadge_' + studentId);
+                    statusBadge.text(studentDetails.status);
+    
+                    if (studentDetails.status == 0) {
+                        statusBadge.addClass('badge-warning').addClass('badge-text-black').text('Pending');
+                    } else if (studentDetails.status == 1) {
+                        statusBadge.addClass('badge-success').addClass('badge-text-black').text('Active');
+                    } else if (studentDetails.status == 2) {
+                        statusBadge.addClass('badge-info').addClass('badge-text-black').text('Verified');
+                    }
+    
+                    $('#studentCreatedAt_' + studentId).text(studentDetails.created_at);
+
+                    var tableBody = $('#resultsTableBody_' + studentId);
+
+                    // Clear existing rows
+                    tableBody.empty();
+                    var serialNumber = 1;
+
+
+                    // Append the result data to the table row
+                    $.each(educationData, function(index, data) {
+                        var row = $('<tr>');
+                        var serialNumberCell = $('<td>').text(serialNumber++);
+                                row.append(serialNumberCell);
+                
+                        // Append data to the row
+                        row.append($('<td>').text(data.level));
+                        row.append($('<td>').text(data.institute_name));
+                        var boardNames = {
+                            '1': 'Barisal',
+                            '2': 'Chittagong',
+                            '3': 'Comilla',
+                            '4': 'Dhaka',
+                            '5': 'Dinajpur',
+                            '6': 'Jessore',
+                            '7': 'Mymensingh',
+                            '8': 'Rajshahi',
+                            '9': 'Sylhet',
+                            '10': 'Edexcel',
+                            '11': 'Cambridge',
+                            '12': 'UGC',
+                            '13': 'Bangladesh Technical Education Board'
+                        };
+                        
+                        // Get the name corresponding to the board number
+                        var boardName = boardNames[data.board];
+                        
+                        // Append the board name to the table cell
+                        row.append($('<td>').text(boardName));
+                        row.append($('<td>').text(data.result));
+                        row.append($('<td>').text(data.roll_no));
+                        row.append($('<td>').text(data.reg_no));
+                        row.append($('<td>').text(data.certificate_no));
+                        row.append($('<td>').text(data.passing_year));
+                        //row.append($('<td>').text(data.certificate_copy));
+
+                            row.append(
+                                $('<td>').css('text-align', 'center').append(
+                                    $('<button>', {
+                                        id: 'certificate-view-btn' + index,
+                                        class: 'btn btn-primary certificate-view-btn btn-sm',
+                                        'data-certificate-url': data.certificate_copy,
+                                        text: 'View',
+                                        click: function() {
+                                            // Handle the button click event here
+                                            var certificateUrl = $(this).data('certificate-url');
+                                            // Implement logic to view the certificate
+                                            //window.open(certificateUrl); // Opens the certificate in a new tab/window
+                                        }
+                                    })
+                                )
+                            );
+                        row.append($('<td>').text(data.created_at));  
+                        row.append($('<td>').text(data.updated_at));
+                        // Add more data as needed
+                        console.log('result id checkiing: ', data.result_id)
+                        console.log('reject note: ', data.rejection_note)
+
+                        function rejectionWords(str, numWords) {
+                            const words = str.split(' ');
+                            if (words.length > numWords) {
+                                return words.slice(0, numWords).join(' ') + ' ...';
+                            } else {
+                                return str;
+                            }
+                        }
+
+                        /*var verifyButtons = `<div class="col-md-3">
+                            <button class="btn btn-primary verification-status-btn ${data.verification_status === 'verified' ? 'disabled' : ''} btn-sm" data-action="verified" data-resultid="${data.result_id}" data-student="${studentId}" data-resulttype="${data.level}">
+                                <i class="fas fa-check"></i> Verified
+                            </button>
+                            <button class="btn btn-danger verification-status-btn ${data.verification_status === 'pending' ? 'disabled' : ''} btn-sm" data-action="pending" data-resultid="${data.result_id}" data-student="${studentId}" data-resulttype="${data.level}">
+                                <i class="fas fa-clock"></i> Pending
+                            </button>
+                        </div>`;*/
+
+
+                         var verifyButtons = `<div class="col-md-3">
+                            ${data.verification_status === 'verified' ? 
+                                `<span style="font-size: 25px;"><i class="fas fa-check-circle text-success"></i> Verified</span>` :
+                                `<button class="btn btn-primary verification-status-btn ${data.verification_status === 'verified' ? 'disabled' : ''} btn-sm" data-action="verified" data-resultid="${data.result_id}" data-resulttype="${data.level}">
+                                    <i class="fas fa-check"></i> Verify
+                                </button>`
+                            }
+                            ${(data.verification_status !== 'verified') ? 
+                                (data.verification_status === 'rejected' ? 
+                                    `<button class="btn btn-danger reject-status-btn btn-sm" disabled>
+                                        <i class="fas fa-clock"></i> Already Rejected
+                                    </button>
+                                    <p class="mt-2" style="color: red"><span>${rejectionWords(data.rejection_note, 10)}</span></p> 
+                                    
+                                    ` :
+                                    `<button class="btn btn-danger reject-status-btn btn-sm" data-action="rejected" data-resultid="${data.result_id}" data-resulttype="${data.level}">
+                                        <i class="fas fa-clock"></i> Rejected
+                                    </button>`) : ''}
+                        <div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rejectionModalLabel">Enter Rejection Note</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <textarea id="rejectionNote" class="form-control" rows="4" placeholder="Enter rejection note"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" onclick="submitRejection()">Submit Rejection</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>`;
+    
+                        var $verifyButtons = $(verifyButtons);
+                        row.append($('<td>').append($verifyButtons));
+                
+                        // Append the row to the table body
+                        tableBody.append(row);
+
+
+                        // image popup
+                        $(document).on('click', '.certificate-view-btn', function() {
+                            var certificateUrl = $(this).data('certificate-url');
+                            console.log('image data url: ', certificateUrl)
+                        
+                            // Set the image source in the popup
+                            $('#popup-image').attr('src', certificateUrl);
+                        
+                            $('.popup-image').removeClass('show');
+                            setTimeout(function () {
+                                $('.popup-image').addClass('show');
+                            }, 50);
+
+                            // Add and remove the 'show' class to trigger the transition
+                            $('.popup').removeClass('show');
+                            setTimeout(function () {
+                                $('.popup').addClass('show');
+                            }, 50);
+
+                            $('#popup-container').addClass('show');
+                        });
+                        
+                        // Close the popup when clicking on the close icon
+                        $('.close-icon').on('click', function(){
+                            $('#popup-container').removeClass('show');
+                        })
+                    });
+
+                    // Add verification verification button to verify all the results
+                    if(response.all_result_verification == 'verified'){
+                        console.log('all_result_verification: ', response.all_result_verification)
+                        console.log('all_result_verification student id: ', studentId)
+                        // Check if the button already exists in the div
+                        if ($('#verification-btns-div-' + studentId).find('.verify-student-btn').length === 0) {
+                            // Create the new button element
+                            var newButton = $('<button type="button" class="btn btn-success verify-student-btn" data-student-id="' + studentId + '">Verify</button>');
+
+                            // Append the new button to the specified div
+                            $('#verification-btns-div-' + studentId).append(newButton);
+                        }
+                    }
+
+                  
+                    $('.verification-status-btn').click(function(event) {
+                        event.preventDefault(); // Prevent default behavior of anchor tag
+                
+                        var action = $(this).data('action');
+                        var resultId = $(this).data('resultid'); // Replace 'your_result_id' with the actual result ID
+                        var verificationType = $(this).data('resulttype'); // Replace 'your_verification_type' with the actual verification type
+                
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'Do you want to update the verification status?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, update it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Call the updateVerificationStatus function
+                                // Construct the URL with query parameters
+                                var url = `/update_verification_status/?action=${action}&result_id=${resultId}&verification_type=${verificationType}`;
+
+                                // Send data to Django view using Fetch API
+                                fetch(url, {
+                                    method: 'GET'
+                                })
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.json(); // Parse the JSON data if the response is successful
+                                    }
+                                    throw new Error('Response not OK');
+                                })
+                                .then(data => {
+                                    // Handle the data if needed
+                                    if(data.success){
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success!',
+                                            text: 'Verification status updated successfully.'
+                                        });
+                                    }
+
+                                    if(data.error){
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error!',
+                                            text: 'Failed to update verification status. Please try again later.'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching data:', error);
+                                });
+
+                            }
+                        });
+                    });
+
+                    $('.reject-status-btn').click(function(event) {
+                        event.preventDefault(); // Prevent default behavior of anchor tag
+                    
+                        var action = $(this).data('action');
+                        var resultId = $(this).data('resultid');
+                        var verificationType = $(this).data('resulttype');
+                    
+                        // Open the rejection note modal
+                        $('#detailsactiveModal_' + studentId).hide();
+                        $('#rejectionModal').modal('show');
+                    
+                        // Function to submit rejection with the note
+                        submitRejection = function() {
+                            var rejectionNote = $('#rejectionNote').val(); // Get the rejection note from the textarea
+                    
+                            // Construct the URL with query parameters including the rejection note
+                            var url = `/update_verification_status/?action=${action}&result_id=${resultId}&verification_type=${verificationType}&rejection_note=${rejectionNote}`;
+                    
+                            // Send data to Django view using Fetch API
+                            fetch(url, {
+                                method: 'GET'
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json(); // Parse the JSON data if the response is successful
+                                }
+                                throw new Error('Response not OK');
+                            })
+                            .then(data => {
+                                // Handle the data if needed
+                                if(data.success){
+                                    // Close the rejection note modal
+                                    $('#rejectionModal').modal('hide');
+                    
+                                    // Show success message using SweetAlert
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Verification status updated successfully.'
+                                    }).then(() => {
+                                        // Reload the page
+                                        location.reload();
+                                    });
+                                }
+                    
+                                if(data.error){
+                                    // Show error message
+                                    alert('Failed to update verification status. Please try again later.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                        };
+                    });
+
+                    //populateResults(studentId);
+    
+                    $('#detailsactiveModal_' + studentId).modal('show');
+                },
+    
+                error: function (error) {
+                    console.error('Error fetching student details:', error);
+                }
+            });
+        }
+    
+        // Attach click event handler to the "View Details" button in the table
+        $('#activeStudentListBody').on('click', '.view-details-btn', function () {
+            var studentId = $(this).data('studentId');
+            showactiveStudentDetails(studentId);
+        });
+    
+        // Attach click event handler to the "Close" button in the modal
+        $('[id^="detailsactiveModal_"]').on('hidden.bs.modal', function () {
+            location.reload();
+        });
+    </script>
+    
+    <script>
+    // Function to verify a student account
+    function verifyStudentAccount(studentId) {
+        // Check if studentId is defined
+        if (studentId === undefined) {
+            console.error('Student ID is undefined.');
+            return;
+        }
+
+        // Display a SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Verification Confirmation',
+            text: 'Are you sure you want to verify this student account?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Verify'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Fetch the verification view for the selected student
+                fetch(`/verify_student_account/${studentId}/`, {
+                    method: 'POST',  // Assuming your verification view handles POST requests
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')  // Ensure to include the CSRF token
+                    },
+                    // Additional headers or body if needed
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display a success message using SweetAlert2
+                    Swal.fire({
+                        title: 'Success',
+                        text: data.message,
+                        icon: 'success'
+                    }).then((result) => {
+                        // Reload the page after the SweetAlert2 modal is closed
+                        location.reload();
+                    });
+                    // Optionally, you can perform additional actions after verification
+                })
+                .catch(error => {
+                    // Display an error message using SweetAlert2
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error verifying student account',
+                        icon: 'error'
+                    });
+                    console.error('Error verifying student account:', error);
+                });
+            }
+        });
+    }
+    function suspendStudentAccount(studentId) {
+        // Check if studentId is defined
+        if (studentId === undefined) {
+            console.error('Student ID is undefined.');
+            return;
+        }
+    
+        // Display a SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Suspension Confirmation',
+            text: 'Are you sure you want to suspend this student account?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Suspend'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Fetch the suspension view for the selected student
+                fetch(`/suspend_student_account/${studentId}/`, {
+                    method: 'POST',  // Assuming your suspension view handles POST requests
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')  // Ensure to include the CSRF token
+                    },
+                    // Additional headers or body if needed
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display a success message using SweetAlert2
+                    Swal.fire({
+                        title: 'Success',
+                        text: data.message,
+                        icon: 'success'
+                    }).then((result) => {
+                        // Reload the page after the SweetAlert2 modal is closed
+                        location.reload();
+                    });
+                    // Optionally, you can perform additional actions after suspension
+                })
+                .catch(error => {
+                    // Display an error message using SweetAlert2
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error suspending student account',
+                        icon: 'error'
+                    });
+                    console.error('Error suspending student account:', error);
+                });
+            }
+        });
+    }
+    // Attach click event to the "Verify" button
+    $('body').on('click', '.verify-student-btn', function () {
+        var studentId = $(this).data('student-id');
+        verifyStudentAccount(studentId);
+    });
+    $('body').on('click', '.suspend-student-btn', function () {
+        var studentId = $(this).data('student-id');
+        suspendStudentAccount(studentId);
+    });
+    // Function to get the CSRF token from the cookies
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchVerifiedStudents();
+    });
+  
+    function fetchVerifiedStudents() {
+      fetch('/verify_student_list/')
+        .then(response => response.json())
+        .then(data => {
+          updateVerifiedStudentsTable(data.verify_students_details);
+  
+          // Initialize DataTables with export buttons
+          $('#verifiedStudentList').DataTable({
+            dom: 'Bfrtip', // 'B' for buttons
+            buttons: [
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ]
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching verified students:', error);
+        });
+    }
+  
+    function updateVerifiedStudentsTable(verifyStudentsDetails) {
+      var tableBody = document.getElementById('verifiedStudentListBody');
+      tableBody.innerHTML = '';
+  
+      var genderMap = { 0: 'Male', 1: 'Female' };
+  
+      verifyStudentsDetails.forEach(function (student, index) {
+        var row = tableBody.insertRow(index);
+        row.insertCell(0).textContent = index + 1;
+        row.insertCell(1).textContent = student.full_name;
+        row.insertCell(2).textContent = student.phone;
+        row.insertCell(3).textContent = student.email;
+        row.insertCell(4).textContent = genderMap[student.gender];
+        row.insertCell(5).textContent = student.created_at;
+  
+        var actionButtonCell = row.insertCell(6);
+        var viewDetailsButton = document.createElement('button');
+        viewDetailsButton.type = 'button';
+        viewDetailsButton.className = 'btn btn-info view-details-btn';
+        viewDetailsButton.textContent = 'View Details';
+        viewDetailsButton.dataset.studentId = student.id;
+        viewDetailsButton.dataset.toggle = 'modal';
+        viewDetailsButton.dataset.target = '#detailsVerifiedModal_' + student.id; // Unique ID for each modal
+        actionButtonCell.appendChild(viewDetailsButton);
+  
+        // Add a modal for each student
+        var modalHtml = `
+          <div class="modal fade" id="detailsVerifiedModal_${student.id}" tabindex="-1" role="dialog" aria-labelledby="detailsVerifiedModalTitle_${student.id}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="detailsVerifiedModalTitle_${student.id}">Verified Student Details</h5>
+                  <button type="button" class="close" data-dismiss="modal" onclick="window.location.reload()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th><strong>Name:</strong></th>
+                            <th><strong>Email:</strong></th>
+                            <th><strong>Phone:</strong></th>
+                            <th><strong>Address:</strong></th>
+                            <th><strong>Status:</strong></th>
+                            <th><strong>Created At:</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td id="verifiedStudentName_${student.id}"></td>
+                          <td id="verifiedStudentEmail_${student.id}"></td>
+                          <td id="verifiedStudentPhone_${student.id}"></td>
+                          <td id="verifiedStudentGender_${student.id}"></td>
+                          <td id="verifiedStudentStatus_${student.id}">
+                            <!-- Badge to display the status dynamically -->
+                            <span class="badge" id="verifiedStatusBadge_${student.id}"></span>
+                          </td>
+                          <td id="verifiedStudentCreatedAt_${student.id}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+          
+                  <br>
+                  <!-- Results table -->
+                  <table class="table table-bordered" id="verifiedHigherResultsTable_${student.id}">
+                    <thead>
+                        <tr>
+                            <!--<th id="exam-type-${student.id}">Course</th>-->
+                            <th id="course-name-${student.id}">Course Name</th>
+                            <th id="institution-name-${student.id}">Institution Name</th>
+                            <th id="exam-board-${student.id}">Board</th>
+                            <th id="exam-result-${student.id}">Result</th>
+                            <th id="exam-roll-no-${student.id}">Roll No</th>
+                            <th id="exam-reg-no-${student.id}">Reg No</th>
+                            <th id="exam-certificate-no-${student.id}">Certificate No</th>
+                            <th id="exam-passing-year-no-${student.id}">Passing Year</th>
+                            <!--<th id="exam-university-name-${student.id}">University Name</th>-->
+                            <th id="exam-certificate-copy-${student.id}">Certificate Copy</th>
+                            <th id="exam-created-at-${student.id}">Submitted At</th>
+                            <th id="exam-updated-at-${student.id}">Updated At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody_${student.id}">
+                        
+                    </tbody>
+                </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeModal()">Close</button>
+                  <button class="btn btn-warning suspend-student-btn"  data-student-id="${student.id}">Suspend</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        $('body').append(modalHtml);
+      });
+    }
+    function showVerifiedStudentDetails(studentId) {
+        $.ajax({
+            url: `/verify_student_details/${studentId}/`,
+            type: 'GET',
+            success: function (response) {
+                var studentDetails = response.student_details;
+                var resultsDetails = response.results_details;
+                var educationData = response.education_data
+
+                var secondaryValue = response.secondary_value
+                var higherValue = response.higher_value
+                var undergraduationValue = response.undergraduation_value
+
+                console.log('secondaryValue: ', secondaryValue)
+                console.log('undergraduationValue: ', undergraduationValue)
+
+                // Populate fields in the modal for student details
+                $('#verifiedStudentName_' + studentId).text(studentDetails.full_name);
+                $('#verifiedStudentEmail_' + studentId).text(studentDetails.email);
+            $('#verifiedStudentPhone_' + studentId).text(studentDetails.phone);
+            $('#verifiedStudentGender_' + studentId).text(studentDetails.address);
+
+          // Check if the status is available in the response
+          if ('status' in studentDetails) {
+              var statusBadge = $('#verifiedStatusBadge_' + studentId);
+              statusBadge.text(studentDetails.status);
+
+              if (studentDetails.status == 0) {
+                  statusBadge.addClass('badge-warning').addClass('badge-text-black').text('Pending');
+              } else if (studentDetails.status == 1) {
+                  statusBadge.addClass('badge-success').addClass('badge-text-black').text('Active');
+              } else if (studentDetails.status == 2) {
+                  statusBadge.addClass('badge-info').addClass('badge-text-black').text('Verified');
+              }
+          }
+
+          $('#verifiedStudentCreatedAt_' + studentId).text(studentDetails.created_at);
+
+          // Populate results tables
+          var tableBody = $('#resultsTableBody_' + studentId);
+
+          // Clear existing rows
+          tableBody.empty();
+
+
+          // Append the result data to the table row
+          $.each(educationData, function(index, data) {
+              var row = $('<tr>');
+      
+              // Append data to the row
+              row.append($('<td>').text(data.level));
+              row.append($('<td>').text(data.institute_name));
+              var boardNames = {
+                  '1': 'Barisal',
+                  '2': 'Chittagong',
+                  '3': 'Comilla',
+                  '4': 'Dhaka',
+                  '5': 'Dinajpur',
+                  '6': 'Jessore',
+                  '7': 'Mymensingh',
+                  '8': 'Rajshahi',
+                  '9': 'Sylhet',
+                  '10': 'Edexcel',
+                  '11': 'Cambridge',
+                  '12': 'UGC',
+                  '13': 'Bangladesh Technical Education Board'
+              };
+              
+              // Get the name corresponding to the board number
+              var boardName = boardNames[data.board];
+              
+              // Append the board name to the table cell
+              row.append($('<td>').text(boardName));
+              row.append($('<td>').text(data.result));
+              row.append($('<td>').text(data.roll_no));
+              row.append($('<td>').text(data.reg_no));
+              row.append($('<td>').text(data.certificate_no));
+              row.append($('<td>').text(data.passing_year));
+              //row.append($('<td>').text(data.certificate_copy));
+
+                  row.append(
+                      $('<td>').css('text-align', 'center').append(
+                          $('<button>', {
+                              id: 'certificate-view-btn' + index,
+                              class: 'btn btn-primary certificate-view-btn btn-sm',
+                              'data-certificate-url': data.certificate_copy,
+                              text: 'View',
+                              click: function() {
+                                  // Handle the button click event here
+                                  var certificateUrl = $(this).data('certificate-url');
+                                  // Implement logic to view the certificate
+                                  //window.open(certificateUrl); // Opens the certificate in a new tab/window
+                              }
+                          })
+                      )
+                  );
+              row.append($('<td>').text(data.created_at));  
+              row.append($('<td>').text(data.updated_at));
+              // Add more data as needed
+              console.log('result id checkiing: ', data.result_id)
+
+              /*var verifyButtons = `<div class="col-md-3">
+                  <button class="btn btn-primary verification-status-btn ${data.verification_status === 'verified' ? 'disabled' : ''} btn-sm" data-action="verified" data-resultid="${data.result_id}" data-student="${studentId}" data-resulttype="${data.level}">
+                      <i class="fas fa-check"></i> Verified
+                  </button>
+                  <button class="btn btn-danger verification-status-btn ${data.verification_status === 'pending' ? 'disabled' : ''} btn-sm" data-action="pending" data-resultid="${data.result_id}" data-student="${studentId}" data-resulttype="${data.level}">
+                      <i class="fas fa-clock"></i> Pending
+                  </button>
+              </div>`;*/
+
+
+      
+              // Append the row to the table body
+              tableBody.append(row);
+
+
+              // image popup
+              $(document).on('click', '.certificate-view-btn', function() {
+                  var certificateUrl = $(this).data('certificate-url');
+                  console.log('image data url: ', certificateUrl)
+              
+                  // Set the image source in the popup
+                  $('#popup-image').attr('src', certificateUrl);
+              
+                  $('.popup-image').removeClass('show');
+                  setTimeout(function () {
+                      $('.popup-image').addClass('show');
+                  }, 50);
+
+                  // Add and remove the 'show' class to trigger the transition
+                  $('.popup').removeClass('show');
+                  setTimeout(function () {
+                      $('.popup').addClass('show');
+                  }, 50);
+
+                  $('#popup-container').addClass('show');
+              });
+              
+              // Close the popup when clicking on the close icon
+              $('.close-icon').on('click', function(){
+                  $('#popup-container').removeClass('show');
+              })
+          });
+
+       
+
+          populateResults(studentId);
+
+          $('#detailsVerifiedModal_' + studentId).modal('show');
+      },
+
+      error: function (error) {
+          console.error('Error fetching student details:', error);
+      }
+  });
+}
+  
+    // Attach click event handler to the "View Details" button in the table
+    $('#verifiedStudentListBody').on('click', '.view-details-btn', function () {
+      var studentId = $(this).data('studentId');
+      showVerifiedStudentDetails(studentId);
+    });
+  
+    // Attach click event handler to the "Close" button in the modal
+    $('[id^="detailsVerifiedModal_"]').on('hidden.bs.modal', function () {
+      location.reload();
+    });
+
+  </script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+{% endblock custom_js %}

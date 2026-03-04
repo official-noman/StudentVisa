@@ -1,0 +1,2113 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block custom_css %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'assets/css/student_result.css' %}">
+
+<style>
+    {% comment %} .row {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: -36px !important;
+        margin-left: -29px !important;
+    } {% endcomment %}
+</style>
+<!-- Include Select2 JS -->
+
+{% endblock custom_css %}
+
+{% block content %}
+    <!-- Content for the page -->
+<div class="container">
+        <div class="d-flex">
+            <div class="signin-left-ad-div">
+                <div class="d-flex justify-content-start">
+                    <img src="{% static 'assets/images/r-vertical.jpg' %}" alt="">
+                </div>
+            </div>
+        
+            <div class="content-div px-2">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <!--<div id="error-message-div" class="error-message"></div>*-->
+                <div id="success-message-div" class="success-message"></div>
+                <section class="result-form">
+                    <div class="midcontent" style="padding: 0px">
+                        <div class="col-md-12 inner-midcontent">
+                            <div class="row custyle" style="margin-top:25px;">
+                                <h2>Result information</h2>
+                                <form id="secondary-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="_token" value="">
+                                    
+                                    <!--Secondary Education-->
+                                    <div class="mt-3">
+                                        <div id="secondary-row-add" class="education-row-add clickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Add Secondary Education</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+
+                                        <div id="secondary-row" class="secondary-row education-rows">
+                                            <!--<td>1</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>Secondary Education</b></p>
+
+                                                {% if existing_results.secondary_verification_status == 'rejected' %}
+                                                    <div class="my-3">
+                                                        <div class="reject-error-div">
+                                                            <p class="text-center"><span>Your Secondary result has been rejected. Please upload your result again.</span></p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <!--Radio buttons for selecting exam type starts-->
+                                                <div class="radio-select-div px-5">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <input id="secondary-result" class="form-check-input radio-input secondary-radio" type="radio" name="secondary" value="1" {% if existing_results.secondary == 1 %} checked {% endif %} required="">
+                                                            <label class="form-check-label radio-inline" for="secondary-result">SSC</label>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <input id="dhakhil-result" class="form-check-input radio-input secondary-radio" type="radio" name="secondary" value="2" {% if existing_results.secondary == 2 %} checked {% endif %} required="">
+                                                            <label class="form-check-label radio-inline" for="dhakhil-result">O Level</label>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <input id="olevel-result" class="form-check-input radio-input secondary-radio" type="radio" name="secondary" value="3" {% if existing_results.secondary == 3 %} checked {% endif %} required="">
+                                                            <label class="form-check-label radio-inline" for="olevel-result">Dhakhil</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!--Radio buttons for selecting exam type ends-->
+
+                                            </div>
+
+                                            <!--input fields starts-->
+                                            <div class="px-3">
+                                                <div class="row">
+                                                    <div class="col-md-2" style="margin: 0px; padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">GPA</p>
+                                                            </div>
+                                                            <input type="text" class="form-control" name="secondary_result" id="secondary_result" value="{{ existing_results.secondary_result }}" placeholder="Ex-5.00" required="">
+                                                        </div>  
+                                                    </div>        
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Roll No.</p>
+                                                            </div>
+                                                            <input type="text" name="secondary_roll_no" class="form-control" value="{{ existing_results.secondary_roll_no }}" placeholder="Ex-44442233311">
+                                                        </div>
+                                                    </div>                  
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Reg. No.</p>
+                                                            </div>
+                                                            <input type="text" name="secondary_reg_no" class="form-control" value="{{ existing_results.secondary_reg_no }}" placeholder="Ex-44442233311">
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate No.</p>
+                                                            </div>
+                                                            <input type="text" name="secondary_certificate_no" class="form-control" value="{{ existing_results.secondary_certificate_no }}" placeholder="Ex-44442233311">
+                                                        </div>
+                                                    </div>        
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Passing Year</p>
+                                                            </div>
+                                                            <!--<input type="text" name="secondary_passing_year" placeholder="Ex-2021" value="{{ existing_results.secondary_passing_year }}" class="form-control">-->
+                                                        </div>
+                                                        <div class="filter-option form-group">
+                                                            <div class="select-box">
+                                                                <select class="wide" name="secondary_passing_year">
+                                                                    <option value="">Passing Year</option>
+                                                                    {% for year in passing_years %}
+                                                                        <option value="{{ year }}" {% if existing_results.secondary_passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                    
+                                                    <div class="col-md-3" style="margin: 0px; padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Board</p>
+                                                            </div>
+
+                                                            <select id="secondary_board" class="select2-dropdown" name="secondary_board" required="">
+                                                                {% for key, value in existing_secondary_boards.ssc_board.0.items %}
+                                                                    <option value="{{ key }}" {% if existing_results.secondary_board == key %} selected {% endif %}>{{ value }}</option>
+                                                                {% endfor %}
+                                                                <!--<option value="" selected="" disabled="">Select One</option>-->
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                        
+                                                    <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate Attachment Copy
+                                                            </p></div>
+                                                            <!--<img id="secondary-certificate-img" class="img-account-profile picture-src mb-2" src="{{ existing_results.secondary_certificate_copy.url }}" alt="Certificate Image">-->
+                                                            <input id="secondary-certificate-file" type="file" class="form-control" name="secondary_certificate_copy" value="{{existing_results.secondary_certificate_copy.url}}" placeholder="Certificate Attachment Copy">
+                                                            
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            {% if existing_results.secondary_certificate_copy %}
+                                                                <p class="secondary-view-certificate-para"><span id="secondary-view-certificate" class="view-existing-certificate" data-certificate-url="{{ existing_results.secondary_certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                            {% else %}
+                                                                <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                            {% endif %}
+                                                            <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                        </div>
+                                                        
+                                                    </div>      
+                                                </div>
+                                            </div>
+                                            <!--input fields ends-->
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="secondary-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="secondary-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+
+                                            <div>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </form>
+                                    
+                                <form id="higher-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!--Higher Secondary Education-->
+                                    <div class="mt-3">
+                                        <div id="higher-row-add" class="education-row-add unclickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Add Higher Secondary Education</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+                                        
+                                        <div id="higher-secondary-row" class="higher-secondary-row education-rows">
+                                            <!--<td>2</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>Higher Secondary</b></p>
+
+                                                {% if existing_results.higher_verification_status == 'rejected' %}
+                                                    <div class="my-3">
+                                                        <div class="reject-error-div">
+                                                            <p class="text-center"><span>Your Higher Secondary result has bee rejected. Please upload your result again.</span></p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="radio-select-div px-5">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <input id="higher-result" class="form-check-input radio-input higher-secondary-radio" type="radio" name="higher" value="1" {% if existing_results.higher == 1 %} checked {% endif %}>
+                                                            <label class="form-check-label radio-inline" for="higher-result">HSC</label>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <input id="vocational-result" class="form-check-input radio-input higher-secondary-radio" type="radio" name="higher" value="2" {% if existing_results.higher == 2 %} checked {% endif %}>
+                                                            <label class="form-check-label radio-inline" for="vocational-result">A Level</label>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <input id="diploma-result" class="form-check-input radio-input higher-secondary-radio" type="radio" name="higher" value="3" {% if existing_results.higher == 3 %} checked {% endif %}>
+                                                            <label class="form-check-label radio-inline" for="diploma-result">Vocational</label>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <input id="alevel-result" class="form-check-input radio-input higher-secondary-radio" type="radio" name="higher" value="4" {% if existing_results.higher == 4 %} checked {% endif %}>
+                                                            <label class="form-check-label radio-inline" for="alevel-result">Diploma</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--input fileds starts-->
+                                            <div class="px-3 higher-equivqalent-div pt-4">
+                                                <div class="row">
+                                                    <div class="col-md-2" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">GPA</p> 
+                                                            </div>
+                                                            <input type="text" id="higher_result"  name="higher_result" value="{% if existing_results.higher_result == None or existing_results.higher_result == '' %} {% else %} {{ existing_results.higher_result }} {% endif %}" class="form-control" placeholder="Ex-4.00">
+                                                        </div>  
+                                                    </div>
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Roll No.</p>
+                                                            </div>
+                                                            <input type="text" name="higher_roll_no" class="form-control" value="{% if existing_results.higher_roll_no == None or existing_results.higher_roll_no == '' %} {% else %} {{ existing_results.higher_roll_no }} {% endif %}" placeholder="Ex-44442233311">
+                                                        </div>
+                                                    </div>                
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Reg. No.</p>
+                                                            </div>
+                                                            <input type="text" name="higher_reg_no" class="form-control" value="{% if existing_results.higher_reg_no == None or existing_results.higher_reg_no == '' %} {% else %} {{ existing_results.higher_reg_no }} {% endif %}" placeholder="Ex-44442233311">
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate No.</p>           
+                                                            </div>
+                                                            <input type="text" class="form-control" name="higher_certificate_no" value="{% if existing_results.higher_certificate_no == None or existing_results.higher_certificate_no == '' %} {% else %} {{ existing_results.higher_certificate_no }} {% endif %}" placeholder="Ex-999955522211">
+                                                        </div>
+                                                    </div>        
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group input-number">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Passing Year</p>           
+                                                            </div>
+                                                            <!--<input type="text" name="higher_passing_year" placeholder="Ex-2021" value="{{ existing_results.higher_passing_year }}" class="form-control">-->
+                                                        </div>
+                                                        <div class="filter-option form-group">
+                                                            <div class="select-box">
+                                                                <select class="wide" name="higher_passing_year">
+                                                                    <option value="">Passing Year</option>
+                                                                    {% for year in passing_years %}
+                                                                        <option value="{{ year }}" {% if existing_results.higher_passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>   
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Board</p>           
+                                                            </div>
+
+                                                            <div id="higher-select-dropdown-outer">
+                                                                <div id="higher-select-dropdown-inner" class="higher-select-dropdown">
+                                                                    <select id="higher_secondary_board" class="select2-dropdown" name="higher_board">
+                                                                        {% for key, value in existing_higher_boards.boards.0.items %}
+                                                                            <option value="{{ key }}" {% if existing_results.higher_board == key %} selected {% endif %}>{{ value }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>         
+                                                    <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                            </div>
+                                                            <input type="file" name="higher_certificate_copy" class="form-control">
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            {% if existing_results.higher_certificate_copy %}
+                                                                <p class="secondary-view-certificate-para"><span id="higher-view-certificate" class="view-existing-certificate" data-certificate-url="{{ existing_results.higher_certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                            {% else %}
+                                                                <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                            {% endif %}
+                                                            <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                        </div>
+                                                    </div>     
+                                                </div>
+                                            </div>
+                                            <!--input fields ends-->
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="higher-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="higher-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+
+                                            <div class="d-flex justify-content-center">
+                                                <div class="d-flex justify-content-center pt-3">
+                                                    <button type="button" id="add-diploma-row-btn" class="add-diploma-row-btn add-row-btn">Add Diploma</button>
+                                                </div>
+                                                <div class="d-flex justify-content-center ml-2 pt-3">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="undergraduation-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!--Undergraduation Education-->
+                                    <div class="mt-3">
+                                        <div id="undergraduation-row-add" class="education-row-add unclickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Add Undergraduation Education</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+
+                                        <div id="undergraduation-row" class="undergraduation-row education-rows">
+                                            <!--<td>3</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>Undergraduation Program</b></p>
+
+                                                {% if existing_results.undergraduation_verification_status == 'rejected' %}
+                                                    <div class="my-3">
+                                                        <div class="reject-error-div">
+                                                            <p class="text-center"><span>Your Undergraduation result has been rejected. Please upload your result again.</span></p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="radio-select-div px-5">
+                                                    <div class="row">
+                                                        <div class="form-check">
+                                                            <input id="undergraduation-result" class="form-check-input radio-input undergraduation-radio" type="radio" name="undergraduation" value="1">
+                                                            <label class="form-check-label radio-inline" for="undergraduation-result">Undergraduation</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--input fields start-->
+                                            <div class="px-3">
+                                                <div class="row">
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">CGPA</p> 
+                                                            </div>
+                                                            <input type="text" id="undergraduation-cgpa"  name="undergraduation_result" value="{% if existing_results.undergraduation_result == None %}{% else %}{{ existing_results.undergraduation_result }}{% endif %}" class="form-control" placeholder="Ex-4.00">
+                                                        </div>  
+                                                    </div>
+                                                        
+                                                    <div class="col-md-3" style="margin: 0px; padding:7px;">
+                                                        <div class="mb-3 w-100">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Passing Year</p>           
+                                                            </div>
+                                                            <div class="filter-option form-group">
+                                                                <div class="select-box">
+                                                                    <select class="wide" name="undergraduation_passing_year">
+                                                                        <option value="">Passing Year</option>
+                                                                        {% for year in passing_years %}
+                                                                            <option value="{{ year }}" {% if existing_results.undergraduation_passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" style="margin: 0px; padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">University</p>
+                                                            </div>
+                                                            <select id="bd-universities" class="select2-dropdown" name="bd_universities">
+                                                                <option value="" selected="" disabled="">Select University</option>
+                                                                {% for university in bd_universities %}
+                                                                    <option value="{{ university }}" {% if existing_results.university_name == university %} selected {% endif %}>{{ university }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>  
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Board</p>           
+                                                            </div>
+                                                            <select id="undergraduation_board" class="select2-dropdown" name="undergraduation_board">
+                                                                <!--<option value="" selected="" disabled="">Select One</option>-->
+                                                                <option value="12">UGC</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>         
+                                                    <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                            </div>
+                                                            <input type="file" name="undergraduation_certificate_copy" class="form-control">
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            {% if existing_results.undergraduation_certificate_copy %}
+                                                                <p class="secondary-view-certificate-para"><span class="view-existing-certificate" data-certificate-url="{{ existing_results.undergraduation_certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                            {% else %}
+                                                                <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                            {% endif %}
+                                                            <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                        </div>
+                                                    </div>     
+                                                </div>
+                                            </div>
+                                            <!--input fields end-->
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="undergraduation-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="undergraduation-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+
+                                            <div>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="masters-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!--Masters Education-->
+                                    <div class="mt-3">
+                                        <div id="masters-row-add" class="education-row-add unclickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Add Masters Education</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+
+                                        <div id="masters-row" class="masters-row education-rows">
+                                            <!--<td>3</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>Masters Program</b></p>
+                                            </div>
+                                            {% if masters_degrees %}
+                                                {% for masters_degree in masters_degrees %}
+                                                    {% if masters_degree.verification_status == 'rejected' %}
+                                                        <div class="my-3">
+                                                            <div class="reject-error-div">
+                                                                <p class="text-center"><span>Your Masters result has been rejected. Please upload your result again.</span></p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    <div class="px-3 masters-education-div pt-4">
+                                                        {% if forloop.counter > 1 %}
+                                                            <button class="close-div-btn" type="button"><span><i class="fa-solid fa-xmark"></i></span></button>
+                                                        {% endif %}
+                                                        <div class="row mt-3">
+                                                            <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">CGPA</p> 
+                                                                    </div>
+                                                                    <input type="text" id="masters-cgpa"  name="masters_result" value="{{ masters_degree.result }}" class="form-control" placeholder="Ex-4.00">
+                                                                </div>  
+                                                            </div>
+                                                    
+                                                            <div class="col-md-3" style="margin: 0px; padding:7px;">
+                                                                <div class="mb-3 w-100">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Passing Year</p>           
+                                                                    </div>
+                                                                    <div class="filter-option form-group">
+                                                                        <div class="select-box">
+                                                                            <select id="masters-passing-year" class="wide" name="masters_passing_year">
+                                                                                <option value="">Passing Year</option>
+                                                                                {% for year in passing_years %}
+                                                                                    <option value="{{ year }}" {% if masters_degree.passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6" style="margin: 0px; padding:7px;">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">University</p>
+                                                                    </div>
+                                                                    <div id="universities-select-dropdown-outer-{{ forloop.counter0 }}">
+                                                                        <div id="universities-select-dropdown-inner-{{ forloop.counter0 }}" class="universities-select-dropdown">
+                                                                            <select id="masters-bd-universities-{{ forloop.counter0 }}" class="select2-dropdown" name="masters_bd_universities">
+                                                                                <option value="" selected="" disabled="">Select University</option>
+                                                                                {% for university in bd_universities %}
+                                                                                    <option value="{{ university }}" {% if masters_degree.university == university %} selected {% endif %}>{{ university }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>  
+                                                            <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Board</p>           
+                                                                    </div>
+                                                                    <select id="masters_board" class="wide" name="masters_board">
+                                                                        <option value="12">UGC</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>         
+                                                            <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-1">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                                    </div>
+                                                                    <input type="file" name="masters_certificate_copy" class="form-control">
+                                                                </div>
+
+                                                                <div class="d-flex">
+                                                                    {% if masters_degree.certificate_copy %}
+                                                                        <p class="secondary-view-certificate-para"><span class="view-existing-certificate" data-certificate-url="{{ masters_degree.certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                                    {% else %}
+                                                                        <p class="secondary-view-certificate-para"> <span style="color: gray">No file uploaded</span></p>
+                                                                    {% endif %}
+                                                                    <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                                </div>
+                                                            </div>     
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}
+                                                <div class="px-3 masters-education-div pt-4">
+                                                    <div class="row">
+                                                        <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-3">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">CGPA</p> 
+                                                                </div>
+                                                                <input type="text" id="masters-cgpa"  name="masters_result" value="{{ masters_degree.result }}" class="form-control" placeholder="Ex-4.00">
+                                                            </div>  
+                                                        </div>
+                                                
+                                                        <div class="col-md-3" style="margin: 0px; padding:7px;">
+                                                            <div class="mb-3 w-100">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Passing Year</p>           
+                                                                </div>
+                                                                <div class="filter-option form-group">
+                                                                    <div class="select-box">
+                                                                        <select id="masters-passing-year" class="wide" name="masters_passing_year">
+                                                                            <option value="">Passing Year</option>
+                                                                            {% for year in passing_years %}
+                                                                                <option value="{{ year }}" {% if masters_degree.passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6" style="margin: 0px; padding:7px;">
+                                                            <div class="input-group mb-3">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">University</p>
+                                                                </div>
+
+                                                                <div id="universities-select-dropdown-outer-0">
+                                                                    <div id="universities-select-dropdown-inner-0" class="universities-select-dropdown">
+                                                                        <select id="masters-bd-universities-0" class="select2-dropdown" name="masters_bd_universities">
+                                                                            <option value="" selected="" disabled="">Select University</option>
+                                                                            {% for university in bd_universities %}
+                                                                                <option value="{{ university }}" {% if masters_degree.university == university %} selected {% endif %}>{{ university }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>  
+                                                        <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-3">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Board</p>           
+                                                                </div>
+                                                                <select id="masters_board" class="wide" name="masters_board">
+                                                                    <option value="12">UGC</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>         
+                                                        <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-1">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                                </div>
+                                                                <input type="file" name="masters_certificate_copy" class="form-control">
+                                                            </div>
+
+                                                            <div class="d-flex">
+                                                                <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                                <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="masters-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="masters-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+                                                
+                                            <div class="d-flex justify-content-center pt-3">
+                                                <div class="d-flex justify-content-center pt-3">
+                                                    <button type="button" id="" class="add-masters-row-btn add-row-btn" data-button-id="{{ masters_degrees_length }}">Add More Masters</button>
+                                                </div>
+                                                <div class="d-flex justify-content-center ml-2 pt-3">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+ 
+                                <form id="phd-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!--PHD Education-->
+                                    <div class="mt-3">
+                                        <div id="phd-row-add" class="education-row-add unclickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Add PHD Education</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+
+                                        <div id="phd-row" class="masters-row education-rows">
+                                            <!--<td>3</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>PHD Program</b></p>
+
+                                                {% if existing_results.phd_verification_status == 'rejected' %}
+                                                    <div class="my-3">
+                                                        <div class="reject-error-div">
+                                                            <p class="text-center"><span>Your PHD result has been rejected. Please upload your result again.</span></p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="radio-select-div px-5">
+                                                    <div class="row">
+                                                        <div class="form-check">
+                                                            <input id="phd-result" class="form-check-input radio-input phd-radio" type="radio" name="phd" value="1">
+                                                            <label class="form-check-label radio-inline" for="phd-result">PHD</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--input fields start-->
+                                            <div class="px-3">
+                                                <div class="row">
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">CGPA</p> 
+                                                            </div>
+                                                            <input type="text" id="phd-cgpa"  name="phd_result" value="{% if existing_results.phd_result == None %}{% else %}{{ existing_results.phd_result }}{% endif %}" class="form-control" placeholder="Ex-4.00">
+                                                        </div>  
+                                                    </div>
+
+                                                    <div class="col-md-3" style="margin: 0px; padding:7px;">
+                                                        <div class="mb-3 w-100">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Passing Year</p>           
+                                                            </div>
+                                                            <div class="filter-option form-group">
+                                                                <div class="select-box">
+                                                                    <select class="wide" name="phd_passing_year">
+                                                                        <option value="">Passing Year</option>
+                                                                        {% for year in passing_years %}
+                                                                            <option value="{{ year }}" {% if existing_results.phd_passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" style="margin: 0px; padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">University</p>
+                                                            </div>
+                                                            <select id="phd-bd-universities" class="select2-dropdown phd_bd_universities" name="phd_bd_universities">
+                                                                <option value="" selected="" disabled="">Select University</option>
+                                                                {% for university in bd_universities %}
+                                                                    <option value="{{ university }}" {% if existing_results.university_name == university %} selected {% endif %}>{{ university }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>  
+                                                    <div class="col-md-3" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Board</p>           
+                                                            </div>
+                                                            <select id="phd_board" class="select2-dropdown phd_board" name="phd_board">
+                                                                <!--<option value="" selected="" disabled="">Select One</option>-->
+                                                                <option value="ugc">UGC</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>         
+                                                    <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend w-100">
+                                                                <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                            </div>
+                                                            <input type="file" name="phd_certificate_copy" class="form-control">
+                                                        </div>
+
+                                                        <div class="d-flex">
+                                                            {% if existing_results.phd_certificate_copy %}
+                                                                <p class="secondary-view-certificate-para"><span class="view-existing-certificate" data-certificate-url="{{ existing_results.phd_certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                            {% else %}
+                                                                <p><span style="color: gray">No file uploaded</span></p>
+                                                            {% endif %}
+                                                            <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                        </div>
+                                                        
+                                                    </div>     
+                                                </div>
+                                            </div>
+                                            <!--input fields end-->
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="phd-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="phd-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+
+                                            <div>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!--Other Certifications result starts-->
+                                <form id="other-certifications-result-form" method="POST" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <!--Other Qualifications-->
+                                    <div class="mt-3">
+                                        <div id="other-qualification-row-add" class="education-row-add unclickable">
+                                            <h3 class="text-center py-2"><span class="education-add-text">Other Qualifications</span> <span><i class="fa-solid fa-plus plus-icon"></i></span></h3>
+                                        </div>
+
+                                        <div id="other-qualification-row" class="other-qualification-row education-rows">
+                                            <!--<td>3</td>-->
+                                            <div class="row">
+                                                <p class="education-title-text px-4 text-center mb-4"><b>Other Courses</b></p>
+                                            </div>
+                                            
+                                            {% if other_certifications %}
+                                                {% for other_certification in other_certifications %}
+                                                    {% if other_certification.verification_status == 'rejected' %}
+                                                        <div class="my-3">
+                                                            <div class="reject-error-div">
+                                                                <p class="text-center"><span>Your Academic Certification result has been rejected. Please upload your result again.</span></p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="px-3 other-courses-education-div pt-4">
+                                                        <div class="row">
+                                                            <div class="col-md-4" style="margin: 0px; padding:7px;">
+                                                                <div class="mb-3 w-100">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Course Name</p>           
+                                                                    </div>
+                                                                    <div class="filter-option form-group">
+                                                                        <div class="select-box">
+                                                                            <select id="course-name-{{ forloop.counter0 }}" class="wide" name="course_name">
+                                                                                <option value="">Course Name</option>
+                                                                                {% for course_name in course_names %}
+                                                                                    <option value="{{ course_name.id }}" {% if other_certification.course_name.id == course_name.id %} selected {% endif %}>{{ course_name.name }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-4">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Instituion Name</p> 
+                                                                    </div>
+                                                                    <input type="text" id="institution-name-{{ forloop.counter0 }}"  name="course_institution_name" value="{{ other_certification.institute }}" class="form-control" placeholder="Ex-British Council">
+                                                                </div>  
+                                                            </div>
+
+                                                            <div class="col-md-4" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-4">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Course Result</p> 
+                                                                    </div>
+                                                                    <input type="text" id="course-result-{{ forloop.counter0 }}"  name="course_result" value="{{ other_certification.result }}" class="form-control" placeholder="Ex-80% out of 100% or 3.40 out 4.00">
+                                                                </div>  
+                                                            </div>
+
+                                                            <div class="col-md-4" style="margin: 0px; padding:7px;">
+                                                                <div class="mb-3 w-100">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Passing Year</p>           
+                                                                    </div>
+                                                                    <div class="filter-option form-group">
+                                                                        <div class="select-box">
+                                                                            <select id="course-passing-year-{{ forloop.counter0 }}" class="wide" name="course_passing_year">
+                                                                                <option value="">Passing Year</option>
+                                                                                {% for year in passing_years %}
+                                                                                    <option value="{{ year }}" {% if other_certification.passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                
+                                                            <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                                <div class="input-group mb-1">
+                                                                    <div class="input-group-prepend w-100">
+                                                                        <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                                    </div>
+                                                                    <input type="file" name="course_certificate_copy" class="form-control">
+                                                                </div>
+
+                                                                <div class="d-flex">
+                                                                    {% if other_certification.certificate_copy %}
+                                                                        <p class="secondary-view-certificate-para"><span class="view-existing-certificate" data-certificate-url="{{ other_certification.certificate_copy.url }}" style="color: blue; cursor: pointer;">View certificate</span></p>
+                                                                    {% else %}
+                                                                        <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                                    {% endif %}
+                                                                    <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                                </div>
+                                                            </div>     
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}
+                                                <div class="px-3 other-courses-education-div pt-4">
+                                                    <div class="row">
+                                                        <div class="col-md-4" style="margin: 0px; padding:7px;">
+                                                            <div class="mb-3 w-100">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Course Name</p>           
+                                                                </div>
+                                                                <div class="filter-option form-group">
+                                                                    <div class="select-box">
+                                                                        <select id="course-name-0" class="wide" name="course_name">
+                                                                            <option value="">Course Name</option>
+                                                                            {% for course_name in course_names %}
+                                                                                <option value="{{ course_name.id }}" {% if other_certification.course.id == course_name.id %} selected {% endif %}>{{ course_name.name }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-4">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Instituion Name</p> 
+                                                                </div>
+                                                                <input type="text" id="institution-name-0"  name="course_institution_name" value="{{ other_certification.institute }}" class="form-control" placeholder="Ex-British Council">
+                                                            </div>  
+                                                        </div>
+
+                                                        <div class="col-md-4" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-4">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Course Result</p> 
+                                                                </div>
+                                                                <input type="text" id="course-result-0"  name="course_result" value="{{ other_certification.result }}" class="form-control" placeholder="Ex-80% out of 100% or 3.40 out 4.00">
+                                                            </div>  
+                                                        </div>
+                                                          
+                                                        <div class="col-md-4" style="margin: 0px; padding:7px;">
+                                                            <div class="mb-3 w-100">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Passing Year</p>           
+                                                                </div>
+                                                                <div class="filter-option form-group">
+                                                                    <div class="select-box">
+                                                                        <select id="course-passing-year-0" class="wide" name="course_passing_year">
+                                                                            <option value="">Passing Year</option>
+                                                                            {% for year in passing_years %}
+                                                                                <option value="{{ year }}" {% if other_certification.passing_year == year %} selected {% endif %}>{{ year }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                                
+                                                        <div class="col-md-5" style="margin: 0px;padding:7px;">
+                                                            <div class="input-group mb-1">
+                                                                <div class="input-group-prepend w-100">
+                                                                    <p style="font-size:14px;">Certificate Attachment Copy</p>           
+                                                                </div>
+                                                                <input type="file" name="course_certificate_copy" class="form-control">
+                                                            </div>
+
+                                                            <div class="d-flex">
+                                                                <p class="secondary-view-certificate-para"><span style="color: gray">No file uploaded</span></p>
+                                                            <p><span class="file-size-text">(File size < 1MB)</span></p>
+                                                            </div>
+                                                        </div>     
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <!--Error messages starts-->
+                                            <div class="w-100 mb-3">
+                                                <div id="other-certification-error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="other-certification-message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+                                            
+                                            <div class="d-flex justify-content-center">
+                                                <div class="d-flex justify-content-center pt-3">
+                                                    <button type="button" id="" class="add-other-courses-row-btn add-row-btn" data-button-id="">Add More Course</button>
+                                                </div>
+                                                <div class="d-flex justify-content-center ml-2 pt-3">
+                                                    <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div>
+                                        <div class="d-flex justify-content-center">
+                                            <button type="submit" class="btn btn-info profile-save-btn">Save</button>
+                                        </div>
+                                    </div>-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+    <br>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div">
+                <p class="mb-2"><span class="successful-text text-center">Results updated Successfully</span></p>
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+
+    <div id="image-popup-container" class="image-popup-container">
+        <div class="image-popup">
+            <div class="image-container" style="height: auto;">
+                <img id="popup-image" src="{% static 'img/404-tick.png' %}" alt="" class="popup-image-gallery">
+                <div class="image-close-icon-div">
+                    <span class="image-close-icon mx-auto"><i class="fa-solid fa-xmark fa-xl"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+{% block js %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
+<script>
+        
+    $('#secondary_board').select2();
+    $('#higher_secondary_board').select2();
+    $('#bd-universities').select2();
+    $('#undergraduation_board').select2();
+    $('#masters-bd-universities-0').select2();
+
+    var bdUniversitiesSecond = $('#masters-bd-universities-1')
+    if(bdUniversitiesSecond.length > 0 ){
+        $('#masters-bd-universities-1').select2();
+    }
+    //$('.masters_board').select2();
+    $('.phd_bd_universities').select2();
+    $('.phd_board').select2();
+
+</script>
+
+<!--Image popup script starts-->
+<script>
+    $('.view-existing-certificate').on('click', function(){
+        var certificateUrl = $(this).attr('data-certificate-url');
+        console.log('certificateUrl of the certificate image: ', certificateUrl)
+        $('#popup-image').attr('src', certificateUrl);
+
+        // Add and remove the 'show' class to trigger the transition
+        $('.popup-image').removeClass('show');
+        setTimeout(function () {
+            $('.popup-image').addClass('show');
+        }, 50);
+
+        $('.image-popup').removeClass('show');
+        setTimeout(function () {
+            $('.image-popup').addClass('show');
+        }, 50);
+
+        $('#image-popup-container').addClass('show');
+    })
+
+    $('.image-close-icon-div').on('click', function(){
+        $('#image-popup-container').removeClass('show');
+    })
+</script>
+<!--Image popup script ends-->
+
+
+<script>
+    document.getElementById('secondary_result').addEventListener('input', function(event) {
+        addDecimalIfNeeded(event);
+    });
+    
+    document.getElementById('higher_result').addEventListener('input', function(event) {
+        addDecimalIfNeeded(event);
+    });
+
+    document.getElementById('undergraduation-cgpa').addEventListener('input', function(event) {
+        addDecimalIfNeeded(event);
+    });
+
+    document.getElementById('masters-cgpa').addEventListener('input', function(event) {
+        addDecimalIfNeeded(event);
+    });
+
+    document.getElementById('phd-cgpa').addEventListener('input', function(event) {
+        addDecimalIfNeeded(event);
+    });
+    
+    function addDecimalIfNeeded(event) {
+        // Get the input value
+        let value = event.target.value;
+    
+        // Remove any non-digit characters
+        value = value.replace(/[^\d.]/g, '');
+    
+        // Ensure there's only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            parts.pop();
+            value = parts.join('');
+        }
+    
+        // Limit the digits after the decimal point to two
+        if (parts[1] && parts[1].length > 2) {
+            parts[1] = parts[1].slice(0, 2);
+            value = parts.join('.');
+        }
+    
+        // Add a decimal point if there's only one digit before it
+        if (value.length === 1 && value !== '.') {
+            value += '.';
+        }
+    
+        // Update the input value
+        event.target.value = value;
+    }
+</script>
+    <script>
+        document.querySelectorAll('.input-number input[type="text"]').forEach(function(input) {
+            input.addEventListener('input', function(event) {
+                restrictToNumbers(event);
+            });
+        });
+        
+        function restrictToNumbers(event) {
+            // Get the input value
+            let value = event.target.value;
+        
+            // Remove any non-numeric characters
+            value = value.replace(/\D/g, '');
+        
+            // Update the input value
+            event.target.value = value;
+        }
+    </script>
+    <script>
+        document.querySelectorAll('input[name="secondary_roll_no"], input[name="secondary_reg_no"], input[name="secondary_certificate_no"], input[name="secondary_passing_year"], input[name="higher_roll_no"], input[name="higher_reg_no"], input[name="higher_certificate_no"], input[name="higher_passing_year"]').forEach(function(input) {
+            input.addEventListener('input', function(event) {
+                restrictToNumbers(event);
+            });
+        });
+        
+        function restrictToNumbers(event) {
+            // Get the input value
+            let value = event.target.value;
+        
+            // Remove any non-numeric characters
+            value = value.replace(/\D/g, '');
+        
+            // Update the input value
+            event.target.value = value;
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            hscCheckFields();
+            $('#secondary-certificate-img').hide();
+            // Prepare the preview for profile picture
+            $("#secondary-certificate-file").change(function(){
+                $('#secondary-certificate-img').hide();
+                readURL(this);
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+            
+                    reader.onload = function (e) {
+                        $('#secondary-certificate-img').attr('src', e.target.result).fadeIn('slow');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            
+            // shows each education section when the add education button is clicked
+            $("#secondary-row-add").click(function() {
+                showEducationRow("secondary-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+    
+            // shows higher secondary education section
+            $("#higher-row-add").click(function() {
+                showEducationRow("higher-secondary-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+    
+            // shows undergraduation education section
+            $("#undergraduation-row-add").click(function() {
+                showEducationRow("undergraduation-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+
+            // shows undergraduation education section
+            $("#masters-row-add").click(function() {
+                showEducationRow("masters-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+
+            // shows undergraduation education section
+            $("#phd-row-add").click(function() {
+                showEducationRow("phd-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+
+            // shows other sertifications section
+            $("#other-qualification-row-add").click(function() {
+                showEducationRow("other-qualification-row");
+                $(".education-row-add").show();
+                $(this).hide();
+            });
+    
+            // function for showing the education section
+            function showEducationRow(rowIdToShow) {
+                // Remove max-height class from all education rows
+                $(".education-rows").removeClass("max-height");
+    
+                // Add max-height class to the specified education row
+                $("#" + rowIdToShow).addClass("max-height");
+            }
+
+            // get the board names for each exam type starts
+            $('.secondary-radio').on("click", function(){
+                var selectedValue = $(this).val();
+                var examTypeName = 'secondary'
+                var boardType = 'secondary_board'
+                console.log('radio button value: ', selectedValue)
+                getBoardName(selectedValue, examTypeName, boardType)
+            });
+
+            $('.higher-secondary-radio').on("click", function(){
+                var selectedValue = $(this).val();
+                var examTypeName = 'higher'
+                var boardType = 'higher_secondary_board'
+                console.log('radio button value: ', selectedValue)
+                getBoardName(selectedValue, examTypeName, boardType)
+            });
+
+            $('.undergraduation-radio').on("click", function(){
+                var selectedValue = $(this).val();
+                var examTypeName = 'undergraduation'
+                var boardType = 'undergraduation_board'
+                console.log('radio button value: ', selectedValue)
+                getBoardName(selectedValue, examTypeName, boardType)
+            });
+
+            function getBoardName(examType, examTypeName, boardType){
+                // Get Thana name when District is selected
+                console.log('board clicked')
+
+                console.log('boardValue: ', examType)
+                console.log('boardName: ', examTypeName)
+                
+                fetch('/get_exam_type/?exam_type=' + examType + '&exam_type_name=' +  examTypeName, {
+                    method: 'GET',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();  // Parse the JSON data if the response is successful
+                    }
+                    throw new Error('Response not OK');
+                })
+                .then(data => {
+                    var secondary_board = $('#' + boardType);
+                    // Clear existing options from upazila dropdown
+                    secondary_board.empty(); // Clear the dropdown before adding new options
+                    // Add new options
+
+                    console.log('data from backend: ', data.board_names)
+                    data.board_names.forEach(boardName => {
+                        console.log('boardName single: ', boardName)
+                        // Iterate over the dictionary keys and values
+                        Object.entries(boardName).forEach(([key, value]) => {
+                            const option = new Option(value, key); // Use key as value and value as text
+                            secondary_board.append(option);
+                        });
+                    });
+                    
+                    console.log('secondary_board: ', secondary_board.val());
+                    var secondary_board = secondary_board.val();
+                })
+                .catch(error => {
+                console.error('Error fetching districts:', error);
+                });
+            }
+            // get the board names for each exam type ends
+
+            // enable the next education section if the prerequisites are filled properly
+            $('input[name="secondary"], #secondary_result, input[name="secondary_roll_no"], input[name="secondary_reg_no"], input[name="secondary_certificate_no"], input[name="secondary_passing_year"], input[name="higher_secondary_board"], input[name="higher_certificate_copy"]').on('input', hscCheckFields);
+
+            $('input[name="higher"], #higher_result, input[name="higher_roll_no"], input[name="higher_reg_no"], input[name="higher_certificate_no"], input[name="higher_passing_year"], input[name="secondary_board"], input[name="secondary_certificate_copy"]').on('input', hscCheckFields);
+
+            $('input[name="undergraduation"], #undergraduation-cgpa, input[name="undergraduation_passing_year"], input[name="undergraduation_board"], input[name="undergraduation_certificate_copy"]').on('input', hscCheckFields);
+
+            // function for enabling the HSC education section if SSC section is filled properly
+            function hscCheckFields() {
+                // SSC fields check starts
+                var secondary = $('input[name="secondary"]').val()
+                var secondaryResult = $('#secondary_result').val()
+                var secondaryRollNo = $('input[name="secondary_roll_no"]').val()
+                var secondaryRegNo = $('input[name="secondary_reg_no"]').val()
+                var secondaryCertificateNo = $('input[name="secondary_certificate_no"]').val()
+                var secondaryPassingYear = $('input[name="secondary_passing_year"]').val()
+                var secondaryBoard = $('#secondary_board').val()
+                var secondaryCertificateCopy = $('input[name="secondary_certificate_copy"]').val()
+                //var secondaryCertificateCopy = $('#secondary-certificate-file')[0].files.length;
+
+                console.log('#secondary-certificate-file length: ', secondaryCertificateCopy)
+
+                // Check if the values are not null before calling trim
+                if (secondary !== null) {
+                    secondary = secondary.trim();
+                }
+                if (secondaryResult !== null) {
+                    secondaryResult = secondaryResult.trim();
+                }
+                if (secondaryRollNo !== null) {
+                    secondaryRollNo = secondaryRollNo.trim();
+                }
+                if (secondaryRegNo !== null) {
+                    secondaryRegNo = secondaryRegNo.trim();
+                }
+                if (secondaryCertificateNo !== null) {
+                    secondaryCertificateNo = secondaryCertificateNo.trim();
+                }
+                if (secondaryBoard !== null) {
+                    secondaryBoard = secondaryBoard.trim();
+                }
+                if (secondaryCertificateCopy !== null) {
+                    secondaryCertificateCopy = secondaryCertificateCopy.trim();
+                }
+    
+                // Check if all required fields are filled
+                if(secondary !== '' && secondaryResult !== '' && secondaryRollNo !== '' && secondaryRegNo !== '' && secondaryCertificateNo !== '' && secondaryPassingYear !== '' && secondaryBoard !== ''){
+                    $('#higher-row-add').removeClass('unclickable');
+                    $('#higher-row-add').addClass('clickable');
+                }
+
+                else{
+                    $('#higher-row-add').addClass('unclickable');
+                    $('#undergraduation-row-add').addClass('unclickable');
+                    $('#other-qualification-row-add').addClass('unclickable');
+                    $('#masters-row-add').addClass('unclickable');
+                    $('#phd-row-add').addClass('unclickable');
+
+                    $('#higher-row-add').removeClass('clickable');
+                    $('#undergraduation-row-add').removeClass('clickable');
+                    $('#masters-row-add').removeClass('clickable');
+                    $('#phd-row-add').removeClass('clickable');
+                    $('#other-qualification-row-add').removeClass('clickable');
+                }
+                // SSC fields check ends
+
+                // HSC fields check starts
+                var higher = $('input[name="higher"]').val()
+                var higherResult = $('#higher_result').val()
+                var higherRollNo = $('input[name="higher_roll_no"]').val()
+                var higherRegNo = $('input[name="higher_reg_no"]').val()
+                var higherCertificateNo = $('input[name="higher_certificate_no"]').val()
+                var higherPassingYear = $('input[name="higher_passing_year"]').val()
+                var higherBoard = $('#higher_secondary_board').val()
+                //var higherCertificateCopy = $('input[name="higher_certificate_copy"]').val().trim();
+                
+                // Check if the values are not null before calling trim
+                if (higher !== null) {
+                    higher = higher.trim();
+                }
+                if (higherResult !== null) {
+                    higherResult = higherResult.trim();
+                }
+                if (higherRollNo !== null) {
+                    higherRollNo = higherRollNo.trim();
+                }
+                if (higherRegNo !== null) {
+                    higherRegNo = higherRegNo.trim();
+                }
+                if (higherCertificateNo !== null) {
+                    higherCertificateNo = higherCertificateNo.trim();
+                }
+                if (higherBoard !== null) {
+                    higherBoard = higherBoard.trim();
+                }
+
+                // Check if all required of higher or equivalent fields are filled
+                if(higher !== '' && higherResult !== '' && higherRollNo !== '' && higherRegNo !== '' && higherCertificateNo !== '' && higherPassingYear !== '' && higherBoard !== '' && secondary !== '' && secondaryResult !== '' && secondaryRollNo !== '' && secondaryRegNo !== '' && secondaryCertificateNo !== '' && secondaryPassingYear !== '' && secondaryBoard !== ''){
+                    $('#undergraduation-row-add').removeClass('unclickable');
+                    $('#other-qualification-row-add').removeClass('unclickable');
+
+                    $('#undergraduation-row-add').addClass('clickable');
+                    $('#other-qualification-row-add').addClass('clickable');
+                }
+
+                else{
+                    $('#undergraduation-row-add').addClass('unclickable');
+                    $('#other-qualification-row-add').addClass('unclickable');
+
+                    $('#undergraduation-row-add').removeClass('clickable');
+                    $('#other-qualification-row-add').removeClass('clickable');
+                }
+
+                var undergraduationResult = $('#undergraduation-cgpa').val()
+                var undergraduationPassingYear = $('input[name="undergraduation_passing_year"]').val()
+                var universityName = $('#bd-universities').val()
+
+                if (undergraduationResult !== null) {
+                    undergraduationResult = undergraduationResult.trim();
+                }
+
+                if (universityName !== null) {
+                    universityName = universityName.trim();
+                }
+
+                // Check if all required of undergraduation program fields are filled
+                if(undergraduationResult !== '' && undergraduationPassingYear !== '' && universityName !== ''){
+                    console.log('Checking undergraduation')
+                    $('#masters-row-add').removeClass('unclickable');
+                    $('#phd-row-add').removeClass('unclickable');
+                    $('#other-qualification-row-add').removeClass('unclickable');
+
+                    $('#masters-row-add').addClass('clickable');
+                    $('#phd-row-add').addClass('clickable');
+                    $('#other-qualification-row-add').addClass('clickable');
+                }
+
+                else{
+                    $('#masters-row-add').addClass('unclickable');
+                    $('#phd-row-add').addClass('unclickable');
+
+                    $('#masters-row-add').removeClass('clickable');
+                    $('#phd-row-add').removeClass('clickable');
+                }
+            }
+
+
+            // add the diploma div when the add button is clicked
+            $('#add-diploma-row-btn').click(function(e){
+                e.preventDefault();
+                var clonedDiv = $('.higher-equivqalent-div').first().clone();
+
+                // change the id attribute and the name attribute of inside the newly created div
+                $(clonedDiv).find('[id]').each(function() {
+                    //$(this).attr('id', $(this).attr('id') + '_diploma');
+                    var currentId = $(this).attr('id');
+
+                    // if the element doesn't have `universities-select-dropdown-inner` in its id, change its id as necessary
+                    if (!currentId.includes('higher-select-dropdown-inner')) {
+                        var newId = currentId.replace('higher', 'diploma');
+                        $(this).attr('id', newId);
+                    }
+
+                    // if the element has `higher-select-dropdown-inner` in its id remove that element
+                    else {
+                        $(this).remove();
+                        
+                    }
+                });
+                $(clonedDiv).find('[name]').each(function() {
+                    $(this).attr('name', $(this).attr('name').replace('higher', 'diploma'));
+                });
+
+                $(clonedDiv).find('input, select').val('');
+
+                // Add close button/icon
+                var closeButton = '<button class="close-div-btn" type="button"><span><i class="fa-solid fa-xmark"></i></span></button>';
+                $(clonedDiv).prepend(closeButton);
+
+                $(this).hide()
+
+                $(clonedDiv).insertAfter('.higher-equivqalent-div:last');
+
+                var headingDiv = `<p class="education-title-text px-4 text-center mb-4"><b>Diploma Program</b></p>`
+                $(clonedDiv).prepend(headingDiv);
+
+                // create the new select2 dropdown
+                var selectElement = $('<div id="diploma-select-dropdown-inner" class="higher-select-dropdown"><select id="diploma_secondary_board" class="select2-dropdown" name="diploma_board"></select></div>');
+                $('[id="diploma-select-dropdown-outer"]').append(selectElement);
+                $(clonedDiv).find('[id="diploma_secondary_board"]').select2();
+
+                var bd_universities = {{ bd_universities | safe }};
+                var getSelect = $(clonedDiv).find('[id="diploma_secondary_board"]');
+                //$.each(bd_universities, function(index, universityName) {
+                    getSelect.append($('<option>', {
+                        value: '13', // Assuming you want to use the name as both value and text
+                        text: 'BTEB'
+                    }));
+                //});
+                
+            });
+
+            // Function to handle the click event of the close button
+            $(document).on('click', '.close-div-btn', function() {
+                $(this).closest('.higher-equivqalent-div').remove(); // Remove the closest higher-equivqalent-div
+                $('#add-diploma-row-btn').show()
+            });
+
+            // add the Masters Education div when the add button is clicked
+            $('.add-masters-row-btn').click(function(e){
+                console.log('add-masters-row-btn clicked')
+                e.preventDefault();
+                var currentButtonDataId = $(this).attr('data-button-id');
+                if (currentButtonDataId === undefined || currentButtonDataId === "") {
+                    currentButtonDataId = 1; // If data-button-id is empty or undefined, set it to 0
+                } else {
+                    currentButtonDataId = parseInt(currentButtonDataId);
+                }
+
+                console.log('buttonDataId: ', currentButtonDataId)
+                var clonedDiv = $('.masters-education-div').first().clone();
+                var mastersUniversityNewId;
+
+                // change the id attribute and the name attribute of inside the newly created div
+                $(clonedDiv).find('[id]').each(function() {
+                    var currentId = $(this).attr('id');
+
+                    // if the element doesn't have `universities-select-dropdown-inner` in its id, change its id as necessary
+                    if (!currentId.includes('universities-select-dropdown-inner')) {
+                        var idParts = currentId.split('-');
+                        var numericalSuffix = parseInt(idParts[idParts.length - 1]); // Extract the numerical suffix
+                        var newId = currentId.replace('-' + numericalSuffix, '-' + currentButtonDataId); // Replace the numerical suffix with currentButtonDataId + 1
+                        console.log('newId: ', newId);
+                        $(this).attr('id', newId);
+                    }
+
+                    // if the element has `universities-select-dropdown-inner` in its id remove that element
+                    else {
+                        $(this).remove(); // Remove the select element with ID containing 'universities-select-dropdown-inner'
+                        
+                    }
+                });
+
+                $(clonedDiv).find('input, select').val('');
+
+                // Add close button/icon
+                var closeButton = '<button class="close-div-btn" type="button"><span><i class="fa-solid fa-xmark"></i></span></button>';
+                $(clonedDiv).prepend(closeButton);
+
+                $(this).hide()
+
+                $(clonedDiv).insertAfter('.masters-education-div:last');
+
+                var headingDiv = `<p class="education-title-text px-4 text-center mb-4"><b>Masters Program</b></p>`
+                $(clonedDiv).prepend(headingDiv);
+
+                var elementWithMastersBdUniversitiesId = $(clonedDiv).find('[id*="masters-bd-universities"]');
+                var mastersUniversityId;
+
+                // update the new `data-button-id` of this button 
+                var newButtonDataId = currentButtonDataId + 1;
+                $(this).attr('data-button-id', newButtonDataId);
+
+                // create the new select2 dropdown
+                var selectElement = $('<div id="universities-select-dropdown-inner-' + currentButtonDataId + '" class="universities-select-dropdown"><select id="masters-bd-universities-' + currentButtonDataId + '" class="select2-dropdown" name="masters_bd_universities"></select></div>');
+                $('[id*="universities-select-dropdown-outer"]').append(selectElement);
+                $(clonedDiv).find('[id*="masters-bd-universities"]').select2();
+
+                var bd_universities = {{ bd_universities | safe }};
+                var getSelect = $(clonedDiv).find('[id*="masters-bd-universities"]');
+                $.each(bd_universities, function(index, universityName) {
+                    getSelect.append($('<option>', {
+                        value: universityName, // Assuming you want to use the name as both value and text
+                        text: universityName
+                    }));
+                });
+
+            });
+
+            // Function to handle the click event of the close button
+            $(document).on('click', '.close-div-btn', function() {
+                $(this).closest('.masters-education-div').remove(); // Remove the closest higher-equivqalent-div
+                $('.add-masters-row-btn').show();
+            });
+
+
+            // add the Masters Education div when the add button is clicked
+            $('.add-other-courses-row-btn').click(function(e){
+                console.log('add-other-courses-row-btn')
+                e.preventDefault();
+                var currentOtherCoursesButtonDataId = $(this).attr('data-button-id');
+                if (currentOtherCoursesButtonDataId === undefined || currentOtherCoursesButtonDataId === "") {
+                    currentOtherCoursesButtonDataId = 1; // If data-button-id is empty or undefined, set it to 0
+                } else {
+                    currentOtherCoursesButtonDataId = parseInt(currentOtherCoursesButtonDataId);
+                }
+
+                console.log('buttonDataId: ', currentOtherCoursesButtonDataId)
+                var clonedDiv = $('.other-courses-education-div').first().clone();
+
+                // change the id attribute and the name attribute of inside the newly created div
+                $(clonedDiv).find('[id]').each(function() {
+                    $(this).attr('id', $(this).attr('id') + '-' + currentOtherCoursesButtonDataId);
+                });
+
+                $(clonedDiv).find('input, select').val('');
+
+                // Add close button/icon
+                var closeButton = '<button class="close-div-btn" type="button"><span><i class="fa-solid fa-xmark"></i></span></button>';
+                $(clonedDiv).prepend(closeButton);
+
+                $(clonedDiv).insertAfter('.other-courses-education-div:last');
+
+                var headingDiv = `<p class="education-title-text px-4 text-center mb-4"><b>Other Courses</b></p>`
+                $(clonedDiv).prepend(headingDiv);
+                
+                var newOtherCoursesButtonDataId = currentOtherCoursesButtonDataId + 1;
+                $(this).attr('data-button-id', newOtherCoursesButtonDataId);
+            });
+
+            // Function to handle the click event of the close button
+            $(document).on('click', '.close-div-btn', function() {
+                $(this).closest('.other-courses-education-div').remove(); // Remove the closest higher-equivqalent-div
+                $('#add-diploma-row-btn').show()
+            });
+
+
+            // From submission using fetch
+            $('#student-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                // separately add the data of all the masters degree to the formData
+                // Loop through each dynamically created 'masters-education-div' div
+                $('.masters-education-div').each(function(index) {
+                    // Collect data from input fields in the div
+                    var masters_result = $(this).find('input[name="masters_result"]').val();
+                    var masters_passing_year = $(this).find('[id*="masters-passing-year"]').val();
+                    var masters_bd_universities = $(this).find('[id*="masters-bd-universities"]').val();
+                    var masters_board = $(this).find('input[name="masters_board"]').val();
+                    var masters_certificate_copy = $(this).find('input[name="masters_certificate_copy"]')[0].files[0]; // Get file object
+
+                    console.log('masters_result: ', masters_result)
+                    console.log('masters_passing_year: ', masters_passing_year)
+                    console.log('masters_bd_universities: ', masters_bd_universities)
+                    console.log('masters_certificate_copy: ', masters_certificate_copy)
+
+                    // Append each field to the FormData object with unique keys
+                    formData.append('masters_result_' + index, masters_result);
+                    formData.append('masters_passing_year_' + index, masters_passing_year);
+                    formData.append('masters_bd_universities_' + index, masters_bd_universities);
+                    formData.append('masters_board_' + index, masters_board);
+                    formData.append('masters_certificate_copy_' + index, masters_certificate_copy);
+
+                    // Push each value to the corresponding list
+                });
+
+
+                // append the courses data to fromData
+                $('.other-courses-education-div').each(function(index) {
+                    // Collect data from input fields in the headingDiv
+                    var course_name = $(this).find('[id*="course-name"]').val();
+                    var course_institution_name = $(this).find('input[name="course_institution_name"]').val();
+                    var course_result = $(this).find('input[name="course_result"]').val();
+                    var course_passing_year = $(this).find('[id*="course-passing-year"]').val();
+
+                    var course_certificate_copy = $(this).find('input[name="course_certificate_copy"]')[0].files[0]; // Get file object
+
+                    console.log('course_name: ', course_name)
+                    console.log('course_institution_name: ', course_institution_name)
+                    console.log('course_result: ', course_result)
+                    console.log('course_passing_year: ', course_passing_year)
+                    console.log('course_certificate_copy: ', course_certificate_copy)
+
+                    // Append each field to the FormData object with unique keys
+                    formData.append('course_name_' + index, course_name);
+                    formData.append('course_institution_name_' + index, course_institution_name);
+                    formData.append('course_result_' + index, course_result);
+                    formData.append('course_passing_year_' + index, course_passing_year);
+                    formData.append('course_certificate_copy_' + index, course_certificate_copy);
+
+                    // Push each value to the corresponding list
+                });
+
+                Object.keys(formData).forEach(function(key) {
+                    console.log('Field:', key, 'Value:', formData[key]);
+                });
+
+                fetch('/save_student_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data, e.g., show a success message
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#error-message-div').removeClass('error-message-show');
+                        //$('#message-text').text(data.error);
+                        //$('#error-message-div').addClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#message-text').text(data.error);
+                            $('#error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            })
+
+
+            // Secondary Result From submission using fetch
+            $('#secondary-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                fetch('/save_secondary_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#secondary-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#secondary-message-text').text(data.error);
+                            $('#secondary-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+
+            // Higher Result From submission using fetch
+            $('#higher-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                fetch('/save_higher_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#higher-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#higher-message-text').text(data.error);
+                            $('#higher-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+
+            // Undergraduation Result From submission using fetch
+            $('#undergraduation-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                fetch('/save_undergraduation_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#undergraduation-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#undergraduation-message-text').text(data.error);
+                            $('#undergraduation-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+
+            // Masters Result From submission using fetch
+            $('#masters-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                // separately add the data of all the masters degree to the formData
+                // Loop through each dynamically created 'masters-education-div' div
+                $('.masters-education-div').each(function(index) {
+                    // Collect data from input fields in the div
+                    var masters_result = $(this).find('input[name="masters_result"]').val();
+                    var masters_passing_year = $(this).find('[id*="masters-passing-year"]').val();
+                    var masters_bd_universities = $(this).find('[id*="masters-bd-universities"]').val();
+                    var masters_board = $(this).find('input[name="masters_board"]').val();
+                    var masters_certificate_copy = $(this).find('input[name="masters_certificate_copy"]')[0].files[0]; // Get file object
+
+                    console.log('masters_result: ', masters_result)
+                    console.log('masters_passing_year: ', masters_passing_year)
+                    console.log('masters_bd_universities: ', masters_bd_universities)
+                    console.log('masters_certificate_copy: ', masters_certificate_copy)
+
+                    // Append each field to the FormData object with unique keys
+                    formData.append('masters_result_' + index, masters_result);
+                    formData.append('masters_passing_year_' + index, masters_passing_year);
+                    formData.append('masters_bd_universities_' + index, masters_bd_universities);
+                    formData.append('masters_board_' + index, masters_board);
+                    formData.append('masters_certificate_copy_' + index, masters_certificate_copy);
+                });
+
+                fetch('/save_masters_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#masters-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#masters-message-text').text(data.error);
+                            $('#masters-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+
+            // PHD Result From submission using fetch
+            $('#phd-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+
+                fetch('/save_phd_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#phd-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#phd-message-text').text(data.error);
+                            $('#phd-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+
+            // Masters Result From submission using fetch
+            $('#other-certifications-result-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var masters_result_list = [];
+
+                // separately add the data of all the masters degree to the formData
+                // Loop through each dynamically created 'masters-education-div' div
+                // append the courses data to fromData
+                $('.other-courses-education-div').each(function(index) {
+                    // Collect data from input fields in the headingDiv
+                    var course_name = $(this).find('[id*="course-name"]').val();
+                    var course_institution_name = $(this).find('input[name="course_institution_name"]').val();
+                    var course_result = $(this).find('input[name="course_result"]').val();
+                    var course_passing_year = $(this).find('[id*="course-passing-year"]').val();
+
+                    var course_certificate_copy = $(this).find('input[name="course_certificate_copy"]')[0].files[0]; // Get file object
+
+                    console.log('course_name: ', course_name)
+                    console.log('course_institution_name: ', course_institution_name)
+                    console.log('course_result: ', course_result)
+                    console.log('course_passing_year: ', course_passing_year)
+                    console.log('course_certificate_copy: ', course_certificate_copy)
+
+                    // Append each field to the FormData object with unique keys
+                    formData.append('course_name_' + index, course_name);
+                    formData.append('course_institution_name_' + index, course_institution_name);
+                    formData.append('course_result_' + index, course_result);
+                    formData.append('course_passing_year_' + index, course_passing_year);
+                    formData.append('course_certificate_copy_' + index, course_certificate_copy);
+
+                    // Push each value to the corresponding list
+                });
+
+                fetch('/save_other_certification_result_information/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ', data);
+                    if (data.success) {
+                        console.log('data: ', data)
+
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            window.location.href = '/student_result_information/'
+                        }, 1000)
+                    }
+
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#other-certification-error-message-div').removeClass('error-message-show');
+
+                        setTimeout(function() {
+                            $('#other-certification-message-text').text(data.error);
+                            $('#other-certification-error-message-div').addClass('error-message-show');
+                        }, 300);
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+
+    <!--<script>
+        document.getElementById('secondary_result').addEventListener('input', function(event) {
+            addDecimalIfNeeded(event);
+        });
+        
+        document.getElementById('higher_result').addEventListener('input', function(event) {
+            addDecimalIfNeeded(event);
+        });
+    
+        document.getElementById('undergraduation-cgpa').addEventListener('input', function(event) {
+            addDecimalIfNeeded(event);
+        });
+    
+        document.getElementById('masters-cgpa').addEventListener('input', function(event) {
+            addDecimalIfNeeded(event);
+        });
+    
+        document.getElementById('phd-cgpa').addEventListener('input', function(event) {
+            addDecimalIfNeeded(event);
+        });
+        
+        function addDecimalIfNeeded(event) {
+            // Get the input value
+            let value = event.target.value;
+        
+            // Remove any non-digit characters
+            value = value.replace(/[^\d.]/g, '');
+        
+            // Ensure there's only one decimal point
+            let parts = value.split('.');
+            if (parts.length > 2) {
+                parts.pop();
+                value = parts.join('');
+            }
+            
+            // Separate the integer and decimal parts
+            let [integerPart, decimalPart] = value.split('.');
+            
+            // Limit the decimal part to two digits
+            if (decimalPart && decimalPart.length > 2) {
+                decimalPart = decimalPart.substring(0, 2);
+            }
+            
+            // Combine the integer and decimal parts, add a decimal point if necessary
+            value = integerPart + (decimalPart ? '.' + decimalPart : '');
+        
+            // Update the input value
+            event.target.value = value;
+        }
+    </script>-->
+{% endblock js %}

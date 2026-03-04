@@ -1,0 +1,56 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+{% block custom_css %}
+
+<style>
+    .form-control, .typeahead, .tt-query, .tt-hint, .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single, .dataTables_wrapper select, .asColorPicker-input {
+        border: 1px solid #dee2e6;
+        font-weight: 400;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        height: 2rem;
+        padding: 9px;
+    }
+</style>
+{% endblock custom_css %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+    <div class="col-md-6">
+  
+          <div class="card">
+            <div class="card-body">
+          <h4 class="card-title mb-4">Add Client</h4>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="client_name" class="form-label">Client Name:</label>
+            <input type="text" class="form-control" id="client_name" name="client_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="client_name" class="form-label">Website URL:</label>
+            <input type="url" class="form-control" id="client_url" name="client_url" required>
+        </div>
+        <div class="mb-3">
+            <label for="client_image" class="form-label">Client Image:</label>
+            <input type="file" class="form-control" id="client_image" name="client_image" accept="image/*" required>
+        </div>
+               <div>
+            <p style="font-size: 14px; font-weight: 600; color:red !important;">Width: 190px; Height: 90px</p>
+            </div>
+        <button type="submit" class="btn btn-primary">Add Client</button>
+    </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,267 @@
+{% extends "roottemplates/base.html" %}
+{% block custom_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .select2-container{
+      margin-top: 10px !important;
+  }
+  .select2-container--default .select2-selection--single{
+      border: 1px solid !important;
+      padding: 12px 15px !important;
+      height: 40px !important;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444 !important;
+    line-height: 17px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow{
+      top: 7px !important;
+      right: 5px !important;
+  }
+  .select2-container--open .select2-dropdown--below{
+      border-radius: 5px !important;
+      border: 1px solid !important;
+  }
+  .select2-container--default .select2-search--dropdown .select2-search__field{
+      border-radius: 4px !important;
+      border: 1px solid  !important
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+      color: #707070 !important;
+      font-size: 15px !important;
+  }
+  label {
+    display: block;
+  }
+  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
+    font-size: 0.812rem;
+    border-radius: 6px;
+  }
+  select.form-control, select.typeahead, select.tt-query, select.tt-hint, .select2-container--default .select2-selection--single select.select2-search__field, .select2-container--default select.select2-selection--single, .dataTables_wrapper select, select.asColorPicker-input {
+    padding: 0.4375rem 0.75rem;
+    border: 0;
+    outline: 1px solid #dee2e6;
+    color: #1f3bb3;
+}
+.form-control, .typeahead, .tt-query, .tt-hint, .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single, .dataTables_wrapper select, .asColorPicker-input {
+  border: 1px solid #dee2e6;
+  font-weight: 400;
+  font-size: 1rem;
+  border-radius: 4px;
+  height: 2rem;
+}
+  </style>
+{% endblock custom_css %}
+{% load static %}
+
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Add Credit Balance Consultant-wise</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'consultant_credit_balance' %}">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label for="consultant_id">Consultant:</label>
+                <select  id="consultant_id"  class="form-control" id="consultant_id" name="consultant_id">
+                    <option value="">Select Consultant</option>
+                  {% for consultant in consultants %}
+                    
+                    <option value="{{ consultant.id }}"> {{ consultant.company_name }} ({{ consultant.full_name }})</option>
+                  {% endfor %}
+                </select>
+                <div id="balance_display" style="padding-top:10px"></div>
+              </div>
+              <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="text" class="form-control" id="amount" name="amount" required>
+            </div>
+
+          
+              <div class="form-group">
+                <label for="payment_method">Payment Method:</label>
+                <div class="input-group">
+                    <select class="form-control custom-select" id="payment_method" name="payment_method">
+                        {% for choice in payment_method_choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-caret-down"></i></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment_status">Payment Status:</label>
+                <div class="input-group">
+                    <select class="form-control custom-select" id="payment_status" name="payment_status">
+                        {% for choice in payment_status_choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-caret-down"></i></span>
+                    </div>
+                </div>
+            </div>
+            
+              <div class="form-group">
+                <label for="reference">Reference:</label>
+                <input type="text" class="form-control" id="reference" name="reference" required>
+              </div>
+
+       
+              <button type="submit" class="btn btn-primary">Add Credit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+    <div class="col-md-6" id="last_transactions_section" style="display: none;">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Last 5 Transaction</h4>
+            <div id="transactions_display"></div>
+      </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<!-- Use an alternative CDN link for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+  // Initialize Select2 for the dropdown element
+  $(document).ready(function() {
+      console.log('Select2 initialization script executed.');
+      $('#consultant_id').select2();
+  });
+</script>
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 for the dropdown element
+      $('#consultant_id').select2();
+
+      // Event listener for when a consultant is selected
+      $('#consultant_id').on('change', function() {
+          var consultantId = $(this).val();  // Get the selected consultant ID
+          // AJAX request to fetch the balance for the selected consultant
+          $.ajax({
+              url: '/get_consultant_balance/',
+              type: 'GET',
+              data: {'consultant_id': consultantId},
+              success: function(response) {
+                  // Update the balance in UI with the message
+                  $('#balance_display').html('Credit Amount <span style="color: green;">User Balance: ' + response.balance + '</span>');
+              },
+              error: function(xhr, status, error) {
+                  console.error(xhr.responseText);  // Log any errors
+              }
+          });
+      });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+      // Initialize Select2 for the dropdown element
+      $('#consultant_id').select2();
+
+      $('#consultant_id').on('change', function() {
+          var consultantId = $(this).val();
+
+          if (consultantId) {
+              $('#last_transactions_section').show();  // Show the transactions section if a consultant is selected
+              $.ajax({
+                  url: '/get_last_transactions/',
+                  type: 'GET',
+                  data: {'consultant_id': consultantId},
+                  success: function(response) {
+                      // Clear previous transaction data
+                      $('#transactions_display').empty();
+                      
+                      // Append table header
+                      var tableHTML = '<table class="table table-bordered">' +
+                                      '<thead>' +
+                                      '<tr>' +
+                                      '<th style="color: black;">SL</th>' +
+                                      '<th style="color: black;">Transaction Date</th>' +
+                                      '<th style="color: black;">Debit</th>' +
+                                      '<th style="color: black;">Credit</th>' +
+                                      '<th style="color: black;">Reference</th>' +
+                                      '</tr>' +
+                                      '</thead>' +
+                                      '<tbody>';
+
+                      // Append each transaction to the transactions display element as a table row
+                      response.transactions.forEach(function(transaction, index) {
+                          // Replace null debit or credit with 0
+                          var debit = transaction.type === 'Debit' ? transaction.amount : 0;
+                          var credit = transaction.type === 'Credit' ? transaction.amount : 0;
+                          
+                          // Apply different colors based on transaction type
+                          var debitColor = debit >= 0 ? 'green' : 'black';  // Use green color even for 0
+                          var creditColor = credit >= 0 ? 'red' : 'black';
+                          
+                          tableHTML += '<tr>' +
+                                       '<td>' + (index + 1) + '</td>' +
+                                       '<td>' + transaction.date + '</td>' +
+                                       '<td style="color: ' + debitColor + ';">' + debit + '</td>' +
+                                       '<td style="color: ' + creditColor + ';">' + credit + '</td>' +
+                                       '<td>' + transaction.reference + '</td>' +
+                                       '</tr>';
+                      });
+
+                      // Close table body and table
+                      tableHTML += '</tbody></table>';
+
+                      // Append table HTML to the transactions display element
+                      $('#transactions_display').append(tableHTML);
+                  },
+                  error: function(xhr, status, error) {
+                      console.error(xhr.responseText);  // Log any errors
+                  }
+              });
+          } else {
+              $('#last_transactions_section').hide();  // Hide the transactions section if no consultant is selected
+          }
+      });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+      $('#amount').on('input', function() {
+          // Remove any non-numeric characters from the input
+          var sanitized = $(this).val().replace(/\D/g, '');
+          // Add commas for every three digits
+          sanitized = sanitized.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          // Set the formatted value back to the input field
+          $(this).val(sanitized);
+      });
+  });
+</script>
+{% endblock custom_js %}

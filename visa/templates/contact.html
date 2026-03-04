@@ -1,0 +1,311 @@
+{% extends 'base.html' %} {% load static %}
+{% block custom_css %}
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+<link href="{% static 'assets/css/font-awesome-all.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/owl.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+<link href="{% static 'assets/css/switcher-style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+{% endblock custom_css %}
+{% block content %}
+
+        <!--Page Title-->
+        <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title-6.jpg'%});">
+            <div class="auto-container">
+                <div class="content-box">
+                    <div class="title-box">
+                        <h1>Contact Us</h1>
+                        <div class="dotted-box">
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                        </div>
+                    </div>
+                    <ul class="bread-crumb clearfix">
+                        <li><i class="flaticon-home-1"></i><a href="{% url 'home' %}">Home</a></li>
+                        <li>Contact</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!--End Page Title-->
+
+
+        <!-- contact-page-section -->
+        <section class="contact-page-section">
+            <div class="auto-container">
+                <div class="row">
+                    <div class="content-right-div">
+                        <div class="map-inner">
+                            <div class="top-inner">
+                                <div class="row clearfix">
+                                    <div class="col-lg-5 col-md-12 col-sm-12 title-column">
+                                        <div class="sec-title">
+                                            <p>How we help clients</p>
+                                            <h2>Got Consultant or Visa Problems?</h2>
+                                            <div class="dotted-box">
+                                                <span class="dotted"></span>
+                                                <span class="dotted"></span>
+                                                <span class="dotted"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7 col-md-12 col-sm-12 text-column">
+                                        <div class="text">
+                                            <p>We are always ready to help customers with any difficulty about the experience aute irure dolor in reprehenderit cepteur sint ocae cat cupidatat non proident sunt in culpa quis.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% for item in consultant_maps %}
+                            <div class="map-column">
+                                <div class="google-map bold-text">
+                                    {{ item.map_location | safe }}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+    
+            
+                </div>
+
+                <div class="info-inner">
+                    {% for address in addresses %}
+                    <div class="row clearfix">
+                        <div class="col-xl-10 col-lg-12 col-md-12 offset-xl-1 big-column">
+                            <div class="row clearfix">
+                                <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                                    <div class="single-item">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><i class="flaticon-pin"></i></div>
+                                            <h3>Office Address</h3>
+                                            <p> {{ address.address }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                                    <div class="single-item">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><i class="flaticon-call"></i></div>
+                                            <h3>Phone Us</h3>
+                                            <p>Hotline: <a href="{{ address.hotline }}">{{ address.hotline }}</a><br />Mob: <a href="tel:{{ address.phone }}">{{ address.phone }}</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                                    <div class="single-item">
+                                        <div class="inner-box">
+                                            <div class="icon-box"><i class="flaticon-envelope"></i></div>
+                                            <h3>Send Message</h3>
+                                            <p><a href="mailto:info@studentvisabd.com">info@studentvisabd.com</a><br /><a href="mailto:{{ address.email }}">{{ address.email }}</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                
+                </div>
+                <div class="contact-form-inner">
+                    <div class="sec-title centred">
+                        <h2>Let’s Start a Conversation Today!</h2>
+                        <div class="dotted-box">
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                        </div>
+                    </div>
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <div class="form-inner">
+                        <form method="post" action="" id="contact-form" class="default-form"> 
+                            {% csrf_token %}
+                            <div class="row clearfix">
+                                <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+                                    <input type="text" name="name" placeholder="Your Name "  required="" >
+                                    <span id="name_error" class="error-message"></span>
+                              
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+                                    <input type="email" name="email" placeholder="Email address" required="">
+                                    
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12 form-group">
+                                    <input type="text" name="phonenumber" id="phonenumber" required="" placeholder="Phone No." maxlength="11">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 form-group">
+                                    <input type="text" name="subject" required="" placeholder="Subject">
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                                    <div class="select-box">
+                                        <select name="category" id="categorySelect" class="wide">
+                                            <option data-display="Select">Select The Category</option>
+                                            {% for category_value, category_label in category_choices %}
+                                                <option value="{{ category_value }}">{{ category_label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                                    <textarea name="message" placeholder="Message"></textarea>
+                                </div>
+                                  <div class="input-group my-4 d-flex justify-content-center">
+                                    <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
+                                  
+                                </div>
+                                <span id="captcha_error" class="error-message"></span>
+                                <div class="col-lg-12 col-md-12 col-sm-12 form-group message-btn centred">
+                                    <button class="theme-btn-two" type="submit" name="submit-form"><i class="flaticon-send"></i>Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- contact-page-section end -->
+
+
+
+    {% endblock content %}
+
+
+    {% block js %}
+        <script src={% static "assets/js/jquery.js"%}></script>
+        <script src={% static "assets/js/popper.min.js"%}></script>
+        <script src={% static "assets/js/bootstrap.min.js"%}></script>
+        <script src={% static "assets/js/owl.js"%}></script>
+        <script src={% static "assets/js/wow.js"%}></script>
+        <script src={% static "assets/js/validation.js"%}></script>
+        <script src={% static "assets/js/jquery.fancybox.js"%}></script>
+        <script src={% static "assets/js/TweenMax.min.js"%}></script>
+        <script src={% static "assets/js/appear.js"%}></script>
+
+
+
+        
+        <script src={% static "assets/js/jquery.nice-select.min.js"%}></script>
+        <script src={% static "assets/js/jQuery.style.switcher.min.js"%}></script>
+
+        <!-- map script -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-CE0deH3Jhj6GN4YvdCFZS7DpbXexzGU"></script>
+        <script src="{% static 'assets/js/gmaps.js' %}"></script>
+        <script src={% static "assets/js/map-helper.js"%}></script>
+
+        <!-- main-js -->
+        <script src={% static "assets/js/script.js"%}></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#submit-form').on('click', function () {
+                    // Manually add the selected category to the form data
+                    var formData = $('#contact-form').serializeArray();
+                    formData.push({name: 'category', value: $('#categorySelect').val()});
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '',
+                        data: formData,
+                        success: function (response) {
+                            alert('Message submitted successfully!');
+                            // You can also handle success by redirecting or displaying a success message on the page
+                        },
+                        error: function (error) {
+                            alert('An error occurred while submitting the message.');
+                            // You can also handle errors by displaying an error message on the page
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            function validateForm() {
+                var requiredFields = [
+                    { field: 'name', message: 'Your Name is required.' },
+                    { field: 'email', message: 'Email address is required.' },
+                    { field: 'phonenumber', message: 'Phone Number is required.' },
+                    { field: 'subject', message: 'Subject is required.' },
+                    { field: 'category', message: 'Category is required.' },
+                    { field: 'message', message: 'Message is required.' }
+                ];
+                var isValid = true;
+        
+                requiredFields.forEach(function (item) {
+                    var value = $('#' + item.field).val();
+                    if (!value) {
+                        $('#' + item.field).addClass('error-border');
+                        // Set the error message text
+                        $('#' + item.field + '_error').text(item.message);
+                        isValid = false;
+                    } else {
+                        $('#' + item.field).removeClass('error-border');
+                        // Clear the error message
+                        $('#' + item.field + '_error').text('');
+                    }
+                });
+        
+                if (!isValid) {
+                    // Use a more user-friendly method than alert, e.g., displaying messages on the page
+                    alert('Please fill in all required fields.');
+                }
+            }
+        </script>
+
+        <script>
+            $("#phonenumber").on("input", function() {
+                var phoneNumber = $(this).val();
+                var numericPhoneNumber = phoneNumber.replace(/\D/g, ""); // Remove non-digit characters
+        
+                $(this).val(numericPhoneNumber); // Update the input value with the numeric version
+        
+                // Check if the phone number length is not 11
+                if (numericPhoneNumber.length !== 11) {
+                    $(".phone_error").remove();
+                    $("<span class='phone_error' style='padding: 5px;color: red;font-weight: bold;'>Phone Number must be 11 digits</span>").insertAfter("#phonenumber");
+                    $("#phonenumber").addClass("error-field");
+                    return;
+                }
+        
+                // Check if the phone number starts with the allowed prefixes
+                var allowedPrefixes = ["019", "018", "017", "016", "013", "014"];
+                var isValidPrefix = false;
+        
+                for (var i = 0; i < allowedPrefixes.length; i++) {
+                    if (numericPhoneNumber.startsWith(allowedPrefixes[i])) {
+                        isValidPrefix = true;
+                        break;
+                    }
+                }
+        
+                if (!isValidPrefix) {
+                    $(".phone_error").remove();
+                    $("<span class='phone_error' style='padding: 5px;color: red;font-weight: bold;'>Invalid Format</span>").insertAfter("#phonenumber");
+                    $("#phonenumber").addClass("error-field");
+                    return;
+                }
+        
+                // If the input is valid, remove any error messages and styling
+                $(".phone_error").remove();
+                $("#phonenumber").removeClass("error-field");
+            });
+        </script>
+    {% endblock js %}

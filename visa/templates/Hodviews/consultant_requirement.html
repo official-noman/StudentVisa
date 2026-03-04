@@ -1,0 +1,69 @@
+{% extends "Hodviews/base.html" %}
+
+{% load static %}
+{% block custom_css %}
+<style>
+  /* Custom CSS */
+  .custom-form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Style for the image */
+  .img-preview {
+    max-width: 200px; /* Adjust this value as needed */
+    max-height: 200px; /* Adjust this value as needed */
+  }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Add Your Requirement</h4>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'consultant_requirement' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="consultant_requirement">Requirement:</label>
+                            <!-- Add CKEditor textarea -->
+                            <textarea id="consultant_requirement" name="consultant_requirement" required>{% if consultant_details %}{{ consultant_details.consultant_requirement|default:'' }}{% endif %}</textarea>
+                        </div>
+
+                        <div class="form-group custom-form-group">
+                            <label for="consultant_requirement_image">Requirement Image:</label>
+                            <input type="file" id="consultant_requirement_image"  style="margin:10px;" name="consultant_requirement_image">
+                            
+                            
+                            {% if consultant_details and consultant_details.consultant_requirement_image %}
+                            <img src="{{ consultant_details.consultant_requirement_image.url }}" alt="Requirement Image" class="img-preview">
+                            {% endif %}
+                        </div>
+                        <p class="recommended-pic-size-text mx-auto" style="font-size: 15px; color:red;">width: 500px and height: 378px</p>
+                        <button type="submit" class="btn btn-primary">Update Requirement</button>
+                    </form>
+
+                    <!-- Include CKEditor library -->
+                    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+                    <script>
+                        CKEDITOR.replace('consultant_requirement');
+                    </script>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

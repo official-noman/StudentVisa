@@ -1,0 +1,109 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+{% block custom_css %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@10"></link>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css">
+
+  <style>
+    /* Custom CSS for DataTable */
+
+    #balancelist_wrapper {
+        padding: 20px;
+      }
+      #balancelist_filter label {
+        margin-bottom: 10px; /* Add some distance between the search input and the table */
+      }
+      #balancelist th, #balancelist td {
+        border: 1px solid #dee2e6;
+      }
+  </style>
+{% endblock custom_css %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">All Transactions</h4>
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          <div class="mb-3">
+            <a href="{% url 'consultant_credit_balance' %}" class="btn btn-primary">Add Credit</a>
+          </div>
+          <table id="balancelist" class="table table-bordered">
+            <thead>
+                <tr>
+              
+                    <th>Consultant Name</th>
+                    <th>Reference</th>
+                    <th>Amount</th>
+                    <th>Payment Type</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in credit_transactions %}
+                <tr>
+                 
+                    <td>{{ transaction.consultant_name }}</td>
+                    <td>{{ transaction.acc_pay_ref }}</td>
+                    <td>{{ transaction.acc_credit }}</td>
+                    <td>
+                        {% if transaction.pay_method == 1 %}
+                            <span class="badge badge-info">Cash</span>
+                        {% elif transaction.pay_method == 2 %}
+                            <span class="badge badge-primary">Bank Deposit</span>
+                        {% elif transaction.pay_method == 3 %}
+                            <span class="badge badge-warning">Check</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.created_at }}</td>
+                </tr>
+                {% endfor %}
+                {% for transaction in debit_transactions %}
+                <tr>
+               
+                    <td>{{ transaction.consultant_name }}</td>
+                    <td>{{ transaction.acc_pay_ref }}</td>
+                    <td>{{ transaction.acc_debit }}</td>
+                    <td>
+                        {% if transaction.pay_method == 1 %}
+                            <span class="badge badge-info">Cash</span>
+                        {% elif transaction.pay_method == 2 %}
+                            <span class="badge badge-primary">Bank Deposit</span>
+                        {% elif transaction.pay_method == 3 %}
+                            <span class="badge badge-warning">Check</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+</div>
+  </div>
+</div>
+{% endblock content %}
+
+
+{% block custom_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
+<script>
+    $(document).ready(function() {
+      $('#balancelist').DataTable();
+    });
+  </script>
+
+{% endblock custom_js %}

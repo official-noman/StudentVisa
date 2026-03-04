@@ -1,0 +1,78 @@
+/* .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -31px !important;
+    margin-left: -24px !important;
+} */
+
+/* .row {
+    display: flex;
+} */
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    flex: 0 0 180px; /* Set the width to 180px */
+}
+
+.content-div {
+    flex-grow: 1; /* Take up the remaining space */
+}
+
+/* Additional CSS styles for enhanced design */
+.container {
+    margin-top: 20px;
+}
+.table-bordered {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #DEE2E6;
+    border-radius: 5px;
+}
+.table-bordered th,
+.table-bordered td {
+    padding: 12px 15px;
+}
+.table-bordered tbody tr:nth-of-type(odd) {
+    background-color: #F8F9FA;
+}
+.table-bordered tbody tr:hover {
+    background-color: #F1F1F1;
+}
+.action-button {
+    padding: 2px 16px;
+    background-color: #DC3545; /* Red color */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.action-button:hover {
+    background-color: #C82333; /* Darker shade of red on hover */
+}
+.signin-left-ad-div,
+.signin-right-ad-div {
+
+}
+.signin-left-ad-div img,
+.signin-right-ad-div img {
+    max-width: 100%;
+}
+h2 {
+    color: #007BFF;
+}
+
+@media (max-width: 992px) {
+    .signin-left-ad-div{
+       display: none;
+    }
+
+    .form-div-container{
+        width: 100%;
+    }
+
+    .signin-right-ad-div{
+        display: none;
+    }
+}

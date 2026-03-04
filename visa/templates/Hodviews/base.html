@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{consultant.company_name}}</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/feather/feather.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/ti-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/typicons/typicons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/dist/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/dist/js/select.dataTables.min.css' %}">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/dist/css/vertical-layout-light/style.css' %}">
+    <!-- endinject -->
+    {% if consultant_details and consultant_details.consultant_logo %}
+        <link rel="icon" href="{{ consultant_details.consultant_logo.url }}" type="image/x-icon">
+    {% else %}
+        <link rel="icon" href="{% static 'assets/images/default_icon.png' %}" type="image/x-icon">
+    {% endif %}
+
+    <style>
+      .navbar .navbar-brand-wrapper .navbar-brand img {
+        max-width: 100%;
+        height: 96px;
+        margin: auto;
+        vertical-align: middle;
+    }
+    </style>
+
+    {% block custom_css %}{% endblock custom_css %}
+</head>
+
+<body class="with-welcome-text">
+
+    {% include "Hodviews/partials/_navbar.html" %}
+
+
+        {% include "Hodviews/partials/_settings-panel.html" %}
+
+        {% include "Hodviews/partials/_sidebar.html" %}
+
+
+
+
+    {% block content %}
+
+    {% endblock content %}
+
+
+
+    <!-- container-scroller -->
+{% include "Hodviews/partials/_footer.html" %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var greetingText = document.getElementById("greeting-text");
+    var currentTime = new Date().getHours();
+    var username = "{{ request.user.username }}";
+
+    if (currentTime < 12) {
+      greetingText.textContent = "Good Morning, " + username;
+    } else if (currentTime < 18) {
+      greetingText.textContent = "Good Afternoon, " + username;
+    } else {
+      greetingText.textContent = "Good Evening, " + username;
+    }
+  });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Function to fetch total balance via AJAX
+        function fetchTotalBalance() {
+            $.ajax({
+                url: "/total_balance/", // URL of your Django view that returns total balance
+               success: function(data) {
+    $("#total_balance_display").text(data + " TK");
+},
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // Fetch total balance initially on page load
+        fetchTotalBalance();
+
+        // Optionally, you can fetch total balance periodically
+        // setInterval(fetchTotalBalance, 5000); // Fetch every 5 seconds
+    });
+</script>
+    <!-- plugins:js -->
+    <script src="{% static 'assets/dist/vendors/js/vendor.bundle.base.js' %}"></script>
+    <script src="{% static 'assets/dist/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets/dist/vendors/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/dist/vendors/progressbar.js/progressbar.min.js' %}"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets/dist/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets/dist/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets/dist/js/template.js' %}"></script>
+    <script src="{% static 'assets/dist/js/settings.js' %}"></script>
+    <script src="{% static 'assets/dist/js/todolist.js' %}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="{% static 'assets/dist/js/jquery.cookie.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/dist/js/dashboard.js' %}"></script>
+    <script src="{% static 'assets/dist/js/proBanner.js' %}"></script>
+    {% block custom_js %}{% endblock custom_js %}
+    <!-- <script src="../../assets/js/Chart.roundedBarCharts.js"></script> -->
+    <!-- End custom js for this page-->
+</body>
+
+</html>

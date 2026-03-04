@@ -1,0 +1,173 @@
+{% extends 'consultant_base.html' %}
+{% load static %}
+
+
+<!-- End Mobile Menu -->
+{% block custom_css %}
+
+<style>
+    .cover-image-single {
+        position: relative;
+        display: flex;
+        align-items: center; /* Center vertically */
+        max-width: 1200px;
+        height: 500px;
+        background-size: cover;
+        background-position: center;
+        /* Set the background image URL here */
+        background-image: url('{% if customize and customize.image %}{{ customize.image.url }}{% else %}{% static 'assets/new-assets/banner/banner-6.jpg' %}{% endif %}');
+    }
+
+    .cover-image-single::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .image-column{
+        float: right;
+        margin-left: 20px;
+        margin-bottom: 30px;
+        width: 500px;
+    }
+
+    .content-column::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    
+    
+    @media(max-width: 567px){
+        .news-block{
+            width: 100%; /* Adjust percentage as needed */
+            /* height: calc(33.33vw / 1.5); */
+            padding: 0 5px;
+        }
+    
+        .auto-container{
+            padding: 0;
+        }
+
+        .float-left {
+            float: none;
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            box-sizing: border-box; /* To include padding and border in the total width */
+        }
+
+        .image-column{
+            width: 100%;
+        }
+    }
+    .sec-title:before {
+    position: absolute;
+    content: '';
+    width: 40px;
+    height: 3px;
+    left: 0px !important;
+    bottom: 0px;
+}
+.sec-title .dotted-box .dotted{
+  position: absolute;
+  left: 43px;
+  width: 3px;
+  height: 3px;
+  bottom: 0px;
+  background: #04BE5B;
+}
+
+.sec-title .dotted-box .dotted:nth-child(2) {
+  left: 49px !important;
+}
+
+.sec-title .dotted-box .dotted:last-child {
+  left: 55px !improtant;
+}
+
+.sec-title.centred .dotted-box .dotted{
+  left: 50% !important;
+  margin-left: 15px;
+}
+
+.sec-title.centred .dotted-box .dotted:nth-child(2) {
+  left: 50% !important;
+  margin-left: 21px;
+}
+
+.sec-title.centred .dotted-box .dotted:last-child {
+  left: 50% !improtant;
+  margin-left: 27px;
+}
+
+</style>
+
+{% endblock custom_css %}
+
+
+{% block content %}
+    <!-- banner-section -->
+    {% comment %} <section class="banner-section my-4 style-two">
+        <div class="cover-image-single col-lg-8 col-md-7 col-12">
+            <div class="welcome-text-div px-4">
+                <h1>
+                    <span class="welcome-text-heading">
+                        {% if consultant.about %}
+                            {{ consultant.about|safe }}
+                        {% else %}
+                            Welcome to {{ consultant.company_name }}
+                        {% endif %}
+                    </span>
+                </h1>
+                <p class="mt-3"><span class="welcome-text">{{ consultant.consultant_customizes }} </span></p>
+            </div>
+        </div>
+    </section> {% endcomment %}
+
+    <section class="about-style-two">
+        <div class="auto-container pl-0">
+            {% comment %} <div class="row clearfix"> {% endcomment %}
+                <div class="image-column">
+                    <div id="image_block_2">
+                        <div class="image-box">
+                            <figure class="image-1"><img src="{% if customize and customize.image %}{{ customize.image.url }}{% else %}{% static 'assets/new-assets/banner/banner-6.jpg' %}{% endif %}"alt=""></figure>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-column pl-1">
+                    <div id="content_block_1">
+                        <div class="content-box">
+                            <div class="sec-title">
+                                
+                                <h4>Welcome to {{consultant.company_name}}</h4>
+                                <div class="dotted-box">
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                </div>
+                            </div>
+                
+                            <div class="text process-explanation-div">
+                            {% if consultant_details.consultant_description %}
+                                <p>{{consultant_details.consultant_description|safe}}</p>
+                            {% else %}
+                            {% endif %} 
+                            </div>
+                    
+                        </div>
+                    </div>
+                </div>
+            {% comment %} </div> {% endcomment %}
+        </div>
+    </section>
+{% endblock content %}
+
+
+

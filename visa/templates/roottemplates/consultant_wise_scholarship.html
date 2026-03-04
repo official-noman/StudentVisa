@@ -1,0 +1,140 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container{
+      margin-top: 10px !important;
+  }
+  .select2-container--default .select2-selection--single{
+      border: 1px solid !important;
+      padding: 12px 15px !important;
+      height: 40px !important;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444 !important;
+    line-height: 17px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow{
+      top: 7px !important;
+      right: 5px !important;
+  }
+  .select2-container--open .select2-dropdown--below{
+      border-radius: 5px !important;
+      border: 1px solid !important;
+  }
+  .select2-container--default .select2-search--dropdown .select2-search__field{
+      border-radius: 4px !important;
+      border: 1px solid  !important
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered{
+      color: #707070 !important;
+      font-size: 15px !important;
+  }
+  label {
+    display: block;
+  }
+  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
+    font-size: 0.812rem;
+    border-radius: 6px;
+  }
+  </style>
+{% endblock custom_css %}
+{% load static %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Consultant Wise Scholarship</h4>
+
+        {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+            <form method="post" action="{% url 'consultant_wise_root' %}">
+
+                <div class="form-group">
+                    <label for="consultant_id">Select Consultant:</label>
+                    <select id="consultant_id" name="consultant_id" class="form-control" required>
+                      {% for consultant in consultants %}
+                        <option value="{{ consultant.id }}" {% if consultant.id == instance.scow_consultant_id %}selected{% endif %}>
+                            {{ consultant.company_name }} ({{ consultant.full_name }})
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="country_id">Select Country:</label>
+                    <select id="country_id" name="country_id" class="form-control" required>
+                        <option value="">Select Country</option>
+                        {% for country in countries %}
+                            <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="scow_text">Description:</label>
+                <textarea id="scow_text" name="scow_text" class="form-control" required>{{ instance.scow_text }}</textarea>
+              </div>
+              <div class="form-group">
+                <label for="scow_whocanapply">Who Can Apply:</label>
+                <textarea id="scow_whocanapply" name="scow_whocanapply" class="form-control">{{ instance.scow_whocanapply }}</textarea>
+              </div>
+                    
+              <div class="form-group">
+                <label for="expiration_time">Expiration Time:</label>
+                <div id="expiration_time-popup" class="input-group date datepicker navbar-date-picker">
+                  <span class="input-group-addon input-group-prepend border-right">
+                    <span class="icon-calendar input-group-text calendar-icon"></span>
+                  </span>
+                  <input   id="expiration_time" type="text" name="expiration_time" class="form-control">
+                </div>
+              </div>
+          
+              <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+            <script>
+              CKEDITOR.replace('scow_whocanapply');
+              CKEDITOR.replace('scow_text');
+            </script>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+{% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
+<!-- Use an alternative CDN link for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- If the CDN link does not work, download select2.min.js and host it locally -->
+<!-- <script src="{% static 'path/to/select2.min.js' %}"></script> -->
+<script>
+  $(document).ready(function() {
+      console.log('Select2 initialization script executed.');
+      $('#consultant_id').select2();
+      $('#country_id').select2();
+
+      // Initialize Bootstrap Datepicker and block previous dates
+      $('#expiration_time-popup').datepicker({
+          format: 'yyyy-mm-dd',
+          startDate: 'today',
+          todayHighlight: true,
+          autoclose: true
+      });
+  });
+</script>
+
+{% endblock custom_js %}

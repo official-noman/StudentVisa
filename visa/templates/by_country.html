@@ -1,0 +1,196 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block custom_css %}
+
+
+<!-- Stylesheets -->
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<link href={% static "assets/css/by_country.css" %} rel="stylesheet">
+{% endblock custom_css %}
+
+{% block content %}
+
+
+        {% comment %} <!-- switcher menu -->
+        <div class="switcher">
+            <div class="switch_btn">
+                <button><i class="fas fa-palette"></i></button>
+            </div>
+            <div class="switch_menu">
+                <!-- color changer -->
+                <div class="switcher_container">
+                    <ul id="styleOptions" title="switch styling">
+                        <li>
+                            <a href="javascript: void(0)" data-theme="red" class="red-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="pink" class="pink-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="violet" class="violet-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="crimson" class="crimson-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="orange" class="orange-color"></a>
+                        </li>
+                    </ul>
+                </div> 
+            </div>
+        </div>
+        <!-- end switcher menu --> {% endcomment %}
+
+        <!--Page Title-->
+        <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title-6.jpg' %});">
+            <div class="auto-container">
+                <div class="content-box">
+                    <div class="title-box">
+                        <h1>How To Apply</h1>
+                        <div class="dotted-box">
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                        </div>
+                    </div>
+                    <ul class="bread-crumb clearfix">
+                        <li><i class="flaticon-home-1"></i><a href="{% url 'home' %}">Home</a></li>
+                        <li>By Country</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!--End Page Title-->
+
+        <!-- news-section -->
+        <section class="immigration-section">
+            <div class="auto-container">
+                <div class="sec-title centred">
+                    <p>countries we offer support</p>
+                    <h2>Immigration & Visa Services <br />Following Countries</h2>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+
+                <div class="row clearfix">
+                    <div class="content-right-div">
+                        <form method="GET" action="">
+                            <div class="search-content search-right mb-3">
+                                <div class="search-box-nav d-flex justify-content-end">
+                                    <div class="search-field-div col-lg-4 col-md-4 col-12 pr-0">
+                                        <input id="search-input" type="text" name="search_area" placeholder="Search Countries" class="search-input" autocomplete="off">
+                                        <button type="submit" class="search-toggler search-icon-btn"><i class="fa-solid fa-magnifying-glass search-icon"></i></button>
+                                        <!-- <a href="index-2.html" class="theme-btn-two">Daftar Online<i class="flaticon-send"></i></a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row">
+                            {% for country in countries %}
+                                <div class="col-lg-3 col-md-4 col-sm-12 immigration-block">
+                                    <div class="immigration-block-one wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms" >
+                                        <div class="inner-box">
+                                            <figure class="image-box"><img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}" style="height: 200px;"></figure>
+                                            <div class="text">
+                                                <h3><a href="{% url 'country_details' country.country_id %}">{{ country.country_name }}</a></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            
+                <!--<div class="pagination-wrapper centred">
+                    <ul class="pagination">
+                        <li><a href="blog.html" class="active">1</a></li>
+                        <li><a href="blog.html">2</a></li>
+                        <li><a href="blog.html">3</a></li>
+                    </ul>
+                </div>-->
+                <div class="pagination-wrapper centred">
+                    <ul class="pagination">
+                        {% if countries.has_previous %}
+                            <li><a href="?page=1"><i class="fa-solid fa-angles-left"></i></a></li>
+                            <li><a href="?page={{ countries.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+                        {% endif %}
+                
+                        {% for i in countries.paginator.page_range %}
+                            {% if i == countries.number %}
+                                <li><a href="?page={{ i }}" class="pagination-active">{{ i }}</a></li>
+                            {% elif i > countries.number|add:"-2" and i < countries.number|add:"2" %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                
+                        {% if countries.has_next %}
+                            <li><a href="?page={{ countries.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+                            <li><a href="?page={{ countries.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!-- news-section end -->
+
+
+        <!-- main-footer -->
+
+        <!-- main-footer end -->
+
+
+        <!--Scroll to top-->
+        <button class="scroll-top scroll-to-target" data-target="html">
+            <i class="fas fa-long-arrow-alt-up"></i>
+        </button>
+
+    {% endblock content %}
+
+{% block js %}
+    <!-- jequery plugins -->
+    {% comment %} <script src="{% static 'assets/js/jquery.js' %}"></script>
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/owl.js' %}"></script>
+    <script src="{% static 'assets/js/wow.js' %}"></script>
+    <script src="{% static 'assets/js/validation.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.fancybox.js' %}"></script>
+    <script src="{% static 'assets/js/TweenMax.min.js' %}"></script>
+    <script src="{% static 'assets/js/appear.js' %}"></script>
+    <script src="{% static 'assets/js/scrollbar.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'assets/js/jQuery.style.switcher.min.js' %}"></script>
+
+    <!-- main-js -->
+    <script src="assets/js/script.js"></script> {% endcomment %}
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script>
+        $( "#search-input" ).autocomplete({
+            source: "{% url 'by_country_autosearch' %}",
+            minLength: 2, // Minimum characters before triggering autocomplete
+        })
+    </script>
+{% endblock js %}

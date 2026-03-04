@@ -1,0 +1,595 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block custom_css %}
+<style>
+    .process-explanation-div {
+        max-height: 170px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+    }
+    
+    .product{
+        border-radius: 0 0 4px 4px;
+    }
+    
+    .process-explanation-text {
+        color: rgb(0, 0, 0);
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+    } 
+
+    .content-div{
+        max-width: 970px;
+    }
+    
+    .service-block-two .inner-box .lower-content{
+        height: 275px;
+    }
+    
+    .sec-title:before{
+        position: absolute;
+        content: '';
+        width: 40px;
+        height: 3px;
+        left: 0;
+        bottom: 0px;
+    }
+      
+    .sec-title:before{
+        background: white;
+    }
+    
+    @media(min-width: 993px){
+        .image-column-mobile-view{
+            display: none;
+        }
+    }
+
+    @media(max-width: 992px){
+        .image-column{
+            display: none;
+        }
+    }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+        <!-- banner-section -->
+        <section class="banner-section mt-2 style-two">
+            <div class="cover-image">
+                <div class="d-flex">
+                    <div class="welcome-text-div px-4">
+                        <!--<h1><span class="welcome-text-heading">Welcome To Student Visa BD</span></h1>-->
+                        {% if customize and customize.image %}
+                            <p class="mt-3 welcome-text">{{ customize.description|safe }}</p>
+                            <style>
+                                .cover-image {
+                                    background-image: url('{{ customize.image.url }}');
+                                }
+                            </style>
+                        {% else %}
+                            <p class="mt-3 welcome-text">Welcome to Student Visa BD</p>
+                        {% endif %}
+                    </div>
+
+                    {% comment %} <div class="ad-section-div d-flex justify-content-end">
+                        <img src="{% static 'assets/images/add1.jpg' %}" alt="">
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </section>
+        <!-- banner-section end -->
+
+
+        <!-- feature-style-two -->
+        <!-- <section class="feature-style-two">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <div class="row clearfix">
+                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
+                            <div class="feature-block-two">
+                                <div class="inner-box">
+                                    <div class="title-inner">
+                                        <a href="">
+                                            <div class="icon-box"><i class="flaticon-management"></i></div>
+                                            <h3>S2 Magister Manajemen</h3>
+                                        </a>
+                                    </div>
+                                    <div class="text">
+                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
+                                    </div>
+                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
+                            <div class="feature-block-two">
+                                <div class="inner-box">
+                                    <div class="title-inner">
+                                        <div class="icon-box"><i class="flaticon-work"></i></div>
+                                        <h3>S2 Magister P2WL</h3>
+                                    </div>
+                                    <div class="text">
+                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
+                                    </div>
+                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
+                            <div class="feature-block-two">
+                                <div class="inner-box">
+                                    <div class="title-inner">
+                                        <div class="icon-box"><i class="flaticon-payment-method"></i></div>
+                                        <h3>S2 Magister Hukum</h3>
+                                    </div>
+                                    <div class="text">
+                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
+                                    </div>
+                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- feature-style-two end -->
+
+
+        <!-- about-style-two -->
+        <section class="about-style-two">
+            <div class="auto-container">
+                <div class="row clearfix">
+                    <div class="col-lg-6 col-md-12 col-sm-12 content-column">
+                        <div id="content_block_1">
+                            <div class="content-box">
+                                <div class="sec-title">
+                                    <p>Why Need This Student Portal</p>
+                                    <h2>Process Explanation</h2>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <div class="image-column-mobile-view col-lg-6 col-md-12 col-sm-12 mb-3">
+                                    <div id="image_block_2">
+                                        <div class="image-box">
+                                            <figure class="image-1"><img src="{{ process_explanation.exp_img.url }}"alt=""></figure>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bold-text">
+                                    <p>{{ process_explanation.exp_title | safe }}</p>
+                                </div>
+                                <div class="text process-explanation-div">
+                                    <p class="process-explanation-text">{{ process_explanation.exp_des | safe }}</p>
+                                </div>
+                                <div class="btn-box">
+                                    <a href="{% url 'process_explanation' %}" class="theme-btn-two">Read More<i class="flaticon-send"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 image-column">
+                        <div id="image_block_2">
+                            <div class="image-box">
+                                <figure class="image-1"><img src="{{ process_explanation.exp_img.url }}"alt=""></figure>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- about-style-two end -->
+
+
+        <!-- service-style-two -->
+        <section class="service-style-two bg-color-3">
+            <div class="auto-container">
+                <div class="sec-title centred">
+                    <!-- <p>countries we offer support</p> -->
+                    <h2>Concentracy P2WL</h2>
+                    <span>Visa consultants are well-versed in the intricacies of student visa processes.<br> They can provide expert guidance on the requirements and procedures.</span>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <div class="three-item-carousel owl-carousel owl-theme owl-nav-none">
+                    <div class="service-block-two">
+                        <div class="inner-box">
+                            <figure class="image-box"><a href=""><img
+                                        src={% static "assets/images/service/service-1.jpg" %} alt=""></a></figure>
+                            <div class="lower-content">
+                                <div class="box">
+                                    <div class="icon-box"><i class="flaticon-manager"></i></div>
+                                    <h3><a href="{% url 'consultant_list' %}">Initial Consultation</a></h3>
+                                    <p>Conducting one-on-one consultations with students to understand their educational and career goals.</p>
+                                </div>
+                                {% comment %} <div class="link"><a href="service-details.html">Read More<i
+                                            class="flaticon-send"></i></a></div> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-block-two">
+                        <div class="inner-box">
+                            <figure class="image-box"><a href=""><img
+                                        src={% static "assets/images/service/service-2.jpg" %} alt=""></a></figure>
+                            <div class="lower-content">
+                                <div class="box">
+                                    <div class="icon-box"><i class="flaticon-flight"></i></div>
+                                    <h3><a href="{% url 'process_explanation' %}">Information and Guidance</a></h3>
+                                    <p>Providing guidance on admission requirements, academic prerequisites, and language proficiency exams.</p>
+                                </div>
+                                {% comment %} <div class="link"><a href="service-details.html">Read More<i
+                                            class="flaticon-send"></i></a></div> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="service-block-two">
+                        <div class="inner-box">
+                            <figure class="image-box"><a href="{% url 'offer_letter' %}"><img
+                                        src={% static "assets/images/service/service-3.jpg" %} alt=""></a></figure>
+                            <div class="lower-content">
+                                <div class="box">
+                                    <div class="icon-box"><i class="flaticon-air-freight"></i></div>
+                                    <h3><a href="{% url 'offer_letter' %}">Visa Requirements</a></h3>
+                                    <p>Assisting in the preparation of necessary documentation, such as letters of acceptance, financial statements ...</p>
+                                </div>
+                                {% comment %} <div class="link"><a href="service-details.html">Read More<i
+                                            class="flaticon-send"></i></a></div> {% endcomment %}
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="service-block-two">
+                        <div class="inner-box">
+                            <figure class="image-box"><a href="{% url 'consultant_list' %}"><img
+                                        src={% static "assets/images/service/service-1.jpg" %} alt=""></a></figure>
+                            <div class="lower-content">
+                                <div class="box">
+                                    <div class="icon-box"><i class="flaticon-manager"></i></div>
+                                    <h3><a href="{% url 'consultant_list' %}">Counseling and Support</a></h3>
+                                    <p>Offering emotional and practical support to students as they navigate the challenges of studying in a foreign country.</p>
+                                </div>
+                                {% comment %} <div class="link"><a href="service-details.html">Read More<i
+                                            class="flaticon-send"></i></a></div> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- service-style-two end -->
+
+
+        <!-- apply-style-two -->
+        <!-- <section class="apply-style-two">
+            <div class="auto-container">
+                <div class="top-inner">
+                    <div class="row clearfix">
+                        <div class="col-lg-5 col-md-12 col-sm-12 title-column">
+                            <div class="sec-title">
+                                <p>How we help clients</p>
+                                <h2>Following Steps Apply Online Visa</h2>
+                                <div class="dotted-box">
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-12 col-sm-12 text-column">
+                            <div class="text">
+                                <p>Sponsoring and managing work visas parts now becoming results the experience aute irure dolor in reprehenderit cepteur sint ocae cat cupidatat non proident sunt in culpa quis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="00ms" data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <h6>Step 1</h6>
+                                <div class="icon-box">
+                                    <div class="arrow" style="background-image: url(assets/images/icons/arrow-1.png);"></div>
+                                    <i class="flaticon-document"></i>
+                                </div>
+                                <h3><a href="index-2.html">Fill In The <br />Required Form</a></h3>
+                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="300ms" data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <h6>Step 2</h6>
+                                <div class="icon-box">
+                                    <div class="arrow" style="background-image: url(assets/images/icons/arrow-1.png);"></div>
+                                    <i class="flaticon-copy"></i>
+                                </div>
+                                <h3><a href="index-2.html">Submit All Your <br />Attested Documents</a></h3>
+                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
+                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="600ms" data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <h6>Step 3</h6>
+                                <div class="icon-box"><i class="flaticon-plane"></i></div>
+                                <h3><a href="index-2.html">Get Ready To <br />Receive your Visa</a></h3>
+                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- apply-style-two -->
+
+
+        <!-- offer-section -->
+        <!-- <section class="offer-section">
+            <div class="pattern-layer" style="background-image: url(assets/images/shape/pattern-5.png);"></div>
+            <div class="auto-container">
+                <div class="sec-title light centred">
+                    <p>countries we offer support</p>
+                    <h2>Apply For Quick Visa</h2>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <div class="four-item-carousel owl-carousel owl-theme owl-dots-none">
+                    <div class="single-item">
+                        <div class="inner-box">
+                            <figure class="image-box"><img src="assets/images/resource/offer-1.jpg" alt=""></figure>
+                            <div class="text"><h4><a href="index-2.html">United States</a></h4></div>
+                        </div>
+                    </div>
+                    <div class="single-item">
+                        <div class="inner-box">
+                            <figure class="image-box"><img src="assets/images/resource/offer-2.jpg" alt=""></figure>
+                            <div class="text"><h4><a href="index-2.html">Europe</a></h4></div>
+                        </div>
+                    </div>
+                    <div class="single-item">
+                        <div class="inner-box">
+                            <figure class="image-box"><img src="assets/images/resource/offer-3.jpg" alt=""></figure>
+                            <div class="text"><h4><a href="index-2.html">Australia</a></h4></div>
+                        </div>
+                    </div>
+                    <div class="single-item">
+                        <div class="inner-box">
+                            <figure class="image-box"><img src="assets/images/resource/offer-4.jpg" alt=""></figure>
+                            <div class="text"><h4><a href="index-2.html">NewZealand</a></h4></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- offer-section end -->
+
+
+        <!-- team-section -->
+        <section class="team-section">
+            <div class="auto-container">
+                <div class="top-inner">
+                    <div class="row clearfix">
+                        <div class="col-lg-5 col-md-12 col-sm-12 title-column">
+                            <div class="sec-title">
+                                <p>How we help clients</p>
+                                <h2>Best Consultant Ready To Help</h2>
+                             
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-12 col-sm-12 text-column">
+                            <div class="text">
+                                <p>We bridge the gap between students and the finest visa consultants, empowering you with access to professionals who excel in navigating the complexities of international education.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row clearfix">
+                    {% for consultant, details in top_consultants %}
+                        <div class="col-lg-3 col-md-6 col-sm-12 team-block">
+                            <div class="team-block-one wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                                <div class="inner-box">
+                                <figure class="image-box" style="height: 170px !important;">
+                                        {% if consultant.consultant_img %}
+                                            <img src="{{ consultant.consultant_img.url }}" alt="{{ consultant.full_name }}">
+                                        {% else %}
+                                            <!-- Provide a default image or placeholder if no image is available -->
+                                            <img src="{% static 'path/to/default/image.jpg' %}" alt="{{ consultant.full_name }}">
+                                        {% endif %}
+                                        <ul class="social-links clearfix">
+                                            <!-- Access social links from the ConsultantDetails model -->
+                                            <li><a href="{{ details.consultant_twitter }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="{{ details.consultant_facebook }}" target="_blank"><i class="fab fa-facebook"></i></a></li>
+                                        </ul>
+                                    </figure>
+                                    <div class="lower-content">
+                                        <h4><a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}">{{ consultant.full_name }}</a></h4>
+                                        <span class="designation">{{ consultant.company_name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {% comment %} <section class="testimonial-style-two bg-color-3">
+            <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-6.png'%});"></div>
+            <div class="auto-container">
+                <div class="sec-title centred">
+                    <p>clients testimonials</p>
+                    <h2>What Customers <br />Saying About Student Visa BD</h2>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <div class="two-column-carousel owl-carousel owl-theme owl-nav-none">
+                    <div class="testimonial-block-one">
+                        <div class="inner-box">
+                            <div class="author-inner">
+                                <figure class="image-box"><img src={% static "assets/images/resource/testimonial-1.png" %} alt="">
+                                </figure>
+                                <h5>James Thomas</h5>
+                                <span class="designation">California, USA</span>
+                            </div>
+                            <div class="content-inner">
+                                <div class="rating-box">
+                                    <h6>Green Card Approved</h6>
+                                    <ul class="rating">
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                    </ul>
+                                </div>
+                                <div class="text">
+                                    <p>Dolor sitam consectetur sed adipisicing eiusmod tempor cididunt laboret dolors
+                                        magn aliquat enim sed minim veniam eu nostrud lorem ipsum dolor.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> {% endcomment %}
+        <!-- testimonial-style-two end -->
+
+
+        <!-- news-section -->
+        <section class="news-section">
+            {% comment %} <div class="auto-container">
+                <div class="top-inner">
+                    <div class="row clearfix">
+                        <div class="col-lg-5 col-md-12 col-sm-12 title-column">
+                            <div class="sec-title">
+                                <p>How we help clients</p>
+                                <h2>Informasi Terkini</h2>
+                                <div class="dotted-box">
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                    <span class="dotted"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-12 col-sm-12 text-column">
+                            <div class="text">
+                                <p>Sponsoring and managing work visas parts now becoming results the experience aute
+                                    irure dolor in reprehenderit cepteur sint ocae cat cupidatat non proident sunt in
+                                    culpa quis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-lg-4 col-md-6 col-sm-12 news-block">
+                        <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="00ms"
+                            data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <figure class="image-box"><a href="blog-details.html"><img
+                                            src={% static "assets/images/news/news-1.jpg" %} alt=""></a></figure>
+                                <div class="lower-content">
+                                    <div class="post-date">
+                                        <h2>18</h2><span>apr</span>
+                                    </div>
+                                    <h3><a href="blog-details.html">Covid-19 And Its Impact On USA Immigration</a></h3>
+                                    <ul class="post-info clearfix">
+                                        <li><a href="index.html">By Admin</a></li>
+                                        <li><a href="index.html">Study Visa</a>,<a href="index.html">Work</a></li>
+                                    </ul>
+                                    <div class="link"><a href="blog-details.html">Learn More<i
+                                                class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 news-block">
+                        <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="300ms"
+                            data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <figure class="image-box"><a href="blog-details.html"><img
+                                            src={% static "assets/images/news/news-2.jpg" %} alt=""></a></figure>
+                                <div class="lower-content">
+                                    <div class="post-date">
+                                        <h2>17</h2><span>apr</span>
+                                    </div>
+                                    <h3><a href="blog-details.html">UK To Offers Point-Based Immigration Process</a>
+                                    </h3>
+                                    <ul class="post-info clearfix">
+                                        <li><a href="index.html">By Admin</a></li>
+                                        <li><a href="index.html">Europe Permit</a></li>
+                                    </ul>
+                                    <div class="link"><a href="blog-details.html">Learn More<i
+                                                class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 news-block">
+                        <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="600ms"
+                            data-wow-duration="1500ms">
+                            <div class="inner-box">
+                                <figure class="image-box"><a href="blog-details.html"><img
+                                            src={% static "assets/images/news/news-3.jpg" %} alt=""></a></figure>
+                                <div class="lower-content">
+                                    <div class="post-date">
+                                        <h2>16</h2><span>apr</span>
+                                    </div>
+                                    <h3><a href="blog-details.html">Kickstart Your Visa ApprovalWith 4 Easy Steps</a>
+                                    </h3>
+                                    <ul class="post-info clearfix">
+                                        <li><a href="index.html">By Admin</a></li>
+                                        <li><a href="index.html">Immigration</a></li>
+                                    </ul>
+                                    <div class="link"><a href="blog-details.html">Learn More<i
+                                                class="flaticon-send"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+        </section>
+    
+        <!-- news-section end -->
+
+
+        <!-- clients-section -->
+        <section class="clients-section">
+            <div class="auto-container">
+                {% if clients|length > 1 %}
+                <div class="four-item-carousel owl-carousel owl-theme owl-dots-none owl-nav-none">
+                    {% for client in clients %}
+                    <figure class="logo-image"><a href="{{ client.client_url }}" target="_blank"><img src="{{ client.client_image.url }}" alt="" ></a></figure>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <figure class="logo-image"><a href="{{ clients.0.client_url }}" target="_blank"><img src="{{ clients.0.client_image.url }}" alt="" ></a></figure>
+                {% endif %}
+            </div>
+        </section>
+        <!-- clients-section end -->
+{% endblock content %}
+        

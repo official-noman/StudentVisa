@@ -1,0 +1,347 @@
+.auto-container {
+    position: static;
+    max-width: 1180px !important;
+    padding: 0px 0px !important; 
+    margin: 0 auto;
+}
+
+.select2-container {
+    width: 100% !important;
+    margin-bottom: 15px !important; /* Optional: Add some margin for spacing */
+  }
+
+  /* Style the selection area */
+  .select2-selection {
+    height: 38px !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    background-color: #fff !important;
+  }
+
+  /* Style the selected option */
+  .select2-selection__rendered {
+    line-height: 36px !important;
+    padding-left: 10px !important;
+    color: #495057 !important;
+  }
+
+  /* Style the dropdown arrow */
+  .select2-selection__arrow {
+    top: 10px !important;
+  }
+
+  /* Style the dropdown list */
+  .select2-dropdown {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Style the options in the dropdown */
+  .select2-results__option {
+    padding: 8px 10px !important;
+    color: #495057 !important;
+  }
+
+  /* Style the highlighted option */
+  .select2-results__option--highlighted {
+    background-color: #007bff !important;
+    color: #fff !important;
+  }
+  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
+    font-size: 0.812rem;
+    border-radius: 6px;
+  }
+
+
+.emp-profile{
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    border-radius: 0.5rem;
+    background: #fff;
+}
+.profile-img{
+    text-align: center;
+}
+.profile-img img{
+    width: 162px;
+    height: 162px;
+}
+.profile-img .file {
+    position: relative;
+    overflow: hidden;
+    margin-top: -20%;
+    width: 70%;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    background: #212529b8;
+}
+.profile-img .file input {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+.profile-head h5{
+    color: #333;
+}
+.profile-head h6{
+    color: #0062cc;
+}
+.profile-edit-btn{
+    border: none;
+    border-radius: 1.5rem;
+    width: 70%;
+    padding: 2%;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+}
+.proile-rating{
+    font-size: 12px;
+    color: #818182;
+    margin-top: 5%;
+}
+.proile-rating span{
+    color: #495057;
+    font-size: 15px;
+    font-weight: 600;
+}
+.profile-head .nav-tabs{
+    margin-bottom:5%;
+}
+.profile-head .nav-tabs .nav-link{
+    font-weight:600;
+    border: none;
+}
+.profile-head .nav-tabs .nav-link.active{
+    border: none;
+    border-bottom:2px solid #0062cc;
+}
+.profile-work{
+    padding: 14%;
+    margin-top: -15%;
+}
+.profile-work p{
+    font-size: 12px;
+    color: #818182;
+    font-weight: 600;
+    margin-top: 10%;
+}
+.profile-work a{
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+.profile-work ul{
+    list-style: none;
+}
+.profile-tab label{
+    font-weight: 600;
+}
+.profile-tab p{
+    font-weight: 600;
+    color: #0062cc;
+}
+
+/* .row {
+    display: flex;
+} */
+
+/* Date picker starts */
+.datepicker{
+    z-index: 999 !important;
+}
+
+.date-input {
+    /* background-color: #fff;
+    border: none; */
+
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+.datepicker-dropdown {
+    top: 0;
+    left: 0;
+}
+
+.datepicker table tr td.today, span.focused {
+    border-radius: 50% !important;
+}
+
+thead tr:nth-child(2) {
+    /* background: rgb(62,7,75); */
+    background: rgb(7, 59, 88);
+    background: linear-gradient(180deg, rgba(7, 59, 88, 1) 0%, rgb(4, 68, 83) 63%);
+}
+
+thead tr:nth-child(3) th {
+    /* color: #400053 !important; */
+    color: rgb(7, 59, 88);
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.dow, .old-day, .day, .new-day {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 0px !important;
+}
+
+.old-day:hover, .day:hover, .new-day:hover, .month:hover, .year:hover, .decade:hover, .century:hover {
+    border-radius: 50% !important;
+    background-color: #eee;
+}
+
+.day.active {
+    border-radius: 50% !important;
+    background-image: linear-gradient(#054c75, #0c5580) !important;
+    color: #fff !important;
+}
+
+.prev, .next, .datepicker-switch {
+    border-radius: 0 !important;
+    padding: 20px 10px !important;
+    text-transform: uppercase;
+    font-size: 20px;
+    color: #fff;
+    opacity: 0.8; 
+}
+
+.prev:hover, .next:hover, .datepicker-switch:hover {
+    background-color: inherit !important;
+    opacity: 1;
+}
+/* Date picker ends */
+
+.calendar-div{
+    position: relative;
+}
+
+.calendar-icon{
+    cursor: pointer;
+    position: absolute;
+    top: 40px;
+    right: 20px;
+}
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    flex: 0 0 180px; /* Set the width to 180px */
+}
+
+.content-div {
+    flex-grow: 1; /* Take up the remaining space */
+}
+.btn-info {
+    color: #fff;
+    background-color: #0bddff !important;
+    border-color: #17a2b8 !important;
+}
+
+/* Popup container starts */
+.popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 999999999;
+}
+
+.popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.delete-popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 99;
+}
+
+.delete-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.popup {
+    position: relative;
+    background-color: rgb(30, 56, 59);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 235px;
+    width: 300px;
+}
+
+.delete-popup {
+    position: relative;
+    background-color: rgb(59, 30, 30);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 250px;
+    width: 300px;
+}
+
+.success-tick{
+    position: absolute;
+    top: -50px;
+    height: 150px;
+    width: 150px;
+}
+
+.registration-success-div{
+    position: absolute;
+    top: 120px;
+}
+
+.registration-success-div p span{
+    color: rgb(245, 245, 245);
+}
+
+.close-icon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.successful-text{
+    font-size: 18px;
+}
+/* Popup container ends */

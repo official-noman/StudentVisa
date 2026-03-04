@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block custom_css %}
+<style>
+
+
+    .emp-profile{
+        padding: 3%;
+        margin-top: 3%;
+        margin-bottom: 3%;
+        border-radius: 0.5rem;
+        background: #fff;
+    }
+    .profile-img{
+        text-align: center;
+    }
+    .profile-img img{
+        width: 70%;
+        height: 100%;
+    }
+    .profile-img .file {
+        position: relative;
+        overflow: hidden;
+        margin-top: -20%;
+        width: 70%;
+        border: none;
+        border-radius: 0;
+        font-size: 15px;
+        background: #212529b8;
+    }
+    .profile-img .file input {
+        position: absolute;
+        opacity: 0;
+        right: 0;
+        top: 0;
+    }
+    .profile-head h5{
+        color: #333;
+    }
+    .profile-head h6{
+        color: #0062cc;
+    }
+    .profile-edit-btn{
+        border: none;
+        border-radius: 1.5rem;
+        width: 100%;
+        padding: 2%;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
+    }
+    .proile-rating{
+        font-size: 12px;
+        color: #818182;
+        margin-top: 5%;
+    }
+    .proile-rating span{
+        color: #495057;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .profile-head .nav-tabs{
+        margin-bottom:5%;
+    }
+    .profile-head .nav-tabs .nav-link{
+        font-weight:600;
+        border: none;
+    }
+    .profile-head .nav-tabs .nav-link.active{
+        border: none;
+        border-bottom:2px solid #0062cc;
+    }
+    .profile-work{
+        padding: 14%;
+        margin-top: -15%;
+    }
+    .profile-work p{
+        font-size: 12px;
+        color: #818182;
+        font-weight: 600;
+        margin-top: 10%;
+    }
+    .profile-work a{
+        text-decoration: none;
+        color: #495057;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .profile-work ul{
+        list-style: none;
+    }
+    .profile-tab label{
+        font-weight: 600;
+    }
+    .profile-tab p{
+        font-weight: 600;
+        color: #0062cc;
+    }
+    table {
+        border-collapse: collapse;
+        border: 1px solid #cecece;
+    }
+    td {
+        border: 1px solid #cecece;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        padding: 8px;
+        text-align: left;
+    }
+        .signin-left-ad-div,
+        .signin-right-ad-div {
+            flex: 0 0 180px; /* Set the width to 180px */
+        }
+        
+        .content-div {
+            flex-grow: 1; /* Take up the remaining space */
+        }
+</style>
+
+
+<!-- Include Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+<!-- Include Select2 JS -->
+
+{% endblock custom_css %}
+
+{% block content %}
+    <!-- Content for the page -->
+    <div class="container">
+        <div class="row">
+        
+            <div class="content-div">
+                <section class="result-form">
+                    <div class="container emp-profile">
+                        <form method="post">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="profile-img">
+                                        {% if student_details and student_details.student_image %}
+                                        <img src="{{ student_details.student_image.url }}" alt="{{ student_user.username }}'s Image">
+                                    
+                                    {% else %}
+                                        <p>No image available</p>
+                                    {% endif %}
+                                    
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="profile-head">
+                                                <h5>
+                                                {{student.full_name}}
+                                                </h5>
+                                                <h6>
+                                                    {{ student.get_user_type_display }}
+                                                </h6>
+                                                <p class="proile-rating">Consultant : <span>{{ consultant_count }}</span></p>
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Result</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="button" class="profile-edit-btn btn-info" onclick="redirectToEditProfile()" value="Edit"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="profile-work">
+                                        {% comment %} <p>WORK LINK</p>
+                                        <a href="">Website Link</a><br/>
+                                        <a href="">Bootsnipp Profile</a><br/>
+                                        <a href="">Bootply Profile</a>
+                                        <p>SKILLS</p>
+                                        <a href="">Web Designer</a><br/>
+                                        <a href="">Web Developer</a><br/>
+                                        <a href="">WordPress</a><br/>
+                                        <a href="">WooCommerce</a><br/>
+                                        <a href="">PHP, .Net</a><br/> {% endcomment %}
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="tab-content profile-tab" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                            <div></div>
+                                            <table class="w-100">
+                                                <colgroup>
+                                                    <col class="col-md-6">
+                                                    <col class="col-md-6">
+                                                </colgroup>
+                                                <tr>
+                                                    <td class="col-md-6">Name</td>
+                                                    <td class="col-md-6">{{student.full_name}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-6">Email</td>
+                                                    <td class="col-md-6">{{student.email}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-6">Phone</td>
+                                                    <td class="col-md-6">{{student.phone}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-6">Address</td>
+                                                    <td class="col-md-6">{{student.address}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-6">Target Country</td>
+                                                    <td class="col-md-6">
+                                                        {% for country in student.countries.all %}
+                                                        <p>{{ country.country_name }}</p>
+                                                        {% endfor %}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane fade mb-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                            <!-- SSC Results -->
+                                            <div class="mb-4">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col class="col-md-6">
+                                                        <col class="col-md-6">
+                                                    </colgroup>
+                                                    <tr>
+                                                        <th>SSC Results</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    {% for result in results %}
+                                                    <tr>
+                                                        <td class="col-md-6">Board</td>
+                                                        <td class="col-md-6">{{ result.secondary_board }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">GPA</td>
+                                                        <td class="col-md-6">{{ result.secondary_result }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Passing Year</td>
+                                                        <td class="col-md-6">{{ result.secondary_passing_year }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+
+
+                                            <!--<h4>SSC Results</h4>
+                                            {% for result in results %}
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Board</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p>{{ result.secondary_board }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>GPA</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p>{{ result.secondary_result }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Passing Year</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p>{{ result.secondary_passing_year }}</p>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}-->
+                                            
+                                            <!-- HSC Results -->
+                                            <div class="mb-4">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col class="col-md-6">
+                                                        <col class="col-md-6">
+                                                    </colgroup>
+                                                    <tr>
+                                                        <th>HSC Results</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    {% for result in results %}
+                                                    <tr>
+                                                        <td class="col-md-6">Board</td>
+                                                        <td class="col-md-6">{{ result.higher_board }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">GPA</td>
+                                                        <td class="col-md-6">{{ result.higher_result }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Passing Year</td>
+                                                        <td class="col-md-6">{{ result.higher_passing_year }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+
+                                            <!-- Undergaduation Results -->
+                                            <div class="mb-4">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col class="col-md-6">
+                                                        <col class="col-md-6">
+                                                    </colgroup>
+                                                    <tr>
+                                                        <th>Undergraduation Results</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    {% for result in results %}
+                                                    <tr>
+                                                        <td class="col-md-6">University</td>
+                                                        <td class="col-md-6">{{ result.university_name }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">GPA</td>
+                                                        <td class="col-md-6">{{ result.undergraduation_result }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Passing Year</td>
+                                                        <td class="col-md-6">{{ result.undergraduation_passing_year }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+
+                                            <!-- Masters Results -->
+                                            <div class="mb-4">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col class="col-md-6">
+                                                        <col class="col-md-6">
+                                                    </colgroup>
+                                                    <tr>
+                                                        <th>Masters Results</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    {% for masters_degree in masters_degrees %}
+                                                    <tr>
+                                                        <td class="col-md-6">Department</td>
+                                                        <td class="col-md-6">{{ masters_degree.department }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">University</td>
+                                                        <td class="col-md-6">{{ masters_degree.university }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">GPA</td>
+                                                        <td class="col-md-6">{{ masters_degree.result }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Passing Year</td>
+                                                        <td class="col-md-6">{{ masters_degree.passing_year }}</td>
+                                                    </tr>
+                                                    {% if not forloop.last %}
+                                                    <tr style="height: 20px;">
+                                                        <td class="col-md-6" style="border-bottom: 1px solid #cecece; border-right: none;"></td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+
+                                            <!-- Other Certifications -->
+                                            <div class="mb-4">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col class="col-md-6">
+                                                        <col class="col-md-6">
+                                                    </colgroup>
+                                                    <tr>
+                                                        <th>Other Certifications</th>
+                                                        <th></th>
+                                                    </tr>
+                                                    {% for other_certification in other_certifications %}
+                                                    <tr>
+                                                        <td class="col-md-6">Course Name</td>
+                                                        <td class="col-md-6">{{ other_certification.course_name }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Institute</td>
+                                                        <td class="col-md-6">{{ other_certification.institute }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Result</td>
+                                                        <td class="col-md-6">{{ other_certification.result }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="col-md-6">Passing Year</td>
+                                                        <td class="col-md-6">{{ other_certification.passing_year }}</td>
+                                                    </tr>
+                                                    {% if not forloop.last %}
+                                                    <tr style="height: 20px;">
+                                                        <td class="col-md-6" style="border-bottom: 1px solid #cecece; border-right: none;"></td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>           
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock content %}
+{% block js %}
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    function redirectToEditProfile() {
+        window.location.href = "{% url 'edit_student_profile' %}";
+    }
+</script>
+{% endblock js %}

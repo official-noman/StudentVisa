@@ -1,0 +1,44 @@
+{% extends 'consultant_base.html' %} {% load static %}
+{% block custom_css%}
+<link href="{% static 'assets/css/country_details.css' %}" rel="stylesheet">
+{% endblock custom_css%}
+{% block content %}
+    <section class="page-title " style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box my-2">
+                <div class="title-box">
+                    <h1>Country</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a></li>
+                    <li>{{consultant.company_name}}</li>
+                    <li>Country</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="d-flex" style="flex-wrap: nowrap;">
+        <div class="content-div">
+            <section class="immigration-section">
+                <div class="auto-container">
+                    <div class="float-left">
+                        <img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}" alt="{{ country.country_name }} Flag">
+                    </div>
+                
+                    <div class="clearfix" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px; text-align:justify;">
+                        <p class="how-to-apply-text">
+                            <strong>{{ country_howtoapply | safe }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock content %}
+        

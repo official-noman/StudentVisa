@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+     <title>{{ consultant.company_name }} | {{ page_name }} | Student Visa Bd</title>
+  
+    <!-- Fav Icon -->
+       <link rel="icon" href={% static "assets/images/icon.png" %} type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap"
+        rel="stylesheet">
+        
+    <!--Fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!--Fontawesome-->
+
+    <!-- Stylesheets -->
+    <link href={% static 'assets/css/font-awesome-all.css'%} rel="stylesheet">
+    <link href={% static "assets/css/flaticon.css"%} rel="stylesheet">
+    <link href={% static "assets/css/owl.css"%} rel="stylesheet">
+    <link href={% static "assets/css/bootstrap.css" %} rel="stylesheet">
+    <link href={% static "assets/css/jquery.fancybox.min.css" %} rel="stylesheet">
+    <link href={% static "assets/css/animate.css"%} rel="stylesheet">
+    <!-- <link href="assets/css/color/theme-color.css" id="jssDefault" rel="stylesheet"> -->
+    <link href={% static "assets/css/switcher-style.css" %} rel="stylesheet">
+    <link href={% static "assets/css/style.css"%} rel="stylesheet">
+    <link href={% static "assets/css/responsive.css" %} rel="stylesheet">
+    <link href={% static "assets/css/ad_columns.css"%} rel="stylesheet">
+    {% block custom_css %}{% endblock custom_css %}
+    <style>
+        @media only screen and (max-width: 1200px)
+.main-footer .footer-top .footer-column:nth-child(2) .links-widget {
+    margin-left: 24px !important;
+}
+        :root {
+            --header-color: #03546C;
+            --content-color: #00000;
+            --footer-color: #0c2136;
+        }
+
+        .header-upper {
+            background-color: var(--header-color) !important;
+            /* Additional styles for the header-upper element... */
+        }
+        .bg-color-2{
+            background-color: var(--footer-color) !important;
+        }
+
+        .phone-icon{
+            /*color: var(--header-color) !important;*/
+            color: blue !important;
+        }
+
+        .phone-icon-number{
+            /*color: var(--header-color) !important;*/
+            color: blue !important;
+        }
+
+        .main-header.style-two .main-menu .navigation > li > a{
+            color: white;
+        }
+    
+        .main-header.style-two .main-menu .navigation > li > span{
+            color: white;
+        }
+
+        .add-header {
+            position: relative;
+        }
+        
+        .add-header::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%; /* Adjust the width to your preference */
+            border-bottom: 1px solid black;
+        }
+        
+        .main-header.style-two {
+            color: white !important;
+          }
+          .main-header.style-two .main-menu .navigation > li.act > a {
+            color: #56ff00;
+        }
+        .main-header.style-two .main-menu .navigation > li:hover > a {
+            color: #56ff00;
+        }
+/*.cover-image-single {*/
+/*    position: relative;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    max-width: 1209px;*/
+/*    height: 500px;*/
+/*    margin-left: 35px;*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*    background-image: url(/static/assets/new-assets/banner/banner-6.jpg);*/
+/*}*/
+.custom-logo-box {
+    width: 330px !important;
+    flex-shrink: 0;
+}
+.main-header.style-two .logo-box .logo-cd img {
+    width: 112px !important;
+    height: 112px !important;
+}
+.main-header.style-two .logo-box .logo-cd {
+    position: relative;
+    padding: 12.5px 0px;
+}
+.logo-heading {
+    flex-grow: 1;
+}
+
+#facebookPluginContainer {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    display: none;
+    z-index: 9999; /* Ensure the plugin appears on top of other elements */
+}
+
+.fb-page.facebook-link-consultant{
+    width: 100%;
+}
+
+#toggleFacebookPageBtn i.fas.fa-times {
+    position: absolute;
+    right: 10px; /* Adjust this value as needed */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#toggleFacebookPageBtn.open {
+bottom: 270px;
+right: 18px;
+}
+#toggleFacebookPageBtn {
+    position: absolute;
+    bottom: 0px;
+    padding: 1px 85px;
+    padding-left: 6px;
+    width: 251px;
+    color: #fff;
+    height: 38px;
+    line-height: 38px;
+    background-color: #3a5897;
+    border: 0;
+    z-index: 9999999;
+    margin-right: -8px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+    background-repeat: repeat-x;
+    background-size: auto;
+    background-position: 0 0;
+    text-decoration: none;
+    right: 10px;
+    border-radius: 3px;
+    transition: bottom 0.3s ease;
+}
+#openChatBtn {
+    position: absolute;
+    bottom: 18px;
+    padding: 2px 49px;
+    padding-left: 6px;
+    width: 250px;
+    color: #fff;
+    height: 38px;
+    line-height: 38px;
+    background-color: #3a5897;
+    border: 0;
+    z-index: 9999999;
+    margin-right: -8px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+    background-repeat: repeat-x;
+    background-size: auto;
+    background-position: 0 0;
+    text-decoration: none;
+    right: 10px;
+    border-radius: 5px;
+    display: none;
+}
+.custom-logo-box {
+width: 330px !important;
+flex-shrink: 0;
+}
+#openChatBtn i {
+    margin-right: 5px;
+}
+#_2p3a{
+
+    min-width: 145px !important;
+    width: 249px !important;
+}
+iframe[Attributes Style] {
+    width: 400px !important;
+    height: 400px !important;
+}
+.about-style-two {
+    position: relative;
+    padding: 21px 0px 110px 0px !important;
+}
+.menu-area .mobile-nav-toggler {
+
+    margin-bottom: 10px;
+
+}
+    </style>
+</head>
+
+
+
+
+<body>
+    <div class="boxed_wrapper">
+        <!-- Preloader -->
+        <div class="loader-wrap">
+            <div class="preloader">
+                <div class="preloader-close">Preloader Close</div>
+            </div>
+            <div class="layer layer-one"><span class="overlay"></span></div>
+            <div class="layer layer-two"><span class="overlay"></span></div>
+            <div class="layer layer-three"><span class="overlay"></span></div>
+        </div>
+
+        {% comment %} <div class="switcher">
+            <div class="switch_btn">
+                <button><i class="fas fa-palette"></i></button>
+            </div>
+            <div class="switch_menu">
+                <!-- color changer -->
+                <div class="switcher_container">
+                    <ul id="styleOptions" title="switch styling">
+                        <li>
+                            <a href="javascript: void(0)" data-theme="red" class="red-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="pink" class="pink-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="violet" class="violet-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="crimson" class="crimson-color"></a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0)" data-theme="orange" class="orange-color"></a>
+                        </li>
+                    </ul>
+                </div> 
+            </div>
+        </div> {% endcomment %}
+        <!-- end switcher menu -->
+
+        <!-- search-popup -->
+        <div id="search-popup" class="search-popup">
+            <div class="close-search"><span>Close</span></div>
+            <div class="popup-inner">
+                <div class="overlay-layer"></div>
+                <div class="search-form">
+                    <form method="post" action="">
+                        <div class="form-group">
+                            <fieldset>
+                                <input type="search" class="form-control" name="search-input" value=""
+                                    placeholder="Search Here" required>
+                                <input type="submit" value="Search Now!" class="theme-btn style-four">
+                            </fieldset>
+                        </div>
+                    </form>
+                    <h3>Recent Search Keywords</h3>
+                    <ul class="recent-searches">
+                        <li><a href="index.html">Finance</a></li>
+                        <li><a href="index.html">Idea</a></li>
+                        <li><a href="index.html">Service</a></li>
+                        <li><a href="index.html">Growth</a></li>
+                        <li><a href="index.html">Plan</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- search-popup end -->
+
+
+        <!-- main header -->
+        <header class="main-header style-two">
+            <div class="w-100">
+                <div class="header-top header-top-advertise mx-auto px-0" style="max-width: 1180px;">
+                    <div class="auto-container">
+                        <div class="top-inner clearfix top-inner-advertise d-flex">
+                            <div class="logo-box custom-logo-box custom-pull pull-left">
+                                <figure class="logo-cd py-0">
+                                    <a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">
+                                        {% if consultant_details.consultant_logo %}
+                                            <img src="{{ consultant_details.consultant_logo.url }}" alt="">
+                                        {% else %}
+                                            <img src="{% static 'assets/images/images.jpg' %}" alt="Dummy Image">
+                                        {% endif %}
+                                        
+                                    </a>
+                                </figure>
+                            </div>
+                           <div class="logo-heading d-block">
+                                <div class="add-header d-flex justify-content-center">
+                                    <div class="mr-4">
+                                        <h3 class="text-center" style="color: black;">{{ consultant.company_name }}</h3>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-center mt-1">
+                                        <i class="fa-solid fa-phone phone-icon "></i>
+                                        {% if consultant.active_status == 5 %}
+                                        <h6 class="phone-icon-number ml-2" style="color: #0e467d; text-shadow: 1px 1px #396c9e;">{{ consultant.phone }}</h6>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                    <div class="col-md-8 banner-image" style="padding-right: 0px;padding-left: 5px">
+                                           <!--Google Ad Start-->
+                                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                                    <!-- StudentVisa720 -->
+                                    <ins class="adsbygoogle"
+                                         style="display:inline-block;width:728px;height:90px"
+                                         data-ad-client="ca-pub-5227250042742723"
+                                         data-ad-slot="2746111018"></ins>
+                                    <script>
+                                    (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-upper" id="header" >
+                <div class="auto-container" style="max-width: 1180px;">
+                    <div class="outer-box clearfix">
+
+                        <div class="menu-area">
+                            <!--Mobile Navigation Toggler-->
+                            <div class="mobile-nav-toggler">
+                                <i class="icon-bar"></i>
+                                <i class="icon-bar"></i>
+                                <i class="icon-bar"></i>
+                            </div>
+                            <nav class="main-menu navbar-expand-md navbar-light">
+                                <div class="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
+                                    <ul class="navigation clearfix">
+                                        {% comment %} class="current active" {% endcomment %}
+                                        <li class="{% if request.resolver_match.url_name == 'singel_consultant_page' %}current act {% endif %}">
+                                            <a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a>
+                                        </li>
+                                        <li  class="{% if request.resolver_match.url_name == 'singel_consultant_profile' %}current act {% endif %}"><a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}">Profile</a></li>
+                            
+                                        <li  class="{% if request.resolver_match.url_name == 'singel_consultant_gallery' %}current act {% endif %}"><a href="{% url 'singel_consultant_gallery' consultant_id=consultant.id %}">Gallery</a></li>
+                                        <li  class="{% if request.resolver_match.url_name == 'single_consultant_requirement' %}current act {% endif %}"><a href="{% url 'single_consultant_requirement' consultant_id=consultant.id %}">Requirements</a></li>
+                                        <li class="{% if request.resolver_match.url_name == 'singel_consultant_country' %}current act {% endif %}"><a href="{% url 'singel_consultant_country' consultant_id=consultant.id %}">Country</a></li>
+                                        <li  class="{% if request.resolver_match.url_name == 'singel_consultant_review' %}current act {% endif %}"><a href="{% url 'singel_consultant_review' consultant_id=consultant.id %}">Review Consultant</a></li>
+                                       
+                                   
+                                        <li class="dropdown {% if request.resolver_match.url_name == 'single_consultant_contact' %}current act {% endif %} {% if request.resolver_match.url_name == 'feedback' %}current act {% endif %}"><span class="nav-span">Contact Us</span>
+                                            <ul>
+                                                <li><a href="{% url 'single_consultant_contact' consultant_id=consultant.id %}">Contact Us</a></li>
+                                                <li><a href="{% url 'feedback' consultant_id=consultant.id %}">Feedback</a></li>
+                                            </ul>
+                                        </li>
+                                           {% if request.user.is_authenticated and request.user.user_type == 2 %}
+                                        <li style="margin-left: 10px;">
+                                            {% if consultant.id not in fav_consultant_ids %}
+                                                <a href="{% url 'add_to_favorite' consultant_id=consultant.id %}" class="theme-btn-four" style="font-size: 20px; font-weight: 600; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); color: #ffcbcb;">Add To Favourite</a>
+                                            {% endif %}
+                                        </li>
+                                    {% else %}
+                                        <li style="margin-left: 10px;">
+                                            <a href="{% url 'login_student' %}" class="theme-btn-four" style="font-size: 20px; font-weight: 600; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); color: #ffcbcb;"> Add To Favourite</a>
+                                        </li>
+                                    {% endif %}
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--sticky Header-->
+            <div class="sticky-header">
+                <div class="auto-container">
+                    <div class="outer-box clearfix">
+                        <div class="logo-box pull-left">
+                            <figure class="logo">
+                                <a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">
+                                    {% if consultant_details.consultant_logo %}
+                                        <img src="{{ consultant_details.consultant_logo.url }}" alt="">
+                                    {% else %}
+                                        <img src="{% static 'assets/images/images.jpg' %}" alt="Dummy Image">
+                                    {% endif %}
+                                    <h3>
+                                        {{ consultant.company_name }}
+                                    </h3>
+                                </a>
+                            </figure>
+                        </div>
+                        <div class="menu-area pull-right">
+                            <nav class="main-menu clearfix">
+                                <!--Keep This Empty / Menu will come through Javascript-->
+                            </nav>
+                        </div>
+                        <div class="menu-area pull-right">
+                            <div class="mobile-nav-toggler">
+                                <i class="icon-bar"></i>
+                                <i class="icon-bar"></i>
+                                <i class="icon-bar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- main-header end -->
+
+        <!-- Mobile Menu  -->
+        <div class="mobile-menu">
+            <div class="menu-backdrop"></div>
+            <div class="close-btn"><i class="fas fa-times"></i></div>
+            <nav class="menu-box">
+                <div class="nav-logo">
+                    <a href="#">
+                        <img src={% static "assets/images/logo.png"%} alt="" title="">
+                    </a>
+                </div>
+                <div class="menu-outer">
+                    <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
+                </div>
+                <div class="contact-info">
+                    <h4>Contact Info</h4>
+                    <ul>
+                        <li>House #33A (4th Floor), Road #4, Dhanmondi, Dhaka 1205</li>
+                        <li><a href="tel:+8801682648101">+88 01823037726</a></li>
+                        <li><a href="mailto:info@example.com">info@studentvisabd.com</a></li>
+                    </ul>
+                </div>
+                <div class="social-links">
+                    <ul class="clearfix">
+                        <li><a href="#"><span class="fab fa-twitter"></span></a></li>
+                        <li><a href="#"><span class="fab fa-facebook-square"></span></a></li>
+                        <li><a href="#"><span class="fab fa-pinterest-p"></span></a></li>
+                        <li><a href="#"><span class="fab fa-instagram"></span></a></li>
+                        <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+<div class="container">
+    <div class="d-flex" style="flex-wrap: nowrap;">
+        <div class="content-div">
+            {% block content %}
+
+
+            {% endblock content %}
+        </div>
+
+    <div class="signin-right-ad-div">
+                    <div class="d-flex justify-content-end">
+                     <div class="row">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- SVBD_Home_A -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:200px;height:750px"
+         data-ad-client="ca-pub-5227250042742723"
+         data-ad-slot="9902546305">
+    </ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+</div>
+                    </div>
+    </div>
+</div>
+
+
+
+  <!-- main-footer -->
+<!-- main-footer -->
+<footer class="main-footer bg-color-2" id="footer-color">
+    <div class="auto-container">
+        <div class="footer-top">
+            <div class="widget-section">
+                <div class="row clearfix">
+                    <div class="col-lg-6 col-md-6 col-sm-12 footer-column">
+                        <div class="footer-widget logo-widget">
+                            <div class="widget-title">
+                                <h3>Location Map</h3>
+                            </div>
+                        
+                            <div class="widget-content">
+                                            <!-- Assuming consultant_maplocation contains the path to the image -->
+                    
+                                        {{ consultant_details.consultant_maplocation | safe }}
+                                            
+                              
+                            <ul class="social-links clearfix">
+                                <li><a href="index.html"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="index.html"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="index.html"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="index.html"><i class="fab fa-google-plus-g"></i></a></li>
+                                <li><a href="index.html"><i class="fab fa-linkedin-in"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
+                        <div class="footer-widget links-widget">
+                            <div class="widget-title">
+                                <h3>Facebook</h3>
+                            </div>
+                            <div class="widget-content">
+                                
+                                    <div class="fb-page facebook-link-consultant" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="timeline" data-width="300" data-height="200" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                        <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
+                                            <a href="{{ consultant_details.consultant_facebook }}">Facebook Page</a>
+                                        </blockquote>
+                                    </div>                        
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
+                        <div class="footer-widget links-widget">
+                            <div class="widget-title">
+                                <h3>Important Link</h3>
+                            </div>
+                            <div class="widget-content">
+                                <ul class="list clearfix">
+                                    <li><a href="https://unicodeconverter.info/" target="_blank">Bangla Converter</a></li>
+                                    <li><a href="http://www.passport.gov.bd/" target="_blank">Passport</a></li>
+                                    <li><a href="index.https://iglweb.com/web/" target="_blank">ICT Solution</a></li>
+                                    <li><a href="https://bangladesh.gov.bd/index.php" target="_blank">Bangladesh.Gov.Bd</a></li>
+                                    <li><a href="http://www.bangladeshpost.gov.bd/find-post-code.html" target="_blank">Find Postal Code</a></li>
+                                    <li><a href="https://moedu.gov.bd/" target="_blank">Ministry Of Education</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+  
+       <div class="footer-bottom clearfix">
+            <div class="copyright pull-left">
+                {% comment %} <p align="center" id="style1" style="color: #fff;"> 
+                    CopyRight © <color style="color: #fff;">Student Visa BD</color> 2018<br>
+                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/domainchecker.php">Domain Registration</a>,
+                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/hosting_regular_shared.php">Web Hosting</a> and 
+                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/training_web_design.php">Web Design</a>
+                 by: <a target="_blank" href="http://iglweb.com/" style="padding:0 0 0 0;color: #fff">IGL Web Ltd</a>
+            </p> {% endcomment %}
+                <p>(&copy;) 2018 <a href="index.https://studentvisabd.iglweb.com" target="_blank">Student Visa BD</a>  All rights reserved.
+                </p>
+            </div>
+            <ul class="footer-nav pull-right clearfix">
+                <li><a href="http://iglweb.com/web/domainchecker.php">Domain Registration</a></li>
+                <li><a href="http://iglweb.com/web/hosting_regular_shared.php">Web Hosting</a></li>
+                <li><a href="http://iglweb.com/">IGL Web Ltd</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<!-- main-footer end -->
+
+<!-- main-footer end -->
+
+
+<!--Scroll to top-->
+<button class="scroll-top scroll-to-target" data-target="html">
+    <i class="fas fa-long-arrow-alt-up"></i>
+</button>
+
+
+<div id="facebookPluginContainer" class="fb-page" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="messages" data-width="250" data-height="310" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false" data-show-posts="true">
+    <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
+        <a href="{{ consultant_details.consultant_facebook }}">StudentVisaBD</a>
+    </blockquote>
+</div>
+
+
+
+
+<button id="toggleFacebookPageBtn">
+    <i class="fab fa-facebook-square"></i> <!-- Facebook icon -->
+    Facebook Chat
+    <i class="fas fa-times"></i> <!-- Close (cross) icon -->
+</button>
+
+<script>
+    document.getElementById('toggleFacebookPageBtn').addEventListener('click', function () {
+        var fbPluginContainer = document.getElementById('facebookPluginContainer');
+        var toggleButton = document.getElementById('toggleFacebookPageBtn');
+
+        if (fbPluginContainer.style.display === 'none' || !fbPluginContainer.style.display) {
+            // Show Facebook Chat
+            fbPluginContainer.style.display = 'block';
+            toggleButton.innerText = 'Close Facebook Chat';
+            toggleButton.classList.add('open');
+        } else {
+            // Hide Facebook Chat
+            fbPluginContainer.style.display = 'none';
+            toggleButton.innerText = 'Open Chat';
+            toggleButton.classList.remove('open');
+        }
+
+        // Trigger reparse after toggling the display
+        FB.XFBML.parse();
+    });
+
+    // Add confirmation when closing the page
+    window.addEventListener('beforeunload', function (event) {
+        var fbPluginContainer = document.getElementById('facebookPluginContainer');
+        if (fbPluginContainer.style.display === 'block') {
+            var confirmationMessage = 'Are you sure you want to leave? Your Facebook Chat will be closed.';
+            (event || window.event).returnValue = confirmationMessage; // Standard
+            return confirmationMessage; // IE, Firefox
+        }
+    });
+</script>
+<!-- Include the SDK.js Script without App ID -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0"></script>
+
+
+
+
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    function fetchColors() {
+        // Extract the consultantId from the current URL
+        var consultantId = extractConsultantIdFromPath();
+
+        if (consultantId) {
+            $.ajax({
+                type: 'GET',
+                url: `/colors/${consultantId}/`,
+                dataType: 'json',
+                success: function (colorsData) {
+                    console.log('Colors data fetched successfully:', colorsData);
+                    applyColors(colorsData);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching colors:', error);
+                }
+            });
+        } else {
+            console.error('Consultant ID is missing or invalid.');
+        }
+    }
+
+    function extractConsultantIdFromPath() {
+        // Extract the consultantId from the current URL path
+        var pathSegments = window.location.pathname.split('/');
+        for (var i = 0; i < pathSegments.length; i++) {
+            var segment = pathSegments[i];
+            if (segment.match(/^\d+$/)) {
+                return segment;
+            }
+        }
+        return null;
+    }
+
+    function applyColors(colorsData) {
+        // Update the CSS custom property with the fetched color
+        document.documentElement.style.setProperty('--header-color', colorsData.header_color);
+        document.documentElement.style.setProperty('--footer-color', colorsData.footer_color);
+    }
+
+    // Call fetchColors when the page loads
+    $(document).ready(function () {
+        fetchColors();
+    });
+</script>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0" nonce="YOUR_NONCE_VALUE"></script>
+<!-- jequery plugins -->
+<script src={% static "assets/js/jquery.js" %}></script>
+<script src={% static "assets/js/popper.min.js" %}></script>
+<script src={% static "assets/js/bootstrap.min.js" %}></script>
+<script src={% static "assets/js/owl.js" %}></script>
+<script src={% static "assets/js/wow.js" %}></script>
+<script src={% static "assets/js/validation.js" %}></script>
+<script src={% static "assets/js/jquery.fancybox.js"%}></script>
+<script src={% static "assets/js/TweenMax.min.js" %}></script>
+<script src={% static "assets/js/appear.js" %}></script>
+<script src={% static "assets/js/scrollbar.js" %}></script>
+<script src={% static "assets/js/jquery.nice-select.min.js" %}></script>
+<script src={% static "assets/js/jQuery.style.switcher.min.js" %}></script>
+<script>
+    // Select the iframe element with src containing the specified substring
+    var iframe = $('iframe[src*="google.com/maps/embed"]');
+
+    // Set the width attribute of the iframe to "100%"
+    iframe.attr('width', '100%');
+</script>
+<!-- main-js -->
+<script src={% static "assets/js/script.js" %}></script>
+{% block js %}{% endblock js %}
+</body><!-- End of .page_wrapper -->
+
+</html>
+                     

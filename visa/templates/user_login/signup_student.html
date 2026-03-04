@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+{% load static %}
+{% block custom_css %}
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> {% endcomment %}
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link href={% static "assets/css/signup.css"%} rel="stylesheet">
+{% endblock custom_css %}
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="left-ad-div">
+                <div class="d-flex justify-content-start">
+
+                                           <!--Google Ad Start-->
+                                              <div class="row">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- SVBD_Home_A -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:200px;height:750px"
+         data-ad-client="ca-pub-5227250042742723"
+         data-ad-slot="9902546305">
+    </ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+
+                </div>
+            </div>
+
+            <div class="main-content-div">
+                <div class="container signup-container col-12 my-4" id="container">
+                    <div class="form-container sign-in-container signup-form-div-container">
+                        <form id="signup-form" class="signup-form" action="">
+                            {% csrf_token %}
+                            <h1>Sign up</h1>
+                            <div class="social-container">
+                                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                            
+            
+                            <!--Input fields starts-->
+                            <div class="w-100">
+                                <div class="row">
+                                   <div class="col-md-6 col-12 input-div">
+                                        <label for="full-name" class="signup-label">Full Name<span class="required-star">*</span></label>
+                                        <input type="text" id="full-name" name="full_name" placeholder="Full Name" oninput="validateFullName(this)" />
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="email" class="signup-label">Email<span class="required-star">*</span></label>
+                                        <input type="email" id="email" name="email" placeholder="Email" />
+                                        <div class="d-flex justify-content-start"><span id="email-error" style="color: red;"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-100">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <label for="phone" class="signup-label">Mobile<span class="required-star">*</span></label>
+                                        {% comment %} <input type="tel" id="phone" name="phone" placeholder="Moblie" /> {% endcomment %}
+                                        <input type="text" name="phone" id="phone" required="" placeholder="Mobile" maxlength="11">
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label for="password" class="signup-label">Password<span class="required-star">*</span></label>
+                                        <div class="eye-div w-100">
+                                            <input type="password" id="password" name="password" placeholder="Password" />
+                                            <span class="password-toggle" id="password-toggle-eye">
+                                                <i class="fa-regular fa-eye-slash"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!--<div class="col-md-6 col-12">
+                                        <label for="password" class="signup-label">Password<span class="required-star">*</span></label>
+                                        <input type="password" id="password" name="password" placeholder="Password" />
+                                    </div>-->
+                                </div>
+                            </div>
+
+                            <div class="w-100">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <label for="password" class="signup-label">Confirm Password<span class="required-star">*</span></label>
+                                        <div class="eye-div w-100">
+                                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Retype Password" />
+                                            <span class="confirm_password-toggle" id="confirm_password-toggle-eye">
+                                                <i class="fa-regular fa-eye-slash"></i>
+                                            </span>
+                                        </div>
+                                           <p id="password_match"></p>
+                                    </div>
+                                    <div class="col-md-6 col-12 input-div">
+                                        <label for="address" class="signup-label">Address<span class="required-star">*</span></label>
+                                        <input type="text" id="address" name="address" placeholder="Address" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-100">
+                                <div class="row">
+                                    <div class="col-md-6 col-12 input-div">
+                                        <label class="signup-label col-12" for="district-name">District<span class="required-star">*</span></label>
+                                        <select class="form-control" name="district_name" id="district-name">
+                                            <option value="" selected disabled>Select District</option>
+                                            {% for district in districts %}
+                                                <option id="id_{{ district.name }}" value="{{ district.id }}">{{ district.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 col-12 input-div">
+                                        <label class="signup-label col-12" for="thana-name">Thana<span class="required-star">*</span></label>
+                                        <select class="form-control" name="thana_name" id="thana-name">
+                                            <option value="" selected disabled>Select Thana</option>
+                                            {% for thana in thanas %}
+                                                <option value="{{ thana.id }}">{{ thana.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <div class="w-100">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-check custom-form-check px-0">
+                                            <label for="phone" class="signup-label radio-label">User Type<span class="required-star">*</span></label>
+                                            <div class="d-flex">
+                                                <div class="col-6 gender-radio-div">
+                                                    <input class="form-check-input" type="radio" name="user_type" id="student" value="0">
+                                                    <label class="form-check-label" for="student">Student</label>
+                                                </div>
+                
+                                                <div class="col-6 gender-radio-div">
+                                                    <input class="form-check-input" type="radio" name="user_type" id="guardian" value="1">
+                                                    <label class="form-check-label" for="guardian">Guardian</label>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        <!--<label for="phone" class="signup-label">Mobile<span class="required-star">*</span></label>
+                                        <input type="tel" id="phone" name="phone" placeholder="Moblie" />-->
+                                    </div>
+                                        <div class="col-md-6 col-12">
+                                        <div class="form-check custom-form-check px-0">
+                                            <label for="phone" class="signup-label radio-label">Gender<span class="required-star">*</span></label>
+                                            <div class="d-flex">
+                                                <div class="col-4 gender-radio-div">
+                                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0">
+                                                    <label class="form-check-label" for="male">Male</label>
+                                                </div>
+                
+                                                <div class="col-4 gender-radio-div">
+                                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1">
+                                                    <label class="form-check-label" for="female">Female</label>
+                                                </div>
+                                                <div class="col-4 gender-radio-div">
+                                                    <input class="form-check-input" type="radio" name="gender" id="others" value="2">
+                                                    <label class="form-check-label" for="others">Others</label>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        <!--<label for="phone" class="signup-label">Mobile<span class="required-star">*</span></label>
+                                        <input type="tel" id="phone" name="phone" placeholder="Moblie" />-->
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <div class="w-100 mt-3">
+                                <div class="row">
+                                    <div class="col-12 input-div">
+                                        <label class="signup-label col-12" for="district-name">Target Countries<span class="required-star">*</span></label>
+                                        <select class="form-control" name="countries" id="country-name" multiple="multiple">
+                                            {% for country in countries %}
+                                                <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+            
+                            
+                            
+                            {% comment %} <input type="text" placeholder="Name of Commpany" />
+                            <input type="text" placeholder="Date" />
+                            <input type="url" placeholder="https://www.example.com" />
+                            <input type="tel" placeholder="Phone" />
+                            <input type="email" placeholder="Email" />
+                            <input type="text" placeholder="Name of Commpany" />
+                            <input type="text" placeholder="Password" />
+                            <input type="text" placeholder="Name of Commpany" />
+                            <input type="text" placeholder="Password" />
+                            <input type="text" placeholder="Name of Commpany" />
+                            <input type="text" placeholder="Password" />
+                            <input type="text" placeholder="Name of Commpany" />
+                            <input type="text" placeholder="Password" /> {% endcomment %}
+                            <!--Input fields ends-->
+            
+                            <p class="my-2">
+                                Already have an account?
+                                <a href="{% url 'login_student' %}" style="color: blue; font-weight: 600;">Sign In</a>
+                            </p>
+                            <div class="w-100">
+                                <div id="error-message-div" class="d-flex error-message-div">
+                                    <p><span id="message-text" class="message-text text-center"></span></p>
+                                </div>
+                            </div>
+                            <!--google recaptcha starts-->
+                            <div class="input-group my-4 d-flex justify-content-center">
+                                <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
+                            </div>
+                            <!--google recaptcha ends-->
+
+                            <button type='submit' class="signup-btn" data-signup-type={{ signup_type }}>Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+         
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        
+        $('#district-name').select2();
+        $('#thana-name').select2();
+        $('#country-name').select2();
+
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            toggleActive: true,
+            autoclose: true
+        });
+        
+    </script>
+    <script>
+        // Phone validation starts
+        function validateForm() {
+            var requiredFields = [
+                { field: 'name', message: 'Your Name is required.' },
+                { field: 'email', message: 'Email address is required.' },
+                { field: 'phone', message: 'Phone Number is required.' },
+                { field: 'subject', message: 'Subject is required.' },
+                { field: 'category', message: 'Category is required.' },
+                { field: 'message', message: 'Message is required.' }
+            ];
+            var isValid = true;
+            requiredFields.forEach(function (item) {
+                var value = $('#' + item.field).val();
+                if (!value) {
+                    $('#' + item.field).addClass('error-border');
+                    // Set the error message text
+                    $('#' + item.field + '_error').text(item.message);
+                    isValid = false;
+                } else {
+                    $('#' + item.field).removeClass('error-border');
+                    // Clear the error message
+                    $('#' + item.field + '_error').text('');
+                }
+            });
+            if (!isValid) {
+                // Use a more user-friendly method than alert, e.g., displaying messages on the page
+                alert('Please fill in all required fields.');
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            $('.password-toggle').click(function () {
+                console.log('eye icon clicked');
+                var passwordInput = $(this).siblings('input');
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    $(this).find('i').addClass('fa-eye-slash').removeClass('fa-eye');
+                }
+            });
+
+            $('.confirm_password-toggle').click(function () {
+                console.log('eye icon clicked');
+                var passwordInput = $(this).siblings('input');
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    $(this).find('i').addClass('fa-eye-slash').removeClass('fa-eye');
+                }
+            });
+
+
+            // Function to validate email format
+            function validateEmail(email) {
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Function to handle email validation starts
+            function handleEmailValidation() {
+                var emailInput = $('#email');
+                var email = emailInput.val();
+                var emailError = $('#email-error');
+
+                if (validateEmail(email)) {
+                    // Valid email format
+                    emailError.text('');
+                    emailInput.removeClass('error-border');
+                } else {
+                    // Invalid email format
+                    emailError.text('Please enter a valid email address');
+                    emailInput.addClass('error-border');
+                }
+            }
+
+            // Attach input event to the email input field
+            $('#email').on('input', handleEmailValidation);
+            // Function to handle email validation ends
+
+            // Phone validation starts 
+        $("#phone").on("input", function() {
+                var phone = $(this).val();
+                var numericPhone = phone.replace(/\D/g, ""); // Remove non-digit characters
+                $(this).val(numericPhone); // Update the input value with the numeric version
+                // Check if the phone number length is not 11
+                if (numericPhone.length !== 11) {
+                    $(".phone_error").remove();
+                    $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone Number must be 11 digits</span></div>").insertAfter("#phone");
+                    $("#phone").addClass("error-border");
+                    return;
+                }
+                // Check if the phone number starts with the allowed prefixes
+                var allowedPrefixes = ["019", "018", "017", "016", "013", "014"];
+                var isValidPrefix = false;
+                for (var i = 0; i < allowedPrefixes.length; i++) {
+                    if (numericPhone.startsWith(allowedPrefixes[i])) {
+                        isValidPrefix = true;
+                        break;
+                    }
+                }
+                if (!isValidPrefix) {
+                    $(".phone_error").remove();
+                    $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Invalid Format</div></span>").insertAfter("#phone");
+                    $("#phone").addClass("error-border");
+                    return;
+                }
+                // If the input is valid, remove any error messages and styling
+                $(".phone_error").remove();
+                $("#phone").removeClass("error-border");
+                // Get CSRF token
+                var csrftoken = getCookie('csrftoken');
+                // Send AJAX request to check if the phone number exists
+                $.ajax({
+                    type: "POST",
+                    url: "/check_phone_exist_student/",
+                    data: {
+                        phone: numericPhone
+                    },
+                    headers: { "X-CSRFToken": csrftoken },  // Include CSRF token in headers
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.exists) {
+                            // Phone number already exists
+                            $(".phone_error").remove();
+                            $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone number already exists</div></span>").insertAfter("#phone");
+                            $("#phone").addClass("error-border");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
+            });
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // Get Thana name when District is selected
+            $('#district-name').on('change', function(){
+                console.log('clicked')
+                var selectedDistrictName = $(this).val();
+                // var selectedDivisionName = $(this).find('option:selected').text()  // it will send the division name
+                console.log('selectedDistrictId: ', selectedDistrictName)
+                
+                fetch('/get_thana/?district_id=' + selectedDistrictName, {
+                    method: 'GET',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();  // Parse the JSON data if the response is successful
+                    }
+                    throw new Error('Response not OK');
+                })
+                .then(data => {
+                    var thanaDropdown = $('#thana-name');
+                    // Clear existing options from upazila dropdown
+                    console.log('data after success division')
+                    thanaDropdown.empty(); // Clear the dropdown before adding new options
+                    // Add new options for upazilas
+                    console.log('data from backend: ', data.thanas)
+                    data.thanas.forEach(thana => {
+                        //const option = document.createElement('option');
+                        //option.value = district.district_id;
+                        //option.textContent = district.district_name;
+                        const option = new Option(thana.name, thana.id);
+                        thanaDropdown.append(option);
+                    });
+                    console.log('thanaDropdown: ', thanaDropdown.val());
+                    var thanaDropdownValue = thanaDropdown.val();
+
+                    // fetch thanas
+                    /*var selectedUpazilaID = $('#thana-name').val()
+                    fetchLocations('/thanas/?district_id=' + thanaDropdownValue, '#thana-name', 'thana_id', 'thana_name', 'thana')*/
+                })
+                .catch(error => {
+                console.error('Error fetching districts:', error);
+                });
+
+            });
+
+
+            $('#signup-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                //var formData = $(this).serializeArray();
+                var signupType = $(this).find('.signup-btn').data('signup-type');
+
+                console.log('formData: ', formData);
+                //var data = {}
+
+                /*formData.forEach(function (entry) {
+                    data[entry.name] = entry.value;
+                });*/
+
+                var selectedCountries = $('#country-name').val();
+                var selectedCountries = $('#country-name').val().map(function(value) {
+                    return value.trim(); // Remove any extra spaces
+                });
+                console.log('Selected countries: ', selectedCountries)
+
+                formData.append('signup_type', signupType)
+
+                //Append the array to the FormData object
+                formData.append('countries', JSON.stringify(selectedCountries));
+
+                //formData.append('countries', selectedCountries);
+                
+                fetch('/redirect_to_otp/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data, e.g., show a success message
+                    console.log('data: ', data);
+
+                    if (data.success) {
+                        // Redirect to the URL provided in the response
+                        window.location.href = data.redirect_url;
+                    }
+                    
+                    else if (data.errors) {
+                        console.log('errors: ', data.errors);
+                        $('#message-text').text(data.errors);
+                        $('#error-message-div').addClass('error-message-show');
+                        
+                        // Reload reCAPTCHA using the official grecaptcha API (assuming v2):
+                        if (typeof grecaptcha !== 'undefined') { // Check for existence
+                            grecaptcha.reset();
+                        } else {
+                            console.warn('reCAPTCHA API not loaded. Consider adding it asynchronously or conditionally.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            })
+        });
+    </script>
+    <script>
+function validateFullName(inputElement) {
+    // Remove consecutive spaces with a single space
+    inputElement.value = inputElement.value.replace(/\s{2,}/g, ' ');
+
+    // Prevent entering numbers in real-time
+    inputElement.value = inputElement.value.replace(/[0-9]/g, '');
+
+    // If there is no word entered, do not allow spaces
+    if (!/\S/.test(inputElement.value)) {
+        inputElement.value = inputElement.value.replace(/\s/g, '');
+    }
+}
+</script>
+
+    <script>
+$(document).ready(function() {
+    $('#confirm_password').on('keyup', function () {
+        var password = $('#password').val();
+        var confirmPassword = $(this).val();
+        var passwordMatchMsg = $('#password_match');
+
+        if (password === confirmPassword) {
+            passwordMatchMsg.text('Passwords match').css('color', 'green');
+        } else {
+            passwordMatchMsg.text('Passwords do not match').css('color', 'red');
+        }
+    });
+
+    $('#password').on('keyup', function () {
+        var password = $(this).val();
+        var confirmPassword = $('#confirm_password').val();
+        var passwordMatchMsg = $('#password_match');
+
+        if (password === confirmPassword && password !== '') {
+            passwordMatchMsg.text('Passwords match').css('color', 'green');
+        } else if (password !== '' && confirmPassword !== '') {
+            passwordMatchMsg.text('Passwords do not match').css('color', 'red');
+        } else {
+            passwordMatchMsg.text('');
+        }
+    });
+});
+</script>
+
+
+
+
+
+{% endblock js %}

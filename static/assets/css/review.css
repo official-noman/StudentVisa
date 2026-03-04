@@ -1,0 +1,219 @@
+.inquiry-section{
+    padding: 80px 0 !important;
+}
+
+.review-heading{
+    font-size: 26px;
+    color: rgb(233, 233, 233);
+}
+
+.review-stars i{
+    display: none;
+}
+
+.stars {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.review-stars{
+    font-size: 1.75em;
+}
+
+.star {
+    color: #ddd;
+    transition: color 0.3s, margin-right 0.3s; /* Add margin-right transition */
+    margin-right: 5px; /* Add margin between stars */
+}
+
+.star:hover,
+.star.star-active {
+    color: #f39c12;
+}
+
+.rating-display{
+    color: rgb(233, 233, 233);
+    font-size: 20px;
+}
+
+.rating-star {
+    color: #ddd;
+    transition: color 0.3s, margin-right 0.3s; /* Add margin-right transition */
+    margin-right: 5px; /* Add margin between stars */
+}
+
+.half-rating-star.show-star{
+    display: inline-block;
+    color: #f39c12;
+}
+
+.rating-star.show-star{
+    display: inline-block;
+    color: #f39c12;
+}
+
+.rating-star.show-unrated-star{
+    display: inline-block;
+}
+
+
+/* .rating-star:nth-child(1),
+  .rating-star:nth-child(2),
+  .rating-star:nth-child(3) {
+    color: red;
+  }
+
+  .rating-star:nth-child(4) {
+    color: yellow;
+  }
+
+  .rating-star:nth-child(5) {
+    color: green;
+  } */
+
+
+/* Popup container starts */
+.popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 999999999;
+}
+
+.popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.delete-popup-container{
+    position: fixed;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    transition: linear 0.3s;
+    z-index: 99;
+}
+
+.delete-popup-container.show {
+    pointer-events: auto;
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.popup {
+    position: relative;
+    background-color: rgb(30, 56, 59);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 280px;
+    width: 320px;
+}
+
+.delete-popup {
+    position: relative;
+    background-color: rgb(59, 30, 30);
+    /* max-width: 600px;
+    max-height: 500px; */
+    border-radius: 10px;
+    padding-left: 60px;
+    padding-right: 60px;
+    height: 250px;
+    width: 300px;
+}
+
+.success-tick{
+    position: absolute;
+    top: -50px;
+    height: 150px;
+    width: 150px;
+}
+
+.registration-success-div{
+    position: absolute;
+    top: 120px;
+}
+
+.registration-success-div p span{
+    color: rgb(245, 245, 245);
+}
+
+.close-icon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.successful-text{
+    font-size: 18px;
+}
+
+.login-link{
+    position: absolute;
+    bottom: 10px;
+}
+
+.login-btn{
+    padding: 10px 15px;
+    background-color: rgb(3, 97, 11);
+    color: rgb(236, 236, 236);
+    border-radius: 20px;
+}
+
+.login-btn:hover{
+    background-color: rgb(6, 197, 63);
+    color: rgb(236, 236, 236);
+}
+
+.view-review-btn{
+    background-color: rgb(235, 235, 235);
+}
+
+.view-review-btn:hover{
+    background-color: rgb(197, 197, 197);
+    font-weight: 500;
+}
+
+.all-reviews-div{
+    width: 100%;
+}
+
+.all-comment-section{
+    background-color: #222221;
+    padding-top: 0;
+}
+
+.inner-comment{
+    margin: 18px 0px !important;
+}
+
+.all-reviews-pagination-active{
+    color: rgb(247, 247, 247) !important;
+}
+
+.all-reviews-pagination-active-li{
+    background-color: rgb(23, 72, 128);
+}
+/* Popup container ends */

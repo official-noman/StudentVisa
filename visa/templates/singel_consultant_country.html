@@ -1,0 +1,83 @@
+{% extends 'consultant_base.html' %} 
+{% block custom_css %}
+{% load static %}
+<style>
+
+.page-title {
+    position: relative;
+    display: block;
+    padding: 20px 0px;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.immigration-block-one .inner-box .text{
+    poistion: none !important;
+}
+{% comment %} .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -44px !important;
+    margin-left: -15px ;
+} {% endcomment %}
+</style>
+{% endblock custom_css %}
+{% block content %}
+    <section class="page-title " style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box my-2">
+                <div class="title-box">
+                    <h1>Country</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a></li>
+                    <li>{{consultant.company_name}}</li>
+                    <li>Country</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <div class="row">
+        <div class="">
+            <section class="immigration-section">
+                <div class="auto-container">
+                    <div class="row clearfix">
+                        {% for country in consultant_countries %}
+                            <div class="col-lg-4 col-md-6 col-sm-12 immigration-block">
+                                <div class="immigration-block-one wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                                    <div class="inner-box-image">
+                                        <figure class="image-box"><img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}" style="height: 200px;"></figure>
+                                        <div class="country-text mb-3">
+                                            <!-- Assuming you have a field named 'country_name' in your Countries model -->
+                                            <h3 class="text-center mt-2"><a href="{% url 'singel_consultant_country_details' consultant_id=consultant_details.consultant_id country_id=country.country_id %}">{{ country.country_name }}</a></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                
+                    <div class="pagination-wrapper centred">
+                        <ul class="pagination">
+                            {% for num in consultant_countries.paginator.page_range %}
+                                <li class="{% if num == consultant_countries.number %}active{% endif %}">
+                                    <a href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock content %}
+        

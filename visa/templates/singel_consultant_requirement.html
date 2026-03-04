@@ -1,0 +1,159 @@
+{% extends 'consultant_base.html' %} {% load static %}
+{% block custom_css %}
+<link href={% static "assets/css/ad_columns.css"%} rel="stylesheet">
+<style>
+    b, strong {
+        font-weight: bolder;
+        font-size: 14px !important;
+    }
+
+    .about-section #content_block_1 .content-box{
+        margin-left: 0 !important;
+    }
+
+    ol > li {
+        counter-increment: my-counter;
+        {% comment %} display: flex; /* Use flexbox for inline display */ {% endcomment %}
+        font-size: 14px !important;
+        margin-bottom: 10px;
+    }
+
+    {% comment %} ol > li::before {
+        content: counter(my-counter) '. ';
+        font-weight: bold; /* Make the marker bold */
+        margin-top: 3px;
+        margin-right: 5px;
+
+    } {% endcomment %}
+
+    ol > li > ul > li{
+        display: block;
+    }
+
+    ul {
+        list-style-type: disc;
+    }
+
+    ul > li {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .image-column{
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 60px;
+        width: 500px;
+    }
+
+    .content-column::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    li p{
+        font-size: 14px !important;
+    }
+    .sec-title:before {
+    position: absolute;
+
+    right: 322px !important;
+
+}
+    
+    @media(max-width: 567px){
+        .news-block{
+            width: 100%; /* Adjust percentage as needed */
+            /* height: calc(33.33vw / 1.5); */
+            padding: 0 5px;
+        }
+    
+        .auto-container{
+            padding: 0;
+        }
+
+        .float-left {
+            float: none;
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            box-sizing: border-box; /* To include padding and border in the total width */
+        }
+
+        .image-column{
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock custom_css %}
+{% block content %}
+    <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box">
+                <div class="title-box">
+                    <h1>Requirements</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href={% url 'singel_consultant_page' consultant_id=consultant.id %}>Home</a></li>
+                    <li>Requirements for {{consultant.company_name}}</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--End Page Title-->
+
+
+    <!-- about-section -->
+    <section class="about-section">
+        <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-1.png' %});"></div>
+        <div class="auto-container">
+            <div class="image-column">
+                <div id="image_block_1">
+                    <div class="image-box">
+                        <figure class="image">
+                            {% if consultant_details.consultant_requirement_image %}
+                                <img src="{{ consultant_details.consultant_requirement_image.url }}" alt="">
+                            {% else %}
+                                <img src="{% static 'assets/images/5109476.png' %}" alt="Default Image">
+                            {% endif %}
+                        </figure>
+                    
+                    </div>
+                </div>
+            </div>
+            <div class="content-column">
+                <div id="content_block_1">
+                    <div class="content-box">
+                        <div class="sec-title">
+                            
+                            <h2>Here is our Requirements</h2>
+                            <div class="dotted-box">
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                            </div>
+                        </div>
+                
+                        <div class="bold-text">
+                            {% if consultant_details.consultant_requirement %}
+                                {{ consultant_details.consultant_requirement|safe }}
+                            {% else %}
+                            <h3>No requirements found</h3>
+                            {% endif %}
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
+        

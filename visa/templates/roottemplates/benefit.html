@@ -1,0 +1,49 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+{% block custom_css %}
+<style>
+    .form-control, .typeahead, .tt-query, .tt-hint, .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single, .dataTables_wrapper select, .asColorPicker-input {
+        border: 1px solid #dee2e6;
+        font-weight: 400;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        height: 2rem;
+        padding: 9px;
+    }
+</style>
+{% endblock custom_css %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Add Benefit</h4>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" action="{% url 'save_benefit' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="benefit_list" class="form-label">Benefit List:</label>
+                           <textarea id="benefit_list" name="benefit_list[]" rows="4" cols="50" class="form-control">{% for benefit in benefit_list %}{{ benefit }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Benefit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+  // Replace the textarea with id 'benefitsTextArea' with CKEditor
+  CKEDITOR.replace('benefit_list');
+</script>
+
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block custom_css %}
+<style>
+    b, strong {
+        font-weight: bolder;
+        font-size: 14px !important;
+    }
+
+    .about-section #content_block_1 .content-box{
+        margin-left: 0 !important;
+    }
+
+    ol > li {
+        counter-increment: my-counter;
+        {% comment %} display: flex; /* Use flexbox for inline display */ {% endcomment %}
+        font-size: 14px !important;
+        margin-bottom: 10px;
+    }
+
+    {% comment %} ol > li::before {
+        content: counter(my-counter) '. ';
+        font-weight: bold; /* Make the marker bold */
+        margin-top: 3px;
+        margin-right: 5px;
+
+    } {% endcomment %}
+
+    ol > li > ul > li{
+        display: block;
+    }
+
+    ul {
+        list-style-type: disc;
+    }
+
+    ul > li {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .image-column{
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 60px;
+        width: 500px;
+    }
+
+    .content-column::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    li p{
+        font-size: 14px !important;
+    }
+    .sec-title:before {
+    position: absolute;
+
+    right: 322px !important;
+
+}
+    
+    @media(max-width: 567px){
+        .news-block{
+            width: 100%; /* Adjust percentage as needed */
+            /* height: calc(33.33vw / 1.5); */
+            padding: 0 5px;
+        }
+    
+        .auto-container{
+            padding: 0;
+        }
+
+        .float-left {
+            float: none;
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            box-sizing: border-box; /* To include padding and border in the total width */
+        }
+
+        .image-column{
+            width: 100%;
+        }
+    }
+</style>
+
+
+{% endblock custom_css %}
+
+{% block content %}
+   
+
+
+
+    
+    <section class="page-title " style="background-image: url({% static 'assets/images/background/page-title.jpg' %}); height: 130px; padding: 20px 0;">
+        <div class="auto-container">
+            <div class="content-box my-2">
+                <div class="title-box">
+                    <h1 class="text-center">{{ country.country_name }}</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="#">Country Wise Scholarship</a></li>
+                    <li><a href="">Scholarship</a></li>
+                    <li><a href="{% url 'consaltant_wise_scholarship' %}">Country Wise</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="immigration-section">
+        <div class="auto-container pl-0">
+            {% comment %} <div class="row clearfix"> {% endcomment %}
+                <div class="float-left" style="
+                max-width: 392px;
+                margin-right: 20px;">
+                              
+                    {% if scholarship.scw_image %}
+                    <img src="{{ scholarship.scw_image.url }}" alt="{{ scholarship.scw_title }}" class="img-fluid">
+                {% else %}
+                    <!-- Alternative content if the image is not available -->
+                    <p>No image available</p>
+                {% endif %}
+                </div>
+        
+            <div class="clearfix" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px;">
+                <h2 class="how-to-apply-text" >
+                    <strong>{{ scholarship.scw_text|safe }}</strong>
+                </p>
+                   <h4>
+            
+                    <strong>{{ scholarship.scw_whocanapply|safe }}</strong>
+            </h4>
+            </div>
+            {% comment %} </div> {% endcomment %}
+        </div>
+    </section>
+
+    <!-- Scroll to top -->
+    
+{% endblock content %}

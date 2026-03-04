@@ -1,0 +1,534 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+
+<style>
+  .flex-grow {
+    flex-grow: 0 !important;
+}
+</style>
+
+{% endblock custom_css %}
+{% block content %}
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="home-tab">
+          <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
+                  aria-controls="overview" aria-selected="true">Overview</a>
+              </li>
+              
+            </ul>
+            <div>
+              <div class="btn-wrapper">
+               
+                <button class="btn btn-outline-dark align-items-center" id="shareButton"><i class="icon-share"></i> Share</button>
+                <button class="btn btn-outline-dark" id="printButton"><i class="icon-printer"></i> Print</button>
+                <button class="btn btn-primary text-white me-0" id="exportButton"><i class="icon-download"></i> Export</button>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content tab-content-basic">
+            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="statistics-details d-flex align-items-center justify-content-between">
+                    <div>
+                      <p class="statistics-title">Student Rate</p>
+                      <h3 class="rate-percentage">
+                        {% comment %} <i class="mdi mdi-menu-down"></i> {% endcomment %}
+                        {% if student_rates.rate > 0 %}
+                            <span class="text-success">+{{ student_rates.rate }}%</span>
+                        {% elif student_rates.rate < 0 %}
+                            <span class="text-danger">{{ student_rates.rate }}%</span>
+                        {% else %}
+                            <span>No Change</span>
+                        {% endif %}
+                      </h3>
+                     
+                 
+                    </div>
+                    <div>
+                      <p class="statistics-title">Total Student</p>
+                      <h3 class="rate-percentage">{{ total_students }}</h3>
+                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p> {% endcomment %}
+                    </div>
+                    <div>
+                      <p class="statistics-title">Total Consultant</p>
+                      <h3 class="rate-percentage">{{total_consultants}}</h3>
+                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">Total Country</p>
+                      <h3 class="rate-percentage">{{total_countries}}</h3>
+                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p> {% endcomment %}
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">University</p>
+                      <h3 class="rate-percentage">{{total_universities}}</h3>
+                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
+                    </div>
+                    <div class="d-none d-md-block">
+                      <p class="statistics-title">Avg. Time on Site</p>
+                      <h3 class="rate-percentage">{{avg_time_on_site}}</h3>
+                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p> {% endcomment %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-8 d-flex flex-column">
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                              <h4 class="card-title card-title-dash">Balance Overview</h4>
+                              <p class="card-subtitle card-subtitle-dash">Student Visa Bd Site</p>
+                            </div>
+                            <div>
+                              <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
+                                  type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                  aria-haspopup="true" aria-expanded="false"> This month </button>
+                             
+                              </div>
+                            </div>
+                          </div>
+                          <div class="d-sm-flex align-items-center mt-1 justify-content-between">
+                            <div class="d-sm-flex align-items-center mt-4 justify-content-between">
+                              <h2 class="me-2 fw-bold">{{total_balance}}</h2>
+                              <h4 class="me-2">Tk</h4>
+                              
+                            </div>
+                            <div class="me-3">
+                              <div id="marketingOverview-legend"></div>
+                            </div>
+                          </div>
+                          <div class="chartjs-bar-wrapper mt-3">
+                            <canvas id="monthlyBalanceChart"></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card card-rounded">
+                          <div class="card-body">
+                            <div class="d-sm-flex justify-content-between align-items-start">
+                                <div>
+                                    <h4 class="card-title card-title-dash">Pending Requests</h4>
+                                    <p class="card-subtitle card-subtitle-dash">You have <span id="total-count">0</span> new requests</p>
+                                </div>
+                                <div>
+                                  <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button" onclick="window.location.href='/root_consultant_list/'">
+                                    <i class="mdi mdi-account-plus"></i>Panding Consultant
+                                </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-1">
+                                <table id="consultant-table" class="table select-table">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check form-check-flat mt-0">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input" aria-checked="false">
+                                                        <i class="input-helper"></i>
+                                                    </label>
+                                                </div>
+                                            </th>
+                                            <th>Name</th>
+                                            <th>Company Name</th>
+                                            <th>Phone</th>
+                                           
+                                           
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be dynamically populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 
+                </div>
+                <div class="col-lg-4 d-flex flex-column">
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="row flex-grow">
+                            <div class="col-12 grid-margin stretch-card">
+                              <div class="card card-rounded">
+                                <div class="card-body">
+                                  <div class="row">
+                                      <div class="col-lg-12">
+                                          <div class="d-flex justify-content-between align-items-center mb-3">
+                                              <div>
+                                                  <h4 class="card-title card-title-dash">Top Performer</h4>
+                                              </div>
+                                          </div>
+                                          <div class="mt-3">
+                                              <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom" id="topPerformerWrapper">
+                                                  <!-- Content will be dynamically populated here -->
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="card-title card-title-dash">Type By Amount</h4>
+                              </div>
+                              <div>
+                                <canvas class="my-auto" id="doughnutChart"></canvas>
+                              </div>
+                              <div id="doughnutChart-legend" class="mt-5 text-center"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row flex-grow">
+                    <div class="col-12 grid-margin stretch-card">
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                  <h4 class="card-title card-title-dash">Student Report</h4>
+                                </div>
+                                <div>
+                                  <div class="dropdown">
+                                    <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0" type="button"
+                                      id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Month Wise
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                      <h6 class="dropdown-header" id="weeklyWiseBtn">Week Wise</h6>
+                                      <a class="dropdown-item" id="yearlyWiseBtn">Year Wise</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="mt-3">
+                                <canvas id="studentReport"></canvas>
+                                <canvas id="weeklyReport" style="display: none;"></canvas>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  $(document).ready(function () {
+      function updateTable(data) {
+          $('#consultant-table tbody').empty();
+          $('#total-count').text(data.total_count);
+
+          data.root_consultants.forEach(function (consultant) {
+              var row = `<tr>
+                            <td>
+                                <div class="form-check form-check-flat mt-0">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" aria-checked="false">
+                                        <i class="input-helper"></i>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>${consultant.full_name}</td>
+                            <td>${consultant.company_name}</td>
+                            <td>${consultant.phone}</td>
+                            <td><div class="badge badge-opacity-warning">${consultant.active_status ? 'Active' : 'Inactive'}</div></td>
+                            <td>
+                              <div class="btn-group">
+                                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item accept-link" href="#" data-user-id="${consultant.id}">Accept</a></li>
+                                    <li><a class="dropdown-item reject-link" href="#" data-user-id="${consultant.id}">Reject</a></li>
+                                </ul>
+                            </div>
+                            </td>
+                        </tr>`;
+
+              $('#consultant-table tbody').append(row);
+          });
+      }
+
+      function fetchData() {
+          $.ajax({
+              url: '/root_consultant_list_json/',
+              method: 'GET',
+              success: function (data) {
+                  updateTable(data);
+              },
+              error: function (error) {
+                  console.error('Error fetching data:', error);
+              }
+          });
+      }
+
+      fetchData();
+  });
+</script>
+<script>
+  $(document).ready(function () {
+      // Make an AJAX request to your Django view
+      $.ajax({
+          url: '/count_consultant_perform/',  // Adjust the URL based on your Django URL configuration
+          type: 'GET',
+          dataType: 'json',
+          success: function (data) {
+              // Check if data is available
+              if (data && data.consultant_counts && data.consultant_counts.length > 0) {
+                  // Extract the top performer data (assuming it's the first item in the list)
+                  var topPerformer = data.consultant_counts[0];
+
+                  // Update the content in the wrapper div
+                  $('#topPerformerWrapper').html(
+                      '<div class="d-flex">' +
+                          '<div class="wrapper ms-3">' +
+                              '<p class="ms-1 mb-1 fw-bold">Consultant ID: ' + topPerformer.consultant_id + '</p>' +
+                              '<small class="text-muted mb-0">Count: ' + topPerformer.count + '</small>' +
+                          '</div>' +
+                      '</div>' +
+                      '<div class="text-muted text-small">' +
+                          'Last activity: ' + topPerformer.last_activity +
+                      '</div>'
+                  );
+              }
+          },
+          error: function (error) {
+              console.error('Error fetching top performer data: ', error);
+          }
+      });
+  });
+</script>
+<script>
+  document.getElementById("printButton").addEventListener("click", function() {
+    window.print();
+  });
+
+  document.getElementById("shareButton").addEventListener("click", function() {
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        text: "Check out this page!",
+        url: window.location.href
+      }).then(() => {
+        console.log("Page shared successfully");
+      }).catch((error) => {
+        console.error("Error sharing:", error);
+      });
+    } else {
+      console.log("Web Share API not supported");
+    }
+  });
+
+
+</script>
+
+<script>
+  document.getElementById("exportButton").addEventListener("click", function() {
+    // Get CSRF token from cookie
+    const csrftoken = getCookie('csrftoken');
+
+    // Send AJAX request to fetch data from server
+    $.ajax({
+        url: "/export_dashboard_data/",
+        type: "POST",
+        dataType: "json",
+        headers: {
+            "X-CSRFToken": csrftoken  // Include CSRF token in request headers
+        },
+        success: function(data) {
+            // Convert data to CSV format
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            // Add headers
+            csvContent += "Total Students,Total Consultants,Total Countries,Total Universities,Avg. Time on Site\n";
+
+            // Add data rows
+            csvContent += `${data.total_students},${data.total_consultants},${data.total_countries},${data.total_universities},${data.avg_time_on_site}\n`;
+
+            // Create a link to trigger download
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "dashboard_data.csv");
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching dashboard data:", error);
+        }
+    });
+});
+
+// Function to get CSRF token from cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Check if cookie contains the CSRF token
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+  $(document).ready(function () {
+      // Function to retrieve CSRF token from cookies
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      // Function to make an Ajax request to grant permission to the consultant
+      function grantPermission(user_id, csrf_token) {
+          console.log('Grant permission for user:', user_id);
+          $.ajax({
+              url: `/grant_permission_consultant/${user_id}/`,
+              method: 'POST',
+              headers: { "X-CSRFToken": csrf_token },
+              success: function (response) {
+                  // Show success message using SweetAlert2
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Permission Granted',
+                      text: 'Consultant created successfully.',
+                      showConfirmButton: false,
+                      timer: 1500
+                  }).then(() => {
+                      // Reload the page after success message
+                      location.reload();
+                  });
+              },
+              error: function (error) {
+                  // Show error message using SweetAlert2
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'Failed to grant permission for the consultant.',
+                      showConfirmButton: false,
+                      timer: 1500
+                  });
+              }
+          });
+      }
+
+      // Function to make an Ajax request to reject the consultant
+      function rejectConsultant(user_id, csrf_token) {
+          console.log('Reject consultant:', user_id);
+          $.ajax({
+              url: `/reject_consultant/${user_id}/`,
+              method: 'POST',
+              headers: { "X-CSRFToken": csrf_token },
+              success: function (response) {
+                  // Show success message using SweetAlert2
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Consultant Rejected',
+                      text: 'Consultant rejected successfully.',
+                      showConfirmButton: false,
+                      timer: 1500
+                  }).then(() => {
+                      // Reload the page after success message
+                      location.reload();
+                  });
+              },
+              error: function (error) {
+                  // Show error message using SweetAlert2
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: 'Failed to reject the consultant.',
+                      showConfirmButton: false,
+                      timer: 1500
+                  });
+              }
+          });
+      }
+
+      // Attach click event handlers to Accept and Reject links
+      $(document).on('click', '.accept-link', function () {
+          var user_id = $(this).data('user-id');
+          var csrf_token = getCookie('csrftoken'); // Get CSRF token from cookies
+          console.log('Accept link clicked for user:', user_id);
+          grantPermission(user_id, csrf_token);
+      });
+
+      $(document).on('click', '.reject-link', function () {
+          var user_id = $(this).data('user-id');
+          var csrf_token = getCookie('csrftoken'); // Get CSRF token from cookies
+          console.log('Reject link clicked for user:', user_id);
+          rejectConsultant(user_id, csrf_token);
+      });
+  });
+</script>
+{% endblock custom_js %}

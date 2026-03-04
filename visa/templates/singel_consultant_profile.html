@@ -1,0 +1,260 @@
+{% extends 'consultant_base.html' %} {% load static %}
+
+{% block custom_css %}
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="{% static 'assets/css/font-awesome-all.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/owl.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+<link href="{% static 'assets/css/switcher-style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/ad_columns.css' %}" rel="stylesheet">
+<style>
+    .review-stars i{
+        display: none;
+    }
+    
+    .stars {
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+    
+    .review-stars{
+        font-size: 1.75em;
+    }
+    
+    .star {
+        color: #ddd;
+        transition: color 0.3s, margin-right 0.3s; /* Add margin-right transition */
+        margin-right: 5px; /* Add margin between stars */
+    }
+    
+    .star:hover,
+    .star.star-active {
+        color: #f39c12;
+    }
+    
+    .rating-display{
+        color: rgb(233, 233, 233);
+        font-size: 20px;
+    }
+    
+    .rating-star {
+        color: #ddd;
+        transition: color 0.3s, margin-right 0.3s; /* Add margin-right transition */
+        margin-right: 5px; /* Add margin between stars */
+    }
+    
+    .half-rating-star.show-star{
+        display: inline-block;
+        color: #f39c12;
+    }
+    
+    .rating-star.show-star{
+        display: inline-block;
+        color: #f39c12;
+    }
+    
+    .rating-star.show-unrated-star{
+        display: inline-block;
+    }
+
+    .image-column{
+        float: left;
+        margin-right: 0x;
+        margin-bottom: 60px;
+        width: 500px;
+    }
+
+    .content-column::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    @media (max-width: 567px) {
+        .float-left {
+            float: none;
+            margin-right: 0;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            box-sizing: border-box; /* To include padding and border in the total width */
+        }
+
+        .image-column{
+            width: 100%;
+        }
+    }
+    #content_block_1 .content-box .text {
+      
+        padding: 15px;
+    }
+</style>
+
+{% endblock custom_css %}
+
+{% block content %}
+    <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box">
+                <div class="title-box">
+                    <h1>Profile</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'singel_consultant_page' consultant_id=consultant.id %}">Home</a></li>
+                    <li>Profile</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!--End Page Title-->
+
+    <!-- about-section -->
+    <section class="about-section">
+        <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-1.png' %});"></div>
+        <div class="auto-containe pl-0">
+            <div class="image-column">
+                <div id="image_block_1">
+                    <div class="image-box">
+
+
+                        {% if consultant.consultant_img %}
+
+                        <figure class="image"> <img src="{{ consultant.consultant_img.url }}" alt="{{ consultant.company_name }}" class="img-fluid mb-2"></figure>
+                        {% else %}
+
+
+                        <figure class="image"><img src={% static "assets/images/resource/about-1.jpg" %} alt=""></figure>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="content-column">
+                <div id="content_block_1">
+                    <div class="content-box ml-0">
+                        <div class="sec-title">
+                            <h2>{{consultant.full_name}}</h2>
+                            <br>
+                            <div class="star-rating">
+                                <p>Rating: 
+                                    {% comment %} <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    <span class="fa fa-star"></span> {% endcomment %}
+                                    <div class="review-stars">
+                                        {% comment %} {% if 0 < consultant.rating < 1 %} {% endcomment %}
+                                            <i class="fa-solid fa-star rating-star rating-star-1"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                            <i class="fa-solid fa-star rating-star rating-star-2"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                            <i class="fa-solid fa-star rating-star rating-star-3"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                            <i class="fa-solid fa-star rating-star rating-star-4"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                            <i class="fa-solid fa-star rating-star rating-star-5"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i>
+
+                                            {% comment %} <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                            <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i> {% endcomment %}
+                                        {% comment %} {% elif 0 < consultant.rating < 1 %}
+
+                                        {% endif %} {% endcomment %}
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="dotted-box">
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                            </div>
+                        </div>
+                        <div class="bold-text">
+                            <p>{{consultant_details.consultant_designation}}.</p>
+                        </div>
+                            <div class="text">
+                            {% if consultant.active_status == 5 %}
+                                <p>Phone: {{ consultant.phone }}</p>
+                                <p>Email: {{ consultant.email }}</p>
+                                <p>Address: {{ consultant.address }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="text">
+                            {% if consultant.about %}
+                                <p>{{ consultant.about|safe }}</p>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block js %}
+<script>
+
+        $(document).ready(function() {
+            // Set the rating value (replace this with your actual rating value)
+            var studentRating_str = '{{ student_raw_rating }}'
+            var studentRating = parseInt(studentRating_str);
+            var rating_str = '{{ consultant.rating }}';
+            var rating = parseFloat(rating_str);
+            console.log('rating on load: ', rating)
+            console.log('rating on load: ', typeof(rating))
+
+            // Add star classes based on the rating
+            if (rating > 0) {
+                var fullStars = Math.floor(rating);
+
+                for (var i = 1; i <= fullStars; i++) {
+                    $(this).find('.rating-star-' + i).addClass('show-star');
+                }
+
+                if (rating % 1 !== 0) {
+                    var halfStarPosition = fullStars + 1;
+                    $(this).find('.half-rating-star-' + halfStarPosition).addClass('show-star');
+
+                    for (var j = fullStars + 2; j <= 5; j++) {
+                        $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                    }
+                }
+
+                else if(rating % 1 === 0){
+                    for (var j = fullStars + 1; j <= 5; j++) {
+                        $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                    }
+                }
+            }
+            else {
+                for (var j = 1; j <= 5; j++) {
+                    $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                }
+            }
+
+            for (let i = 1; i <= studentRating; i++) {
+                $(`.star[data-value="${i}"]`).addClass('star-active');
+            }
+        });
+    </script>
+
+{% endblock js %}

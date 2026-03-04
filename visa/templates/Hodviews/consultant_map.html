@@ -1,0 +1,56 @@
+{% extends "Hodviews/base.html" %}
+{% load static %}
+{% block custom_css %}
+<style>
+  #map_location {
+    width: 49%;
+    min-height: 98px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+</style>
+
+{% endblock custom_css %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Consultant Map</h4>
+
+            {% if success_message %}
+            <div class="alert alert-success" role="alert">
+              {{ success_message }}
+            </div>
+            {% endif %}
+
+            {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+              {{ error_message }}
+            </div>
+            {% endif %}
+            <form method="post" action="{% url 'consultant_map' %}">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label for="map_location">Location Map Link:<a href={% url 'linkpage' %} target="_blank">Where i can find my company location link??</a></label><br>
+                <!-- Add textarea or input field for map location -->
+
+                <textarea id="map_location" name="map_location" required>{{ existing_map_location }}</textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,160 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  <ul class="nav">
+      
+         <li class="nav-item">
+      <a class="nav-link">
+          <h3 id="total_balance_display" >Loading...</h3>
+      </a>
+  </li>
+    <li class="nav-item {% if request.resolver_match.url_name == 'consultant_home' %}active{% endif %}">
+      <a class="nav-link" href={% url 'consultant_home'%}>
+        <i class="mdi mdi-grid-large menu-icon"></i>
+        <span class="menu-title">Dashboard</span>
+      </a>
+    </li>
+    <li class="nav-item nav-category">Forms and Datas</li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_intro' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" data-bs-toggle="collapse" href=".consultant_intro" aria-expanded="{% if request.resolver_match.url_name == 'consultant_intro' %}true{% else %}false{% endif %}" aria-controls="charts">
+        <i class="menu-icon mdi mdi-book-open-page-variant"></i>
+        <span class="menu-title">Home Page</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse consultant_intro {% if request.resolver_match.url_name == 'consultant_intro' %}show{% endif %}" id="singel">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'consultant_intro' %}active{% endif %}" href={% url "consultant_intro" %}>Design</a></li>
+        </ul>
+      </div>
+    </li>
+
+
+    <li class="nav-item {% if request.resolver_match.url_name == 'consultant_profile' %}active{% endif %}">
+    <a class="nav-link" href={% url 'consultant_profile' %}>
+        <i class="menu-icon mdi mdi-account"></i>
+        <span class="menu-title">Profile</span>
+    </a>
+    </li>
+
+
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_gallery' or request.resolver_match.url_name == 'consultant_logo' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" href=".gallery" aria-expanded="{% if request.resolver_match.url_name == 'consultant_gallery' or request.resolver_match.url_name == 'consultant_logo' %}true{% else %}false{% endif %}"
+        aria-controls="form-elements">
+        <i class="menu-icon mdi mdi-image"></i>
+        
+        <span class="menu-title">Gallery</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse gallery {% if request.resolver_match.url_name == 'consultant_gallery' or request.resolver_match.url_name == 'consultant_logo' %}show{% endif %}" id="form-elements">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'consultant_gallery' %}active{% endif %}" href={% url "consultant_gallery" %}>Your Gallery</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'consultant_logo' %}active{% endif %}" href={% url "consultant_logo" %}>Your Logo</a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_requirement' %}collapsed{% else %}active{% endif %}" data-bs-toggle="collapse" href="#requirements" aria-expanded="{% if request.resolver_match.url_name == 'consultant_requirement' %}true{% else %}false{% endif %}" aria-controls="requirements">
+          <i class="menu-icon mdi mdi-chart-line"></i>
+          <span class="menu-title">Requirements</span>
+          <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {% if request.resolver_match.url_name == 'consultant_requirement' %}show{% endif %}" id="requirements">
+          <ul class="nav flex-column sub-menu">
+              <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'consultant_requirement' %}active{% endif %}" href="{% url 'consultant_requirement' %}">Your Requirements</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'update_social_links' %}active{% endif %}" href="{% url 'update_social_links' %}">Social Links</a>
+              </li>
+          </ul>
+      </div>
+  </li>
+      
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_gallery' or request.resolver_match.url_name == 'consultant_logo' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" href=".countries" aria-expanded="{% if request.resolver_match.url_name == 'consultant_country' %}true{% else %}false{% endif %}" aria-controls="tables">
+             <i class="menu-icon mdi mdi-table"></i>
+             <span class="menu-title">Countries</span>
+             <i class="menu-arrow"></i>
+           </a> 
+           <div class="collapse countries {% if request.resolver_match.url_name == 'consultant_country' %}show{% endif %}" id="tables">
+             <ul class="nav flex-column sub-menu">
+               <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'consultant_country' %}active{% endif %}" href="{% url 'consultant_country'%}">Working Countries</a></li>
+             </ul>
+           </div>
+         </li>
+
+
+    <li class="nav-item nav-category">Page Design</li>
+  
+   
+
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_color' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" href=".consultant_color" aria-expanded="{% if request.resolver_match.url_name == 'consultant_color' %}true{% else %}false{% endif %}" data-bs-toggle="collapse" href="#charts" aria-expanded="{% if request.resolver_match.url_name == 'consultant_color' %}true{% else %}false{% endif %}" aria-controls="ui-basic">
+        
+        <i class="menu-icon mdi mdi-format-color-fill"></i>
+        <span class="menu-title">Colors</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse consultant_color {% if request.resolver_match.url_name == 'consultant_color' %}show{% endif %}" id="ui-basic">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'consultant_color' %}active{% endif %}" href={% url "consultant_color" %}>Add Color</a></li>
+          {% comment %} <li class="nav-item"> <a class="nav-link" href="../pages/ui-features/dropdowns.html">Dropdowns</a></li>
+          <li class="nav-item"> <a class="nav-link" href="../pages/ui-features/typography.html">Typography</a></li> {% endcomment %}
+        </ul>
+      </div>
+    </li>
+
+
+    <li class="nav-item nav-category">Student</li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'student_list' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" data-bs-toggle="collapse" href=".student_list" aria-expanded="{% if request.resolver_match.url_name == 'student_list' %}true{% else %}false{% endif %}" aria-controls="auth">
+        <i class="menu-icon mdi mdi-account-circle-outline"></i>
+        <span class="menu-title">Student List</span>
+        <i class="menu-arrow"></i>
+      </a>
+     <div class="collapse student_list {% if request.resolver_match.url_name == 'student_list' %}show{% endif %}" id="auth">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'student_list' %}active{% endif %}" href={% url 'student_list'%}> List </a></li>
+        </ul>
+      </div> 
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_wise' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" href=".consultant_wise" aria-expanded="{% if request.resolver_match.url_name == 'consultant_wise' %}true{% else %}false{% endif %}" aria-controls="Scholarship">
+        <i class="menu-icon mdi mdi-airplane-takeoff"></i>
+        
+        <span class="menu-title">Scholarship</span>
+        <i class="menu-arrow"></i>
+      </a>
+     <div class="collapse consultant_wise {% if request.resolver_match.url_name == 'scholarship_list' %}show{% endif %}" id="Scholarship">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'scholarship_list' %}active{% endif %}" href="{% url 'scholarship_list'%}"> Scholarship List </a></li>
+        </ul>
+      </div> 
+    </li>
+
+    <li class="nav-item nav-category">Map</li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_map' %}{% else %}collapsed active{% endif %}" data-bs-toggle="collapse" href=".consultant_map" aria-expanded="{% if request.resolver_match.url_name == 'consultant_map' %}true{% else %}false{% endif %}" aria-controls="Map">
+
+        <i class="menu-icon mdi mdi-google-maps"></i>
+        <span class="menu-title">Map</span>
+        <i class="menu-arrow"></i>
+      </a>
+     <div class="collapse consultant_map {% if request.resolver_match.url_name == 'consultant_map' %}show{% endif %}" id="Map">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'consultant_map' %}active{% endif %}" href={% url 'consultant_map'%}> Add Map </a></li>
+        </ul>
+      </div> 
+    </li>
+    
+        <li class="nav-item nav-category">Feedback</li>
+        <li class="nav-item {% if request.resolver_match.url_name == 'consultant_feedback_list' %}active{% endif %}">
+        <a class="nav-link" href={% url 'consultant_feedback_list' %}>
+            <i class="menu-icon mdi mdi-message"></i>
+            <span class="menu-title">Feedback</span>
+            {% if new_notifications_count > 0 %}
+            <span class="badge bg-danger">{{ new_notifications_count }}</span>
+            {% endif %}
+        </a>
+        </li>
+  </ul>
+</nav>

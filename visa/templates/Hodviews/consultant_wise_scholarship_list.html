@@ -1,0 +1,323 @@
+{% extends "Hodviews/base.html" %}
+
+{% block custom_css %}
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+   
+
+    <style>
+
+
+        /* Add custom styles for DataTables */
+        #scholarshiplist {
+          border-collapse: collapse;
+          width: 100%;
+        }
+    
+
+        #scholarshiplist th,
+        #scholarshiplist td {
+          border: 1px solid #ddd; /* Add border to table cells */
+          padding: 8px;
+          text-align: left;
+        }
+    
+
+        #scholarshiplist th {
+          background-color: #f2f2f2; /* Add background color to header cells */
+        }
+        .dataTables_wrapper .dataTable .btn, .dataTables_wrapper .dataTable .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .dataTables_wrapper .dataTable .swal2-styled, .dataTables_wrapper .dataTable .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .dataTables_wrapper .dataTable .ajax-file-upload {
+          padding: 0.5rem 1rem;
+          vertical-align: top;
+      }
+ 
+        .btn-edit,
+        .btn-delete {
+
+
+            color: #fff;
+        }
+    
+        .btn-edit {
+            background-color: #007bff;
+        }
+    
+        .btn-delete {
+            background-color: #dc3545;
+        }
+    
+        .btn-edit:hover,
+        .btn-delete:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+        #scholarshiplist_filter input {
+            margin-right: 40px !important; /* Increase the right margin */
+        }
+        div.dataTables_wrapper div.dataTables_length label {
+
+            margin: 14px !important;
+        }
+    </style>
+    <!-- Additional custom CSS can be added here -->
+{% endblock custom_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <a href="{% url 'consultant_wise' %}" class="btn btn-primary mt-3">Add Scholarship</a>
+            <br>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Consultant Uploaded Scholarship List</h4>
+                    <table id="scholarshiplist"class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Country</th>
+                                <th>Description</th>
+                                <th>Apply Process</th>
+                                
+                                <th>Created At</th>
+                                <th>Actions</th> <!-- Added Actions column -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scholarship in uploaded_scholarships %}
+                                <tr>
+                                    <td>{{ scholarship.company_name }}</td>
+                                    <td>{{ scholarship.country_name.country_name }}</td>
+                                    <td>{{ scholarship.schp_description |truncatechars:30|safe }}</td>
+                                    <td>{{ scholarship.apply_process |truncatechars:30|safe }}</td>
+                             
+                                    <td>{{ scholarship.created_at }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-edit btn-sm" data-id="{{ scholarship.id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="#" class="btn btn-danger btn-delete btn-sm" data-id="{{ scholarship.id }}">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+          
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+</div>
+<div class="modal fade" id="editScholarshipModal" tabindex="-1" role="dialog" aria-labelledby="editScholarshipModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editScholarshipModalTitle">Edit Scholarship Details</h5>
+                <button type="button" class="close" onclick="window.location.reload()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editScholarshipForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="editSchpDescription">Scholarship Description</label>
+                        <textarea class="form-control" id="editSchpDescription" name="schp_description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editApplyProcess">Apply Process</label>
+                        <textarea class="form-control" id="editApplyProcess" name="apply_process"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"  onclick="window.location.reload()>Close</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#scholarshiplist').DataTable();
+
+        // View button click event handler
+
+        // Delete button click event handler
+
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+            var scholarshipId = $(this).data('id');
+            var csrftoken = getCookie('csrftoken'); // Function to get the CSRF token value from cookies
+        
+            // Show confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to delete this scholarship. This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed deletion, send AJAX request to delete scholarship
+                    $.ajax({
+                        type: 'POST',
+                        url: `/delete_scholarship_uploaded/${scholarshipId}/`,
+                        headers: {
+                            'X-CSRFToken': csrftoken // Include the CSRF token in the request headers
+                        },
+                        success: function(response) {
+                            // Check if the deletion was successful
+                            if (response.success) {
+                                // Show success message
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message,
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    onClose: () => {
+                                        // Remove the deleted scholarship row from the table
+                                        $('#scholarshiplist').DataTable().row($(`#scholarship-${response.scholarship_id}`)).remove().draw(false);
+                                        // Reload the page after successful update
+                                        location.reload();
+                                    }
+                                });
+                            } else {
+                                // Show error message
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Failed to delete scholarship!'
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Failed to delete scholarship!'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+$('.btn-edit').click(function(e) {
+    e.preventDefault();
+    var scholarshipId = $(this).data('id');
+    var csrftoken = getCookie('csrftoken'); // Function to get the CSRF token value from cookies
+
+    // Send AJAX request to fetch scholarship details
+    $.ajax({
+        type: 'GET',
+        url: `/edit_consultant_wise_scholarship_list/${scholarshipId}/`,
+        success: function(response) {
+            CKEDITOR.replace('editSchpDescription');
+            CKEDITOR.replace('editApplyProcess');
+
+            // Populate modal with scholarship details
+            $('#editSchpDescription').val(response.schp_description);
+            $('#editApplyProcess').val(response.apply_process);
+
+            // Show the modal
+            $('#editScholarshipModal').modal('show');
+
+            // Set the scholarship ID for the saveChangesBtn button
+            $('#saveChangesBtn').data('id', scholarshipId);
+        },
+        error: function(error) {
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to fetch scholarship details!'
+            });
+        }
+    });
+});
+
+// Save changes button click event handler
+$('#saveChangesBtn').click(function(e) {
+    e.preventDefault();
+    var scholarshipId = $(this).data('id'); // Retrieve the scholarship ID from the button
+    var schpDescription = CKEDITOR.instances.editSchpDescription.getData();
+    var applyProcess = CKEDITOR.instances.editApplyProcess.getData();
+    var csrftoken = getCookie('csrftoken'); // Function to get the CSRF token value from cookies
+
+    // Send AJAX request to update scholarship details
+    $.ajax({
+        type: 'POST',
+        url: `/edit_consultant_wise_scholarship_list/${scholarshipId}/`,
+        data: {
+            'schp_description': schpDescription,
+            'apply_process': applyProcess,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        success: function(response) {
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Scholarship details updated successfully!',
+                timer: 2000,
+                timerProgressBar: true,
+                onClose: () => {
+                    // Reload the page after successful update
+                    location.reload();
+                }
+            });
+        },
+        error: function(error) {
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to update scholarship details!'
+            });
+        }
+    });
+});
+
+// Reload the page when the modal is dismissed
+$('#editScholarshipModal').on('hidden.bs.modal', function () {
+    location.reload();
+});
+
+        // Function to retrieve CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Check if the cookie name matches the specified name
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock custom_js %}

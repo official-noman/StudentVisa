@@ -1,0 +1,180 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+  <style>
+    /* Custom Table Styles */
+    .custom-table {
+      width: 100%;
+      margin-bottom: 1rem;
+      color: #212529;
+      border-collapse: collapse;
+    }
+
+    .custom-table th,
+    .custom-table td {
+      padding: 0.75rem;
+      vertical-align: top;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .custom-table thead th {
+      vertical-align: bottom;
+      border-bottom: 2px solid #dee2e6;
+      background-color: #f8f9fa;
+    }
+
+    .custom-table tbody + tbody {
+      border-top: 2px solid #dee2e6;
+    }
+
+    .custom-table-sm th,
+    .custom-table-sm td {
+      padding: 0.3rem;
+    }
+
+    .custom-table-bordered {
+      border: 1px solid #dee2e6;
+    }
+
+    .custom-table-bordered th,
+    .custom-table-bordered td {
+      border: 1px solid #dee2e6;
+    }
+
+    .custom-table-bordered thead th,
+    .custom-table-bordered thead td {
+      border-bottom-width: 2px;
+    }
+
+    /* Hover effect for table rows */
+    .custom-table tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    /* Style delete button */
+    .delete-scholarship {
+      margin-right: 5px;
+    }
+    .table td img {
+      width: 98px;
+      height: 66px;
+      border-radius: 0% !important;
+  }
+  </style>
+  <!-- Include Select2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css">
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+{% endblock custom_css %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <a href="{% url 'country_wise' %}" class="btn btn-primary mt-3">Add Scholarship</a>
+        <br>
+        <br>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Country Wise Scholarship List</h4>
+
+            {% if scholarship_data %}
+            <table id="scholarshiplist" class="custom-table table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Country Name</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Who Can Apply</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in scholarship_data %}
+                    <tr>
+                      <td>{{ data.scholarship.scw_id }}</td>
+                      <td>{{ data.country_name }}</td>
+                      <td>{{ data.scholarship.scw_title|truncatechars:30|safe}}</td>
+                      <td>{{ data.scholarship.scw_whocanapply|truncatechars:30|safe }}</td>
+                      <td>
+                        {% if data.scholarship.scw_image %}
+                            <img src="{{ data.scholarship.scw_image.url }}" alt="Scholarship Image" style="max-width: 100px; max-height: 100px;">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>
+                      {% if data.scholarship.scw_status == 1 %}
+                        <span class="badge badge-success">Active</span>
+                      {% else %}
+                        <span class="badge badge-secondary">Inactive</span>
+                      {% endif %}
+                    </td>
+                      <td>
+                        <a href="{% url 'edit_scholarship' data.scholarship.scw_id %}" class="btn btn-primary">Edit</a>
+                        <a href="#" class="btn btn-danger delete-scholarship" data-scw-id="{{ data.scholarship.scw_id }}">Delete</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+              <p>No scholarships available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endblock content %}
+
+{% block custom_js %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script>
+    $('#scholarshiplist tbody').on('click', 'a.delete-scholarship', function() {
+      var scwId = $(this).data('scw-id');
+    
+      // Use SweetAlert2 for confirmation
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If confirmed, perform the delete action
+          deleteScholarship(scwId);
+        }
+      });
+    });
+    
+    function deleteScholarship(scwId) {
+      // Perform the delete action
+      $.ajax({
+        url: `/delete-scholarship/${scwId}/`,
+        method: 'POST', // Use POST method for Django view handling
+        dataType: 'json',
+        success: function(data) {
+          if (data.success) {
+            // Display success message and reload the page
+            Swal.fire('Deleted!', 'Scholarship has been deleted.', 'success');
+            location.reload();
+          } else {
+            // Display error message
+            Swal.fire('Error!', 'Failed to delete scholarship. ' + data.message, 'error');
+          }
+        },
+        error: function() {
+          // Display error message for AJAX request failure
+          Swal.fire('Error!', 'An error occurred during the AJAX request.', 'error');
+        }
+      });
+    }
+  </script>
+{% endblock custom_js %}

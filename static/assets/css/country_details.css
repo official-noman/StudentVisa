@@ -1,0 +1,28 @@
+h1, h2, h3, h4, h5, h6{
+    color: rgb(31, 31, 31);
+    margin-bottom: 10px;
+}
+
+.float-left {
+    float: left;
+    margin-right: 20px; /* Adjust the margin as needed */
+    width: 300px;
+}
+
+/* Clear the float to prevent layout issues */
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive styles for small screens (up to 600px) */
+@media (max-width: 600px) {
+    .float-left {
+        float: none;
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        box-sizing: border-box; /* To include padding and border in the total width */
+    }
+}

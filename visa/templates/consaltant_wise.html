@@ -1,0 +1,168 @@
+{% extends 'base.html' %} {% load static %}
+{% block custom_css %}
+<style>
+    .box p{
+        color: black;
+    }
+    
+    .service-block-two .inner-box .lower-content .box{
+        height: 220px;
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<link href={% static "assets/css/by_country.css" %} rel="stylesheet">
+{% endblock custom_css %}
+{% block content %}
+    <!--Page Title-->
+    <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg' %});">
+        <div class="auto-container">
+            <div class="content-box">
+                <div class="title-box">
+                    <h1>Scholarship</h1>
+                    <div class="dotted-box">
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                        <span class="dotted"></span>
+                    </div>
+                </div>
+                <ul class="bread-crumb clearfix">
+                    <li><i class="flaticon-home-1"></i><a href="{% url 'home' %}">Home</a></li>
+                    <li>Consulatant Wise</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-style-two service-page-1 bg-color-3">
+        <div class="auto-container px-0">
+            <div class="row clearfix justify-content-center">
+                <div class="welcome-text-div">
+                    <div class="row justify-content-center">
+                        {% for scholarship in scholarships %}
+                            <div class="col-lg-4 col-md-6 col-12 service-block">
+                                <div class="service-block-two">
+                                    <div class="inner-box">
+                                        <figure class="image-box">
+                                            <a href="service-details.html">
+                                                <img src="{% static 'assets/images/service/service-' %}{{ forloop.counter|add:"0" }}.jpg" alt="">
+                                            </a>
+                                        </figure>
+                                        <div class="lower-content">
+                                            <div class="box">
+                                                <div class="icon-box"><i class="flaticon-flight-2"></i></div>
+                                                {% for consultant in consultant_users %}
+                                                    {% if consultant.id == scholarship.consultant_id %}
+                                                        <h3><a href="{% url 'scholarship_singel_page' scholarship_id=scholarship.id %}">Scholarship From {{ consultant.company_name }}</a></h3>
+                                                    {% endif %}
+                                                {% endfor %}
+                        <div style="color: black !important; width: 100%; white-space: pre-line;">
+    <p>{{ scholarship.schp_description|truncatewords_html:5|safe }}</p>
+</div>                               
+</div>
+                                            <div class="link"><a href="{% url 'scholarship_singel_page' scholarship_id=scholarship.id %}">Read More<i class="flaticon-send"></i></a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                                <div class="clearfix"></div>
+                                <div class="row-images">
+                                    {% for i in "1234" %}
+                                        <img src="{% static 'assets/images/service/service-' %}{{ forloop.parentloop.counter|add:"-1"|add:i }}.jpg" alt="Image {{ i }}">
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for consultant_wise_scholarship in consultant_wise_scholarships %}
+                        <div class="col-lg-4 col-md-6 col-12 service-block">
+                            <div class="service-block-two">
+                                <div class="inner-box">
+                                    <figure class="image-box">
+                                        <a href="{% url 'scholarship_singel_page' scholarship_id=consultant_wise_scholarship.scow_id %}">
+                                            <img src="{% static 'assets/images/service/service-' %}{{ forloop.counter|add:"0" }}.jpg" alt="">
+                                        </a>
+                                    </figure>
+                                    <div class="lower-content">
+                                        <div class="box">
+                                            <div class="icon-box"><i class="flaticon-flight-2"></i></div>
+                                            {% for consultant in consultant_users %}
+                                                {% if consultant.id == consultant_wise_scholarship.scow_consultant_id %}
+                                                <h3><a href="{% url 'scholarship_singel_page' scholarship_id=consultant_wise_scholarship.scow_id %}">Scholarship From {{consultant.company_name }}</a></h3>
+                                                {% endif %}
+                                            {% endfor %} 
+                                            <p style="color:black !important;">{{ consultant_wise_scholarship.scow_text|truncatewords:11|safe }}</p>
+                                        </div>
+                                        <div class="link"><a href="{% url 'scholarship_singel_page' scholarship_id=consultant_wise_scholarship.scow_id %}">Read More<i class="flaticon-send"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                            <div class="clearfix"></div>
+                            <div class="row-images">
+                                {% for i in "1234" %}
+                                    <img src="{% static 'assets/images/service/service-' %}{{ forloop.parentloop.counter|add:"-1"|add:i }}.jpg" alt="Image {{ i }}">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    
+                    </div>
+                    <!-- Pagination -->
+
+                </div>
+            </div>
+            <div class="pagination-wrapper centred">
+                <ul class="pagination">
+            {% if scholarships_page.has_previous %}
+                <li><a href="?page=1"><i class="fa-solid fa-angles-left"></i></a></li>
+                <li><a href="?page={{ scholarships_page.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a></li>
+            {% endif %}
+
+            {% for i in scholarships_page.paginator.page_range %}
+                {% if scholarships_page.number == i %}
+                    <li><span class="pagination-active">{{ i }}</span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if scholarships_page.has_next %}
+                <li><a href="?page={{ scholarships_page.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a></li>
+                <li><a href="?page={{ scholarships_page.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a></li>
+            {% endif %}
+            </ul>
+            </div>
+        </div>
+    </section>
+    <!-- feature-section end -->
+
+
+    <!-- main-footer end -->
+
+
+    <!--Scroll to top-->
+    <button class="scroll-top scroll-to-target" data-target="html">
+        <i class="fas fa-long-arrow-alt-up"></i>
+    </button>
+
+{% endblock content %}
+
+{% block content_js %}
+
+    {% endblock content_js %}

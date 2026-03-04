@@ -1,0 +1,270 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+
+
+{% block custom_css %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+
+{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script> {% endcomment %}
+
+    <link rel="stylesheet" href="{% static "assets/dist/css/user_account_settings.css" %}">
+    
+{% endblock custom_css %}
+
+{% block content %}
+
+<div class="container-xl px-4 mt-4">
+    <!-- Account page navigation-->
+    <div class="page-header d-flex justify-content-center col-lg-12 col-md-12 col-12 mb-4">
+        <h4 class="my-auto">Profile settings</h4>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        </div>
+    <form method="POST" action="" enctype="multipart/form-data" id="profile-form">
+        {% csrf_token %}
+        <div class="row card-container-row">
+            <div class="col-xl-4 px-lg-4 px-0 card-container">
+                <div class="row">
+                    <!-- Profile picture card-->
+                    <div class="card mb-4 mb-xl-0 px-0">
+                        <div class="card-header d-flex justify-content-center">Content Picture</div>
+                        <div class="card-body text-center py-3">
+                            <!-- Profile picture image-->
+                            <div class="d-flex justify-content-center">
+                                <div class="profile-pic-div">
+                                    {% if user.consultant_img %}
+                                        <img id="wizardPicturePreview" class="img-account-profile picture-src mb-2" src="{{ user.consultant_img.url }}" alt="Content Image">
+                                    {% else %}
+                                        <img id="wizardPicturePreview" class="img-account-profile picture-src mb-2" src="{% static 'assets/images/content_img.png' %}" alt="">
+                                    {% endif %}
+                                    <div class="input-pic">
+                                        <input type="file" id="wizard-picture" name="consultant_img" class="">
+                                    </div>
+                                    <div class="camera-icon d-flex justify-content-center">
+                                        <i class="fa-solid fa-camera my-auto"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Profile picture help block-->
+                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                            <!-- Profile picture upload button-->
+                            <button class="btn btn-primary profile-pic-btn" type="button">Upload new image</button>
+                        </div>
+                    </div>
+
+                    <!-- Change password-->
+                    <div class="card mb-4 mb-xl-0 px-0 mt-2">
+                        <div class="card-header password-card-header d-flex justify-content-center">Change Password</div>
+                        <div id="password-card-body" class="card-body text-center password-card-body">
+                            <div class="mt-3 mb-3">
+                                <label class="mb-1 ms-0" for="old-password">Old Password</label>
+                                <input class="" id="old-password" type="password" name="old_password" placeholder="Old Password" value="">
+                            </div>
+                            <div class="mt-3 mb-3">
+                                <label class="mb-1 ms-0" for="new-password">New Password</label>
+                                <input class="" id="new-password" type="password" name="new_password" placeholder="New Password" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="mb-1" for="confirm-password">Confirm Password</label>
+                                <input class="" id="confirm-password" type="password" name="confirm_password" placeholder="Confirm Password" value="">
+                            </div>
+                            <!-- Profile picture upload button-->
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-primary change-password-btn" type="button">Change Password</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-xl-8 px-lg-4 px-0">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-center">Account Details</div>
+                    <div class="card-body py-3">
+                        
+                            <!-- Form Group (username)-->
+                            <div class="row">
+                             
+                                <div class="mb-3 col-md-6 col-12">
+                                    <label class="mb-1" for="full-name">Full Name</label>
+                                    <input id="full-name" type="text" name="full_name" placeholder="Enter Full Name" value="{{user.full_name}}">
+                                </div>
+                            </div>
+
+                            <!-- Form Row-->
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (first name)-->
+                                <div class="col-md-6 col-12">
+                                    <label class="mb-1" for="phone">Mobile Phone</label>
+                                    <input id="phone" type="tel" name="phone" placeholder="Cell No." value="{{user.phone}}">
+                                </div>
+                                <!-- Form Group (last name)-->
+
+                            </div>
+
+                       
+
+                            <!-- Form Row        -->
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (organization name)-->
+
+                                <!-- Form Group (location)-->
+                                <div class="col-md-6">
+                                    <label class="mb-1" for="website">Website</label>
+                                    <input id="website" type="text" name="website" placeholder="https://www.example.com" value="{{ user.website }}">
+                                </div>
+                            </div>
+
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (organization name)-->
+                                <div class="col-12">
+                                    <label class="mb-1" for="about">About</label>
+                                    <textarea id="about" name="about" value="{{ user.about }}" required>{% if user %}{{ user.about|default:'' }}{% endif %}</textarea>
+                                </div>
+                            </div>
+
+                            <!--Error messages starts-->
+                            <div class="w-100">
+                                <div id="error-message-div" class="d-flex error-message-div">
+                                    <p><span id="message-text" class="message-text text-center"></span></p>
+                                </div>
+                            </div>
+                            <!--Error messages ends-->
+
+                            <!-- Save changes button-->
+                            <div class="d-flex justify-content-center mt-3">
+                                <button class="btn btn-primary p-2" type="submit">Save changes</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+<div id="popup-container" class="popup-container">
+    <div class="popup d-flex justify-content-center">
+        <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
+        <div class="registration-success-div py-4">
+            <p class="mb-2"><span class="successful-text text-center">Profile Updated Successfully</span></p>
+        </div>
+        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block custom_js %}
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <script>CKEDITOR.replace('about');</script>
+    
+    <script>
+        $(document).ready(function(){
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                todayHighlight: true,
+                toggleActive: true
+            });
+            
+            // Prepare the preview for profile picture
+            $("#wizard-picture").change(function(){
+                readURL(this);
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+            
+                    reader.onload = function (e) {
+                        $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $('.profile-pic-btn').on('click', function(){
+                $('#wizard-picture').click()
+                console.log('clicked')
+            })
+
+            $('.change-password-btn').on('click', function(){
+                $('#wizard-picture').click()
+                console.log('clicked')
+            })
+
+            $('.password-card-header').on('click', function(){
+                $(this).addClass('border')
+                $('.password-card-body').addClass('show');
+            })
+
+            // fetch data to save the data
+            $('#profile-form').on('submit', function(event){
+                event.preventDefault();
+                var formData = new FormData(this);
+                var userId = parseInt('{{user.id}}')
+                console.log('userId: ', userId);
+                console.log('userId type: ', typeof(userId));
+
+                var about = $('#about').val();
+                console.log('about: ', about);
+                
+                fetch('/save_root_profile/' + userId + '/', {
+                    method: 'POST',
+                    //body: JSON.stringify(data),
+                    body: formData,
+                    headers: {
+                        'x-CSRFToken': '{{csrf_token}}',
+                        //'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data, e.g., show a success message
+                    console.log('data: ', data);
+
+                    if (data.success) {
+                        // Redirect to the URL provided in the response
+                        //window.location.href = data.redirect_url;
+                        console.log('data.success: ', data.success)
+                        $('#popup-container').addClass('show');
+
+                        setTimeout(function(){
+                            $('#popup-container').removeClass('show');
+                        }, 1000)
+                    }
+                    
+                    else if (data.error) {
+                        console.log('errors: ', data.error);
+                        $('#message-text').text(data.error);
+                        $('#error-message-div').addClass('error-message-show');
+                    }
+                })
+                .catch(error => {
+                    // Handle errors, e.g., show an error message
+                    console.error('Error:', error);
+                });
+            })
+        });
+    </script>
+    
+
+{% endblock custom_js %}

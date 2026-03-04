@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Student Visa Bd</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/feather/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/typicons/typicons.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/simple-line-icons/css/simple-line-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/regular.min.css" integrity="sha512-TzeemgHmrSO404wTLeBd76DmPp5TjWY/f2SyZC6/3LsutDYMVYfOx2uh894kr0j9UM6x39LFHKTeLn99iz378A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{% static 'assets/dist/css/vertical-layout-light/style.css' %}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{% static 'assets/images/icon.png' %}" />
+  <style>
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 10px; /* Adjust as needed */
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    .auth .brand-logo img {
+    width: 150px !important;
+}
+    .error-message-div {
+        width: 100%;
+        max-height: 0;
+        opacity: 0;
+        background-color: rgba(255, 0, 0, 0.233);
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .error-message-div p {
+        margin: 14px 16px;
+    }
+
+    .message-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: red;
+    }
+
+    .error-message-div.error-message-show {
+        max-height: 50px;
+        opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="{% static 'assets/images/1627792877.png' %}" alt="logo">
+              </div>
+              <h4>Hello! let's get started</h4>
+              <h6 class="fw-light">Sign in to continue.</h6>
+              <form id="login-form" method="POST" action="{% url 'admin' %}">
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="{% if message.tags == 'error' %}error-message-div error-message-show{% endif %}">
+                            <p class="message-text">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% csrf_token %}
+                <div class="form-group">
+                  <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" name="identifier" placeholder="Username">
+                </div>
+                <div class="form-group position-relative">
+                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" name="password" placeholder="Password">
+                  <span class="password-toggle" id="password-toggle-eye">
+                    <i class="fa-regular fa-eye-slash"></i>
+                  </span>
+                </div>
+                <div class="mt-3">
+                  <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
+                </div>
+                <div class="my-2 d-flex justify-content-between align-items-center">
+                  <div class="form-check">
+                    <label class="form-check-label text-muted">
+                      <input type="checkbox" class="form-check-input">
+                      Keep me signed in
+                    </label>
+                  </div>
+                  <a href="{% url 'forgot_password_phone_or_email' %}" class="auth-link text-black">Forgot password?</a>
+                </div>
+                <div class="text-center mt-4 fw-light">
+                  Don't have an account? <a href="{% url 'signup_user' %}" class="text-primary">Create</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="{% static 'assets/dist/vendors/js/vendor.bundle.base.js' %}"></script>
+  <script src="{% static 'assets/dist/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'assets/dist/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'assets/dist/js/off-canvas.js' %}"></script>
+  <script src="{% static 'assets/dist/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'assets/dist/js/template.js' %}"></script>
+  <script src="{% static 'assets/dist/js/settings.js' %}"></script>
+  <script src="{% static 'assets/dist/js/todolist.js' %}"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('.password-toggle').click(function () {
+        console.log('eye icon clicked');
+        var passwordInput = $(this).siblings('input');
+        if (passwordInput.attr('type') === 'password') {
+          passwordInput.attr('type', 'text');
+          $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+          passwordInput.attr('type', 'password');
+          $(this).find('i').addClass('fa-eye-slash').removeClass('fa-eye');
+        }
+      });
+    });
+  </script>
+  <!-- endinject -->
+</body>
+</html>

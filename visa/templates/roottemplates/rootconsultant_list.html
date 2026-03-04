@@ -1,0 +1,1729 @@
+{% extends "roottemplates/base.html" %}
+
+{% block custom_css %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
+  <link rel="stylesheet" href={% static "assets/dist/vendors/feather/feather.css"%}>
+  <link rel="stylesheet" href={% static "assets/dist/vendors/mdi/css/materialdesignicons.min.css"%}>
+  <link rel="stylesheet" href={% static "assets/dist/vendors/ti-icons/css/themify-icons.css"%}>
+  <link rel="stylesheet" href={% static "assets/dist/vendors/typicons/typicons.css"%}>
+  <link rel="stylesheet" href={% static "assets/dist/vendors/simple-line-icons/css/simple-line-icons.css"%}>
+  <link rel="stylesheet" href={% static "assets/dist/vendors/css/vendor.bundle.base.css"%}>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href={% static "assets/dist/css/vertical-layout-light/style.css"%}>
+  <!-- endinject -->
+  <link rel="shortcut icon" href={% static "assets/dist/images/favicon.png" %}/>
+  
+  <style>
+    /* Add custom styles for DataTables */
+    #active-consultant-table,
+    #basic-consultant-table,
+    #free-consultant-table,
+    #premium-consultant-table,
+    #suspend-consultant-table,
+
+    #all-consultant-table,
+    #rootConsultntList {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #active-consultant-table th,
+    #premium-consultant-table th,
+    #basic-consultant-table th,
+    #free-consultant-table th,
+    #all-consultant-table th,
+    #rootConsultntList th,
+    #rootConsultntList td,
+    #all-consultant-table td,
+    #active-consultant-table td,
+    #premium-consultant-table td,
+    #basic-consultant-table td,
+    #free-consultant-table td,
+    #suspend-consultant-table th,
+    #suspend-consultant-table td {
+      border: 1px solid #ddd; /* Add border to table cells */
+      padding: 8px;
+      text-align: left;
+    }
+
+    #active-consultant-table th,
+    #rootConsultntList th,
+    #suspend-consultant-table th {
+      background-color: #f2f2f2; /* Add background color to header cells */
+    }
+    .dataTables_wrapper .dataTable .btn, .dataTables_wrapper .dataTable .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .dataTables_wrapper .dataTable .swal2-styled, .dataTables_wrapper .dataTable .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .dataTables_wrapper .dataTable .ajax-file-upload {
+      padding: 0.5rem 1rem;
+      vertical-align: top;
+  }
+  .modal-content{
+    margin-bottom: 80px !important;
+  }
+  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    border-bottom: 2px solid red;
+}
+
+.btn-rate{
+    background-color: #c29d4f;
+}
+
+.btn-rate:hover{
+    background-color: #e9b74e;
+}
+
+</style>
+
+  
+  {% endblock custom_css %}
+
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="tabs">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending"
+                aria-selected="true">Pending</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active"
+                aria-selected="false">Active</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="free-tab" data-toggle="tab" href="#free" role="tab" aria-controls="free"
+                aria-selected="false">Free</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic"
+                aria-selected="false">Basic</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" id="premium-tab" data-toggle="tab" href="#premium" role="tab" aria-controls="premium"
+                aria-selected="false">Premium</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="expire-tab" data-toggle="tab" href="#expire" role="tab" aria-controls="expire"
+                aria-selected="false">Expire</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="suspend-tab" data-toggle="tab" href="#suspend" role="tab" aria-controls="suspend"
+              aria-selected="false" >Suspended</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="false">All</a>
+            </li>
+
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+  
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="home-tab">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-4">Consultant</h4>
+
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+              <table id="rootConsultntList" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Company Name</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in rootconsultant %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                       <td>{{ user.company_name }}</td>
+                      <td>{{ user.full_name }}</td>
+                      <td>{{ user.phone }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>
+                        
+
+
+                        
+                        <button type="button" class="btn btn-info grant-permission-btn" data-toggle="modal"
+                          data-target="#permissionModal{{ user.id }}">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              {% for user in rootconsultant %}
+                <div class="modal fade" id="permissionModal{{ user.id }}" tabindex="-1" role="dialog"
+                  aria-labelledby="permissionModalLabel{{ user.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="permissionModalLabel{{ user.id }}">Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" action="{% url 'grant_permission_consultant' user.id %}">
+                          {% csrf_token %}
+
+                          <!-- Display user details -->
+                          <table class="table">
+                            <tbody>
+                              <tr>
+                                <td><strong>Email</strong></td>
+                                <td>{{ user.email }}</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Phone</strong></td>
+                                <td>{{ user.phone }}</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Company Name</strong></td>
+                                <td>{{ user.company_name }}</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Company Website</strong></td>
+                                <td>{{ user.website }}</td>
+                              </tr>
+                              <tr>
+                                <td ><strong>Company Address</strong></td>
+                                <td style="text-wrap: wrap;">{{ user.address }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <input type="hidden" class="reject-user-id" value="{{ user.id }}">
+
+                          <button type="submit" class="btn btn-primary">Accept</button>
+                          <button type="button" class="btn btn-danger reject-permission-btn" data-dismiss="modal">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+          <table class="table table-bordered" id="active-consultant-table">
+              <thead>
+                  <tr>
+                    <th>#</th>
+                      <th>Company Name</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Registration</th>
+                      <th>Action</th>
+                      <!-- Add other fields as needed -->
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Data will be dynamically inserted here using JavaScript -->
+              </tbody>
+          </table>
+      </div>
+      <div class="tab-pane fade" id="suspend" role="tabpanel" aria-labelledby="suspend-tab">
+        <table class="table table-bordered" id="suspend-consultant-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Company Name</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                    <!-- Add other fields as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be dynamically inserted here using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="free" role="tabpanel" aria-labelledby="free-tab">
+      <table class="table table-bordered" id="free-consultant-table">
+          <thead>
+              <tr>
+                <th>#</th>
+                  <th>Company Name</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+   
+                  <th>Action</th>
+                  <!-- Add other fields as needed -->
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Data will be dynamically inserted here using JavaScript -->
+          </tbody>
+      </table>
+    </div>
+    <div class="tab-pane fade" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+      <table class="table table-bordered" id="basic-consultant-table">
+          <thead>
+              <tr>
+                <th>#</th>
+                  <th>Company Name</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+   
+                  <th>Action</th>
+                  <!-- Add other fields as needed -->
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Data will be dynamically inserted here using JavaScript -->
+          </tbody>
+      </table>
+    </div>
+    <div class="tab-pane fade" id="premium" role="tabpanel" aria-labelledby="premium-tab">
+      <table class="table table-bordered" id="premium-consultant-table">
+          <thead>
+              <tr>
+                <th>#</th>
+                  <th>Company Name</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+   
+                  <th>Action</th>
+                  <!-- Add other fields as needed -->
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Data will be dynamically inserted here using JavaScript -->
+          </tbody>
+      </table>
+    </div>
+
+
+
+    <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="all-tab">
+      <table class="table table-bordered" id="all-consultant-table">
+          <thead>
+              <tr>
+                <th>#</th>
+                  <th>Company Name</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Est. Date</th>
+                  <th>Balance</th>
+                
+
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Data will be dynamically inserted here using JavaScript -->
+          </tbody>
+      </table>
+  </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Active Consultant Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="detailsModalBody">
+                <!-- Details will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                
+                <!--<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeDetailsactiveModal()">Close</button>-->
+                <button type="button" data-consultant-id="" class="btn btn-rate" id="rate-btn">
+                    <i class="ti-user"></i>
+                    Add Rates
+                </button>
+
+                <button type="button" class="btn btn-info" id="suspendButton">
+                    <i class="ti-user"></i>
+                    Suspend Account
+                </button>
+
+                <button type="button" class="btn btn-success" id="freeButton">
+                    <i class="ti-user"></i>
+                    Free
+                </button>
+
+                <button type="button" class="btn btn-dark" id="basicButton">
+                    <i class="ti-user"></i>
+                    Basic
+                </button>
+
+                <button type="button" class="btn btn-primary" id="premiumButton">
+                    <i class="ti-user"></i>
+                    Premium
+                </button>
+        
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="detailssuspandModal" tabindex="-1" role="dialog" aria-labelledby="detailssuspandModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailssuspandModalLabel">Suspended Consultant Details</h5>
+        <button type="button" id="detailssuspandModalClose" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="detailssuspandModalBody">
+        <!-- Details will be dynamically inserted here -->
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-danger" onclick="closeDetailsModal()">Close</button>
+        <button type="button" class="btn btn-primary" id="activateButton">
+          <i class="ti-user"></i>
+          Active Account
+        </button>
+   
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="detailsfreeModal" tabindex="-1" role="dialog" aria-labelledby="detailsfreeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsfreeModalLabel">Free User Details</h5>
+        <button type="button" id="detailsfreeModalClose" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="detailsfreeModalBody">
+        <!-- Details will be dynamically inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeDetailsFreeModal()">Close</button>
+        <!-- Add other buttons or actions as needed for free accounts -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="detailsbasicModal" tabindex="-1" role="dialog" aria-labelledby="detailsbasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsbasicModalLabel">Basic User Details</h5>
+        <button type="button" id="detailsbasicModalClose" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="detailsbasicModalBody">
+        <!-- Details will be dynamically inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeDetailsBasicModal()">Close</button>
+        <!-- Add other buttons or actions as needed for free accounts -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="detailspremiumModal" tabindex="-1" role="dialog" aria-labelledby="detailspremiumModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailspremiumModalLabel">Premium User Details</h5>
+        <button type="button" id="detailspremiumModalClose" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="detailspremiumModalBody">
+        <!-- Details will be dynamically inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="closeDetailsPremiumModal()">Close</button>
+        <!-- Add other buttons or actions as needed for free accounts -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Consultant Rate Modal starts-->
+<div class="modal fade" id="addRatesModal" tabindex="-1" role="dialog" aria-labelledby="addRatesModal{{ consultant.id }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRatesModal{{ consultant.id }}Label">Add Rates for {{ consultant.full_name }}</h5>
+                <button type="button" id="addRatesModalClose" class="close close-button" id="closeModalButton" aria-label="Close">
+                    <span aria-hidden="true" class="fs-3">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRatesForm" method="POST">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label for="first_rate">First Rate:</label>
+                        <input type="text" class="form-control" id="first_rate" name="first_rate" placeholder="Enter first rate" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="second_rate">Second Rate:</label>
+                        <input type="text" class="form-control" id="second_rate" name="second_rate" placeholder="Enter second rate" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="third_rate">Third Rate:</label>
+                        <input type="text" class="form-control" id="third_rate" name="third_rate" placeholder="Enter third rate" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="four_rate">Four Rate:</label>
+                        <input type="text" class="form-control" id="four_rate" name="four_rate" placeholder="Enter four rate" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="five_rate">Five Rate:</label>
+                        <input type="text" class="form-control" id="five_rate" name="five_rate" placeholder="Enter five rate" value="">
+                    </div>
+                    <button id="rate-form-submit" type="submit" class="btn btn-primary" data-consultant-id-"">Save Rates</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Consultant Rate Modal ends-->
+
+{% endblock content %}
+
+{% block custom_js %}
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<!-- Your existing HTML content -->
+
+<!-- Bootstrap JavaScript (place it at the end of your HTML document, just before the closing body tag) -->
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Close modal on clicking the close button or modal backdrop
+            $('#detailsModal').on('click', function(event) {
+                if (event.target === this || $(event.target).hasClass('close')) {
+                    $('#detailsModal').modal('hide');
+                }
+            });
+        
+            // Optionally: Close modal when clicking the "x" close button using pure JavaScript (for compatibility)
+            $('.close').click(function() {
+                $('#detailsModal').modal('hide');
+            });
+
+            $('#detailssuspandModalClose').click(function() {
+                $('#detailssuspandModal').modal('hide');
+            });
+
+            $('#detailsfreeModalClose').click(function() {
+                $('#detailsfreeModal').modal('hide');
+            });
+
+            $('#detailsbasicModalClose').click(function() {
+                $('#detailsbasicModal').modal('hide');
+            });
+
+            $('#detailspremiumModalClose').click(function() {
+                $('#detailspremiumModal').modal('hide');
+            });
+
+            $('#addRatesModalClose').click(function() {
+                $('#addRatesModal').modal('hide');
+            });
+        });
+    </script>
+
+  <script>
+    $(document).ready(function() {
+      $('#rootConsultntList').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+          'csv', 'excel', 'pdf', 'print'
+        ]
+      });
+
+      // Attach a click event to the dynamically created "Grant Permission" buttons
+      $('.grant-permission-btn').on('click', function() {
+        // Force DataTables to redraw when the modal is shown
+        $('#rootConsultntList').DataTable().draw();
+      });
+
+      // Attach a click event to the "Reject" buttons
+      $('.reject-permission-btn').click(function() {
+        // Get the consultant ID from the data-id attribute
+        var userId = $(this).data('id');
+        
+        // Check if userId is defined
+        if (userId === undefined) {
+            console.error('User ID is undefined.');
+            return;
+        }
+    
+        // Display a SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Reject Confirmation',
+            text: 'Are you sure you want to reject this consultant?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Reject'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show the second modal for additional confirmation
+                $('#rejectModal' + userId).modal('show');
+            }
+        });
+    });
+
+    // Attach a click event to the "Confirm Reject" buttons
+    $('.confirm-reject-btn').click(function() {
+      // Get the consultant ID from the data-id attribute
+      var userId = $(this).data('id');
+      
+      // Check if userId is defined
+      if (userId === undefined) {
+          console.error('User ID is undefined.');
+          return;
+      }
+
+      // Send an AJAX request to reject the consultant
+      $.ajax({
+        url: `/reject_consultant/${userId}/`, // Replace with your URL
+        type: 'POST',
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}' // Replace with your CSRF token
+        },
+        success: function(response) {
+          if (response.success) {
+            // Handle a successful rejection action
+            // For example, you can remove the rejected item from the list
+            // No need for alert here, as SweetAlert2 provides a built-in success message
+            location.reload(); // Reloading the page as an example
+          } else {
+            // Handle errors
+            console.error(response.message);
+            Swal.fire('Error', response.message, 'error');
+          }
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          // Handle AJAX errors
+          console.error('AJAX Error:', textStatus, errorThrown);
+          Swal.fire('Error', 'An error occurred during the rejection process.', 'error');
+        }
+      });
+    });
+
+      // Update SweetAlert message after form submission
+      {% if messages %}
+        {% for message in messages %}
+          Swal.fire({
+            title: '{{ message.tags }}',
+            text: '{{ message }}',
+            icon: '{{ message.tags }}',
+          });
+        {% endfor %}
+      {% endif %}
+    });
+  </script>
+
+
+    <!-- Add the following script for tab switching -->
+    <script>
+      /*$(document).ready(function () {
+        // Handle tab click event
+        $('.nav-link').on('click', function (e) {
+          e.preventDefault();
+          var targetTabId = $(this).attr('href');
+  
+          // Hide all tab content
+          $('.tab-pane').removeClass('show active');
+  
+          // Show the selected tab content
+          $(targetTabId).addClass('show active');
+        });
+      });*/
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let rowNumber = 1;
+            // Fetch data from Django view
+            fetch('/activeconsultant/')
+                .then(response => response.json())
+                .then(data => {
+                    const consultants = data.consultants;
+                    const tableContainer = document.getElementById('active-consultant-table');
+                    const tableBody = tableContainer.querySelector('tbody');
+    
+                    consultants.forEach(consultant => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${rowNumber++}</td> <!-- Increment row number -->
+                            <td>${consultant.company_name}</td>
+                            <td>${consultant.full_name}</td>
+                            <td>${consultant.email}</td>
+                            <td>${consultant.phone}</td>
+                            <td>${consultant.created_at}</td>
+                            <td>
+                                <button class="btn btn-info grant-permission-btn" type="button" 
+                                    onclick="openDetailsPopup(${consultant.id})">View Details
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+
+
+                    });
+    
+                    // Apply DataTables to the table with export buttons
+                    $('#active-consultant-table').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'csv', 'excel', 'pdf', 'print'
+                        ]
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+
+    <script>
+        function openDetailsPopup(userId) {
+            // Check if userId is defined
+            if (userId === undefined) {
+                console.error('User ID is undefined.');
+                return;
+            }
+    
+            // Fetch the details for the selected user
+            fetch(`/activeconsultant/details/${userId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Access the 'consultant' object in the response data
+                    const consultant = data.consultant;
+                    console.log('consultant details and id: ', consultant)
+    
+                    // Display the details in a Bootstrap modal
+                    const modalBody = document.getElementById('detailsModalBody');
+                    if (modalBody) {
+                        modalBody.innerHTML = `
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Full Name:</strong></td>
+                                        <td>${consultant.full_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email:</strong></td>
+                                        <td>${consultant.email}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Phone:</strong></td>
+                                        <td>${consultant.phone}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Company Name:</strong></td>
+                                        <td>${consultant.company_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Website:</strong></td>
+                                        <td>${consultant.website}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address:</strong></td>
+                                        <td>${consultant.address}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        `;
+                        // Open the modal
+                        $('#rate-btn').attr('data-consultant-id', consultant.id);
+                        console.log('rate check: ', $('#rate-btn').data('consultant-id'));
+
+                        $('#detailsModal').modal('show');
+
+                        var consultantId = consultant.id
+                        console.log('consultant id outer: ', consultantId)
+                    
+                        // Optionally: Close modal when clicking the "x" close button using pure JavaScript (for compatibility)
+                        $('.close').click(function() {
+                            $('#detailsModal').modal('hide');
+                        });
+                    }
+                    else {
+                        console.error('Modal body element not found.');
+                    }
+    
+                    const suspendButton = document.getElementById('suspendButton');
+                    const freeButton = document.getElementById('freeButton');
+                    const basicButton = document.getElementById('basicButton');
+                    const premiumButton = document.getElementById('premiumButton');
+    
+                    suspendButton.addEventListener('click', () => suspendAccount(userId));
+                    freeButton.addEventListener('click', () => freeAccount(userId));
+                    basicButton.addEventListener('click', () => basicAccount(userId));
+                    premiumButton.addEventListener('click', () => premiumAccount(userId));
+                })
+                .catch(error => console.error('Error fetching details:', error));
+        }
+
+        // Open rate modal on clicking the rate button
+        $('#rate-btn').on('click', function(event) {
+            if (event.target === this || $(event.target).hasClass('close')) {
+                var modalId = '#addRatesModal'
+                $('#detailsModal').modal('hide');
+                $('#addRatesModal').modal('show');
+                //document.getElementById("addRatesForm").reset();
+                $('#addRatesForm').get(0).reset();
+                
+                var consultant_id = $(this).attr('data-consultant-id');
+                
+                // set the value of the attribute `data-consultant-id` with the value of th consultant id
+                $('#rate-form-submit').attr('data-consultant-id', consultant_id);
+
+                console.log('consultant id check: ', consultant_id)
+                console.log('form check: ', $('#addRatesForm')[0])
+                console.log('this check: ', $(this))
+                
+                fetch('/get_existing_rates/' + consultant_id + '/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.success === true) {
+                        var existingRates = data.existing_rates;
+                        console.log('existingRates: ', existingRates);
+                        console.log('data success here: ', data.success);
+                        $.each(existingRates, function(key, value) {
+                            // Set the value in the corresponding input field
+                            var inputField = $(modalId + ' form input[name=' + key + ']');
+                            if (inputField.length > 0) {
+                                inputField.val(value);
+                            }
+                            console.log('rates: ', value);
+                        });
+                    }
+
+                    console.log('form check after success: ', $('#addRatesForm')[0])
+                    console.log('length of form: ', $('#rate-btn').length)
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            }
+        });
+
+        $('[id^=addRatesForm]').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            //var consultantId = form.attr('id').replace('addRatesForm', '');
+            var consultantId = $('#rate-form-submit').attr('data-consultant-id');
+    
+            // Make AJAX request to add or update rates
+            $.ajax({
+            url: '/add_or_update_rates/' + consultantId + '/',
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                // Close the modal on success
+                $('#addRatesModal').modal('hide');
+                      window.location.reload();
+    
+                // Show SweetAlert2 success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                });
+    
+                // Optionally, you can update the UI or show a success message
+                } else {
+                // Optionally, you can handle errors or show an error message
+                }
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+            });
+        });
+
+        /*$('#rate-btn').on('click', function(event) {
+            if (event.target === this || $(event.target).hasClass('close')) {
+                var modalId = '#addRatesModal'
+                //$('#detailsModal').modal('hide');
+                //$('#addRatesModal').modal('show');
+                //document.getElementById("addRatesForm").reset();
+                //$('#addRatesForm').get(0).reset();
+                
+                var consultant_id = $(this).attr('data-consultant-id');
+                console.log('consultant id check: ', consultant_id)
+            }
+        });*/
+    
+        function closeDetailsactiveModal() {
+            $('#detailsModal').modal('hide');
+            console.log('sajal');
+        }
+    
+        function suspendAccount(userId) {
+            // Check if userId is defined
+            if (userId === undefined) {
+                console.error('User ID is undefined.');
+                return;
+            }
+    
+            // Display a SweetAlert2 confirmation dialog
+            Swal.fire({
+                title: 'Suspend Confirmation',
+                text: 'Are you sure you want to suspend this account?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Suspend'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Fetch the suspension view for the selected user
+                    fetch(`/activeconsultant/suspend/${userId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message);
+    
+                            // Close the modal after suspension
+                            $('#detailsModal').modal('hide');
+                                  window.location.reload();
+                        })
+                        .catch(error => console.error('Error suspending account:', error));
+    
+                    {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            title: '{{ message.tags }}',
+                            text: '{{ message }}',
+                            icon: '{{ message.tags }}',
+                        });
+                    {% endfor %}
+                    {% endif %}
+                }
+            });
+        }
+    
+        function freeAccount(userId) {
+            // Check if userId is defined
+            if (userId === undefined) {
+                console.error('User ID is undefined.');
+                return;
+            }
+    
+            // Display a SweetAlert2 confirmation dialog
+            Swal.fire({
+                title: 'Free Confirmation',
+                text: 'Are you sure you want to free this account?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#007bff', // Adjust the color as needed
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Free'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Fetch the free view for the selected user
+                    fetch(`/free_account/${userId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message);
+    
+                            // Close the modal after freeing
+                            $('#detailsModal').modal('hide');
+                                  window.location.reload();
+                        })
+                        .catch(error => console.error('Error freeing account:', error));
+    
+                    {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            title: '{{ message.tags }}',
+                            text: '{{ message }}',
+                            icon: '{{ message.tags }}',
+                        });
+                    {% endfor %}
+                    {% endif %}
+                }
+            });
+        }
+        function basicAccount(userId) {
+            // Check if userId is defined
+            if (userId === undefined) {
+                console.error('User ID is undefined.');
+                return;
+            }
+
+            // Display a SweetAlert2 confirmation dialog
+            Swal.fire({
+                title: 'Basic Confirmation',
+                text: 'Are you sure you want to Activated this account Basic ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#007bff', // Adjust the color as needed
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Basic'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Fetch the free view for the selected user
+                    fetch(`/activate_basic_account/${userId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message);
+
+                            // Close the modal after freeing
+                            $('#detailsModal').modal('hide');
+                                  window.location.reload();
+                        })
+                        .catch(error => console.error('Error freeing account:', error));
+
+                    {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            title: '{{ message.tags }}',
+                            text: '{{ message }}',
+                            icon: '{{ message.tags }}',
+                        });
+                    {% endfor %}
+                    {% endif %}
+                }
+            });
+        }
+
+        function premiumAccount(userId) {
+        // Check if userId is defined
+        if (userId === undefined) {
+            console.error('User ID is undefined.');
+            return;
+        }
+
+        // Display a SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Premium Confirmation',
+            text: 'Are you sure you want to Activated this account as Premium ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#007bff', // Adjust the color as needed
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Fetch the free view for the selected user
+                    fetch(`/activate_premium_account/${userId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.message);
+
+                            // Close the modal after freeing
+                            $('#detailsModal').modal('hide');
+                                  window.location.reload();
+                        })
+                        .catch(error => console.error('Error freeing account:', error));
+
+                    {% if messages %}
+                    {% for message in messages %}
+                        Swal.fire({
+                            title: '{{ message.tags }}',
+                            text: '{{ message }}',
+                            icon: '{{ message.tags }}',
+                        });
+                    {% endfor %}
+                    {% endif %}
+                }
+            });
+        }
+    </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let rowNumber = 1;
+    // Fetch data from Django view for suspended consultants
+    fetch('/suspend_list/')  // Update the URL as needed
+        .then(response => response.json())
+        .then(data => {
+            const suspendedConsultants = data.suspended_users;
+            const tableContainer = document.getElementById('suspend-consultant-table');
+            const tableBody = tableContainer.querySelector('tbody');
+
+            suspendedConsultants.forEach(consultant => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${rowNumber++}</td> <!-- Increment row number -->
+
+                    <td>${consultant.company_name}</td>
+                    <td>${consultant.full_name}</td>
+                    <td>${consultant.email}</td>
+                    <td>${consultant.phone}</td>
+                    <td>${consultant.suspension_time}</td>
+                    <td>
+
+                      <button class="btn btn-info " type="button" onclick="openSuspendedDetailsPopup(${consultant.id})">View Details</button>
+
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Apply DataTables to the table with export buttons
+            $('#suspend-consultant-table').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                     'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        })
+        .catch(error => console.error('Error fetching suspended consultants:', error));
+});
+
+
+
+</script>
+
+
+
+<script>
+    function openSuspendedDetailsPopup(userId) {
+        // Check if userId is defined
+        if (userId === undefined) {
+            console.error('User ID is undefined.');
+            return;
+        }
+
+        // Fetch the details for the selected suspended user
+        fetch(`/suspendedconsultant/details/${userId}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Access the 'consultant' object in the response data
+                const consultant = data.consultant;
+
+                // Display the details in a Bootstrap modal
+                const modalBody = document.getElementById('detailssuspandModalBody');
+                if (modalBody) {
+                    modalBody.innerHTML = `
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Full Name:</strong></td>
+                                    <td>${consultant.full_name}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>${consultant.email}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>${consultant.phone}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Company Name:</strong></td>
+                                    <td>${consultant.company_name}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Website:</strong></td>
+                                    <td>${consultant.website}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Address:</strong></td>
+                                    <td>${consultant.address}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+
+                    // Open the modal
+                    $('#detailssuspandModal').modal('show');
+                } else {
+                    console.error('Modal body element not found.');
+                }
+            })
+            .catch(error => console.error('Error fetching details:', error));
+
+        const activateButton = document.getElementById('activateButton');
+        activateButton.addEventListener('click', () => activateAccount(userId));
+    }
+
+    function closeDetailsModal() {
+        $('#detailssuspandModal').modal('hide');
+    }
+
+    function activateAccount(userId) {
+        // Check if userId is defined
+        if (userId === undefined) {
+            console.error('User ID is undefined.');
+            return;
+        }
+
+        // Display a SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Activate Confirmation',
+            text: 'Are you sure you want to activate this account?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#007bff',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Activate'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Fetch the activation view for the selected suspended user
+                fetch(`/suspendedconsultant/activate/${userId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+
+                        // Close the modal after activation
+                        $('#detailssuspandModal').modal('hide');
+                              window.location.reload();
+                    })
+                    .catch(error => console.error('Error activating account:', error));
+            }
+            {% if messages %}
+            {% for message in messages %}
+              Swal.fire({
+                title: '{{ message.tags }}',
+                text: '{{ message }}',
+                icon: '{{ message.tags }}',
+              });
+            {% endfor %}
+          {% endif %}
+        });
+
+    }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Check if DataTable is already initialized on the free consultant table
+      const existingTable = $('#free-consultant-table').DataTable();
+      let rowNumber = 1;
+
+
+      if (existingTable && existingTable.destroy) {
+          // DataTable is already initialized, destroy it
+          existingTable.destroy();
+      }
+
+      // Fetch data from Django view for free consultants
+      fetch('/free_list/')  // Update the URL as needed
+          .then(response => response.json())
+          .then(data => {
+              const freeConsultants = data.free_users;
+              const tableContainer = document.getElementById('free-consultant-table');
+              const tableBody = tableContainer.querySelector('tbody');
+
+              // Clear the existing rows from the table
+              tableBody.innerHTML = '';
+
+              freeConsultants.forEach(consultant => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                  <td>${rowNumber++}</td> <!-- Increment row number -->
+
+                      <td>${consultant.company_name}</td>
+                      <td>${consultant.full_name}</td>
+                      <td>${consultant.email}</td>
+                      <td>${consultant.phone}</td>
+                      
+                      <td>
+                   
+                        
+                                  <button class="btn btn-info" type="button" 
+                                      onclick="openFreeDetailsPopup(${consultant.id})">View Details</button>
+                               
+                          
+                      </td>
+                  `;
+                  tableBody.appendChild(row);
+              });
+
+              // Apply DataTables to the free consultant table with export buttons
+              $('#free-consultant-table').DataTable({
+                  dom: 'Bfrtip',
+                  buttons: [
+                       'csv', 'excel', 'pdf', 'print'
+                  ]
+              });
+          })
+          .catch(error => console.error('Error fetching free consultants:', error));
+  });
+</script>
+
+<script>
+  function openFreeDetailsPopup(userId) {
+      // Check if userId is defined
+      if (userId === undefined) {
+          console.error('User ID is undefined.');
+          return;
+      }
+
+      // Fetch the details for the selected free user
+      fetch(`/free_consultant_details/${userId}/`)
+          .then(response => response.json())
+          .then(data => {
+              // Access the 'consultant' object in the response data
+              const consultant = data.consultant;
+
+              // Display the details in a Bootstrap modal
+              const modalBody = document.getElementById('detailsfreeModalBody');
+              if (modalBody) {
+                  modalBody.innerHTML = `
+                      <table class="table">
+                          <tbody>
+                              <tr>
+                                  <td><strong>Full Name:</strong></td>
+                                  <td>${consultant.full_name}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Email:</strong></td>
+                                  <td>${consultant.email}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Phone:</strong></td>
+                                  <td>${consultant.phone}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Company Name:</strong></td>
+                                  <td>${consultant.company_name}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Website:</strong></td>
+                                  <td>${consultant.website}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Address:</strong></td>
+                                  <td>${consultant.address}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  `;
+
+                  // Open the modal
+                  $('#detailsfreeModal').modal('show');
+              } else {
+                  console.error('Modal body element not found.');
+              }
+          })
+          .catch(error => console.error('Error fetching details:', error));
+
+      const activateButton = document.getElementById('activateFreeButton');
+      activateButton.addEventListener('click', () => activateFreeAccount(userId));
+  }
+
+  function closeDetailsFreeModal() {
+      $('#detailsfreeModal').modal('hide');
+  }
+
+  function activateFreeAccount(userId) {
+      // Check if userId is defined
+      if (userId === undefined) {
+          console.error('User ID is undefined.');
+          return;
+      }
+
+      // Display a SweetAlert2 confirmation dialog
+      Swal.fire({
+          title: 'Activate Confirmation',
+          text: 'Are you sure you want to activate this account?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#007bff',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Activate'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Fetch the activation view for the selected free user
+              fetch(`/freeconsultant/activate/${userId}/`)
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log(data.message);
+
+                      // Close the modal after activation
+                      $('#detailsfreeModal').modal('hide');
+                            window.location.reload();
+                  })
+                  .catch(error => console.error('Error activating account:', error));
+          }
+          {% if messages %}
+          {% for message in messages %}
+            Swal.fire({
+              title: '{{ message.tags }}',
+              text: '{{ message }}',
+              icon: '{{ message.tags }}',
+            });
+          {% endfor %}
+        {% endif %}
+      });
+  }
+</script>
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Check if DataTable is already initialized on the basic consultant table
+      const existingTable = $('#basic-consultant-table').DataTable();
+      let rowNumber = 1;
+
+      if (existingTable && existingTable.destroy) {
+          // DataTable is already initialized, destroy it
+          existingTable.destroy();
+      }
+
+      // Fetch data from Django view for basic consultants
+      fetch('/basic_list/')  // Update the URL as needed
+          .then(response => response.json())
+          .then(data => {
+              const basicConsultants = data.basic_users;  // Correct variable name
+
+              const tableContainer = document.getElementById('basic-consultant-table');
+              const tableBody = tableContainer.querySelector('tbody');
+
+              // Clear the existing rows from the table
+              tableBody.innerHTML = '';
+
+              basicConsultants.forEach(consultant => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                  <td>${rowNumber++}</td> <!-- Increment row number -->
+                      <td>${consultant.company_name}</td>
+                      <td>${consultant.full_name}</td>
+                      <td>${consultant.email}</td>
+                      <td>${consultant.phone}</td>
+                      
+                      <td>
+                        
+
+                                  <button class="btn btn-info" type="button" 
+                                      onclick="openBasicDetailsPopup(${consultant.id})">View Details</button>
+                                 
+                         
+                      </td>
+                  `;
+                  tableBody.appendChild(row);
+              });
+
+              // Apply DataTables to the basic consultant table with export buttons
+              $('#basic-consultant-table').DataTable({
+                  dom: 'Bfrtip',
+                  buttons: [
+                       'csv', 'excel', 'pdf', 'print'
+                  ]
+              });
+          })
+          .catch(error => console.error('Error fetching basic consultants:', error));
+  });
+</script>
+
+<script>
+  function openBasicDetailsPopup(userId) {
+      // Check if userId is defined
+      if (userId === undefined) {
+          console.error('User ID is undefined.');
+          return;
+      }
+
+      // Fetch the details for the selected free user
+      fetch(`/basic_user_details/${userId}/`)
+          .then(response => response.json())
+          .then(data => {
+              // Access the 'consultant' object in the response data
+              const consultant = data.consultant;
+
+              // Display the details in a Bootstrap modal
+              const modalBody = document.getElementById('detailsbasicModalBody');
+              if (modalBody) {
+                  modalBody.innerHTML = `
+                      <table class="table">
+                          <tbody>
+                              <tr>
+                                  <td><strong>Full Name:</strong></td>
+                                  <td>${consultant.full_name}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Email:</strong></td>
+                                  <td>${consultant.email}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Phone:</strong></td>
+                                  <td>${consultant.phone}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Company Name:</strong></td>
+                                  <td>${consultant.company_name}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Website:</strong></td>
+                                  <td>${consultant.website}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Address:</strong></td>
+                                  <td>${consultant.address}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  `;
+
+                  // Open the modal
+                  $('#detailsbasicModal').modal('show');
+              } else {
+                  console.error('Modal body element not found.');
+              }
+          })
+          .catch(error => console.error('Error fetching details:', error));
+
+  }
+
+  function closeDetailsBasicModal() {
+      $('#detailsbasicModal').modal('hide');
+  }
+
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Check if DataTable is already initialized on the premium consultant table
+      const existingTable = $('#premium-consultant-table').DataTable();
+      let rowNumber = 1;
+
+      if (existingTable && existingTable.destroy) {
+          // DataTable is already initialized, destroy it
+          existingTable.destroy();
+      }
+      // Fetch data from Django view for premium consultants
+      fetch('/premium_list/')  // Update the URL as needed
+          .then(response => response.json())
+          .then(data => {
+              const premiumConsultants = data.premium_users;
+
+              const tableContainer = document.getElementById('premium-consultant-table');
+              const tableBody = tableContainer.querySelector('tbody');
+
+              // Clear the existing rows from the table
+              tableBody.innerHTML = '';
+
+              premiumConsultants.forEach(consultant => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                  <td>${rowNumber++}</td> <!-- Increment row number -->
+                      <td>${consultant.company_name}</td>
+                      <td>${consultant.full_name}</td>
+                      <td>${consultant.email}</td>
+                      <td>${consultant.phone}</td>
+                      
+                      <td>
+                         
+                                  <button class="btn btn-info" type="button" 
+                                      onclick="openPremiumDetailsPopup(${consultant.id})">View Details</button>
+                                
+                          
+                      </td>
+                  `;
+                  tableBody.appendChild(row);
+              });
+
+              // Apply DataTables to the premium consultant table with export buttons
+              $('#premium-consultant-table').DataTable({
+                  dom: 'Bfrtip',
+                  buttons: [
+                       'csv', 'excel', 'pdf', 'print'
+                  ]
+              });
+          })
+          .catch(error => console.error('Error fetching premium consultants:', error));
+  });
+
+</script>
+<script>
+  
+  // Function to open details modal for premium consultants
+  function openPremiumDetailsPopup(userId) {
+    // Check if userId is defined
+    if (userId === undefined) {
+        console.error('User ID is undefined.');
+        return;
+    }
+
+    // Fetch the details for the selected free user
+    fetch(`/premium_user_details/${userId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Access the 'consultant' object in the response data
+            const consultant = data.consultant;
+
+            // Display the details in a Bootstrap modal
+            const modalBody = document.getElementById('detailspremiumModalBody');
+            if (modalBody) {
+                modalBody.innerHTML = `
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><strong>Full Name:</strong></td>
+                                <td>${consultant.full_name}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>${consultant.email}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phone:</strong></td>
+                                <td>${consultant.phone}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Company Name:</strong></td>
+                                <td>${consultant.company_name}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Website:</strong></td>
+                                <td>${consultant.website}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Address:</strong></td>
+                                <td>${consultant.address}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+
+                // Open the modal
+                $('#detailspremiumModal').modal('show');
+            } else {
+                console.error('Modal body element not found.');
+            }
+        })
+        .catch(error => console.error('Error fetching details:', error));
+
+}
+
+function closeDetailsBasicModal() {
+    $('#detailspremiumModal').modal('hide');
+}
+
+</script>
+<script>
+  // Function to fetch all consultants using AJAX
+  function getAllConsultants() {
+  
+    
+      // Make AJAX request to the endpoint
+      $.ajax({
+          url: '/get_all_consultants/',
+          type: 'GET',
+          success: function(response) {
+              if (response && response.consultants) {
+                  // Clear existing table rows
+                  $('#all-consultant-table tbody').empty();
+                  let rowNumber = 1;
+                  // Iterate over each consultant in the response
+                  response.consultants.forEach(function(consultant) {
+                    
+                      // Construct table row with consultant data
+                      var row = '<tr>' +
+                        '<td>' + rowNumber++ + '</td>' + 
+                          '<td>' + consultant.company_name + '</td>' +
+                          '<td>' + consultant.full_name + '</td>' +
+                          '<td>' + consultant.email + '</td>' +
+                          '<td>' + consultant.phone + '</td>' +
+                          '<td>' + consultant.establishment_date + '</td>' +
+                          '<td>' + consultant.balance + '</td>' +
+                        
+                          '</tr>';
+
+                      // Append the row to the table body
+                      $('#all-consultant-table tbody').append(row);
+                  });
+
+                  // Initialize DataTable after appending rows
+                  $('#all-consultant-table').DataTable();
+              } else {
+                  console.error('No consultants found');
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('Error fetching consultants:', error);
+          }
+      });
+  }
+
+  // Call the function to fetch all consultants when the page loads
+  $(document).ready(function() {
+      getAllConsultants();
+  });
+</script>
+{% endblock custom_js %}

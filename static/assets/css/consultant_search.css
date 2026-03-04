@@ -1,0 +1,174 @@
+/* Container styling */
+.container {
+    margin-top: 20px;
+}
+
+/* Adjusting column width */
+.col-md-3 {
+    max-width: 19% !important;
+}
+
+/* Tabs navigation styling */
+.nav-tabs {
+    background-color: #f8f9fa; /* Light gray background */
+    border: 1px solid #dee2e6; /* Light gray border */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Non-clickable "Search by:" text styling */
+.nav-link.disabled {
+    color: #6c757d; /* Gray text color for disabled link */
+    cursor: not-allowed; /* Not-allowed cursor style for disabled link */
+}
+
+/* Active tab styling */
+.nav-link.active {
+    background-color: #007bff; /* Blue background for active tab */
+    color: #fff; /* White text color for active tab */
+    border-radius: 5px;
+}
+
+/* Tabs content styling */
+.tab-content {
+    margin-top: 10px; /* Reduced top margin */
+}
+
+/* Consultant tab content styling */
+#consultant, #university {
+    padding: 20px;
+    border: 1px solid #dee2e6; /* Light gray border for the content */
+    border-radius: 5px;
+    background-color: #fff; /* White background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+/* Consultant and University title styling */
+h2 {
+    color: #007bff; /* Blue color for titles */
+}
+
+/* Search input styling */
+.search-input {
+    padding: 10px;
+    width: 250px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Search button styling */
+.search-button {
+    padding: 10px;
+    background-color: #007bff; /* Blue background for the button */
+    color: #fff; /* White text color for the button */
+    cursor: pointer;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    transition: background-color 0.3s; /* Smooth transition effect */
+}
+
+/* Search button hover effect */
+.search-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Search results styling */
+.search-results {
+    margin-top: 20px;
+}
+
+/* Styling for individual search result item */
+.result-item {
+    border: 1px solid #dee2e6; /* Light gray border */
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Action button styling */
+.action-button {
+    padding: 10px 15px;
+    background-color: rgba(192, 168, 230, 0.9); /* Green background for the button */
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s; /* Smooth transition effect */
+}
+
+.action-button a{
+    color: rgb(71, 71, 71); /* White text color for the button */
+}
+
+.action-button a span{
+    color: rgb(238, 183, 2);
+}
+
+.action-button a span i {
+    margin-left: 10px;
+}
+
+/* Action button hover effect */
+.action-button:hover{
+    background-color: #7c90c7; /* Darker green on hover */
+}
+
+.action-button:hover a{
+    color: white; /* Darker green on hover */
+}
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    flex: 0 0 180px; /* Set the width to 180px */
+}
+
+.signin-left-ad-div,
+.signin-right-ad-div {
+    display: flex;
+    justify-content: center;
+    /* padding: 10px; */
+    border: 1px solid #DEE2E6;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+.signin-left-ad-div img,
+.signin-right-ad-div img {
+    max-width: 100%;
+}
+
+.content-div {
+    flex-grow: 1; /* Take up the remaining space */
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #495057 !important;
+    background-color: #228dd729 !important;
+    border-color: #dee2e6 #dee2e6 #fff !important;
+}
+
+.input-group {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 81% !important;
+}
+
+
+@media (max-width: 992px) {
+    .signin-left-ad-div{
+       display: none;
+    }
+
+    .form-div-container{
+        width: 100%;
+    }
+
+    .signin-right-ad-div{
+        display: none;
+    }
+}

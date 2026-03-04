@@ -1,0 +1,732 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block custom_css %}
+<link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link href="{% static 'assets/css/font-awesome-all.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/flaticon.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/owl.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/animate.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/nice-select.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
+<link href="{% static 'assets/css/switcher-style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/feedback.css' %}" rel="stylesheet">
+
+<style>
+    .popup-search-field-div {
+        position: relative;
+        margin-top: 37px !important;
+    }
+    .popup-search-input {
+        height: 40px !important;
+    }
+    .popup-search-btn {
+
+        height: 39px !important;
+
+    }
+    logo-container {
+        display: inline-block;
+        max-width: 58%;
+        height: auto;
+        transition-delay: .1s;
+        transition-timing-function: ease-in-out;
+        transition-duration: .7s;
+        transition-property: all;
+    }
+    .table-container {
+        display: flex;
+        max-width: 1018px;
+        margin: -120px 0 50px 0;
+    }
+    
+    .table {
+        flex: 1;
+        border-collapse: collapse;
+        color: #212529;
+    }
+.table th,
+.table td {
+    padding: 0.25rem !important;
+}
+    .logo-cell {
+        width: 6%;
+        vertical-align: top;
+    }
+    
+    .info-cell {
+        width: 70%;
+    }
+    
+    .inner-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .theme-btn-two {
+        position: relative;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 10px;
+        font-family: 'Cabin', sans-serif;
+        font-weight: 600;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 14.5px 36px;
+        z-index: 1;
+    }
+    {% comment %} .row {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: -130px !important;
+        margin-left: -18px !important;
+    } {% endcomment %}
+    .review-container {
+        display: flex; /* Use flexbox to align items in a row */
+        align-items: center; /* Align items vertically in the center */
+    }
+    
+    .review-stars {
+        margin-right: 5px; /* Adjust spacing between star ratings and badge */
+    }
+    
+    .theme-btn-four {
+        position: relative;
+        display: inline-block;
+        font-size: 16px;
+        line-height: 10px;
+        font-family: 'Cabin', sans-serif;
+        font-weight: 600;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 12.5px 30px;
+        z-index: 1;
+    }
+    .theme-btn-four {
+        background: #7c0391;
+    }
+{% comment %} .col-md-3 {
+
+    margin-top: 27px !important;
+}  {% endcomment %}
+</style>
+<link href={% static "assets/css/consultant_list.css" %} rel="stylesheet">
+{% endblock custom_css %}
+
+{% block content %}
+            <section class="page-title" style="background-image: url({% static 'assets/images/background/page-title.jpg'%});">
+                <div class="auto-container">
+                    <div class="content-box">
+                        <div class="title-box">
+                            <h1>Consultant List</h1>
+                            <div class="dotted-box">
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                                <span class="dotted"></span>
+                            </div>
+                        </div>
+                        <ul class="bread-crumb clearfix">
+                            <li><i class="flaticon-home-1"></i><a href="{% url 'home' %}">Home</a></li>
+                            <li>List</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="">
+                <div class="search-content search-right mb-1">
+                    <div class="search-box-nav">
+                        <div class="search-field-div col-lg-12 col-md-12 col-12">
+                            <div class="search-form">
+                                <form method="GET">
+                                    <div class="row justify-content-end"> <!--style="justify-content: end; margin-left: -184px !important; margin-right: 3px !important;"-->
+                                        <div class="filter-option form-group">
+                                            <label class="label-filter" for="">Sort by Rating</label>
+                                            <div class="select-box">
+                                                <select class="wide" name="rating_filter">
+                                                    <option value="">Default</option>
+                                                    <option value="high">Highest to Lowest</option>
+                                                    <option value="low">Lowest to Highest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                
+                                        <div class="filter-option form-group">
+                                            <label class="label-filter" for="">Filter by Country</label>
+                                            <div class="select-box">
+                                                <select id="country-filter" class="select2-dropdown" name="country_filter">
+                                                    <option value="">Select Country</option>
+                                                    {% for country in countries %}
+                                                        <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                
+                                        <div class="filter-option form-group">
+                                            <label for="" class="label-filter">Filter by Experience</label>
+                                            <div class="select-box">
+                                                <select class="wide" name="experience_filter">
+                                                    <option value="">Default</option>
+                                                    <option value="high">Most Experience</option>
+                                                    <option value="low">Least Experience</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="filter-search-option form-group">
+                                            <div class="form-group popup-search-field-div" style="text-align: right !important;">
+                                                <fieldset>
+                                                    <div style="display: inline-block; width:100%; text-align: right;">
+                                                        <input id="search-input" type="text" class="form-control popup-search-input" name="search_area" value="{{search_input}}" placeholder="Search Here" autocomplete="off"><!--style="width: 350px; margin-right: 10px;"-->
+                                                    </div>
+                                                    <button type="submit" class="popup-search-btn style-four">Search</button>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div >
+                        {% if total_search_results %}
+                            <div class=" mb-4">
+                                <p style="font-size: 14px; font-weight: 600; color: black;">Search result: {{ total_search_results }} consultants found</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!--mobile view starts-->
+            <div class="mobile-view-consultant row">
+                <!--mobile view search starts-->
+                {% if search_input or rating_filter or country_filter or experience_filter %}
+                    {% if chunked_consultants %}
+                        {% for consultant_dict in chunked_consultants.object_list %}
+                            <section class="team-section">
+                                <div class="auto-container">
+                                    <div class="">
+                                        {% with consultant=consultant_dict.consultant details=consultant_dict.details %}
+                                            {% if consultant %}
+                                                <div class="team-block-one">
+                                                    <div class="inner-box">
+                                                        <figure class="image-box" style="height: 200px;">
+                                                            {% if details and details.0.consultant_logo %}
+                                                            
+                                                                <img src="{{ details.0.consultant_logo.url }}" alt="{{ consultant.company_name }}" class="logo img-fluid mb-2 small-logo" style="width: 200px; height: 200px;">
+                                                            {% else %}
+                                                                    <img src="{% static 'assets/images/images.jpg' %}" alt="Demo Image" class="logo small-logo" style="max-width: 200px; max-height: 200px;">
+                                                                {% endif %}
+                                                            <ul class="social-links clearfix">
+                                                                <div class="review-stars" data-rating="{{ consultant.rating }}">
+                                                                    {% comment %} {% if 0 < consultant.rating < 1 %} {% endcomment %}
+                                                                    <i class="fa-solid fa-star rating-star rating-star-1"></i>
+                                                                    <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                                                    <i class="fa-solid fa-star rating-star rating-star-2"></i>
+                                                                    <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                                                    <i class="fa-solid fa-star rating-star rating-star-3"></i>
+                                                                    <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                                                    <i class="fa-solid fa-star rating-star rating-star-4"></i>
+                                                                    <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                                                    <i class="fa-solid fa-star rating-star rating-star-5"></i>
+                                                                    <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i>
+                                                                </div>
+                                                            </ul>
+                                                        </figure>
+                                                        <div class="lower-content">
+                                                            <h4><a href="{% url 'singel_consultant_details' consultant_id=consultant.id %}">{{ consultant.company_name }}</a></h4>
+                                                            <span class="designation">{{ consultant.address }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                            </section>
+                        {% endfor %}
+                    {% else %}
+                        <div><h2 class="text-center">No Result Found</h2></div>
+                    {% endif %}
+                    <!--mobile view search ends-->
+                {% else %}
+                    {% for consultant_dict in chunked_consultants.object_list %}
+                        <section class="team-section">
+                            <div class="auto-container">
+                                <div class="">
+                                    {% with consultant=consultant_dict.consultant details=consultant_dict.details %}
+                                        {% if consultant %}
+                                            <div class="team-block-one">
+                                                <div class="inner-box">
+                                                    <figure class="image-box" style="height: 200px;">
+                                                        {% if details and details.consultant_logo %}
+                                                            <img src="{{ details.consultant_logo.url }}" alt="{{ consultant.company_name }}" class="img-fluid mb-2">
+                                                        {% else %}
+                                                            <img src="{% static 'assets/images/images.jpg' %}" alt="Demo Image">
+                                                        {% endif %}
+                                                        <ul class="social-links clearfix">
+                                                            <div class="review-stars" data-rating="{{ consultant.rating }}">
+                                                                {% comment %} {% if 0 < consultant.rating < 1 %} {% endcomment %}
+                                                                <i class="fa-solid fa-star rating-star rating-star-1"></i>
+                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                                                <i class="fa-solid fa-star rating-star rating-star-2"></i>
+                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                                                <i class="fa-solid fa-star rating-star rating-star-3"></i>
+                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                                                <i class="fa-solid fa-star rating-star rating-star-4"></i>
+                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                                                <i class="fa-solid fa-star rating-star rating-star-5"></i>
+                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i>
+                                                            </div>
+                                                        </ul>
+                                                    </figure>
+
+                                                    <div class="lower-content">
+                                                        <h4><a href="{% url 'singel_consultant_details' consultant_id=consultant.id %}">{{ consultant.company_name }}</a></h4>
+                                                        <span class="designation">{{ consultant.address }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </section>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="pagination-wrapper centred mb-2">
+                    <ul class="pagination">
+                        {% if chunked_consultants.has_previous %}
+                            <li>
+                                <a href="?page=1">&laquo; first</a>
+                            </li>
+                            <li>
+                                <a href="?page={{ chunked_consultants.previous_page_number }}"><<</a>
+                            </li>
+                        {% endif %}
+                
+                        {% for num in chunked_consultants.paginator.page_range %}
+                            <li class="{% if num == chunked_consultants.number %}active{% endif %}">
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                
+                        {% if chunked_consultants.has_next %}
+                            <li>
+                                <a href="?page={{ chunked_consultants.next_page_number }}">>></a>
+                            </li>
+                            <li>
+                                <a href="?page={{ chunked_consultants.paginator.num_pages }}">last &raquo;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <!--mobile view ends-->
+
+            <div class="row large-screen-view">
+                <div class="content-div">
+                    {% if search_input or rating_filter or country_filter or experience_filter %}
+                    {% if chunked_consultants %}
+                        {% for consultant_dict in chunked_consultants.object_list %}
+                            <section class="team-section">
+                                <div class="auto-container">
+                                    {% with consultant=consultant_dict.consultant details=consultant_dict.details %}
+                                        <div class="table-container">
+                                            <table class="table table-striped table-condensed table-bordered cntTable"  style="margin-bottom: -116px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="logo-cell">
+                                                            <div class="logo-container" style="height: 200px; width: 200px;">
+                                                                {% if details and details.0.consultant_logo %}
+                                                            
+                                                                <img src="{{ details.0.consultant_logo.url }}" alt="{{ consultant.company_name }}" class="logo img-fluid mb-2 small-logo" style="width: 200px; height: 200px;">
+                                                            {% else %}
+                                                                    <img src="{% static 'assets/images/images.jpg' %}" alt="Demo Image" class="logo small-logo" style="max-width: 200px; max-height: 200px;">
+                                                                {% endif %}
+                                                            </div>
+                                                        </td>
+                                                        <td class="info-cell">
+                                                            <table class="inner-table">
+                                                                <tr>
+                                                                    <th style="width: 200px;">Company name</th>
+                                                                    <td style="text-align: center; width: 15px;">:</td>
+                                                                    <th>{{ consultant.company_name }}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Est. Date</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    <td>{{ consultant.est_date|custom_date_format }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Address</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    <td>{{ consultant.address }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Average Review</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    <td>
+                                                                        <div class="review-container">
+                                                                            <div class="review-stars" data-rating="{{ consultant.rating }}">
+                                                                                <!-- Star ratings -->
+                                                                                <i class="fa-solid fa-star rating-star rating-star-1"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-2"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-3"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-4"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-5"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i>
+                                                                            </div>
+                                                                            <!-- Badge -->
+                                                                            <div class="caption">
+                                                                                {% if consultant.rating %}
+                                                                                <span class="badge badge-dark">Rated({{ consultant.no_of_ratings }})</span>
+                                                                                {% else %}
+                                                                                    <span class="badge badge-dark">Not Rated</span>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div style="text-align: end;">
+                                                                            <div style="display: inline;">
+                                                                                {% if request.user.is_authenticated and request.user.user_type == 2 %}
+                                                                                    {% if consultant.id not in fav_consultant_ids %}
+                                                                                        <a href="{% url 'add_to_favorite' consultant_id=consultant.id %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                                    {% endif %}
+
+                                                                                {% elif request.user.is_authenticated %}
+                                                                                    {% if request.user.user_type == 0 or request.user.user_type == 1 %}{% endif %}
+
+                                                                                {% else %}
+                                                                                    <a href="{% url 'login_student' %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <div style="display: inline;">
+                                                                                <a href="{% url 'singel_consultant_details' consultant_id=consultant.id %}" class="theme-btn-two">More<i class="flaticon-send"></i></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                
+                                                                </tr>
+                                                                
+                                                            </table>
+    
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                            </section>
+                        {% endfor %}
+                    {% else %}
+                        <div><h2 class="text-center">No Result Found</h2></div>
+                    {% endif %}
+
+                    {% else %}
+                        {% for consultant_dict in chunked_consultants.object_list %}
+                            <section class="team-section">
+                                <div class="auto-container">
+                                    {% with consultant=consultant_dict.consultant details=consultant_dict.details %}
+                                        <div class="table-container">
+                                            <table class="table table-striped table-condensed table-bordered cntTable"  style="margin-bottom: -116px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="logo-cell">
+                                                            <div class="logo-container" style="height: 200px; width: 200px;">
+                                                                {% if details and details.consultant_logo %}
+                                                                    <img src="{{ details.consultant_logo.url }}" alt="{{ consultant.company_name }}" class="logo img-fluid mb-2 small-logo" style="width: 200px; height: 200px;">
+                                                                {% else %}
+                                                                    <img src="{% static 'assets/images/images.jpg' %}" alt="Demo Image" class="logo small-logo" style="max-width: 200px; max-height: 200px;">
+                                                                {% endif %}
+                                                            </div>
+                                                        </td>
+                                                        <td class="info-cell">
+                                                            <table class="inner-table">
+                                                                <tr>
+                                                                    <th style="width: 200px;">Company name</th>
+                                                                    <td style="text-align: center; width: 15px;">:</td>
+                                                                    <th>{{ consultant.company_name }}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Est. Date</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    {% comment %} <td>{{ consultant.est_date|date:"d F Y"|capfirst }}</td> {% endcomment %}
+                                                                    <td>{{ consultant.est_date|custom_date_format }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Address</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    <td>{{ consultant.address }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th style="width: 200px;">Average Review</th>
+                                                                    <td style="text-align: center;">:</td>
+                                                                    <td>
+                                                                        <div class="review-container">
+                                                                            <div class="review-stars" data-rating="{{ consultant.rating }}">
+                                                                                <!-- Star ratings -->
+                                                                                <i class="fa-solid fa-star rating-star rating-star-1"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-1"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-2"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-2"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-3"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-3"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-4"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-4"></i>
+                                                                                <i class="fa-solid fa-star rating-star rating-star-5"></i>
+                                                                                <i class="fa-solid fa-star-half-stroke half-rating-star half-rating-star-5"></i>
+                                                                            </div>
+                                                                            <!-- Badge -->
+                                                                            <div class="caption">
+                                                                                {% if consultant.rating %}
+                                                                                <span class="badge badge-dark">Rated({{ consultant.no_of_ratings }})</span>
+                                                                                {% else %}
+                                                                                    <span class="badge badge-dark">Not Rated</span>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div style="text-align: end;">
+                                                                      
+                                                                        <div style="display: inline;">
+                                                                            {% if request.user.is_authenticated and request.user.user_type == 2 %}
+                                                                                {% if consultant.id not in fav_consultant_ids %}
+                                                                                    <a href="{% url 'add_to_favorite' consultant_id=consultant.id %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                                {% endif %}
+
+                                                                            {% elif request.user.is_authenticated %}
+                                                                                {% if request.user.user_type == 0 or request.user.user_type == 1 %}{% endif %}
+
+                                                                            {% else %}
+                                                                                <a href="{% url 'login_student' %}" class="theme-btn-four">Favourite <i class="fas fa-heart"></i></a>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                            <div style="display: inline;">
+                                                                                <a href="{% url 'singel_consultant_details' consultant_id=consultant.id %}" class="theme-btn-two">More<i class="flaticon-send"></i></a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </td>
+                                                                </tr>
+                                                                {% comment %} <tr>
+                                                                    <td colspan="3" style="text-align: end;">
+                                                                    
+                                                                        <a href="{% url 'singel_consultant_details'  consultant_id=consultant.id %}" class="theme-btn-two" target="_blank">More<i class="flaticon-send"></i></a>
+                                                                    </td>
+                                                                </tr> {% endcomment %}
+                                                                <!-- Add more table rows for other information -->
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                            </section>
+                        {% endfor %}
+                    {% endif %}
+
+                    <br><br>
+                    <div class="pagination-wrapper centred">
+                        <ul class="pagination">
+                            {% if chunked_consultants.has_previous %}
+                                <li>
+                                    <a href="?page=1">&laquo; first</a>
+                                </li>
+                                <li>
+                                    <a href="?page={{ chunked_consultants.previous_page_number }}"><<</a>
+                                </li>
+                            {% endif %}
+                    
+                            {% for num in chunked_consultants.paginator.page_range %}
+                                <li class="{% if num == chunked_consultants.number %}active{% endif %}">
+                                    <a href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+                    
+                            {% if chunked_consultants.has_next %}
+                                <li>
+                                    <a href="?page={{ chunked_consultants.next_page_number }}">>></a>
+                                </li>
+                                <li>
+                                    <a href="?page={{ chunked_consultants.paginator.num_pages }}">last &raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <br>
+                    <!-- team-section end -->
+
+                </div>
+                
+            </div>
+        
+
+        <!-- search-popup -->
+        <div id="search-popup" class="search-popup">
+            <div class="close-search"><span>Close</span></div>
+            <div class="popup-inner">
+                <div class="overlay-layer"></div>
+                <div class="search-form">
+                    <form method="GET">
+                        <div class="form-group popup-search-field-div">
+                            <fieldset>
+                                <input type="text" class="form-control popup-search-input" name="search_area" value="{{search_input}}"
+                                    placeholder="Search Here">
+                                {% comment %} <input type="submit" value="Search Now!" class="theme-btn style-four"> {% endcomment %}
+                                <button type="submit" class="popup-search-btn style-four">Search</button>
+                            </fieldset>
+                        </div>
+
+                        {% comment %} <h3>Recent Search Keywords</h3> {% endcomment %}
+                    <!--<ul class="recent-searches">
+                        <li><a href="index.html">Finance</a></li>
+                        <li><a href="index.html">Idea</a></li>
+                        <li><a href="index.html">Service</a></li>
+                        <li><a href="index.html">Growth</a></li>
+                        <li><a href="index.html">Plan</a></li>
+                    </ul>-->
+
+                    <div class="">
+                        <h4 class="text-center mb-3" style="color: white;">Filter Search</h4>
+                        <hr>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                                <label for="" style="color: white;">Sort by Rating</label>
+                                <div class="select-box">
+                                    <select class="wide" name="rating_filter">
+                                        <option value="">Default</option>
+                                       <option value="high">Highest to Lowest</option>
+                                       <option value="low">Lowest to Highest</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                                <label for="" style="color: white;">Filter by Country</label>
+                                <div class="select-box">
+                                    {% comment %} <input type="text" id="searchInput" placeholder="Search..."> {% endcomment %}
+                                    <select class="wide" name="country_filter">
+                                        {% comment %} <option data-display="Select"><input type="text" id="searchInput" placeholder="Search..."></option> {% endcomment %}
+                                        <option data-display="Select" value="">Select Country</option>
+                                        {% for country in countries %}
+                                                <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                                <label for="" style="color: white;">Filter by Experience</label>
+                                <div class="select-box">
+                                    <select class="wide" name="experience_filter">
+                                        <option value="">Default</option>
+                                       <option value="high">Most Experience</option>
+                                       <option value="low">Least Experience</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock content %}
+
+{% block js %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script>
+        $('#country-filter').select2();
+        $( "#search-input" ).autocomplete({
+            source: "{% url 'consultant_list_autosearch' %}",
+            minLength: 2, // Minimum characters before triggering autocomplete
+        })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            //Search Popup
+            if($('#search-popup').length){
+                
+                //Show Popup
+                $('.search-input').on('click focus', function() {
+                    $('#search-popup').addClass('popup-visible');
+                });
+                $(document).keydown(function(e){
+                    if(e.keyCode === 27) {
+                        $('#search-popup').removeClass('popup-visible');
+                    }
+                });
+                //Hide Popup
+                $('.close-search,.search-popup .overlay-layer').on('click', function() {
+                    $('#search-popup').removeClass('popup-visible');
+                });
+            }
+
+            $('.review-stars').each(function() {
+                // Get the rating value for each consultant
+                var rating_str = $(this).data('rating');
+                var rating = parseFloat(rating_str);
+                console.log('rating star: ', rating)
+
+                // Add star classes based on the rating
+                if (rating > 0) {
+                    var fullStars = Math.floor(rating);
+
+                    for (var i = 1; i <= fullStars; i++) {
+                        $(this).find('.rating-star-' + i).addClass('show-star');
+                    }
+
+                    if (rating % 1 !== 0) {
+                        var halfStarPosition = fullStars + 1;
+                        $(this).find('.half-rating-star-' + halfStarPosition).addClass('show-star');
+
+                        for (var j = fullStars + 2; j <= 5; j++) {
+                            $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                        }
+                    }
+
+                    else if(rating % 1 === 0){
+                        for (var j = fullStars + 1; j <= 5; j++) {
+                            $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                        }
+                    }
+                }
+                else {
+                    for (var j = 1; j <= 5; j++) {
+                        $(this).find('.rating-star-' + j).addClass('show-unrated-star');
+                    }
+                }
+            });
+        });
+    </script>
+
+{% endblock js %}

@@ -1,0 +1,325 @@
+{% extends 'base.html' %} {% load static %}
+{% block custom_css %}
+
+<link href={% static "assets/css/font-awesome-all.css" %} rel="stylesheet">
+<link href={% static "assets/css/flaticon.css"%} rel="stylesheet">
+<link href={% static "assets/css/owl.css" %} rel="stylesheet">
+<link href={% static "assets/css/bootstrap.css" %}rel="stylesheet">
+<link href={% static "assets/css/jquery.fancybox.min.css" %}rel="stylesheet">
+<link href={% static "assets/css/animate.css" %} rel="stylesheet">
+<link href={% static "assets/css/nice-select.css"%} rel="stylesheet">
+<link href={% static "assets/css/color/theme-color.css"%} id="jssDefault" rel="stylesheet">
+<link href={% static "assets/css/switcher-style.css" %}rel="stylesheet">
+
+<link href={% static "assets/css/responsive.css" %} rel="stylesheet">
+
+<style>
+    signin-right-ad-div {
+        flex: 0 0 180px; /* Set the width to 180px */
+    }
+
+    signin-right-ad-div img{
+        width: 100%;
+        height: 500px !important;
+    }
+    
+    .content-div {
+        flex-grow: 1; /* Take up the remaining space */
+    }
+</style>
+
+{% endblock custom_css %}
+{% block content %}
+        <!--Page Title-->
+        <section class="page-title consultant-page-title" style="background-image: url({% static 'assets/images/background/page-title-6.jpg'%});">
+            <div class="auto-container consultant-auto-container">
+                <div class="content-box">
+                    <div class="title-box">
+                        <h1>How to Apply</h1>
+                        <div class="dotted-box">
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                            <span class="dotted"></span>
+                        </div>
+                    </div>
+                    <ul class="bread-crumb clearfix">
+                        <li><i class="flaticon-home-1"></i><a href="{% url 'home' %}">Home</a></li>
+                        <li>By Offer Latter</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!--End Page Title-->
+
+        <!-- contact-page-section -->
+        <div class="sidebar-page-container">
+            <div class="auto-container">
+                <div class="row clearfix px-0">
+                    <div class="sidebar-side col-lg-4">
+                        <div class="sidebar">
+                            <div class="sidebar-widget sidebar-categories">
+                                <ul class="categories-list clearfix">
+                                    {% comment %} <li><a href="service-details.html">Business Visa<i class="flaticon-send"></i></a></li> {% endcomment %}
+                                    <li><a href="{% url 'home' %}" class="active">Students Visa<i class="flaticon-send"></i></a></li>
+                                    {% comment %} <li><a href="service-details-3.html">Immigration Visa<i class="flaticon-send"></i></a></li>
+                                    <li><a href="service-details-4.html">Transit Visa<i class="flaticon-send"></i></a></li>
+                                    <li><a href="service-details-5.html">Tourists Visa<i class="flaticon-send"></i></a></li>
+                                    <li><a href="service-details-6.html">Diplomatic Visa<i class="flaticon-send"></i></a></li> {% endcomment %}
+                                </ul>
+                            </div>
+                            {% comment %} <div class="sidebar-widget sidebar-download">
+                                <div class="widget-title">
+                                    <h3>Related Downloads</h3>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <div class="widget-content">
+                                    <ul class="download-list clearfix">
+                                        <li>
+                                            <i class="flaticon-files"></i>
+                                            <h4><a href="coaching-details.html">Study Visa Brochure</a></h4>
+                                            <span>Last Update: 23 May 2020</span>
+                                        </li>
+                                        <li>
+                                            <i class="flaticon-files"></i>
+                                            <h4><a href="coaching-details.html">Visa Application Form</a></h4>
+                                            <span>Last Update: 23 May 2020</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div> {% endcomment %}
+                            <div class="sidebar-widget sidebar-categories-2">
+                                <div class="widget-title">
+                                    <h3>Education Coaching</h3>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <div class="widget-content">
+                                    <ul class="categories-list clearfix">
+                                        <li><a href="">TOEFL</a></li>
+                                        <li><a href="">PTE Coaching</a></li>
+                                        <li><a href="">Take IELTS</a></li>
+                                        <li><a href="">SAT Coaching</a></li>
+                                        <li><a href="">Skills Exam</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+         
+                            <div class="signin-right-ad-div">
+                                <div class="d-flex justify-content-end">
+                                       <div class="row">
+                                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                                    <!-- SVBD_Home_A -->
+                                    <ins class="adsbygoogle"
+                                         style="display:inline-block;width:300px;height:750px"
+                                         data-ad-client="ca-pub-5227250042742723"
+                                         data-ad-slot="9902546305">
+                                    </ins>
+                                    <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
+                                </div>
+
+                                </div>
+                           
+                        </div>
+                            {% comment %} <div class="sidebar-widget sidebar-assessment">
+                                <div class="widget-title">
+                                    <h3>Free Online Assessment</h3>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <div class="widget-content">
+                                    <form action="http://azim.commonsupport.com/Visarzo/service-details.html" method="post" class="assessment-form">
+                                        <div class="form-group">
+                                            <input type="text" name="name" placeholder="Full Name" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" name="email" placeholder="Email address" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="phone" placeholder="Phone" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="select-box">
+                                                <select class="wide">
+                                                   <option data-display="Select">Select Visa Type</option>
+                                                   <option value="1">Working Visas</option>
+                                                   <option value="2">Study Visas</option>
+                                                   <option value="3">Business Visas</option>
+                                                   <option value="4">Tourist Visas</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="message" placeholder="Message"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="theme-btn-two"><i class="flaticon-send"></i>Send Message</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div> {% endcomment %}
+                        </div> 
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="coaching-details-content service-details-content">
+                            {% if offer_letters %}
+                            {% with offer_letter=offer_letters.0 %}
+                            <div class="content-style-one">
+                                
+                                {% comment %} <figure class="image-box">
+                                    <img src="{% if offer_letter.image %}{{ offer_letter.image.url }}{% else %}{% static 'assets/images/service-14.jpg' %}{% endif %}" alt=""> {% endcomment %}
+                                    
+                                    
+                                <div class="group-title">
+                                    <h2>Students Visa By Offer Letter</h2>
+                                    <div class="dotted-box">
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                        <span class="dotted"></span>
+                                    </div>
+                                </div>
+                                <div class="text">
+                                    <h3>{{offer_letter.title}}</h3>
+                                    <p>{{ offer_letter.description | safe }}</p>
+
+                                </div>
+                            </div>
+                            {% endwith %}
+                            {% else %}
+                              <p>No offer letters available.</p>
+                            {% endif %}
+                            <div class="content-style-two">
+                                <div class="inner-box">
+                                    <div class="row clearfix">
+                                        <div class="col-lg-4 col-md-6 col-sm-12 column">
+                                            <div class="single-item">
+                                                <div class="icon-box"><i class="flaticon-document"></i></div>
+                                                <h4>Fill In The <br />Required Form</h4>
+                                                {% comment %} <p>Nunc quam arc pretium quis lobortis sem consequat conse tetur diam nunc bibend.</p> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-6 col-sm-12 column">
+                                            <div class="single-item">
+                                                <div class="icon-box"><i class="flaticon-copy"></i></div>
+                                                <h4>Submit Your <br />Original Documents</h4>
+                                                {% comment %} <p>Nunc quam arc pretium quis lobortis sem consequat conse tetur diam nunc bibend.</p> {% endcomment %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-6 col-sm-12 column">
+                                            <div class="single-item">
+                                                <div class="icon-box"><i class="flaticon-plane"></i></div>
+                                                <h4>Get The Visa <br />Resource Material</h4>
+                                                {% comment %} <p>Nunc quam arc pretium quis lobortis sem consequat conse tetur diam nunc bibend.</p> {% endcomment %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                           
+                            </div>
+                            <div class="two-column">
+                                <div class="row align-items-center clearfix">
+                                    <!--<div class="col-lg-6 col-md-6 col-sm-12 image-column">
+                                        {% if offer_letters %}
+                                        {% with offer_letter=offer_letters.0 %}
+                                        <figure class="image-box"><img src="{{offer_letter.image.url}}" alt=""></figure>
+                                        {% endwith %}
+                                        {% else %}
+                                          <p></p>
+                                        {% endif %}
+                                    </div>-->
+                                     <div class="col-lg-12 col-md-12 col-sm-12 content-column">
+                                        <div class="content-box">
+                                            <h3>Students Visa Bd Benefits</h3>
+                                            <ul class="list clearfix">
+                                                {% if customize_benefit %}
+                                                    <p>{{ customize_benefit.benefit | safe }}</p>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% comment %} <div class="text">
+                                    <h3>How To Do Test Preparation</h3>
+                                    <p>Nunc quam arcu, pretium quis quam sed, laoreet efficitur leo. Aliquam era volutpat lobortis sem consequat consequat imperdiet. In nulla sed viverraut loremut dapib estetur diam nunc bibendum imperdiets. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</p>
+                                </div> {% endcomment %}
+                            </div>
+                            {% comment %} <div class="accordion-content">
+                                <h3>Frequently asked Questions</h3>
+                                <ul class="accordion-box">
+                                    <li class="accordion block active-block">
+                                        <div class="acc-btn active">
+                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                                            <h5>How long does it take for a Student Visa to process?</h5>
+                                        </div>
+                                        <div class="acc-content current">
+                                            <p>Ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.</p>
+                                        </div>
+                                    </li>
+                                    <li class="accordion block">
+                                        <div class="acc-btn">
+                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                                            <h5>What is the fee structure for visa submission?</h5>
+                                        </div>
+                                        <div class="acc-content">
+                                            <p>Ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.</p>
+                                        </div>
+                                    </li>
+                                    <li class="accordion block">
+                                         <div class="acc-btn">
+                                            <div class="icon-outer"><i class="fas fa-angle-down"></i></div>
+                                            <h5>What are the important things to know as a Student Visa applicant?</h5>
+                                        </div>
+                                        <div class="acc-content">
+                                            <p>Ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt labore dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div> {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    
+ 
+        <!-- contact-page-section end -->
+
+
+        {% endblock content %}
+
+
+        {% block custom_js %}
+        <script src={% static "assets/js/jquery.js"%}></script>
+        <script src={% static "assets/js/popper.min.js"%}></script>
+        <script src={% static "assets/js/bootstrap.min.js"%}></script>
+        <script src={% static "assets/js/owl.js"%}></script>
+        <script src={% static "assets/js/wow.js"%}></script>
+        <script src={% static "assets/js/validation.js"%}></script>
+        <script src={% static "assets/js/jquery.fancybox.js"%}></script>
+        <script src={% static "assets/js/TweenMax.min.js"%}></script>
+        <script src={% static "assets/js/appear.js"%}></script>
+        <script src={% static "assets/js/scrollbar.js"%}></script>
+        <script src={% static "assets/js/jquery.nice-select.min.js"%}></script>
+        <script src={% static "assets/js/jQuery.style.switcher.min.js"%}></script>
+    
+        <!-- map script -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-CE0deH3Jhj6GN4YvdCFZS7DpbXexzGU"></script>
+        <script src={% static "assets/js/gmaps.js"%}></script>
+        <script src={% static "assets/js/map-helper.js"%}></script>
+    
+        <!-- main-js -->
+        <script src={% static "assets/js/script.js"%}></script>
+        
+        {% endblock custom_js %}

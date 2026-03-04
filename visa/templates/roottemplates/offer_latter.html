@@ -1,0 +1,60 @@
+{% extends "roottemplates/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Offer Letters</h4>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'offer_letters' %}" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" class="form-control" value="{% if instance %}{{ instance.title }}{% endif %}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" required>{% if instance %}{{ instance.description }}{% endif %}</textarea>
+              </div>
+
+
+
+              <div class="form-group">
+                <label for="image">Image:</label>
+                {% if instance and instance.image %}
+                    <img src="{{ instance.image.url }}" alt="Existing Image" style="max-width: 100%; height: auto;">
+                    <br>
+                {% endif %}
+                <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
+              </div>
+
+              <button type="submit" class="btn btn-primary">{% if instance %}Update{% else %}Create{% endif %}</button>
+            </form>
+
+            <!-- Include CKEditor library -->
+            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+            <script>
+              CKEDITOR.replace('description');
+            </script>
+
+          </div>
+        </div>
+    </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock content %}

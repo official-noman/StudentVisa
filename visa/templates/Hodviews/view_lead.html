@@ -1,0 +1,36 @@
+{% extends "Hodviews/base.html" %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            {% if success_message %}
+              <div class="alert alert-success" role="alert">
+                {{ success_message }}
+              </div>
+            {% endif %}
+
+            {% if error_message %}
+              <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+              </div>
+            {% endif %}
+
+            <h4 class="card-title">Lead Details</h4>
+            {% if lead and student_level %}
+              <p>Lead: {{ lead }}</p>
+              <p>Student ID: {{ student_level.student.id }}</p>
+              <p>Name: {{ student_level.student.full_name }}</p>
+              <!-- Add other student details as needed -->
+
+              <!-- Add lead-specific details if necessary -->
+            {% endif %}
+
+            <a href="{% url 'student_list' %}" class="btn btn-primary">Back to Student List</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,394 @@
+{% extends base_template|default:'base.html' %}
+
+{% load static %}
+{% block custom_css %}
+<style>
+    {% comment %} form .field.password .eye-icon {
+        position: absolute;
+        top: 50%;
+        right: 10px; /* Adjusted position */
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    form .field.password .eye-icon i {
+        color: #bfbfbf;
+        transition: color 0.2s ease;
+    }
+
+    form .field.password .eye-icon i:hover {
+        color: #00C9A7;
+    } {% endcomment %}
+
+    .form-div-container {
+        background-color: #fff;
+        position: relative;
+        overflow: hidden;
+        max-width: 390px;
+        min-height: 480px;
+    }
+
+    .wrapper {
+        width: 380px;
+        padding: 40px 30px 50px 30px;
+        background: #12192c;
+        border-radius: 5px;
+        text-align: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .wrapper header {
+        font-size: 35px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .wrapper form {
+        margin: 40px 0;
+    }
+
+    form .field {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    form .field.shake {
+        animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% {
+            margin-left: 0px;
+        }
+
+        20%, 80% {
+            margin-left: -12px;
+        }
+
+        40%, 60% {
+            margin-left: 12px;
+        }
+    }
+
+    form .field .input-area {
+        height: 50px;
+        width: 100%;
+        position: relative;
+    }
+
+    form input {
+        width: 100%;
+        height: 100%;
+        outline: none;
+        padding: 0 0px 0 45px;
+        font-size: 18px;
+        background: none;
+        color: #e1d9ec;
+        border-radius: 5px;
+        border: 1px solid #e1d9ec;
+        border-bottom-width: 2px;
+        transition: all 0.2s ease;
+    }
+    form .field input:focus,
+    form .field.valid input {
+        border-color: #00C9A7;
+    }
+
+    form .field.shake input,
+    form .field.error input {
+        border-color: #dc3545;
+    }
+
+    .field .input-area .input-area-icon {
+        position: absolute;
+        top: 50%;
+        font-size: 18px;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+
+    .input-area .icon {
+        left: 15px;
+        color: #bfbfbf;
+        transition: color 0.2s ease;
+    }
+
+    .eye-div{
+        position: relative;
+    }
+    
+    .password-toggle{
+        position: absolute;
+        font-size: 15px;
+        font-weight: 700;
+        /* display: flex; */
+        width: auto;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    .password-toggle i{
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .eye-color{
+        color: green;
+    }
+    
+    .error-border{
+        border: 1px solid red;
+        box-shadow: 0px 0px 3px 2px rgba(255,0,0,0.3);
+    }
+
+    .input-area .error-icon {
+        right: 15px;
+        color: #dc3545;
+    }
+
+    form input:focus ~ .icon,
+    form .field.valid .icon {
+        color: #00C9A7;
+    }
+
+    form .field.shake input:focus ~ .icon,
+    form .field.error input:focus ~ .icon {
+        color: #bfbfbf;
+    }
+
+    form input::placeholder {
+        color: #bfbfbf;
+        font-size: 17px;
+    }
+
+    form .field .error-txt {
+        color: #dc3545;
+        text-align: left;
+        margin-top: 5px;
+    }
+
+
+
+    form .field .error {
+        display: none;
+    }
+
+    form .field.shake .error,
+    form .field.error .error {
+        display: block;
+    }
+
+    form .pass-txt {
+        text-align: left;
+        margin-top: -10px;
+    }
+
+    .wrapper a {
+        color: #00C9A7;
+        text-decoration: none;
+    }
+
+    .wrapper a:hover {
+        text-decoration: underline;
+    }
+
+    form input[type="submit"] {
+        height: 50px;
+        margin-top: 30px;
+        color: #fff;
+        padding: 0;
+        border: none;
+        background: #00C9A7;
+        cursor: pointer;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    form input[type="submit"]:hover {
+        background: #22E4AC;
+    }
+
+    .sign-txt {
+        color: #fff;
+    }
+
+    .credit {
+        margin-top: 20px;
+        text-align: center;
+        color: #000;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+
+    .credit a {
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .error-message-div {
+        width: 100%;
+        max-height: 0;
+        opacity: 0;
+        background-color: rgba(255, 0, 0, 0.233);
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .error-message-div p {
+        margin: 14px 16px;
+    }
+
+    .message-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: red;
+    }
+
+    .error-message-div.error-message-show {
+        max-height: 50px;
+        opacity: 1;
+    }
+    .password_id{
+        position: relative;
+    }
+    .signin-right-ad-div img {
+        width: 69%;
+        max-width: 83%;
+        height: auto;
+    }
+
+    @media (max-width: 992px) {
+        .signin-left-ad-div-outer{
+           display: none;
+        }
+    
+        .signin-right-ad-div-outer{
+            display: none;
+        }
+
+        .main-content-div{
+            width: 100% !important;
+        }
+    }
+    
+    @media (max-width: 597px) {
+        .container{
+            padding: 0;
+        }
+    }
+
+</style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+
+        <div class="col-3 signin-left-ad-div-outer">
+
+            <div class="signin-left-ad-div">
+              <div class="d-flex justify-content-end">
+                     <div class="row">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- SVBD_Home_A -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:200px;height:750px"
+         data-ad-client="ca-pub-5227250042742723"
+         data-ad-slot="9902546305">
+    </ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+</div>
+            </div>
+        </div>
+        <div class="main-content-div" style="display: flex;justify-content: center;">
+        <div class="form-div-container my-4" id="container">
+            <div class="wrapper">
+                <header>Login Form</header>
+
+                <form id="login-form" method="POST" action="#">
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div class="{% if message.tags == 'error' %}error-message-div error-message-show{% endif %}">
+                            <p class="message-text">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                    {% csrf_token %}
+                    <div class="field email">
+                        <div class="input-area">
+                        
+                            <input type="text" name="identifier" placeholder="Email or Phone" />
+                            <i class="icon fas fa-envelope input-area-icon"></i>
+                            <i class="error error-icon fas fa-exclamation-circle input-area-icon"></i>
+                        </div>
+                        <div class="error error-txt">Email can't be blank</div>
+                    </div>
+                    <div class="field password">
+
+                        <div class="input-area eye-div">
+                            <input type="password" name="password" placeholder="Password" />
+                            <i class="icon fas fa-lock input-area-icon"></i>
+                            <i class="error error-icon fas fa-exclamation-circle input-area-icon"></i>
+                            <span class="password-toggle" id="password-toggle-eye">
+                                <i class="fa-regular fa-eye-slash"></i>
+                            </span>
+                        </div>
+                        <div class="error error-txt">Password can't be blank</div>
+                    </div>
+                    <div class="pass-txt">
+                        {% if request.resolver_match.url_name == 'login_student' %}
+                            <a href="{% url 'forgot_password_phone_or_email_student' %}" class="mb-1">Forgot your password?</a>
+                        {% elif request.resolver_match.url_name == 'login_user' %}
+                            <a href="{% url 'forgot_password_phone_or_email' %}" class="mb-1">Forgot your password?</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="pass-txt">
+                        <span>Don't have an account?</span>
+                        {% if request.resolver_match.url_name == 'login_student' %}
+                            <a href="{% url 'signup_student' %}">Sign Up</a>
+                        {% elif request.resolver_match.url_name == 'login_user' %}
+                            <a href="{% url 'signup_user' %}" style="font-weight: 600;">Sign Up</a>
+                        {% endif %}
+                    </div>
+
+                    <!--google recaptcha starts-->
+                    {% comment %} <div class="input-group my-4 d-flex justify-content-center">
+                        <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
+                    </div> {% endcomment %}
+                    <!--google recaptcha ends-->
+                    
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('.password-toggle').click(function () {
+            console.log('eye icon clicked');
+            var passwordInput = $(this).siblings('input');
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye eye-color');
+
+            } else {
+                passwordInput.attr('type', 'password');
+                $(this).find('i').addClass('fa-eye-slash').removeClass('fa-eye eye-color');
+            }
+        });
+    });
+</script>
+{% endblock js %}

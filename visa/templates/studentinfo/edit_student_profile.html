@@ -1,0 +1,539 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block custom_css %}
+
+<!-- Include Select2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="{% static 'assets/css/student_edit_profile.css' %}" rel="stylesheet">
+<!-- Include Select2 JS -->
+
+{% endblock custom_css %}
+
+{% block content %}
+    <!-- Content for the page -->
+    <div class="container">
+        <div class="row">
+
+            <div class="content-div">
+                <section class="result-form">
+                    <div class="container emp-profile">
+                        <form method="post" id="profileForm" enctype="multipart/form-data" action="{% url 'edit_student_profile' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="profile-img">
+                                            {% if student_details.student_image %}
+                                                <img id="image-preview" src="{{ student_details.student_image.url }}" alt="Student Image">
+                                                {% else %}
+                                                <img id="image-preview" src="{% static 'assets/images/images.jpg' %}" alt="Student Image">
+                                            {% endif %}
+                                            <div class="file btn btn-lg btn-primary">
+                                                Change Photo
+                                                <input type="file" name="student_image" id="file-input" onchange="previewImage(event)"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="profile-head">
+                                                <h5>
+                                                    <h2>Edit Profile</h2>{{student.full_name}}
+                                                </h5>
+                                                {% comment %} <h6>
+                                                    {{ student.get_user_type_display }}
+                                                </h6> {% endcomment %}
+                                              
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                            </li>
+                                            <!--<li class="nav-item">
+                                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Result</a>
+                                            </li>-->
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="false">Password</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="profile-work">
+                            
+                                    </div>
+                                </div>
+                                        <div class="col-md-8">
+                                            <div class="tab-content profile-tab" id="myTabContent">
+                                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                    <div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="full_name">Full Name</label>
+                                                                    
+                                                                    <input type="text" class="form-control" id="full_name" placeholder="Enter full name" name="full_name" value="{{ student.full_name }}" required>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="eMail">Email</label>
+                                                                    
+                                                                    <input type="email" class="form-control" id="student_email" name="student_email" placeholder="Enter email ID" value="{{ student.email }}" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="fatherName">Father's Name</label>
+                                                                    <input type="text" class="form-control" id="fatherName" name="dets_fathername" placeholder="Enter father's name" value="{% if student_details.dets_fathername == 'None' %}{% else %}{{ student_details.dets_fathername }}{% endif %}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="motherName">Mother's Name</label>
+                                                                    <input type="text" class="form-control" id="motherName" name="dets_mothername" placeholder="Enter mother's name"value="{% if student_details.dets_mothername == 'None' %}{% else %}{{ student_details.dets_mothername }}{% endif %}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                 <div class="form-group">
+                                                            <label for="bloodGroup">Blood Group</label>
+                                                            <select class="form-control" id="dets_bloodgroup" name="dets_bloodgroup">
+                                                                <option value="" disabled>Select Blood Group</option>
+                                                                <option value="A+" {% if student_details.dets_bloodgroup == 'A+' %} selected {% endif %}>A+</option>
+                                                                <option value="A-" {% if student_details.dets_bloodgroup == 'A-' %} selected {% endif %}>A-</option>
+                                                                <option value="B+" {% if student_details.dets_bloodgroup == 'B+' %} selected {% endif %}>B+</option>
+                                                                <option value="B-" {% if student_details.dets_bloodgroup == 'B-' %} selected {% endif %}>B-</option>
+                                                                <option value="AB+" {% if student_details.dets_bloodgroup == 'AB+' %} selected {% endif %}>AB+</option>
+                                                                <option value="AB-" {% if student_details.dets_bloodgroup == 'AB-' %} selected {% endif %}>AB-</option>
+                                                                <option value="O+" {% if student_details.dets_bloodgroup == 'O+' %} selected {% endif %}>O+</option>
+                                                                <option value="O-" {% if student_details.dets_bloodgroup == 'O-' %} selected {% endif %}>O-</option>
+                                                            </select>
+                                                        </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="nationality">Nationality</label>
+                                                                    <input type="text" class="form-control" id="nationality" name="dets_nationality" placeholder="Enter nationality" value="{{ student_details.dets_nationality }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="phone">Phone</label>
+                                                                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number" value="{{ student.phone }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group calendar-div">
+                                                                    <label for="dob">Date of Birth</label>
+                                                                    <input type="date" class="form-control datepicker date-input mt-0" id="dob" name="dets_dob" placeholder="Enter date of birth" value="{{ student_details.dets_dob }}" readonly>
+                                                                    <span id="calendar-icon" class="calendar-icon"><i class="fa-solid fa-calendar"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                            <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="road">Road</label>
+                                                                    <input type="text" class="form-control" id="address" placeholder="Enter State" value="{{ student.address }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                                                <div class="form-group">
+                                                                    <label for="zIp">Zip Code</label>
+                                                                    <input type="text" class="form-control" id="zIp" placeholder="Zip Code">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row gutters">
+                                                    </div>
+
+                                                    <div class="w-100">
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-12 input-div">
+                                                                <label class="signup-label col-12" for="district-name">District<span class="required-star">*</span></label>
+                                                            <select class="form-control" name="district_name" id="district-name">
+                                                            <option value="" disabled>Select District</option>
+                                                            {% for district in districts %}
+                                                                <option id="id_{{ district.name }}" value="{{ district.id }}"
+                                                                    {% if district.id == student.district.id %} selected {% endif %}>
+                                                                    {{ district.name }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                            </div>
+                                                            <div class="col-md-6 col-12 input-div">
+                                                                <label class="signup-label col-12" for="thana-name">Thana<span class="required-star">*</span></label>
+                                                                <select class="form-control" name="thana_name" id="thana-name">
+                                                            <option value="" disabled>Select Thana</option>
+                                                            {% for thana in thanas %}
+                                                                <option value="{{ thana.id }}"
+                                                                    {% if thana.id == student.thana.id %} selected {% endif %}>
+                                                                    {{ thana.name }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                            <div class="d-flex justify-content-center mt-3">
+                                                                <button type="submit" id="updateButtonHome" name="updateButton" class="btn btn-info" style="padding: 10px 15px 10px 15px; border: none;">Update</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                        
+        
+                                        <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                                            <div id="passwordMessageContainer"></div>
+                                           <div class="row">
+                                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                    <div class="form-group">
+                                                        <label for="old_password">Old Password</label>
+                                                        <div class="input-group">
+                                                            <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Enter Old Password">
+                                                            <span class="input-group-append" id="old_password_toggle">
+                                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('old_password')">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                        <div id="oldPasswordMessage" class="text-danger"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                    <div class="form-group">
+                                                        <label for="new_password">New Password</label>
+                                                        <div class="input-group">
+                                                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter New Password">
+                                                            <span class="input-group-append" id="new_password_toggle">
+                                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('new_password')">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                    <div class="form-group">
+                                                        <label for="confirm_new_password">Confirm New Password</label>
+                                                        <div class="input-group">
+                                                            <input type="password" class="form-control" id="confirm_new_password" name="confirm_new_password" placeholder="Confirm New Password">
+                                                            <span class="input-group-append" id="confirm_new_password_toggle">
+                                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirm_new_password')">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                        <div id="confirmPasswordMessage" class="text-danger"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--Error messages starts-->
+                                            <div class="w-100">
+                                                <div id="error-message-div" class="d-flex error-message-div">
+                                                    <p><span id="message-text" class="message-text text-center"></span></p>
+                                                </div>
+                                            </div>
+                                            <!--Error messages ends-->
+                                            <div class="row">
+                                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                    <div class="text-left">
+                                                        <button type="button" id="updateButtonpassword" class="btn btn-info">Update Password</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                             
+                                           
+                                    </div>
+                                </div>
+                                     
+                                    </div>
+                                </div>
+                            </div>
+                        </form> 
+                                          
+                    </div> 
+                    </div>
+                    
+                </section>
+            </div>
+         
+        </div>
+
+            <div>
+
+    <br>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div py-4">
+                <p class="mb-2"><span class="successful-text text-center">Profile Updated Successfully</span></p>
+                <p class="mb-2"><span class="successful-text text-center">Please login again to continue</span></p>
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+        
+    $('#district-name').select2();
+    $('#thana-name').select2();
+    $('#sscBoard').select2();
+    $('#hscBoard').select2();
+       $('#dets_bloodgroup').select2();
+    
+</script>
+<script>
+    function togglePasswordVisibility(inputId) {
+        var input = document.getElementById(inputId);
+        var icon = document.getElementById(inputId + "_toggle").querySelector("i");
+    
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+</script>
+<script>
+    function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+        var output = document.getElementById('image-preview');
+        output.src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+<script>
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            toggleActive: true
+        });
+
+        // Prepare the preview for profile picture
+        $("#file-input").change(function(){
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+        
+                reader.onload = function (e) {
+                    $('#image-preview').attr('src', e.target.result).fadeIn('slow');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $('.profile-pic-btn').on('click', function(){
+            $('#file-input').click()
+            console.log('clicked')
+        })
+
+        $('.calendar-icon').on('click', function(){
+            $('#dob').click();
+            console.log('clicked');
+        });
+        // Click event handler for the Update Password button
+    
+
+        // Add code for the Cancel button click event if needed
+        $('#cancelButton').on('click', function () {
+            // Handle cancel button click event
+        });
+
+        // Get Thana name when District is selected
+        $('#district-name').on('change', function(){
+            console.log('clicked')
+            var selectedDistrictName = $(this).val();
+            // var selectedDivisionName = $(this).find('option:selected').text()  // it will send the division name
+            console.log('selectedDistrictId: ', selectedDistrictName)
+            fetch('/get_thana/?district_id=' + selectedDistrictName, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();  // Parse the JSON data if the response is successful
+                }
+                throw new Error('Response not OK');
+            })
+            .then(data => {
+                var thanaDropdown = $('#thana-name');
+                // Clear existing options from upazila dropdown
+                console.log('data: ', data)
+                console.log('data after success division')
+                thanaDropdown.empty(); // Clear the dropdown before adding new options
+                // Add new options for upazilas
+                data.thanas.forEach(thana => {
+                    //const option = document.createElement('option');
+                    //option.value = district.district_id;
+                    //option.textContent = district.district_name;
+                    const option = new Option(thana.name, thana.id);
+                    thanaDropdown.append(option);
+                });
+                console.log('thanaDropdown: ', thanaDropdown.val());
+                var thanaDropdownValue = thanaDropdown.val();
+                // fetch thanas
+                /*var selectedUpazilaID = $('#thana-name').val()
+                fetchLocations('/thanas/?district_id=' + thanaDropdownValue, '#thana-name', 'thana_id', 'thana_name', 'thana')*/
+            })
+            .catch(error => {
+            console.error('Error fetching districts:', error);
+            });
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners to input fields for live validation
+        document.getElementById('old_password').addEventListener('input', validatePasswords);
+        document.getElementById('new_password').addEventListener('input', validatePasswords);
+        document.getElementById('confirm_new_password').addEventListener('input', validatePasswords);
+
+        const updateButton = document.getElementById('updateButtonpassword');
+
+        updateButton.addEventListener('click', function() {
+            const oldPassword = document.getElementById('old_password').value;
+            const newPassword = document.getElementById('new_password').value;
+            const confirmNewPassword = document.getElementById('confirm_new_password').value;
+
+            // Clear any previous error messages
+            document.getElementById('oldPasswordMessage').textContent = '';
+            document.getElementById('confirmPasswordMessage').textContent = '';
+
+            // Validate input fields
+            if (!oldPassword || !newPassword || !confirmNewPassword) {
+                document.getElementById('passwordMessageContainer').innerHTML = '<div class="alert alert-danger">Please fill in all fields.</div>';
+                return;
+            }
+
+            // Make sure new password matches confirmation
+            if (newPassword !== confirmNewPassword) {
+                document.getElementById('confirmPasswordMessage').textContent = 'New passwords do not match.';
+                return;
+            }
+
+            // Send a POST request to the server
+            fetch('/change_student_password/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Make sure to include CSRF token
+                },
+                body: JSON.stringify({
+                    old_password: oldPassword,
+                    new_password: newPassword,
+                    confirm_new_password: confirmNewPassword
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data, e.g., show a success message
+                console.log('data: ', data);
+
+                if (data.success) {
+                    // Redirect to the URL provided in the response
+                    //window.location.href = data.redirect_url;
+                    console.log('data.success: ', data.success)
+                    $('#popup-container').addClass('show');
+
+                    setTimeout(function(){
+                        window.location.href = '/login_student/';
+                    }, 1000)
+                }
+                
+                else if (data.error) {
+                    console.log('errors: ', data.error);
+                    $('#message-text').text(data.error);
+                    $('#error-message-div').addClass('error-message-show');
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred:', error);
+                document.getElementById('passwordMessageContainer').innerHTML = '<div class="alert alert-danger">An error occurred while processing your request.</div>';
+            });
+        });
+
+        // Function to validate passwords live
+        function validatePasswords() {
+            const oldPassword = document.getElementById('old_password').value;
+            const newPassword = document.getElementById('new_password').value;
+            const confirmNewPassword = document.getElementById('confirm_new_password').value;
+
+            // Clear any previous error messages
+            document.getElementById('oldPasswordMessage').textContent = '';
+            document.getElementById('confirmPasswordMessage').textContent = '';
+
+            // Check if new passwords match if they are not empty
+            if (newPassword && confirmNewPassword && newPassword !== confirmNewPassword) {
+                document.getElementById('confirmPasswordMessage').textContent = 'New passwords do not match.';
+            }
+        }
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock js %}
