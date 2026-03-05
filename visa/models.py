@@ -15,11 +15,12 @@ import unicodedata
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
-        (0, 'Root'),
+        (0, "Root"),
         (1, "Consultant"),
         (2, "Student"),
     )
@@ -30,15 +31,14 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
-    
-    db_table = 'CustomUser'
 
+    db_table = "CustomUser"
 
 
 class Addresses(models.Model):
     id = models.BigAutoField(primary_key=True)
     consultant_id = models.IntegerField(null=True)
-    root_id=models.IntegerField(null=True)
+    root_id = models.IntegerField(null=True)
     office_name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     hotline = models.CharField(max_length=255)
@@ -46,23 +46,25 @@ class Addresses(models.Model):
     email = models.CharField(max_length=255)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
+
     class Meta:
-        db_table = 'addresses'
+        db_table = "addresses"
+
 
 class Message(models.Model):
     CATEGORY_CHOICES = [
-        ('General Inquiry', 'General Inquiry'),
-        ('Visa Application', 'Visa Application'),
-        ('Document Submission', 'Document Submission'),
-        ('Appointment Request', 'Appointment Request'),
-        
-        
+        ("General Inquiry", "General Inquiry"),
+        ("Visa Application", "Visa Application"),
+        ("Document Submission", "Document Submission"),
+        ("Appointment Request", "Appointment Request"),
     ]
 
     category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     email = models.EmailField()
     name = models.CharField(max_length=255)
-    phonenumber = models.CharField(max_length=20)  # Assuming phone numbers are stored as strings
+    phonenumber = models.CharField(
+        max_length=20
+    )  # Assuming phone numbers are stored as strings
     subject = models.CharField(max_length=255)
     message = models.TextField()
     created_at = models.DateTimeField(blank=True, null=True)
@@ -70,7 +72,8 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.category} - {self.subject} - {self.name}"
-    
+
+
 class Notification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     message = models.TextField()
@@ -78,8 +81,9 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user.username} - {self.message}'
-    
+        return f"{self.user.username} - {self.message}"
+
+
 class Reply(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     email = models.EmailField()
@@ -89,19 +93,28 @@ class Reply(models.Model):
     def __str__(self):
         return f"Reply to: {self.message.subject} - {self.email}"
 
+
 class Balances(models.Model):
     acc_paid_by = models.IntegerField(blank=True, null=True)
     acc_pay_to = models.IntegerField(blank=True, null=True)
     acc_pay_std_id = models.IntegerField(blank=True, null=True)
-    pay_method = models.IntegerField(choices=[
-        (1, 'Cash'),
-        (2, 'Bank Deposit'),
-        (3, 'Check'),
-    ], blank=True, null=True)
-    payment_status = models.IntegerField(choices=[
-        (1, 'Paid'),
-        (2, 'Checking'),
-    ], blank=True, null=True)
+    pay_method = models.IntegerField(
+        choices=[
+            (1, "Cash"),
+            (2, "Bank Deposit"),
+            (3, "Check"),
+        ],
+        blank=True,
+        null=True,
+    )
+    payment_status = models.IntegerField(
+        choices=[
+            (1, "Paid"),
+            (2, "Checking"),
+        ],
+        blank=True,
+        null=True,
+    )
     acc_pay_ref = models.CharField(max_length=255, blank=True, null=True)
     acc_credit = models.FloatField(blank=True, null=True)
     acc_debit = models.FloatField(blank=True, null=True)
@@ -110,7 +123,7 @@ class Balances(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'balances'
+        db_table = "balances"
 
 
 class Colors(models.Model):
@@ -122,7 +135,7 @@ class Colors(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'colors'
+        db_table = "colors"
 
 
 class Countries(models.Model):
@@ -130,13 +143,20 @@ class Countries(models.Model):
     country_name = models.CharField(max_length=30)
     country_code = models.CharField(max_length=10, blank=True, null=True)
     country_flag = models.CharField(max_length=60)
-    country_howtoapply = models.TextField(db_column='country_howToApply')  # Field name made lowercase.
-    country_insertdate = models.DateField(db_column='country_insertDate', blank=True, null=True)  # Field name made lowercase.
-    country_updatedate = models.DateField(db_column='country_updateDate', blank=True, null=True)  # Field name made lowercase.
+    country_howtoapply = models.TextField(
+        db_column="country_howToApply"
+    )  # Field name made lowercase.
+    country_insertdate = models.DateField(
+        db_column="country_insertDate", blank=True, null=True
+    )  # Field name made lowercase.
+    country_updatedate = models.DateField(
+        db_column="country_updateDate", blank=True, null=True
+    )  # Field name made lowercase.
     country_status = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        db_table = 'countries'
+        db_table = "countries"
+
 
 class University(models.Model):
     university_id = models.AutoField(primary_key=True)
@@ -145,32 +165,38 @@ class University(models.Model):
     established_date = models.DateField(blank=True, null=True)
     website = models.URLField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    status = models.IntegerField(default=0)  # You may adjust the default value based on your requirements
+    status = models.IntegerField(
+        default=0
+    )  # You may adjust the default value based on your requirements
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    countries = models.ForeignKey(Countries, on_delete=models.SET_NULL, null=True, blank=True, related_name='universities')
+    countries = models.ForeignKey(
+        Countries,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="universities",
+    )
 
     class Meta:
-        db_table = 'universities'
+        db_table = "universities"
+
 
 class UniversityWise(models.Model):
     uw_id = models.AutoField(primary_key=True)
     uw_university_name = models.CharField(max_length=500)
     uw_text = models.TextField()
-    uw_whocanapply = models.TextField(db_column='uw_whoCanApply', blank=True, null=True)
+    uw_whocanapply = models.TextField(db_column="uw_whoCanApply", blank=True, null=True)
     uw_status = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
-    
-
     class Meta:
-        db_table = 'university_wises'
-
+        db_table = "university_wises"
 
 
 def image_upload_path(instance, filename):
-    folder = 'customizes_images'  # Example folder name
+    folder = "customizes_images"  # Example folder name
     original_name, ext = os.path.splitext(filename)
     try:
         # Fetch the consultant
@@ -185,7 +211,9 @@ def image_upload_path(instance, filename):
 
 class Customizes(models.Model):
     description = models.TextField(blank=True, null=True)
-    consultant = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    consultant = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, blank=True, null=True
+    )
     image = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
     status = models.IntegerField()
     created_at = models.DateTimeField(default=timezone.now)
@@ -193,7 +221,7 @@ class Customizes(models.Model):
     benefit = models.CharField(max_length=5000, blank=True, null=True)
 
     class Meta:
-        db_table = 'customizes'
+        db_table = "customizes"
 
     def save(self, *args, **kwargs):
         if self.image:
@@ -203,13 +231,13 @@ class Customizes(models.Model):
 
 
 class Explanation(models.Model):
-
     root_id = models.IntegerField()
-    exp_title=models.CharField(max_length=500,blank=True,null=True)
-    exp_des=models.TextField(null=True,blank= True)
-    exp_img=models.ImageField(upload_to='explanation/',null=True,blank=True)
+    exp_title = models.CharField(max_length=500, blank=True, null=True)
+    exp_des = models.TextField(null=True, blank=True)
+    exp_img = models.ImageField(upload_to="explanation/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
 
 class Clients(models.Model):
     root_id = models.IntegerField()
@@ -220,21 +248,32 @@ class Clients(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
 
-
 class ConsultantDetails(models.Model):
     consultant_id = models.IntegerField()
-    consultant_customizes = models.ManyToManyField(Customizes, related_name='consultant_customizes', null=True)
-    consultant_img = models.ImageField(upload_to='consultant_images/', blank=True, null=True)
+    consultant_customizes = models.ManyToManyField(
+        Customizes, related_name="consultant_customizes", null=True
+    )
+    consultant_img = models.ImageField(
+        upload_to="consultant_images/", blank=True, null=True
+    )
     experience = models.IntegerField(null=True, blank=True)
-    consultant_maplocation = models.TextField(db_column='consultant_mapLocation', blank=True, null=True)
+    consultant_maplocation = models.TextField(
+        db_column="consultant_mapLocation", blank=True, null=True
+    )
     consultant_requirement = models.TextField(blank=True, null=True)
-    consultant_requirement_image = models.ImageField(upload_to='consultant_requirement/', blank=True, null=True)
-    consultant_logo = models.ImageField(upload_to='consultant_logo/', blank=True, null=True)
+    consultant_requirement_image = models.ImageField(
+        upload_to="consultant_requirement/", blank=True, null=True
+    )
+    consultant_logo = models.ImageField(
+        upload_to="consultant_logo/", blank=True, null=True
+    )
     consultant_facebook = models.CharField(max_length=50, blank=True, null=True)
     consultant_website = models.CharField(max_length=150, blank=True, null=True)
     consultant_twitter = models.CharField(max_length=50, blank=True, null=True)
     consultant_googleplus = models.CharField(max_length=50, blank=True, null=True)
-    consultant_countries = models.ManyToManyField(Countries, related_name='consultant_details', null=True)
+    consultant_countries = models.ManyToManyField(
+        Countries, related_name="consultant_details", null=True
+    )
     status = models.IntegerField(default=0)
     consultant_experience = models.IntegerField(blank=True, null=True)
     consultant_designation = models.CharField(max_length=60, blank=True)
@@ -245,7 +284,7 @@ class ConsultantDetails(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'consultant_details'
+        db_table = "consultant_details"
         managed = True
 
     def save(self, *args, **kwargs):
@@ -265,7 +304,7 @@ class ConsultantDetails(models.Model):
 
             # Constructing the new filename
             new_name = f"{self.consultant_id}-{slugify(company_name)}-{slugify(full_name)}{ext}"
-            new_name = new_name.replace('_', '-')  # Replace underscores with hyphens
+            new_name = new_name.replace("_", "-")  # Replace underscores with hyphens
             self.consultant_img.name = new_name
 
         if self.consultant_requirement_image:
@@ -284,29 +323,22 @@ class ConsultantDetails(models.Model):
 
             # Constructing the new filename
             new_name = f"{self.consultant_id}-{slugify(company_name)}-{slugify(full_name)}_Student-Visa-Bd{ext}"
-            new_name = new_name.replace('_', '-')  # Replace underscores with hyphens
+            new_name = new_name.replace("_", "-")  # Replace underscores with hyphens
             self.consultant_requirement_image.name = new_name
 
-
         super().save(*args, **kwargs)
-        
-
-
-        
-        
-
 
 
 class ConsultantImages(models.Model):
     id = models.BigAutoField(primary_key=True)
-    image = models.ImageField(upload_to='consultant_images/', blank=True, null=True)
+    image = models.ImageField(upload_to="consultant_images/", blank=True, null=True)
     caption = models.CharField(max_length=255)
     consultant_id = models.IntegerField()
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'consultant_images'
+        db_table = "consultant_images"
 
     def save(self, *args, **kwargs):
         if self.image:
@@ -323,14 +355,10 @@ class ConsultantImages(models.Model):
 
             # Constructing the new filename with the consultant's ID, company name, and original image name
             new_name = f"{self.consultant_id}-{company_name.replace(' ', '-').lower()}-{self.caption.replace(' ', '-')}{ext}"
-            new_name = new_name.replace('_', '-')  # Replace underscores with hyphens
+            new_name = new_name.replace("_", "-")  # Replace underscores with hyphens
             print("New Name:", new_name)  # Add this line to debug
             self.image.name = new_name
         super().save(*args, **kwargs)
-
-    
-
-
 
     def save(self, *args, **kwargs):
         if self.image:
@@ -349,30 +377,33 @@ class ConsultantImages(models.Model):
 
             # Constructing the new filename
             new_name = f"{self.consultant_id}-{slugify(company_name)}-{self.caption.replace(' ', '-')}{ext}"
-            new_name = new_name.replace('_', '-')  # Replace underscores with hyphens
+            new_name = new_name.replace("_", "-")  # Replace underscores with hyphens
             self.image.name = new_name
-        
-        super().save(*args, **kwargs)
 
-        
+        super().save(*args, **kwargs)
 
 
 class ConsultantWises(models.Model):
     scow_id = models.AutoField(primary_key=True)
     scow_consultant_id = models.IntegerField(unique=True)
     scow_text = models.TextField()
-    scow_whocanapply = models.TextField(db_column='scow_whoCanApply', blank=True, null=True)  # Field name made lowercase.
+    scow_whocanapply = models.TextField(
+        db_column="scow_whoCanApply", blank=True, null=True
+    )  # Field name made lowercase.
     scow_status = models.IntegerField()
-    country_name = models.ForeignKey(Countries, on_delete=models.CASCADE, related_name='consultants', blank=True, null=True)
+    country_name = models.ForeignKey(
+        Countries,
+        on_delete=models.CASCADE,
+        related_name="consultants",
+        blank=True,
+        null=True,
+    )
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     expiration_time = models.DateTimeField(blank=True, null=True)
-    
+
     class Meta:
-        db_table = 'consultant_wises'
-
-
-
+        db_table = "consultant_wises"
 
 
 class CountryAdds(models.Model):
@@ -382,23 +413,26 @@ class CountryAdds(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'country_adds'
+        db_table = "country_adds"
 
 
 class CountryWises(models.Model):
     scw_id = models.AutoField(primary_key=True)
     scw_country_id = models.IntegerField(unique=True)
-    scw_title=models.CharField(max_length=500,blank=True,null=True)
+    scw_title = models.CharField(max_length=500, blank=True, null=True)
     scw_text = models.TextField()
-    scw_whocanapply = models.TextField(db_column='scw_whoCanApply', blank=True, null=True)
+    scw_whocanapply = models.TextField(
+        db_column="scw_whoCanApply", blank=True, null=True
+    )
     scw_status = models.IntegerField()
-    scw_image = models.ImageField(upload_to='country_wise_scholarship_images/', blank=True, null=True)
+    scw_image = models.ImageField(
+        upload_to="country_wise_scholarship_images/", blank=True, null=True
+    )
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'country_wises'
-
+        db_table = "country_wises"
 
 
 class FailedJobs(models.Model):
@@ -410,7 +444,7 @@ class FailedJobs(models.Model):
     failed_at = models.DateTimeField()
 
     class Meta:
-        db_table = 'failed_jobs'
+        db_table = "failed_jobs"
 
 
 class Galleries(models.Model):
@@ -422,28 +456,31 @@ class Galleries(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'galleries'
+        db_table = "galleries"
 
 
 class HomeFeedback(models.Model):
     # fdk_id = models.AutoField(primary_key=True)
     consultant = models.IntegerField()
     student = models.IntegerField(null=True, blank=True)
-    subject= models.CharField(max_length=500,blank=True, null=True)
-    fdk_fullname = models.CharField(db_column='fdk_fullName', max_length=30)  # Field name made lowercase.
+    subject = models.CharField(max_length=500, blank=True, null=True)
+    fdk_fullname = models.CharField(
+        db_column="fdk_fullName", max_length=30
+    )  # Field name made lowercase.
     fdk_email = models.CharField(max_length=30)
     fdk_phone = models.CharField(max_length=15, blank=True, null=True)
-    fdk_nameofcompany = models.CharField(db_column='fdk_nameOfCompany', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    fdk_nameofcompany = models.CharField(
+        db_column="fdk_nameOfCompany", max_length=30, blank=True, null=True
+    )  # Field name made lowercase.
     fdk_website = models.CharField(max_length=20, blank=True, null=True)
     fdk_msg = models.TextField()
     fdk_status = models.IntegerField(default=1, null=True)
-    country=models.CharField(max_length=40, blank=True, null=True)
+    country = models.CharField(max_length=40, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
-
     class Meta:
-        db_table = 'home_feedback'
+        db_table = "home_feedback"
         # engine = 'InnoDB'
 
     def __str__(self):
@@ -454,94 +491,115 @@ class Review(models.Model):
     consultant = models.IntegerField()
     student = models.IntegerField()
     raw_rating = models.IntegerField()
-    rating = models.FloatField(default=0, validators=[MinValueValidator(1), MinValueValidator(5)])
+    rating = models.FloatField(
+        default=0, validators=[MinValueValidator(1), MinValueValidator(5)]
+    )
     comment = models.TextField(null=True, blank=True, max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'review'
+        db_table = "review"
 
     def __str__(self):
         return str(self.rating)
-    
+
     def save(self, *args, **kwargs):
-            rating_check = Review.objects.filter(consultant=self.consultant, student=self.student).first()
-            super().save(*args, **kwargs)
+        rating_check = Review.objects.filter(
+            consultant=self.consultant, student=self.student
+        ).first()
+        super().save(*args, **kwargs)
 
-            student_ratings = Review.objects.filter(consultant=self.consultant, student=self.student)
-            new_student_rating = Review.objects.filter(consultant=self.consultant, student=self.student).first()
-            consultant  = Users.objects.filter(id=self.consultant).first()
-            student = Students.objects.filter(id=self.student).first()
+        student_ratings = Review.objects.filter(
+            consultant=self.consultant, student=self.student
+        )
+        new_student_rating = Review.objects.filter(
+            consultant=self.consultant, student=self.student
+        ).first()
+        consultant = Users.objects.filter(id=self.consultant).first()
+        student = Students.objects.filter(id=self.student).first()
 
-            if consultant is not None and student is not None:
-                if len(student_ratings) > 1:
+        if consultant is not None and student is not None:
+            if len(student_ratings) > 1:
+                consultant.rating = self.rating
+                print("student rating on model: ", student_ratings)
+
+            else:
+                if consultant.no_of_ratings == "" or consultant.no_of_ratings == None:
+                    consultant.no_of_ratings = 0
+
+                if consultant.rating == "" or consultant.rating == None:
+                    consultant.rating = 0
+
+                if (
+                    consultant.no_of_ratings == 0
+                    and consultant.rating == 0.0
+                    and rating_check is None
+                ):
                     consultant.rating = self.rating
-                    print('student rating on model: ', student_ratings)
-                
-                else:
-                    if consultant.no_of_ratings == '' or consultant.no_of_ratings == None:
-                        consultant.no_of_ratings = 0
-                    
-                    if consultant.rating == '' or consultant.rating == None:
-                        consultant.rating = 0
-                        
-                    if consultant.no_of_ratings == 0 and consultant.rating == 0.0 and rating_check is None:
-                        
-                        consultant.rating = self.rating
-                        consultant.no_of_ratings += 1
+                    consultant.no_of_ratings += 1
 
-                    # elif rating_check is not None:
-                    #     consultant.rating = self.rating
+                # elif rating_check is not None:
+                #     consultant.rating = self.rating
+
+                else:
+                    # total_rating = sum(review.raw_rating for review in reviews)
+                    if rating_check is not None:
+                        total_ratings = consultant.rating * consultant.no_of_ratings
+                        student_new_rating = int(new_student_rating.rating)
+                        new_total_ratings = (
+                            total_ratings - rating_check.rating + student_new_rating
+                        )
+
+                        new_rating = round(
+                            new_total_ratings / consultant.no_of_ratings, 1
+                        )
+
+                        consultant.rating = new_rating
 
                     else:
-                        # total_rating = sum(review.raw_rating for review in reviews)
-                        if rating_check is not None:
-                            total_ratings = consultant.rating * consultant.no_of_ratings
-                            student_new_rating = int(new_student_rating.rating)
-                            new_total_ratings = total_ratings - rating_check.rating + student_new_rating
+                        total_ratings = consultant.rating * consultant.no_of_ratings
+                        new_total_ratings = total_ratings + self.rating
 
-                            new_rating = round(new_total_ratings / consultant.no_of_ratings, 1)
+                        num_ratings = consultant.no_of_ratings + 1
+                        new_rating = round(new_total_ratings / num_ratings, 1)
+                        consultant.rating = new_rating
+                        consultant.no_of_ratings += 1
 
-                            consultant.rating = new_rating
-                        
-                        else:
-                            total_ratings = consultant.rating * consultant.no_of_ratings
-                            new_total_ratings = total_ratings + self.rating
+            consultant.save()
 
-                            num_ratings = consultant.no_of_ratings + 1
-                            new_rating = round(new_total_ratings / num_ratings, 1)
-                            consultant.rating = new_rating
-                            consultant.no_of_ratings += 1
 
-                consultant.save()
-                
-                
 class Levels(models.Model):
     balance_id = models.IntegerField(blank=True, null=True)
     student_id = models.IntegerField(blank=True, null=True)
     consultant_id = models.IntegerField(blank=True, null=True)
-    level_1 = models.IntegerField(blank=True,unique=True, null=True)
-    level_2 = models.IntegerField(blank=True,unique=True, null=True)
-    level_3 = models.IntegerField(blank=True,unique=True, null=True)
-    level_4 = models.IntegerField(blank=True,unique=True, null=True)
-    level_5 = models.IntegerField(blank=True,unique=True, null=True)
+    level_1 = models.IntegerField(blank=True, unique=True, null=True)
+    level_2 = models.IntegerField(blank=True, unique=True, null=True)
+    level_3 = models.IntegerField(blank=True, unique=True, null=True)
+    level_4 = models.IntegerField(blank=True, unique=True, null=True)
+    level_5 = models.IntegerField(blank=True, unique=True, null=True)
     status = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'levels'
+        db_table = "levels"
 
     def save(self, *args, **kwargs):
         # Check if the student_id and consultant_id match in StudentDetails
-        student_details = StudentDetails.objects.filter(dets_regs_id=self.student_id, dets_favconsultantlist__contains=str(self.consultant_id))
+        student_details = StudentDetails.objects.filter(
+            dets_regs_id=self.student_id,
+            dets_favconsultantlist__contains=str(self.consultant_id),
+        )
         if student_details.exists():
             student_details = student_details.first()
-            consultant_status, created = ConsultantStatus.objects.get_or_create(student=student_details, consultant_id=self.consultant_id)
+            consultant_status, created = ConsultantStatus.objects.get_or_create(
+                student=student_details, consultant_id=self.consultant_id
+            )
             consultant_status.status = StudentDetails.VIEWED  # Set status to VIEWED (1)
             consultant_status.save()
 
         super().save(*args, **kwargs)
+
 
 class Maps(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -551,7 +609,7 @@ class Maps(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'maps'
+        db_table = "maps"
 
 
 class Migrations(models.Model):
@@ -560,7 +618,7 @@ class Migrations(models.Model):
     batch = models.IntegerField()
 
     class Meta:
-        db_table = 'migrations'
+        db_table = "migrations"
 
 
 class OfferLetters(models.Model):
@@ -572,10 +630,10 @@ class OfferLetters(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     # Add the image field
-    image = models.ImageField(upload_to='offer_letter_images/', blank=True, null=True)
+    image = models.ImageField(upload_to="offer_letter_images/", blank=True, null=True)
 
     class Meta:
-        db_table = 'offer_letters'
+        db_table = "offer_letters"
 
     # def save(self, *args, **kwargs):
     #     # If the image field is not empty
@@ -597,7 +655,7 @@ class PasswordResets(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'password_resets'
+        db_table = "password_resets"
 
 
 class Rates(models.Model):
@@ -613,12 +671,12 @@ class Rates(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'rates'
-        
-        
+        db_table = "rates"
+
+
 def certificate_file_path(instance, filename, result_type):
     # Get the file extension
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     # Get the full name of the student associated with this result
     student = Students.objects.get(id=instance.student_id)
     full_name = student.full_name.replace(" ", "-")  # Replace spaces with underscores
@@ -635,16 +693,24 @@ class MastersDegree(models.Model):
     university = models.CharField(max_length=255, blank=True, null=True)
     passing_year = models.IntegerField(blank=True, null=True)
     enrolled = models.BooleanField(default=False, blank=True, null=True)
-    certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
+    certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
     rejection_note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
-    
-  
 
     class Meta:
-        db_table = 'masters degree'
+        db_table = "masters degree"
 
 
 class CourseName(models.Model):
@@ -653,6 +719,7 @@ class CourseName(models.Model):
     def __str__(self):
         return self.name
 
+
 class OtherCertification(models.Model):
     student_id = models.IntegerField()
     result = models.CharField(max_length=50, blank=True, null=True)
@@ -660,16 +727,25 @@ class OtherCertification(models.Model):
     institute = models.CharField(max_length=255, blank=True, null=True)
     passing_year = models.IntegerField(blank=True, null=True)
     enrolled = models.BooleanField(default=False, blank=True, null=True)
-    certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
+    certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
     rejection_note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
-  
 
     class Meta:
-        db_table = 'other_certification'
-        
+        db_table = "other_certification"
+
 
 class Results(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -680,10 +756,19 @@ class Results(models.Model):
     secondary_reg_no = models.CharField(max_length=50, blank=True, null=True)
     secondary_certificate_no = models.CharField(max_length=255, blank=True, null=True)
     secondary_passing_year = models.IntegerField(blank=True, null=True)
-    secondary_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    secondary_verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
-    
-    
+    secondary_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    secondary_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
+
     higher = models.IntegerField(blank=True, null=True)
     higher_board = models.CharField(max_length=50, blank=True, null=True)
     higher_result = models.FloatField(blank=True, null=True)
@@ -691,9 +776,19 @@ class Results(models.Model):
     higher_reg_no = models.CharField(max_length=50, blank=True, null=True)
     higher_certificate_no = models.CharField(max_length=255, blank=True, null=True)
     higher_passing_year = models.IntegerField(blank=True, null=True)
-    higher_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    higher_verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
-    
+    higher_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    higher_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
+
     diploma = models.IntegerField(blank=True, null=True)
     diploma_board = models.CharField(max_length=50, blank=True, null=True)
     diploma_result = models.FloatField(blank=True, null=True)
@@ -701,16 +796,36 @@ class Results(models.Model):
     diploma_reg_no = models.CharField(max_length=50, blank=True, null=True)
     diploma_certificate_no = models.CharField(max_length=255, blank=True, null=True)
     diploma_passing_year = models.IntegerField(blank=True, null=True)
-    diploma_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    diploma_verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
-    
+    diploma_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    diploma_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
+
     undergraduation = models.IntegerField(blank=True, null=True)
     university_name = models.CharField(max_length=300, blank=True, null=True)
     undergraduation_board = models.CharField(max_length=50, blank=True, null=True)
     undergraduation_result = models.FloatField(blank=True, null=True)
     undergraduation_passing_year = models.IntegerField(blank=True, null=True)
-    undergraduation_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    undergraduation_verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
+    undergraduation_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    undergraduation_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
     # other_courses = models.IntegerField(blank=True, null=True)
 
     phd = models.IntegerField(blank=True, null=True)
@@ -718,14 +833,26 @@ class Results(models.Model):
     phd_board = models.CharField(max_length=50, blank=True, null=True)
     phd_result = models.FloatField(blank=True, null=True)
     phd_passing_year = models.IntegerField(blank=True, null=True)
-    phd_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
-    phd_verification_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
+    phd_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
+    phd_verification_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("verified", "Verified"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
 
     institution_name = models.CharField(max_length=300, blank=True, null=True)
     course_name = models.CharField(max_length=300, blank=True, null=True)
     course_result = models.CharField(max_length=300, blank=True, null=True)
     course_passing_year = models.IntegerField(blank=True, null=True)
-    course_certificate_copy = models.ImageField(upload_to='certificates/', blank=True, null=True)
+    course_certificate_copy = models.ImageField(
+        upload_to="certificates/", blank=True, null=True
+    )
     secondary_rejection_note = models.TextField(blank=True, null=True)
     higher_rejection_note = models.TextField(blank=True, null=True)
     diploma_rejection_note = models.TextField(blank=True, null=True)
@@ -735,9 +862,10 @@ class Results(models.Model):
     student_id = models.IntegerField()
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
+
     class Meta:
-        db_table = 'results'
-        
+        db_table = "results"
+
     # def save(self, *args, **kwargs):
     #     # Save the file paths before saving the model
     #     if self.secondary_certificate_copy:
@@ -753,7 +881,7 @@ class Results(models.Model):
     # def get_student_full_name(self):
     #     student = Students.objects.get(id=self.student_id)
     #     return student.full_name
-    
+
     # @property
     # def secondary_certificate_url(self):
     #     if self.secondary_certificate_copy:
@@ -779,10 +907,14 @@ class Results(models.Model):
     #     return None
 
 
-
-
 class ScholarShips(models.Model):
-    country_name = models.ForeignKey(Countries, on_delete=models.CASCADE, related_name='scholarships', blank=True, null=True)
+    country_name = models.ForeignKey(
+        Countries,
+        on_delete=models.CASCADE,
+        related_name="scholarships",
+        blank=True,
+        null=True,
+    )
     schp_description = models.TextField(blank=True, null=True)
     apply_process = models.TextField(blank=True, null=True)
     consultant_id = models.IntegerField(blank=True, null=True)
@@ -792,23 +924,25 @@ class ScholarShips(models.Model):
     expiration_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'scholar_ships'
+        db_table = "scholar_ships"
+
+
 # Define signal receiver function
-        
-        
+
+
 # Define signal receiver function
 @receiver(post_save, sender=ScholarShips)
 def update_scholarship_status(sender, instance, **kwargs):
     # Check if expiration time has passed and status is still 1 (approved)
     if instance.expiration_time and instance.status == 1:
         # Convert expiration time to the same timezone as timezone.now()
-        expiration_time = timezone.make_aware(instance.expiration_time, timezone.get_current_timezone())
+        expiration_time = timezone.make_aware(
+            instance.expiration_time, timezone.get_current_timezone()
+        )
         if expiration_time < timezone.now():
             instance.status = 0  # Set status to 0
             instance.save()
-        
 
-        
 
 class District(models.Model):
     # district_id = models.CharField(max_length=30, primary_key=True)
@@ -820,17 +954,19 @@ class District(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'district'
+        db_table = "district"
 
 
 class Thana(models.Model):
-    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='thanas')
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, related_name="thanas"
+    )
     name = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'thana'
+        db_table = "thana"
 
 
 class StudentDetails(models.Model):
@@ -838,63 +974,79 @@ class StudentDetails(models.Model):
     VIEWED = 1
 
     STATUS_CHOICES = [
-        (WAITING, 'Waiting'),
-        (VIEWED, 'Viewed'),
+        (WAITING, "Waiting"),
+        (VIEWED, "Viewed"),
     ]
     dets_id = models.AutoField(primary_key=True)
     dets_regs_id = models.IntegerField()
-    dets_bloodgroup = models.CharField(db_column='dets_bloodGroup', max_length=5, blank=True, null=True)  # Field name made lowercase.
-    dets_fathername = models.CharField(db_column='dets_fatherName', max_length=30, blank=True, null=True)  # Field name made lowercase.
-    dets_mothername = models.CharField(db_column='dets_motherName', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    dets_bloodgroup = models.CharField(
+        db_column="dets_bloodGroup", max_length=5, blank=True, null=True
+    )  # Field name made lowercase.
+    dets_fathername = models.CharField(
+        db_column="dets_fatherName", max_length=30, blank=True, null=True
+    )  # Field name made lowercase.
+    dets_mothername = models.CharField(
+        db_column="dets_motherName", max_length=30, blank=True, null=True
+    )  # Field name made lowercase.
     dets_nationality = models.CharField(max_length=15, blank=True, null=True)
     dets_dob = models.DateField(blank=True, null=True)
-    student_image = models.ImageField(upload_to='student_images/', blank=True, null=True)
-    dets_thumbnaillink = models.CharField(db_column='dets_thumbnailLink', max_length=60, blank=True, null=True)  # Field name made lowercase.
-    dets_favconsultantlist = models.CharField(db_column='dets_favConsultantList', max_length=120, blank=True, null=True)  # Field name made lowercase.
-    dets_updatedate = models.DateField(db_column='dets_updateDate', blank=True, null=True)  # Field name made lowercase.
+    student_image = models.ImageField(
+        upload_to="student_images/", blank=True, null=True
+    )
+    dets_thumbnaillink = models.CharField(
+        db_column="dets_thumbnailLink", max_length=60, blank=True, null=True
+    )  # Field name made lowercase.
+    dets_favconsultantlist = models.CharField(
+        db_column="dets_favConsultantList", max_length=120, blank=True, null=True
+    )  # Field name made lowercase.
+    dets_updatedate = models.DateField(
+        db_column="dets_updateDate", blank=True, null=True
+    )  # Field name made lowercase.
     dets_status = models.IntegerField(default=0)
 
-
     class Meta:
-        db_table = 'student_details'
-
+        db_table = "student_details"
 
 
 class ConsultantStatus(models.Model):
-    student = models.ForeignKey('StudentDetails', on_delete=models.CASCADE)
+    student = models.ForeignKey("StudentDetails", on_delete=models.CASCADE)
     consultant_id = models.IntegerField()
-    status = models.IntegerField(choices=StudentDetails.STATUS_CHOICES, default=StudentDetails.WAITING)
+    status = models.IntegerField(
+        choices=StudentDetails.STATUS_CHOICES, default=StudentDetails.WAITING
+    )
 
 
 class Students(models.Model):
     full_name = models.CharField(max_length=30)
-    student_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null =True)
+    student_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     email = models.CharField(unique=True, max_length=30)
     phone = models.CharField(unique=True, max_length=125)
     otp = models.CharField(max_length=150, blank=True, null=True)
     USER_TYPE_CHOICES = [
-        (0, 'Student'),
-        (1, 'Guardian'),
+        (0, "Student"),
+        (1, "Guardian"),
     ]
     GENDER_CHOICES = [
-        (0, 'Male'),
-        (1, 'Female'),
+        (0, "Male"),
+        (1, "Female"),
     ]
-    STATUS_CHOICE = [
-        (0, 'Inactive'),
-        (1, 'Acive'),
-        (2, 'Verified')
-    ]
+    STATUS_CHOICE = [(0, "Inactive"), (1, "Acive"), (2, "Verified")]
     user_type = models.IntegerField(choices=USER_TYPE_CHOICES)
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=10, null=True, blank=True)
+    gender = models.CharField(
+        choices=GENDER_CHOICES, max_length=10, null=True, blank=True
+    )
     dets_status = models.IntegerField(default=0)
     student_name = models.CharField(max_length=255, blank=True, null=True)
     relation = models.CharField(max_length=255, blank=True, null=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, blank=True, null=True)
+    district = models.ForeignKey(
+        District, on_delete=models.SET_NULL, blank=True, null=True
+    )
     thana = models.ForeignKey(Thana, on_delete=models.SET_NULL, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     country_id = models.CharField(max_length=150, blank=True, null=True)
-    countries = models.ManyToManyField(Countries, blank=True, null=True, related_name='countries')
+    countries = models.ManyToManyField(
+        Countries, blank=True, null=True, related_name="countries"
+    )
     raw_password = models.CharField(max_length=60)
     password = models.CharField(max_length=255)
     status = models.IntegerField(choices=STATUS_CHOICE, default=0)
@@ -902,10 +1054,8 @@ class Students(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'students'
-        managed= True
-
-
+        db_table = "students"
+        managed = True
 
 
 class UserSession(models.Model):
@@ -918,15 +1068,12 @@ class UserSession(models.Model):
 
     class Meta:
         verbose_name_plural = "User Sessions"
-    
-
-
 
 
 class Users(models.Model):
     full_name = models.CharField(max_length=30)
-    consultant_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null =True)
-    user_name = models.CharField(max_length=150,  blank=True, null=True)
+    consultant_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    user_name = models.CharField(max_length=150, blank=True, null=True)
     email = models.CharField(unique=True, max_length=30)
     phone = models.CharField(unique=True, max_length=125)
     gender = models.CharField(max_length=50, blank=True, null=True)
@@ -934,15 +1081,24 @@ class Users(models.Model):
     pin = models.CharField(max_length=50, blank=True, null=True)
     change_phone_otp = models.CharField(max_length=150, blank=True, null=True)
     about = models.TextField(blank=True, null=True)
-    consultant_img = models.ImageField(upload_to='consultant_img/', blank=True, null=True)
-    rating = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MinValueValidator(5.0)], null=True, blank=True)
+    consultant_img = models.ImageField(
+        upload_to="consultant_img/", blank=True, null=True
+    )
+    rating = models.FloatField(
+        default=0.0,
+        validators=[MinValueValidator(0.0), MinValueValidator(5.0)],
+        null=True,
+        blank=True,
+    )
     no_of_ratings = models.IntegerField(default=0, null=True, blank=True)
-   
+
     land_phone = models.CharField(max_length=20, blank=True, null=True)
     fax_no = models.CharField(max_length=20, blank=True, null=True)
     company_name = models.CharField(max_length=60, blank=True, null=True)
     est_date = models.DateField(blank=True, null=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, blank=True, null=True)
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, blank=True, null=True
+    )
     thana = models.ForeignKey(Thana, on_delete=models.CASCADE, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=40, blank=True, null=True)
@@ -956,14 +1112,17 @@ class Users(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        db_table = 'users'
-        managed=True
+        db_table = "users"
+        managed = True
+
     def save(self, *args, **kwargs):
         if self.consultant_img:
             original_name = str(self.consultant_img)
             _, ext = os.path.splitext(original_name)
-            new_name = f"{self.id}-{slugify(self.full_name)}-{slugify(self.company_name)}{ext}"
-            new_name = new_name.replace('_', '-')
+            new_name = (
+                f"{self.id}-{slugify(self.full_name)}-{slugify(self.company_name)}{ext}"
+            )
+            new_name = new_name.replace("_", "-")
             self.consultant_img.name = new_name
         super().save(*args, **kwargs)
 
@@ -981,31 +1140,23 @@ class Users(models.Model):
 
 from django_ckeditor_5.fields import CKEditor5Field
 
+
 class VisaService(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
-    thumbnail_image = models.ImageField(upload_to='services/thumbnails/', help_text='Image for homepage card')
-    banner_image = models.ImageField(upload_to='services/banners/', help_text='Image for detail page hero section')
-    short_description = models.TextField(max_length=200, help_text='Short description for homepage card (max 200 chars)')
-    main_content = CKEditor5Field('Main Content', config_name='default')
+    subtitle = models.CharField(
+        max_length=255, help_text="Short detail like 'Subclass 500'"
+    )
+    slug = models.SlugField(unique=True, blank=True)
+    image = models.ImageField(upload_to="services/")
+    short_description = models.TextField()
+    content = CKEditor5Field("Content", config_name="extends")  # মেইন ডিটেইলস পেজের জন্য
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'visa_services'
-        ordering = ['-created_at']
-        verbose_name = 'Visa Service'
-        verbose_name_plural = 'Visa Services'
-
-    def __str__(self):
-        return self.title
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        from django.urls import reverse
-        return reverse('service_detail', kwargs={'slug': self.slug})
+    def __str__(self):
+        return self.title

@@ -66,7 +66,7 @@
     <!--Offer Letter page ends-->
 
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'client_list' or request.resolver_match.url_name == 'save_benefitt' %}{% else %}collapsed active{% endif %}"
+      <a class="nav-link {% if request.resolver_match.url_name == 'client_list' or request.resolver_match.url_name == 'save_benefit' %}{% else %}collapsed{% endif %}"
         data-bs-toggle="collapse" href=".root_customize"
         aria-expanded="{% if request.resolver_match.url_name == 'client_list' or request.resolver_match.url_name == 'save_benefit' %}true{% else %}false{% endif %}"
         aria-controls="form-elements">
@@ -75,11 +75,11 @@
         <span class="menu-title">Appearance</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse root_customize {% if request.resolver_match.url_name == 'save_benefitt' %}show{% endif %}"
+      <div class="collapse root_customize {% if request.resolver_match.url_name == 'save_benefit' %}show{% endif %}"
         id="form-elements">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'save_benefitt' %}active{% endif %}" href={%
+              class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active{% endif %}" href={%
               url "save_benefit" %}>Benefit</a></li>
         </ul>
       </div>
@@ -162,8 +162,8 @@
 
 
 
-    {% if request.user|has_perm:'auth.add_permission' or request.user|has_perm:'visa.add_users' or
-    request.user|has_perm:'visa.add_students' %}
+    {% comment %} {% if request.user|has_perm:'auth.add_permission' or request.user|has_perm:'visa.add_users' or
+    request.user|has_perm:'visa.add_students' %} {% endcomment %}
     <li class="nav-item nav-category">Page Design</li>
 
 
@@ -223,16 +223,26 @@
     {% endif %}
 
     <li class="nav-item">
-      <a class="nav-link collapsed" data-bs-toggle="collapse" href="#visa-services" aria-expanded="false">
+      <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}active{% else %}collapsed{% endif %}"
+        data-bs-toggle="collapse" href="#visa-services-menu"
+        aria-expanded="{% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}true{% else %}false{% endif %}"
+        aria-controls="visa-services-menu">
         <i class="menu-icon mdi mdi-airplane"></i>
         <span class="menu-title">Visa Services</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse" id="visa-services">
+      <div
+        class="collapse {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}show{% endif %}"
+        id="visa-services-menu">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a class="nav-link" href="/admin/visa/visaservice/add/">Add New Service</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' %}active{% endif %}"
+              href="{% url 'add_visa_service' %}">Add New Service</a>
           </li>
-          <li class="nav-item"><a class="nav-link" href="/admin/visa/visaservice/">Manage Services</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'manage_visa_services' %}active{% endif %}"
+              href="{% url 'manage_visa_services' %}">Manage Services</a>
+          </li>
         </ul>
       </div>
     </li>

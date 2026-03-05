@@ -22,9 +22,7 @@ AUTH_USER_MODEL = "visa.CustomUser"
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -48,7 +46,12 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "studentvisabd.com", "www.studentvisabd.com"] #add localhost
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "studentvisabd.com",
+    "www.studentvisabd.com",
+]  # add localhost
 
 
 # Application definition
@@ -119,9 +122,8 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    
     # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql', 
+    #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'studentv_studentvisabd',
     #     'USER': 'studentv_root',
     #     'PASSWORD': 'studentvisabd',
@@ -129,7 +131,7 @@ DATABASES = {
     #     'PORT': '3306',
     #     'OPTIONS': {
     #          'charset': 'utf8',
-    #         'use_unicode': True, 
+    #         'use_unicode': True,
     #     },
     # }
     "default": {
