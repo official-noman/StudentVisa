@@ -12,6 +12,9 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.db import transaction
 from django.db.models import Sum
+import os
+from django.utils import timezone
+from django.utils.text import slugify
 from datetime import datetime
 from django.db import IntegrityError
 from django.db.models import Count
@@ -610,9 +613,6 @@ def root_customize(request):
 
 @login_required
 @root_required
-@permission_required(
-    "visa.add_offerletters", "visa.view_offerletters", raise_exception=True
-)
 def offer_letters(request):
     # Check if there is an existing OfferLetters instance
     instance = OfferLetters.objects.first()
@@ -1015,7 +1015,6 @@ def university_wise_scholarship(request):
 
 @login_required
 @root_required
-@permission_required(("visa.add_users",))
 def root_users_list(request):
 
     root_users = Users.objects.filter(user_role__in=[2, 3, 4])
@@ -2625,7 +2624,6 @@ def verify_student_details(request, student_id):
 
 @login_required
 @root_required
-@permission_required("visa.add_balances", "visa.change_balances", raise_exception=True)
 def consultant_credit_balance(request):
     if request.method == "POST":
         consultant_id = request.POST.get("consultant_id")
@@ -2666,7 +2664,8 @@ def consultant_credit_balance(request):
     return render(request, "roottemplates/consultant_credit_balance.html", context)
 
 
-@permission_required("visa.add_balance", "visa.change_balance", raise_exception=True)
+@login_required
+@root_required
 def get_consultant_balance(request):
     if request.method == "GET":
         consultant_id = request.GET.get("consultant_id")
@@ -2690,7 +2689,8 @@ def get_consultant_balance(request):
     return JsonResponse({}, status=400)
 
 
-@permission_required("visa.add_balance", "visa.change_balance", raise_exception=True)
+@login_required
+@root_required
 def get_last_transactions(request):
     if request.method == "GET":
         consultant_id = request.GET.get("consultant_id")
@@ -2723,7 +2723,6 @@ def get_last_transactions(request):
 
 @login_required
 @root_required
-@permission_required("visa.add_rates", "visa.change_rates", raise_exception=True)
 def consultant_rates(request):
     # Retrieve all consultants
     consultants = Users.objects.filter(
@@ -2735,8 +2734,8 @@ def consultant_rates(request):
     return render(request, "roottemplates/consultant_rates.html", context)
 
 
-@permission_required("visa.add_rates", "visa.change_rates", raise_exception=True)
 @login_required
+@root_required
 def get_existing_rates(request, consultant_id):
     print("rate consultant id---: ", consultant_id)
     existing_rates = Rates.objects.filter(rate_added_to=consultant_id).first()
@@ -2764,7 +2763,7 @@ def get_existing_rates(request, consultant_id):
 
 
 @login_required
-@permission_required("visa.add_rates", "visa.change_rates", raise_exception=True)
+@root_required
 def add_or_update_rates(request, consultant_id):
     if request.method == "POST":
         # Retrieve the consultant
@@ -3127,7 +3126,7 @@ def get_all_consultants(request):
 
 
 @login_required
-@permission_required("visa.add_balances", "visa.change_balances", raise_exception=True)
+@root_required
 def balance_list(request):
     # Retrieve both credit and debit transactions
     credit_transactions = Balances.objects.filter(acc_credit__isnull=False)
@@ -3138,7 +3137,7 @@ def balance_list(request):
         transaction.consultant_name = consultant.company_name if consultant else None
 
     for transaction in debit_transactions:
-        consultant = Users.objects.filter(id=transaction.acc_pay_to).first()
+        consultant = Users.objects.filter(id=transaction.acc_paid_by).first()
         transaction.consultant_name = consultant.company_name if consultant else None
 
     return render(
@@ -3152,7 +3151,7 @@ def balance_list(request):
 
 
 @login_required
-@permission_required(("visa.change_scholarships",))
+@root_required
 def consultant_wise_scholarship_list(request):
     instances = ConsultantWises.objects.all()
     for instance in instances:

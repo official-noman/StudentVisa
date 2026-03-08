@@ -168,17 +168,17 @@
 
 
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'root_student_list' %}{% else %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href=".root-user"
-        aria-expanded="{% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'root_student_list' %}true{% else %}false{% endif %}"
-        aria-controls="ui-basic">
+      <a class="nav-link {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}active{% else %}collapsed{% endif %}"
+        data-bs-toggle="collapse" href="#root-user-menu"
+        aria-expanded="{% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}true{% else %}false{% endif %}"
+        aria-controls="root-user-menu">
         <i class="menu-icon mdi mdi-account"></i>
         <span class="menu-title">Users</span>
         <i class="menu-arrow"></i>
       </a>
       <div
-        class="collapse root-user {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'root_student_list' %}show{% endif %}"
-        id="ui-basic">
+        class="collapse root-user {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}show{% endif %}"
+        id="root-user-menu">
         <ul class="nav flex-column sub-menu">
           {% if request.user|has_perm:'auth.add_permission' %}
           <li class="nav-item"> <a
@@ -200,22 +200,22 @@
     </li>
     {% if request.user|has_perm:'visa.add_balances' %}
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' %}{% else %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href=".accounts"
-        aria-expanded="{% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' %}true{% else %}false{% endif %}"
-        aria-controls="charts">
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}{% else %}collapsed{% endif %}"
+        data-bs-toggle="collapse" href="#accounts-menu"
+        aria-expanded="{% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}true{% else %}false{% endif %}"
+        aria-controls="accounts-menu">
         <i class="menu-icon mdi mdi-currency-usd"></i>
         <span class="menu-title">Accounting</span>
         <i class="menu-arrow"></i>
       </a>
       <div
-        class="collapse accounts {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' %}show{% endif %}"
-        id="singel">
+        class="collapse accounts {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}show{% endif %}"
+        id="accounts-menu">
         <ul class="nav flex-column sub-menu">
 
           <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'balance-list' %}active{% endif %}" href={%
-              url "balance-list" %}>Debit/Credit</a></li>
+              class="nav-link {% if request.resolver_match.url_name == 'balance-list' %}active{% endif %}"
+              href="{% url 'balance-list' %}">Debit/Credit</a></li>
 
         </ul>
       </div>

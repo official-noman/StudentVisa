@@ -56,6 +56,56 @@
             display: none;
         }
     }
+    /* New Professional Visa Card CSS */
+    .visa-card {
+        transition: all 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        background: #fff;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .visa-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12) !important;
+    }
+    .visa-img-wrapper {
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+    .visa-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    .visa-card:hover .visa-img-wrapper img {
+        transform: scale(1.1);
+    }
+    .visa-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 123, 255, 0.9);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        z-index: 1;
+    }
+    .btn-details {
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 8px 25px;
+        transition: 0.3s;
+        border: 2px solid #007bff;
+    }
+    .btn-details:hover {
+        background: #007bff;
+        color: white;
+    }
 </style>
 {% endblock custom_css %}
 
@@ -88,8 +138,9 @@
 
 
 <!-- visa-services-section -->
+<!-- visa-services-section -->
 {% if visa_services %}
-<section class="service-style-two" style="padding: 40px 0;">
+<section class="service-style-two" style="padding: 60px 0; background-color: #f8f9fa;">
     <div class="auto-container">
         <div class="sec-title centred">
             <p>What We Offer</p>
@@ -102,19 +153,25 @@
         </div>
         <div class="row clearfix">
             {% for service in visa_services %}
-            <div class="col-lg-4 col-md-6 col-sm-12 service-block mb-4">
-                <div class="card service-card shadow-sm border-0 h-100 wow fadeInUp animated"
-                    data-wow-delay="{{ forloop.counter0 }}00ms" data-wow-duration="1500ms">
-                    {% if service.image %}
-                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}"
-                        style="width: 100%; height: 220px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body text-center d-flex flex-column">
-                        <h4 class="fw-bold">{{ service.title }}</h4>
-                        <p class="text-muted mb-2">{{ service.subtitle }}</p>
-                        <p class="flex-grow-1">{{ service.short_description|truncatewords:15 }}</p>
-                        <a href="{% url 'service_detail' service.slug %}"
-                            class="btn btn-outline-primary rounded-pill mt-auto">View Details</a>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4 wow fadeInUp animated" data-wow-delay="{{ forloop.counter0 }}00ms">
+                <div class="card visa-card border-0">
+                    <div class="visa-img-wrapper">
+                        {% if service.image %}
+                        <img src="{{ service.image.url }}" alt="{{ service.title }}">
+                        {% endif %}
+                        <div class="visa-badge text-uppercase">{{ service.subtitle }}</div>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <h4 class="fw-bold text-dark mb-2">{{ service.title }}</h4>
+                        <p class="text-muted flex-grow-1" style="font-size: 14px;">
+                            {{ service.short_description|truncatewords:15 }}
+                        </p>
+                        <hr class="my-3 opacity-25">
+                        <div class="mt-auto">
+                            <a href="{% url 'service_detail' service.slug %}" class="btn btn-outline-primary btn-details">
+                                View Details <i class="flaticon-send ms-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,6 +180,7 @@
     </div>
 </section>
 {% endif %}
+<!-- visa-services-section end -->
 <!-- visa-services-section end -->
 
 <!-- feature-style-two -->
