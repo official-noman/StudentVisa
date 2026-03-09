@@ -58,7 +58,8 @@
                     <!-- Include CKEditor library -->
                     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
                     <script>
-                        CKEDITOR.replace('consultant_requirement');
+                        {% comment %} CKEDITOR.replace('consultant_requirement'); {% endcomment %}
+                        <script>CKEDITOR.replace('consultant_requirement', { versionCheck: false });</script>
                     </script>
                 </div>
               </div>

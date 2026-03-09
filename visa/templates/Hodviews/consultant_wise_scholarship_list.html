@@ -231,8 +231,10 @@ $('.btn-edit').click(function(e) {
         type: 'GET',
         url: `/edit_consultant_wise_scholarship_list/${scholarshipId}/`,
         success: function(response) {
-            CKEDITOR.replace('editSchpDescription');
-            CKEDITOR.replace('editApplyProcess');
+            {% comment %} CKEDITOR.replace('editSchpDescription'); {% endcomment %}
+            <script>CKEDITOR.replace('editSchpDescription', { versionCheck: false });</script>
+            {% comment %} CKEDITOR.replace('editApplyProcess'); {% endcomment %}
+            <script>CKEDITOR.replace('editApplyProcess', { versionCheck: false });</script>
 
             // Populate modal with scholarship details
             $('#editSchpDescription').val(response.schp_description);

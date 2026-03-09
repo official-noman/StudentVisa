@@ -246,9 +246,9 @@
                     }
                     
                     // Replace the textarea with CKEditor instance
-                    CKEDITOR.replace('scow_text');
-                    CKEDITOR.replace('scow_whocanapply');
-        
+                    CKEDITOR.replace('scow_text', { versionCheck: false });
+                    CKEDITOR.replace('scow_whocanapply', { versionCheck: false });
+
                     // Set CKEditor content
                     CKEDITOR.instances.scow_text.setData(data.scow_text);
                     CKEDITOR.instances.scow_whocanapply.setData(data.scow_whocanapply);

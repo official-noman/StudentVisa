@@ -87,8 +87,10 @@
 
                     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
                     <script>
-                        CKEDITOR.replace('schp_description');
-                        CKEDITOR.replace('apply_process');
+                        {% comment %} CKEDITOR.replace('schp_description'); {% endcomment %}
+                        <script>CKEDITOR.replace('schp_description', { versionCheck: false });</script>
+                        {% comment %} CKEDITOR.replace('apply_process'); {% endcomment %}
+                        <script>CKEDITOR.replace('apply_process', { versionCheck: false });</script>
                     </script>
                 </div>
             </div>

@@ -43,7 +43,9 @@
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
   // Replace the textarea with id 'benefitsTextArea' with CKEditor
-  CKEDITOR.replace('benefit_list');
+  CKEDITOR.replace('benefit_list', {
+      versionCheck: false
+  });
 </script>
 
 {% endblock %}

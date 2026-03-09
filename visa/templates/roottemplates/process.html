@@ -59,7 +59,8 @@
   <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
   <script>
     // Replace the textarea with id 'exp_des' with CKEditor
-    CKEDITOR.replace('exp_des');
+    CKEDITOR.replace('exp_des', { versionCheck: false });
+    
   </script>
 
 {% endblock content %}

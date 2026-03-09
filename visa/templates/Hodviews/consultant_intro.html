@@ -60,9 +60,11 @@
             <!-- Include CKEditor library -->
             <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
             <script>
-              CKEDITOR.replace('consultant_bio');
+              {% comment %} CKEDITOR.replace('consultant_bio'); {% endcomment %}
+              <script>CKEDITOR.replace('consultant_bio', { versionCheck: false });</script>
          
-              CKEDITOR.replace('consultant_description');
+              {% comment %} CKEDITOR.replace('consultant_description'); {% endcomment %}
+              <script>CKEDITOR.replace('consultant_description', { versionCheck: false });</script>
             </script>
           </div>
         </div>

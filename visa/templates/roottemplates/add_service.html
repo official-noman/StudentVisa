@@ -81,7 +81,8 @@
 <!-- Using CKEditor 4 CDN which is already used in other project templates -->
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('content_editor', {
+    CKEDITOR.replace('content_editor',
+        versionCheck: false,{
         height: 400,
         // Optional: you can add more config here if needed
     });
