@@ -1,273 +1,675 @@
 {% load perm_tags %}
 
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --sb-bg:            #ffffff;
+    --sb-bg-soft:       #f8fbff;
+    --sb-border:        #e8eef7;
+    --sb-category:      #94a3b8;
+    --sb-text:          #334155;
+    --sb-text-muted:    #64748b;
+    --sb-hover-bg:      rgba(78, 115, 223, 0.08);
+    --sb-hover-text:    #4e73df;
+    --sb-active-bg:     #eef4ff;
+    --sb-active-text:   #4e73df;
+    --sb-active-bar:    #4e73df;
+    --sb-icon:          #64748b;
+    --sb-icon-active:   #4e73df;
+    --sb-sub-text:      #475569;
+    --sb-sub-active:    #4e73df;
+    --sb-dot:           #cbd5e1;
+    --sb-dot-active:    #4e73df;
+    --sb-arrow:         #94a3b8;
+    --sb-arrow-active:  #4e73df;
+    --sb-shadow:        0 10px 30px rgba(15, 23, 42, 0.04);
+    --sb-radius:        18px;
+    --sb-link-radius:   14px;
+    --sb-transition:    0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar,
+  .sidebar.sidebar-offcanvas {
+    width: var(--layout-sidebar-width) !important;
+    min-width: var(--layout-sidebar-width) !important;
+    max-width: var(--layout-sidebar-width) !important;
+    flex: 0 0 var(--layout-sidebar-width) !important;
+    background: var(--sb-bg) !important;
+    border-right: 1px solid var(--sb-border);
+    box-shadow: var(--sb-shadow);
+    min-height: calc(100vh - var(--layout-navbar-height));
+    padding: 14px 10px 18px;
+    overflow-y: auto;
+    overflow-x: visible !important;
+    font-family: 'Inter', sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #d7deea transparent;
+    position: relative;
+    z-index: 1020;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb {
+    background: #d7deea;
+    border-radius: 10px;
+  }
+
+  .sidebar .nav {
+    padding: 0 0 28px;
+    list-style: none;
+    margin: 0;
+    overflow: visible !important;
+  }
+
+  .sidebar .nav-item.nav-category {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sb-category);
+    padding: 20px 16px 8px 16px;
+    user-select: none;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .sidebar .nav-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #e7edf7 18%, #e7edf7 82%, transparent 100%);
+    margin: 14px 8px;
+    border: 0;
+  }
+
+  .sidebar .nav-item > .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px 13px 18px;
+    margin: 4px 6px;
+    border-radius: var(--sb-link-radius);
+    color: var(--sb-text) !important;
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    position: relative;
+    transition:
+      background var(--sb-transition),
+      color var(--sb-transition),
+      border-color var(--sb-transition),
+      transform var(--sb-transition),
+      padding-left var(--sb-transition);
+  }
+
+  .sidebar .nav-item > .nav-link:hover {
+    background: var(--sb-hover-bg);
+    color: var(--sb-hover-text) !important;
+    border-color: rgba(78, 115, 223, 0.08);
+    padding-left: 20px;
+    transform: translateX(1px);
+  }
+
+  .sidebar .nav-item > .nav-link:hover::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 22%;
+    bottom: 22%;
+    width: 3px;
+    border-radius: 0 6px 6px 0;
+    background: rgba(78, 115, 223, 0.55);
+  }
+
+  .sidebar .nav-item > .nav-link[aria-expanded="true"] {
+    color: var(--sb-active-text) !important;
+    background: var(--sb-hover-bg);
+    border-color: rgba(78, 115, 223, 0.08);
+  }
+
+  .sidebar .nav-item > .nav-link.active-page {
+    background: var(--sb-active-bg);
+    color: var(--sb-active-text) !important;
+    font-weight: 700;
+    border-color: rgba(78, 115, 223, 0.10);
+  }
+
+  .sidebar .nav-item > .nav-link.active-page::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 18%;
+    bottom: 18%;
+    width: 4px;
+    border-radius: 0 8px 8px 0;
+    background: var(--sb-active-bar);
+    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.10);
+  }
+
+  .sidebar .menu-icon {
+    font-size: 18px;
+    width: 22px;
+    min-width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+    color: var(--sb-icon) !important;
+    transition: color var(--sb-transition), transform var(--sb-transition);
+  }
+
+  .sidebar .nav-item > .nav-link:hover .menu-icon,
+  .sidebar .nav-item > .nav-link.active-page .menu-icon,
+  .sidebar .nav-item > .nav-link[aria-expanded="true"] .menu-icon {
+    color: var(--sb-icon-active) !important;
+    transform: translateY(-0.5px);
+  }
+
+  .sidebar .menu-title,
+  .sidebar .nav-link .menu-title,
+  .sidebar .nav-item > .nav-link .menu-title {
+    flex: 1 1 auto;
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0;
+    color: inherit !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.5 !important;
+  }
+
+  .sidebar .menu-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-left: auto;
+    color: var(--sb-arrow) !important;
+    transition: transform var(--sb-transition), color var(--sb-transition);
+  }
+
+  .sidebar .menu-arrow::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-right: 1.8px solid currentColor;
+    border-bottom: 1.8px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+
+  .sidebar .nav-link[aria-expanded="true"] .menu-arrow {
+    transform: rotate(-180deg);
+    color: var(--sb-arrow-active) !important;
+  }
+
+  .sidebar .collapse,
+  .sidebar .collapsing {
+    transition: height 0.26s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .sidebar .sub-menu {
+    padding: 4px 6px 8px 6px;
+    margin: 2px 0 4px;
+    list-style: none;
+    overflow: visible !important;
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px 10px 48px;
+    margin: 4px 6px;
+    border-radius: 12px;
+    color: var(--sb-sub-text) !important;
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 1.5;
+    text-decoration: none;
+    position: relative;
+    background: transparent;
+    border: 1px solid transparent;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    transition:
+      background var(--sb-transition),
+      color var(--sb-transition),
+      padding-left var(--sb-transition),
+      border-color var(--sb-transition),
+      transform var(--sb-transition);
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--sb-dot);
+    transition:
+      background var(--sb-transition),
+      box-shadow var(--sb-transition),
+      left var(--sb-transition),
+      transform var(--sb-transition);
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link:hover {
+    background: var(--sb-hover-bg);
+    color: var(--sb-sub-active) !important;
+    padding-left: 50px;
+    border-color: rgba(78, 115, 223, 0.08);
+    transform: translateX(1px);
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link:hover::before {
+    background: var(--sb-dot-active);
+    left: 30px;
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link.active-page {
+    background: var(--sb-active-bg);
+    color: var(--sb-sub-active) !important;
+    font-weight: 700;
+    border-color: rgba(78, 115, 223, 0.10);
+  }
+
+  .sidebar .sub-menu .nav-item .nav-link.active-page::before {
+    background: var(--sb-dot-active);
+    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.12);
+    width: 6px;
+    height: 6px;
+    left: 27px;
+  }
+
+  .sidebar .nav-item + .nav-item:not(.nav-category) {
+    margin-top: 1px;
+  }
+
+  .sidebar .nav-link,
+  .sidebar .nav-link span,
+  .sidebar .menu-title,
+  .sidebar .sub-menu .nav-link,
+  .sidebar .sub-menu .nav-link span {
+    max-width: none !important;
+    width: auto !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  .sidebar-icon-only .sidebar,
+  .sidebar-icon-only .sidebar.sidebar-offcanvas {
+    width: var(--layout-sidebar-mini-width) !important;
+    min-width: var(--layout-sidebar-mini-width) !important;
+    max-width: var(--layout-sidebar-mini-width) !important;
+    flex: 0 0 var(--layout-sidebar-mini-width) !important;
+    padding: 14px 8px 18px;
+  }
+
+  .sidebar-icon-only .sidebar .nav-item.nav-category,
+  .sidebar-icon-only .sidebar .menu-title,
+  .sidebar-icon-only .sidebar .menu-arrow,
+  .sidebar-icon-only .sidebar .sub-menu,
+  .sidebar-icon-only .sidebar .nav-divider {
+    display: none !important;
+  }
+
+  .sidebar-icon-only .sidebar .nav-item > .nav-link {
+    justify-content: center;
+    padding: 13px 12px !important;
+  }
+
+  .sidebar-icon-only .sidebar .menu-icon {
+    margin: 0;
+    width: 22px;
+    min-width: 22px;
+  }
+
+  @media (max-width: 991.98px) {
+    .sidebar,
+    .sidebar.sidebar-offcanvas {
+      position: fixed;
+      top: var(--layout-navbar-height);
+      left: calc(-1 * var(--layout-sidebar-width));
+      width: var(--layout-sidebar-width) !important;
+      min-width: var(--layout-sidebar-width) !important;
+      max-width: var(--layout-sidebar-width) !important;
+      height: calc(100vh - var(--layout-navbar-height));
+      min-height: calc(100vh - var(--layout-navbar-height));
+      z-index: 1040;
+      transition: left 0.26s ease;
+    }
+
+    .sidebar.sidebar-offcanvas.active {
+      left: 0;
+    }
+
+    .sidebar .nav-item > .nav-link {
+      font-size: 14px !important;
+      padding: 12px 12px 12px 16px;
+    }
+
+    .sidebar .sub-menu .nav-item .nav-link {
+      padding: 9px 12px 9px 46px;
+      font-size: 14px !important;
+    }
+  }
+</style>
 
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
-    <li class="nav-item {% if request.resolver_match.url_name == 'root_home' %}active{% endif %}">
-      <a class="nav-link" href="{% url 'root_home' %}">
-        <i class="mdi mdi-grid-large menu-icon"></i>
+
+    <!-- Dashboard -->
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'root_home' %}active-page{% endif %}"
+         href="{% url 'root_home' %}">
+        <i class="mdi mdi-view-dashboard-outline menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
-    <li class="nav-item nav-category">Information and Settings</li>
 
+    <li class="nav-divider"></li>
+    <li class="nav-item nav-category">Information &amp; Settings</li>
 
+    <!-- Home Page -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' %}{% else %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href=".home-edit"
-        aria-expanded="{% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' %}true{% else %}false{% endif %}"
-        aria-controls="form-elements">
-        <i class="menu-icon mdi mdi-image"></i>
-        <span class="menu-title">Home page</span>
+      <a class="nav-link {% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' or request.resolver_match.url_name == 'client_list' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-home-page"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' or request.resolver_match.url_name == 'client_list' %}true{% else %}false{% endif %}"
+         aria-controls="sb-home-page">
+        <i class="mdi mdi-home-outline menu-icon"></i>
+        <span class="menu-title">Home Page</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse home-edit {% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' or request.resolver_match.url_name == 'client_list' %}show{% endif %}"
-        id="form-elements">
+      <div class="collapse {% if request.resolver_match.url_name == 'explenation' or request.resolver_match.url_name == 'root_customize' or request.resolver_match.url_name == 'client_list' %}show{% endif %}"
+           id="sb-home-page">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'root_customize' %}active{% endif %}" href={%
-              url "root_customize" %}>Welcome Note</a></li>
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'explenation' %}active{% endif %}" href={%
-              url "explenation" %}>Process Explanation</a></li>
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'client_list' %}active{% endif %}" href={%
-              url "client_list" %}>Client</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'root_customize' %}active-page{% endif %}"
+               href="{% url 'root_customize' %}">Welcome Note</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'explenation' %}active-page{% endif %}"
+               href="{% url 'explenation' %}">Process Explanation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'client_list' %}active-page{% endif %}"
+               href="{% url 'client_list' %}">Client</a>
+          </li>
         </ul>
       </div>
     </li>
 
-    <!--Offer Letter page starts-->
-
+    <!-- How to Apply -->
     {% if request.user|has_perm:'visa.view_offerletters' %}
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'offer_letters' %}active{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href=".how-to-apply"
-        aria-expanded="{% if request.resolver_match.url_name == 'offer_letters' %}true{% else %}false{% endif %}"
-        aria-controls="form-elements">
-        <i class="menu-icon mdi mdi-image"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'offer_letters' or request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-how-to-apply"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'offer_letters' or request.resolver_match.url_name == 'save_benefit' %}true{% else %}false{% endif %}"
+         aria-controls="sb-how-to-apply">
+        <i class="mdi mdi-file-document-outline menu-icon"></i>
         <span class="menu-title">How to Apply</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse how-to-apply {% if request.resolver_match.url_name == 'offer_letters' %}show{% endif %}"
-        id="form-elements">
+      <div class="collapse {% if request.resolver_match.url_name == 'offer_letters' or request.resolver_match.url_name == 'save_benefit' %}show{% endif %}"
+           id="sb-how-to-apply">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'offer_letters' %}active{% endif %}"
-              href="{% url 'offer_letters' %}">Offer Letter</a></li>
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active{% endif %}"
-              href="{% url 'save_benefit' %}">Benefit</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'offer_letters' %}active-page{% endif %}"
+               href="{% url 'offer_letters' %}">Offer Letter</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
+               href="{% url 'save_benefit' %}">Benefit</a>
+          </li>
         </ul>
       </div>
     </li>
     {% endif %}
-    <!--Offer Letter page ends-->
 
+    {% comment %}
+    <!-- Appearance -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'client_list' or request.resolver_match.url_name == 'save_benefit' %}{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href=".root_customize"
-        aria-expanded="{% if request.resolver_match.url_name == 'client_list' or request.resolver_match.url_name == 'save_benefit' %}true{% else %}false{% endif %}"
-        aria-controls="form-elements">
-        <i class="menu-icon mdi mdi-image"></i>
-
+      <a class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-appearance"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'save_benefit' %}true{% else %}false{% endif %}"
+         aria-controls="sb-appearance">
+        <i class="mdi mdi-palette-outline menu-icon"></i>
         <span class="menu-title">Appearance</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse root_customize {% if request.resolver_match.url_name == 'save_benefit' %}show{% endif %}"
-        id="form-elements">
+      <div class="collapse {% if request.resolver_match.url_name == 'save_benefit' %}show{% endif %}"
+           id="sb-appearance">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"><a
-              class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active{% endif %}" href={%
-              url "save_benefit" %}>Benefit</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
+               href="{% url 'save_benefit' %}">Benefit</a>
+          </li>
         </ul>
       </div>
-
-
     </li>
+    {% endcomment %}
+
+    <!-- Courses -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href="#course-section"
-        aria-expanded="{% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}true{% else %}false{% endif %}"
-        aria-controls="course-section">
-        <i class="menu-icon mdi mdi-book"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-courses"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}true{% else %}false{% endif %}"
+         aria-controls="sb-courses">
+        <i class="mdi mdi-book-open-page-variant-outline menu-icon"></i>
         <span class="menu-title">Courses</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}show{% endif %}"
-        id="course-section">
+      <div class="collapse {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}show{% endif %}"
+           id="sb-courses">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'course_list' %}active{% endif %}"
-              href="{% url 'course_list' %}">Course List</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'course_list' %}active-page{% endif %}"
+               href="{% url 'course_list' %}">Course List</a>
           </li>
-
         </ul>
       </div>
     </li>
 
-
+    <!-- Countries -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'root_countries' %}{% else %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href=".root_countries"
-        aria-expanded="{% if request.resolver_match.url_name == 'root_countries' %}true{% else %}false{% endif %}"
-        aria-controls="tables">
-        <i class="menu-icon mdi mdi-table"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'root_countries' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-countries"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'root_countries' %}true{% else %}false{% endif %}"
+         aria-controls="sb-countries">
+        <i class="mdi mdi-earth menu-icon"></i>
         <span class="menu-title">Countries</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse root_countries {% if request.resolver_match.url_name == 'root_countries' %}show{% endif %}"
-        id="tables">
+      <div class="collapse {% if request.resolver_match.url_name == 'root_countries' %}show{% endif %}"
+           id="sb-countries">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'root_countries' %}active{% endif %}"
-              href="{% url 'root_countries'%}">Show All Country</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'root_countries' %}active-page{% endif %}"
+               href="{% url 'root_countries' %}">All Countries</a>
+          </li>
         </ul>
       </div>
     </li>
 
-
+    <!-- Scholarship -->
     {% if request.user|has_perm:'visa.add_scholarships' %}
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' or request.resolver_match.url_name == 'consutlant_upload' %}{% else %}collapsed active{% endif %}"
-        data-bs-toggle="collapse" href=".scholarships"
-        aria-expanded="{% if request.resolver_match.url_name == 'consultant_wise_root' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' %}true{% else %}false{% endif %}"
-        aria-controls="charts">
-        <i class="menu-icon mdi mdi-airplane-takeoff"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' or request.resolver_match.url_name == 'consutlant_upload' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-scholarship"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' or request.resolver_match.url_name == 'consutlant_upload' %}true{% else %}false{% endif %}"
+         aria-controls="sb-scholarship">
+        <i class="mdi mdi-school-outline menu-icon"></i>
         <span class="menu-title">Scholarship</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse scholarships {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' %}show{% endif %}"
-        id="charts">
+      <div class="collapse {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' or request.resolver_match.url_name == 'country_wise_scholarship_list' or request.resolver_match.url_name == 'university_wise' or request.resolver_match.url_name == 'consutlant_upload' %}show{% endif %}"
+           id="sb-scholarship">
         <ul class="nav flex-column sub-menu">
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' %}active{% endif %}"
-              href={% url "consultant_wise_scholarship_list" %}>Consultant Wise</a></li>
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'country_wise_scholarship_list' %}active{% endif %}"
-              href={% url "country_wise_scholarship_list" %}>Country Wise</a></li>
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'university_wise' %}active{% endif %}" href={%
-              url "university_wise" %}>University Wise</a></li>
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'consutlant_upload' %}active{% endif %}" href={%
-              url "consutlant_upload" %}>Uploaded Scholarship</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'consultant_wise_scholarship_list' %}active-page{% endif %}"
+               href="{% url 'consultant_wise_scholarship_list' %}">Consultant Wise</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'country_wise_scholarship_list' %}active-page{% endif %}"
+               href="{% url 'country_wise_scholarship_list' %}">Country Wise</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'university_wise' %}active-page{% endif %}"
+               href="{% url 'university_wise' %}">University Wise</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'consutlant_upload' %}active-page{% endif %}"
+               href="{% url 'consutlant_upload' %}">Uploaded Scholarships</a>
+          </li>
         </ul>
       </div>
     </li>
     {% endif %}
 
-
-
-    {% comment %} {% if request.user|has_perm:'auth.add_permission' or request.user|has_perm:'visa.add_users' or
-    request.user|has_perm:'visa.add_students' %} {% endcomment %}
+    <li class="nav-divider"></li>
     <li class="nav-item nav-category">Page Design</li>
 
-
+    <!-- Users -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}active{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href="#root-user-menu"
-        aria-expanded="{% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}true{% else %}false{% endif %}"
-        aria-controls="root-user-menu">
-        <i class="menu-icon mdi mdi-account"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-users"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}true{% else %}false{% endif %}"
+         aria-controls="sb-users">
+        <i class="mdi mdi-account-multiple-outline menu-icon"></i>
         <span class="menu-title">Users</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse root-user {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}show{% endif %}"
-        id="root-user-menu">
+      <div class="collapse {% if request.resolver_match.url_name == 'root_users_list' or request.resolver_match.url_name == 'root_consultant_list' or request.resolver_match.url_name == 'suspended_students_list' %}show{% endif %}"
+           id="sb-users">
         <ul class="nav flex-column sub-menu">
           {% if request.user|has_perm:'auth.add_permission' %}
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'root_users_list' %}active{% endif %}" href={%
-              url "root_users_list" %}>User Admin</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'root_users_list' %}active-page{% endif %}"
+               href="{% url 'root_users_list' %}">User Admin</a>
+          </li>
           {% endif %}
           {% if request.user|has_perm:'visa.add_users' %}
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'root_consultant_list' %}active{% endif %}"
-              href={% url "root_consultant_list" %}>Consultant</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'root_consultant_list' %}active-page{% endif %}"
+               href="{% url 'root_consultant_list' %}">Consultant</a>
+          </li>
           {% endif %}
           {% if request.user|has_perm:'visa.add_students' %}
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'suspended_students_list' %}active{% endif %}"
-              href={% url "suspended_students_list" %}>Student</a></li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'suspended_students_list' %}active-page{% endif %}"
+               href="{% url 'suspended_students_list' %}">Student</a>
+          </li>
           {% endif %}
         </ul>
       </div>
     </li>
+
+    <!-- Accounting -->
     {% if request.user|has_perm:'visa.add_balances' %}
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href="#accounts-menu"
-        aria-expanded="{% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}true{% else %}false{% endif %}"
-        aria-controls="accounts-menu">
-        <i class="menu-icon mdi mdi-currency-usd"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-accounting"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}true{% else %}false{% endif %}"
+         aria-controls="sb-accounting">
+        <i class="mdi mdi-cash-multiple menu-icon"></i>
         <span class="menu-title">Accounting</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse accounts {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}show{% endif %}"
-        id="accounts-menu">
+      <div class="collapse {% if request.resolver_match.url_name == 'consultant_credit_balance' or request.resolver_match.url_name == 'consultant_rates' or request.resolver_match.url_name == 'balance-list' %}show{% endif %}"
+           id="sb-accounting">
         <ul class="nav flex-column sub-menu">
-
-          <li class="nav-item"> <a
-              class="nav-link {% if request.resolver_match.url_name == 'balance-list' %}active{% endif %}"
-              href="{% url 'balance-list' %}">Debit/Credit</a></li>
-
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'balance-list' %}active-page{% endif %}"
+               href="{% url 'balance-list' %}">Debit / Credit</a>
+          </li>
         </ul>
       </div>
     </li>
     {% endif %}
 
+    <!-- Visa Services -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}active{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href="#visa-services-menu"
-        aria-expanded="{% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}true{% else %}false{% endif %}"
-        aria-controls="visa-services-menu">
-        <i class="menu-icon mdi mdi-airplane"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-visa-services"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}true{% else %}false{% endif %}"
+         aria-controls="sb-visa-services">
+        <i class="mdi mdi-airplane-takeoff menu-icon"></i>
         <span class="menu-title">Visa Services</span>
         <i class="menu-arrow"></i>
       </a>
-      <div
-        class="collapse {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}show{% endif %}"
-        id="visa-services-menu">
+      <div class="collapse {% if request.resolver_match.url_name == 'add_visa_service' or request.resolver_match.url_name == 'manage_visa_services' %}show{% endif %}"
+           id="sb-visa-services">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' %}active{% endif %}"
-              href="{% url 'add_visa_service' %}">Add New Service</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'add_visa_service' %}active-page{% endif %}"
+               href="{% url 'add_visa_service' %}">Add New Service</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'manage_visa_services' %}active{% endif %}"
-              href="{% url 'manage_visa_services' %}">Manage Services</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'manage_visa_services' %}active-page{% endif %}"
+               href="{% url 'manage_visa_services' %}">Manage Services</a>
           </li>
         </ul>
       </div>
     </li>
 
+    <li class="nav-divider"></li>
     <li class="nav-item nav-category">Location</li>
+
+    <!-- Contact -->
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'add_address' %}active{% else %}collapsed{% endif %}"
-        data-bs-toggle="collapse" href="#auth"
-        aria-expanded="{% if request.resolver_match.url_name == 'add_address' %}true{% else %}false{% endif %}"
-        aria-controls="auth">
-        <i class="menu-icon mdi mdi-account-circle-outline"></i>
+      <a class="nav-link {% if request.resolver_match.url_name == 'add_address' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-contact"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'add_address' %}true{% else %}false{% endif %}"
+         aria-controls="sb-contact">
+        <i class="mdi mdi-map-marker-outline menu-icon"></i>
         <span class="menu-title">Contact</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {% if request.resolver_match.url_name == 'add_address' %}show{% endif %}" id="auth">
+      <div class="collapse {% if request.resolver_match.url_name == 'add_address' %}show{% endif %}"
+           id="sb-contact">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'add_address' %}active{% endif %}"
-              href="{% url 'add_address' %}">Address</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'add_address' %}active-page{% endif %}"
+               href="{% url 'add_address' %}">Address</a>
           </li>
         </ul>
       </div>
     </li>
-
-
 
   </ul>
 </nav>

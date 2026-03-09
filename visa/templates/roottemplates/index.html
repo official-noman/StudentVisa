@@ -1,534 +1,1531 @@
 {% extends "roottemplates/base.html" %}
 
 {% block custom_css %}
-
 <style>
-  .flex-grow {
-    flex-grow: 0 !important;
-}
-</style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
+  :root {
+    --bg:            #F4F7FE;
+    --bg-2:          #E9EEF7;
+    --surface:       #FFFFFF;
+    --surface-2:     #F8FAFC;
+    --surface-3:     #F1F5F9;
+    --border:        rgba(15, 23, 42, 0.08);
+    --border-active: rgba(59, 130, 246, 0.25);
+
+    --accent:        #3B82F6;
+    --accent-glow:   rgba(59,130,246,0.12);
+    --accent-2:      #06B6D4;
+    --accent-3:      #8B5CF6;
+
+    --gold:          #F59E0B;
+    --emerald:       #10B981;
+    --rose:          #F43F5E;
+    --violet:        #7C3AED;
+
+    --text-primary:  #1E293B;
+    --text-secondary:#475569;
+    --text-muted:    #64748B;
+
+    --font-display: 'Sora', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+
+    --radius-sm:    10px;
+    --radius-md:    16px;
+    --radius-lg:    22px;
+    --radius-xl:    28px;
+
+    --shadow-glass: 0 8px 32px rgba(15,23,42,0.04), inset 0 1px 0 rgba(255,255,255,0.7);
+    --shadow-card:  0 12px 32px rgba(15,23,42,0.06);
+    --shadow-glow:  0 0 30px rgba(59,130,246,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  .content-wrapper {
+    background: var(--bg) !important;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+
+  .db-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .db-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .db-brand-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(59,130,246,0.20);
+    flex-shrink: 0;
+  }
+
+  .db-brand-logo svg { width: 22px; height: 22px; color: #fff; }
+
+  .db-brand-text { line-height: 1.2; }
+  .db-brand-name {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .db-brand-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .db-topbar-center {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px 14px;
+    flex: 1;
+    max-width: 380px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .db-topbar-center svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+  .db-topbar-center input {
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-primary);
+    width: 100%;
+  }
+  .db-topbar-center input::placeholder { color: var(--text-muted); }
+
+  .db-topbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    box-shadow: var(--shadow-card);
+  }
+  .icon-btn:hover { border-color: var(--border-active); color: var(--accent); background: var(--surface-2); }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  .icon-btn .badge-dot {
+    position: absolute;
+    top: 9px; right: 9px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+  }
+
+  .action-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .action-pill svg { width: 15px; height: 15px; }
+
+  .action-pill--ghost {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .action-pill--ghost:hover {
+    border-color: var(--border-active);
+    color: var(--text-primary);
+    background: var(--surface-2);
+  }
+
+  .action-pill--primary {
+    background: linear-gradient(135deg, var(--accent), #2563EB);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(59,130,246,0.18);
+  }
+
+  .action-pill--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(59,130,246,0.22);
+  }
+
+  .db-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .db-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .db-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  .db-page-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 8px;
+  }
+
+  .db-page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin: 0;
+    max-width: 520px;
+    line-height: 1.6;
+  }
+
+  .db-page-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.18);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--emerald);
+    letter-spacing: 0.04em;
+  }
+
+  .live-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 8px var(--emerald);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 36px 0 24px;
+  }
+
+  .section-divider span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    cursor: default;
+    box-shadow: var(--shadow-card);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(15,23,42,0.08), transparent);
+  }
+
+  .stat-card:hover {
+    border-color: var(--border-active);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .stat-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .stat-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stat-icon-wrap svg { width: 20px; height: 20px; }
+
+  .si-blue   { background: rgba(59,130,246,0.10);  color: var(--accent); }
+  .si-green  { background: rgba(16,185,129,0.10);  color: var(--emerald); }
+  .si-gold   { background: rgba(245,158,11,0.10);  color: var(--gold); }
+  .si-rose   { background: rgba(244,63,94,0.10);   color: var(--rose); }
+  .si-cyan   { background: rgba(6,182,212,0.10);   color: var(--accent-2); }
+  .si-violet { background: rgba(124,58,237,0.10);  color: var(--violet); }
+
+  .stat-trend-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .trend-up   { background: rgba(16,185,129,0.10); color: var(--emerald); }
+  .trend-down { background: rgba(244,63,94,0.10);  color: var(--rose); }
+  .trend-flat { background: rgba(100,116,139,0.12); color: var(--text-muted); }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .stat-caption {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .stat-progress {
+    height: 3px;
+    background: var(--surface-3);
+    border-radius: 999px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+
+  .stat-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  .fill-blue   { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+  .fill-green  { background: linear-gradient(90deg, var(--emerald), #34D399); }
+  .fill-gold   { background: linear-gradient(90deg, var(--gold), #FCD34D); }
+  .fill-rose   { background: linear-gradient(90deg, var(--rose), #FB7185); }
+  .fill-cyan   { background: linear-gradient(90deg, var(--accent-2), #67E8F9); }
+  .fill-violet { background: linear-gradient(90deg, var(--violet), #A78BFA); }
+
+  .g-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .g-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(15,23,42,0.06), transparent);
+  }
+
+  .g-card-body { padding: 26px; }
+
+  .g-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .g-card-kicker {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .g-card-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .g-card-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .clean-select {
+    appearance: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: 10px;
+    padding: 9px 32px 9px 14px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .clean-select:focus { border-color: var(--border-active); }
+
+  .balance-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .balance-amount {
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .balance-amount sup {
+    font-size: 18px;
+    font-weight: 700;
+    vertical-align: super;
+    color: var(--text-muted);
+    letter-spacing: 0;
+  }
+
+  .balance-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(16,185,129,0.08);
+    color: var(--emerald);
+    border: 1px solid rgba(16,185,129,0.18);
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .legend-dot.blue   { background: var(--accent); }
+  .legend-dot.cyan   { background: var(--accent-2); }
+
+  .chart-wrap-lg  { position: relative; height: 280px; }
+  .chart-wrap-md  { position: relative; height: 220px; }
+
+  .dash-table-wrap { overflow-x: auto; }
+
+  .dash-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    min-width: 680px;
+  }
+
+  .dash-table thead th {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 18px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .dash-table tbody tr {
+    transition: all 0.18s ease;
+  }
+
+  .dash-table tbody tr:hover td {
+    background: #F8FAFC !important;
+  }
+
+  .dash-table tbody td {
+    border: none !important;
+    padding: 16px 18px;
+    vertical-align: middle;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--surface) !important;
+  }
+
+  .dash-table tbody td:first-child {
+    border-radius: 14px 0 0 14px;
+  }
+
+  .dash-table tbody td:last-child {
+    border-radius: 0 14px 14px 0;
+  }
+
+  .t-user { display: flex; align-items: center; gap: 12px; }
+
+  .t-avatar {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: var(--surface-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent);
+    flex-shrink: 0;
+    border: 1px solid rgba(59,130,246,0.12);
+  }
+
+  .t-name { font-weight: 700; font-size: 14px; color: var(--text-primary); margin: 0 0 2px; }
+  .t-sub  { font-size: 11px; color: var(--text-secondary); margin: 0; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .status-badge::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+
+  .status-pending  { background: rgba(245,158,11,0.10); color: var(--gold);    border: 1px solid rgba(245,158,11,0.18); }
+  .status-pending::before  { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+  .status-approved { background: rgba(16,185,129,0.10); color: var(--emerald); border: 1px solid rgba(16,185,129,0.18); }
+  .status-approved::before { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+  .status-inactive { background: rgba(100,116,139,0.10); color: var(--text-muted); border: 1px solid rgba(100,116,139,0.16); }
+  .status-inactive::before { background: var(--text-muted); }
+
+  .t-actions { display: flex; gap: 8px; }
+
+  .t-btn {
+    padding: 8px 14px;
+    border-radius: 9px;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .t-btn-accept {
+    background: rgba(59,130,246,0.10);
+    color: var(--accent);
+    border: 1px solid rgba(59,130,246,0.16);
+  }
+
+  .t-btn-accept:hover { background: rgba(59,130,246,0.16); }
+
+  .t-btn-reject {
+    background: rgba(244,63,94,0.08);
+    color: var(--rose);
+    border: 1px solid rgba(244,63,94,0.14);
+  }
+
+  .t-btn-reject:hover { background: rgba(244,63,94,0.14); }
+
+  .table-empty {
+    text-align: center;
+    padding: 40px !important;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .performer-wrap {
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+    border: 1px solid rgba(59,130,246,0.10);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+  }
+
+  .performer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .performer-left { display: flex; align-items: center; gap: 16px; }
+
+  .performer-avatar {
+    width: 58px; height: 58px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(59,130,246,0.16);
+    flex-shrink: 0;
+  }
+
+  .performer-name  { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
+  .performer-role  { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+  .performer-stat  { text-align: right; }
+  .performer-num   { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--text-primary); line-height: 1; margin-bottom: 4px; }
+  .performer-cap   { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+
+  .performer-footer {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15,23,42,0.06);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .performer-meta  { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+  .performer-meta strong { color: var(--text-primary); }
+
+  .mini-metrics { display: grid; gap: 10px; margin-top: 20px; }
+
+  .mini-metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .mini-metric-row:hover { border-color: var(--border-active); }
+  .mini-metric-row .mm-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .mini-metric-row .mm-val   { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary); }
+
+  .view-all-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .view-all-btn:hover { border-color: var(--border-active); color: var(--accent); }
+  .view-all-btn svg { width: 13px; height: 13px; }
+
+  @media (max-width: 991px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .db-topbar-center { max-width: 260px; }
+  }
+
+  @media (max-width: 767px) {
+    .db-page-title  { font-size: 24px; }
+    .balance-amount { font-size: 28px; }
+    .db-topbar-center { display: none; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .chart-wrap-lg { height: 240px; }
+    .chart-wrap-md { height: 200px; }
+  }
+
+  @media (max-width: 480px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  }
+
+  @media print {
+    .db-topbar-actions, .db-topbar-center,
+    .t-actions, #printBtn, #exportBtn, #shareBtn,
+    .view-all-btn { display: none !important; }
+
+    .g-card, .stat-card {
+      box-shadow: none !important;
+      border-color: #e5e7eb !important;
+    }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .anim-in { animation: fadeUp 0.5s ease both; }
+  .anim-d1 { animation-delay: 0.05s; }
+  .anim-d2 { animation-delay: 0.10s; }
+  .anim-d3 { animation-delay: 0.15s; }
+  .anim-d4 { animation-delay: 0.20s; }
+  .anim-d5 { animation-delay: 0.25s; }
+  .anim-d6 { animation-delay: 0.30s; }
+  .anim-d7 { animation-delay: 0.35s; }
+  .anim-d8 { animation-delay: 0.40s; }
+</style>
 {% endblock custom_css %}
+
 {% block content %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="home-tab">
-          <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
-                  aria-controls="overview" aria-selected="true">Overview</a>
-              </li>
-              
-            </ul>
+<div class="content-wrapper">
+
+  <div class="db-topbar anim-in">
+    <div class="db-brand">
+      <div class="db-brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <div class="db-brand-text">
+        <p class="db-brand-name">AdminPanel</p>
+        <span class="db-brand-label">Control Suite</span>
+      </div>
+    </div>
+
+    <div class="db-topbar-center">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" placeholder="Search students, consultants…">
+    </div>
+
+    <div class="db-topbar-actions">
+      <button class="icon-btn" title="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="badge-dot"></span>
+      </button>
+
+      <button class="icon-btn" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      <button class="action-pill action-pill--ghost" id="shareBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>Share
+      </button>
+
+      <button class="action-pill action-pill--ghost" id="printBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>Print
+      </button>
+
+      <button class="action-pill action-pill--primary" id="exportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="db-page-header anim-in anim-d1">
+    <div class="db-page-header-left">
+      <div class="db-eyebrow">Admin Dashboard</div>
+      <h1 class="db-page-title">Premium Overview</h1>
+      <p class="db-page-subtitle">
+        Comprehensive analytics, consultant pipeline, and financial intelligence — all in one command center.
+      </p>
+    </div>
+    <div class="db-page-header-right">
+      <span class="live-badge">Live Data</span>
+      <button class="view-all-btn" onclick="location.reload()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="section-divider anim-in anim-d2"><span>Key Metrics</span></div>
+
+  <div class="stat-grid">
+    <div class="stat-card anim-in anim-d2">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path>
+          </svg>
+        </div>
+        {% if student_rates.rate > 0 %}
+          <span class="stat-trend-pill trend-up">↑ Growth</span>
+        {% elif student_rates.rate < 0 %}
+          <span class="stat-trend-pill trend-down">↓ Decline</span>
+        {% else %}
+          <span class="stat-trend-pill trend-flat">→ Stable</span>
+        {% endif %}
+      </div>
+      <p class="stat-label">Student Rate</p>
+      <div class="stat-value" style="font-size:26px; overflow:hidden; text-overflow:ellipsis;">
+  {% if student_rates.rate > 0 %}+{{ student_rates.rate|floatformat:2 }}%
+  {% elif student_rates.rate < 0 %}{{ student_rates.rate|floatformat:2 }}%
+  {% else %}0%{% endif %}
+</div>
+      <p class="stat-caption">Enrollment momentum</p>
+      <div class="stat-progress">
+        <div class="stat-progress-fill fill-blue" style="width:{% if student_rates.rate > 0 %}{{ student_rates.rate|floatformat:0 }}%{% else %}5%{% endif %}"></div>
+      </div>
+    </div>
+
+    <div class="stat-card anim-in anim-d3">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <span class="stat-trend-pill trend-up">Active</span>
+      </div>
+      <p class="stat-label">Total Students</p>
+      <div class="stat-value">{{ total_students }}</div>
+      <p class="stat-caption">In active pipeline</p>
+      <div class="stat-progress"><div class="stat-progress-fill fill-green" style="width:72%"></div></div>
+    </div>
+
+    <div class="stat-card anim-in anim-d4">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle>
+            <path d="M20 8v6"></path><path d="M23 11h-6"></path>
+          </svg>
+        </div>
+        <span class="stat-trend-pill trend-flat">Capacity</span>
+      </div>
+      <p class="stat-label">Total Consultants</p>
+      <div class="stat-value">{{ total_consultants }}</div>
+      <p class="stat-caption">Team network</p>
+      <div class="stat-progress"><div class="stat-progress-fill fill-gold" style="width:58%"></div></div>
+    </div>
+
+    <div class="stat-card anim-in anim-d5">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-rose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20"></path>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+        </div>
+        <span class="stat-trend-pill trend-flat">Global</span>
+      </div>
+      <p class="stat-label">Total Countries</p>
+      <div class="stat-value">{{ total_countries }}</div>
+      <p class="stat-caption">Global reach</p>
+      <div class="stat-progress"><div class="stat-progress-fill fill-rose" style="width:45%"></div></div>
+    </div>
+
+    <div class="stat-card anim-in anim-d6">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h20"></path><path d="M21 3v18H3V3"></path><path d="M7 21V8h10v13"></path>
+          </svg>
+        </div>
+        <span class="stat-trend-pill trend-up">Partners</span>
+      </div>
+      <p class="stat-label">Universities</p>
+      <div class="stat-value">{{ total_universities }}</div>
+      <p class="stat-caption">Partner network</p>
+      <div class="stat-progress"><div class="stat-progress-fill fill-cyan" style="width:82%"></div></div>
+    </div>
+
+    <div class="stat-card anim-in anim-d7">
+      <div class="stat-card-top">
+        <div class="stat-icon-wrap si-violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <span class="stat-trend-pill trend-flat">Engage</span>
+      </div>
+      <p class="stat-label">Avg. Time on Site</p>
+      <div class="stat-value" style="font-size:22px">{{ avg_time_on_site }}</div>
+      <p class="stat-caption">User engagement</p>
+      <div class="stat-progress"><div class="stat-progress-fill fill-violet" style="width:63%"></div></div>
+    </div>
+  </div>
+
+  <div class="section-divider anim-in anim-d3"><span>Analytics & Pipeline</span></div>
+
+  <div class="row g-4">
+    <div class="col-xl-8 d-flex flex-column gap-4">
+      <div class="g-card anim-in anim-d4">
+        <div class="g-card-body">
+          <div class="g-card-header">
             <div>
-              <div class="btn-wrapper">
-               
-                <button class="btn btn-outline-dark align-items-center" id="shareButton"><i class="icon-share"></i> Share</button>
-                <button class="btn btn-outline-dark" id="printButton"><i class="icon-printer"></i> Print</button>
-                <button class="btn btn-primary text-white me-0" id="exportButton"><i class="icon-download"></i> Export</button>
+              <p class="g-card-kicker">Finance Snapshot</p>
+              <h3 class="g-card-title">Balance Overview</h3>
+              <p class="g-card-sub">Credit vs Debit performance trend</p>
+            </div>
+            <select class="clean-select" id="balancePeriod">
+              <option>This Month</option>
+              <option>Last Month</option>
+              <option>Quarterly</option>
+            </select>
+          </div>
+
+          <div class="balance-hero">
+            <div>
+              <div class="balance-amount"><sup>Tk</sup> {{ total_balance }}</div>
+              <div style="margin-top:8px">
+                <span class="balance-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                  Net Positive Balance
+                </span>
               </div>
+            </div>
+            <div class="legend-row">
+              <span class="legend-item"><span class="legend-dot blue"></span>Credit</span>
+              <span class="legend-item"><span class="legend-dot cyan"></span>Debit</span>
             </div>
           </div>
-          <div class="tab-content tab-content-basic">
-            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="statistics-details d-flex align-items-center justify-content-between">
-                    <div>
-                      <p class="statistics-title">Student Rate</p>
-                      <h3 class="rate-percentage">
-                        {% comment %} <i class="mdi mdi-menu-down"></i> {% endcomment %}
-                        {% if student_rates.rate > 0 %}
-                            <span class="text-success">+{{ student_rates.rate }}%</span>
-                        {% elif student_rates.rate < 0 %}
-                            <span class="text-danger">{{ student_rates.rate }}%</span>
-                        {% else %}
-                            <span>No Change</span>
-                        {% endif %}
-                      </h3>
-                     
-                 
-                    </div>
-                    <div>
-                      <p class="statistics-title">Total Student</p>
-                      <h3 class="rate-percentage">{{ total_students }}</h3>
-                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p> {% endcomment %}
-                    </div>
-                    <div>
-                      <p class="statistics-title">Total Consultant</p>
-                      <h3 class="rate-percentage">{{total_consultants}}</h3>
-                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
-                    </div>
-                    <div class="d-none d-md-block">
-                      <p class="statistics-title">Total Country</p>
-                      <h3 class="rate-percentage">{{total_countries}}</h3>
-                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p> {% endcomment %}
-                    </div>
-                    <div class="d-none d-md-block">
-                      <p class="statistics-title">University</p>
-                      <h3 class="rate-percentage">{{total_universities}}</h3>
-                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
-                    </div>
-                    <div class="d-none d-md-block">
-                      <p class="statistics-title">Avg. Time on Site</p>
-                      <h3 class="rate-percentage">{{avg_time_on_site}}</h3>
-                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p> {% endcomment %}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-8 d-flex flex-column">
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="d-sm-flex justify-content-between align-items-start">
-                            <div>
-                              <h4 class="card-title card-title-dash">Balance Overview</h4>
-                              <p class="card-subtitle card-subtitle-dash">Student Visa Bd Site</p>
-                            </div>
-                            <div>
-                              <div class="dropdown">
-                                <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
-                                  type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
-                                  aria-haspopup="true" aria-expanded="false"> This month </button>
-                             
-                              </div>
-                            </div>
-                          </div>
-                          <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                            <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                              <h2 class="me-2 fw-bold">{{total_balance}}</h2>
-                              <h4 class="me-2">Tk</h4>
-                              
-                            </div>
-                            <div class="me-3">
-                              <div id="marketingOverview-legend"></div>
-                            </div>
-                          </div>
-                          <div class="chartjs-bar-wrapper mt-3">
-                            <canvas id="monthlyBalanceChart"></canvas>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card card-rounded">
-                          <div class="card-body">
-                            <div class="d-sm-flex justify-content-between align-items-start">
-                                <div>
-                                    <h4 class="card-title card-title-dash">Pending Requests</h4>
-                                    <p class="card-subtitle card-subtitle-dash">You have <span id="total-count">0</span> new requests</p>
-                                </div>
-                                <div>
-                                  <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button" onclick="window.location.href='/root_consultant_list/'">
-                                    <i class="mdi mdi-account-plus"></i>Panding Consultant
-                                </button>
-                                </div>
-                            </div>
-                            <div class="table-responsive mt-1">
-                                <table id="consultant-table" class="table select-table">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <div class="form-check form-check-flat mt-0">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" aria-checked="false">
-                                                        <i class="input-helper"></i>
-                                                    </label>
-                                                </div>
-                                            </th>
-                                            <th>Name</th>
-                                            <th>Company Name</th>
-                                            <th>Phone</th>
-                                           
-                                           
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Data will be dynamically populated here -->
-                                    </tbody>
-                                </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                 
-                </div>
-                <div class="col-lg-4 d-flex flex-column">
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="row flex-grow">
-                            <div class="col-12 grid-margin stretch-card">
-                              <div class="card card-rounded">
-                                <div class="card-body">
-                                  <div class="row">
-                                      <div class="col-lg-12">
-                                          <div class="d-flex justify-content-between align-items-center mb-3">
-                                              <div>
-                                                  <h4 class="card-title card-title-dash">Top Performer</h4>
-                                              </div>
-                                          </div>
-                                          <div class="mt-3">
-                                              <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom" id="topPerformerWrapper">
-                                                  <!-- Content will be dynamically populated here -->
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                              
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-lg-12">
-                              <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="card-title card-title-dash">Type By Amount</h4>
-                              </div>
-                              <div>
-                                <canvas class="my-auto" id="doughnutChart"></canvas>
-                              </div>
-                              <div id="doughnutChart-legend" class="mt-5 text-center"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-lg-12">
-                              <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div>
-                                  <h4 class="card-title card-title-dash">Student Report</h4>
-                                </div>
-                                <div>
-                                  <div class="dropdown">
-                                    <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0" type="button"
-                                      id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      Month Wise
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                      <h6 class="dropdown-header" id="weeklyWiseBtn">Week Wise</h6>
-                                      <a class="dropdown-item" id="yearlyWiseBtn">Year Wise</a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="mt-3">
-                                <canvas id="studentReport"></canvas>
-                                <canvas id="weeklyReport" style="display: none;"></canvas>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                
-                </div>
-              </div>
+
+          <div class="chart-wrap-lg">
+            <canvas id="monthlyBalanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-card anim-in anim-d5">
+        <div class="g-card-body">
+          <div class="g-card-header">
+            <div>
+              <p class="g-card-kicker">Approval Queue</p>
+              <h3 class="g-card-title">Pending Requests</h3>
+              <p class="g-card-sub"><strong id="total-count" style="color:var(--text-primary)">0</strong> consultant request(s) awaiting review</p>
             </div>
+            <a href="/root_consultant_list/" class="view-all-btn">
+              View All
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </a>
+          </div>
+
+          <div class="dash-table-wrap">
+            <table id="consultant-table" class="dash-table">
+              <thead>
+                <tr>
+                  <th>Consultant</th>
+                  <th>Company</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th style="text-align:right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="5" class="table-empty">Loading requests…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 d-flex flex-column gap-4">
+      <div class="g-card anim-in anim-d4">
+        <div class="g-card-body">
+          <div class="g-card-header">
+            <div>
+              <p class="g-card-kicker">Consultant Insights</p>
+              <h3 class="g-card-title">Top Performer</h3>
+              <p class="g-card-sub">Highest activity this period</p>
+            </div>
+            <span class="stat-trend-pill trend-up" style="align-self:flex-start">⭐ Top</span>
+          </div>
+          <div id="topPerformerWrapper">
+            <p style="color:var(--text-muted);font-size:13px">Loading…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-card anim-in anim-d5">
+        <div class="g-card-body">
+          <div class="g-card-header">
+            <div>
+              <p class="g-card-kicker">Distribution</p>
+              <h3 class="g-card-title">Credit vs Debit</h3>
+              <p class="g-card-sub">Financial split breakdown</p>
+            </div>
+          </div>
+          <div class="chart-wrap-md">
+            <canvas id="doughnutChart"></canvas>
+          </div>
+          <div class="mini-metrics">
+            <div class="mini-metric-row">
+              <span class="mm-label">Current Total Balance</span>
+              <span class="mm-val">Tk {{ total_balance }}</span>
+            </div>
+            <div class="mini-metric-row">
+              <span class="mm-label">Chart Type</span>
+              <span class="mm-val">Doughnut</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-card anim-in anim-d6">
+        <div class="g-card-body">
+          <div class="g-card-header">
+            <div>
+              <p class="g-card-kicker">Enrollment Trend</p>
+              <h3 class="g-card-title">Student Report</h3>
+              <p class="g-card-sub">Month-wise growth chart</p>
+            </div>
+            <select class="clean-select" id="studentPeriod">
+              <option id="monthWiseBtn">Monthly</option>
+              <option id="weeklyWiseBtn">Weekly</option>
+              <option id="yearlyWiseBtn">Yearly</option>
+            </select>
+          </div>
+          <div class="chart-wrap-md">
+            <canvas id="studentReport"></canvas>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+</div>
 {% endblock content %}
 
 {% block custom_js %}
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-  $(document).ready(function () {
-      function updateTable(data) {
-          $('#consultant-table tbody').empty();
-          $('#total-count').text(data.total_count);
-
-          data.root_consultants.forEach(function (consultant) {
-              var row = `<tr>
-                            <td>
-                                <div class="form-check form-check-flat mt-0">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" aria-checked="false">
-                                        <i class="input-helper"></i>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>${consultant.full_name}</td>
-                            <td>${consultant.company_name}</td>
-                            <td>${consultant.phone}</td>
-                            <td><div class="badge badge-opacity-warning">${consultant.active_status ? 'Active' : 'Inactive'}</div></td>
-                            <td>
-                              <div class="btn-group">
-                                <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item accept-link" href="#" data-user-id="${consultant.id}">Accept</a></li>
-                                    <li><a class="dropdown-item reject-link" href="#" data-user-id="${consultant.id}">Reject</a></li>
-                                </ul>
-                            </div>
-                            </td>
-                        </tr>`;
-
-              $('#consultant-table tbody').append(row);
-          });
-      }
-
-      function fetchData() {
-          $.ajax({
-              url: '/root_consultant_list_json/',
-              method: 'GET',
-              success: function (data) {
-                  updateTable(data);
-              },
-              error: function (error) {
-                  console.error('Error fetching data:', error);
-              }
-          });
-      }
-
-      fetchData();
-  });
-</script>
-<script>
-  $(document).ready(function () {
-      // Make an AJAX request to your Django view
-      $.ajax({
-          url: '/count_consultant_perform/',  // Adjust the URL based on your Django URL configuration
-          type: 'GET',
-          dataType: 'json',
-          success: function (data) {
-              // Check if data is available
-              if (data && data.consultant_counts && data.consultant_counts.length > 0) {
-                  // Extract the top performer data (assuming it's the first item in the list)
-                  var topPerformer = data.consultant_counts[0];
-
-                  // Update the content in the wrapper div
-                  $('#topPerformerWrapper').html(
-                      '<div class="d-flex">' +
-                          '<div class="wrapper ms-3">' +
-                              '<p class="ms-1 mb-1 fw-bold">Consultant ID: ' + topPerformer.consultant_id + '</p>' +
-                              '<small class="text-muted mb-0">Count: ' + topPerformer.count + '</small>' +
-                          '</div>' +
-                      '</div>' +
-                      '<div class="text-muted text-small">' +
-                          'Last activity: ' + topPerformer.last_activity +
-                      '</div>'
-                  );
-              }
-          },
-          error: function (error) {
-              console.error('Error fetching top performer data: ', error);
-          }
-      });
-  });
-</script>
-<script>
-  document.getElementById("printButton").addEventListener("click", function() {
-    window.print();
-  });
-
-  document.getElementById("shareButton").addEventListener("click", function() {
-    if (navigator.share) {
-      navigator.share({
-        title: document.title,
-        text: "Check out this page!",
-        url: window.location.href
-      }).then(() => {
-        console.log("Page shared successfully");
-      }).catch((error) => {
-        console.error("Error sharing:", error);
-      });
-    } else {
-      console.log("Web Share API not supported");
-    }
-  });
-
-
-</script>
-
-<script>
-  document.getElementById("exportButton").addEventListener("click", function() {
-    // Get CSRF token from cookie
-    const csrftoken = getCookie('csrftoken');
-
-    // Send AJAX request to fetch data from server
-    $.ajax({
-        url: "/export_dashboard_data/",
-        type: "POST",
-        dataType: "json",
-        headers: {
-            "X-CSRFToken": csrftoken  // Include CSRF token in request headers
-        },
-        success: function(data) {
-            // Convert data to CSV format
-            let csvContent = "data:text/csv;charset=utf-8,";
-
-            // Add headers
-            csvContent += "Total Students,Total Consultants,Total Countries,Total Universities,Avg. Time on Site\n";
-
-            // Add data rows
-            csvContent += `${data.total_students},${data.total_consultants},${data.total_countries},${data.total_universities},${data.avg_time_on_site}\n`;
-
-            // Create a link to trigger download
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "dashboard_data.csv");
-            document.body.appendChild(link);
-
-            // Trigger the download
-            link.click();
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching dashboard data:", error);
-        }
-    });
-});
-
-// Function to get CSRF token from cookie
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Check if cookie contains the CSRF token
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
-  $(document).ready(function () {
-      // Function to retrieve CSRF token from cookies
-      function getCookie(name) {
-          var cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              var cookies = document.cookie.split(';');
-              for (var i = 0; i < cookies.length; i++) {
-                  var cookie = cookies[i].trim();
-                  // Does this cookie string begin with the name we want?
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
+  function getCookie(name) {
+    let v = null;
+    if (document.cookie) {
+      document.cookie.split(';').forEach(c => {
+        c = c.trim();
+        if (c.startsWith(name + '=')) v = decodeURIComponent(c.substring(name.length + 1));
+      });
+    }
+    return v;
+  }
+
+  function escapeHtml(t) {
+    if (t == null) return '';
+    return String(t)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+  }
+
+  function getInitials(text) {
+    if (!text) return 'NA';
+    return text.trim().split(/\s+/).slice(0,2).map(w => w[0].toUpperCase()).join('');
+  }
+
+  $(function () {
+    function buildTable(data) {
+      const tbody = $('#consultant-table tbody');
+      tbody.empty();
+      $('#total-count').text(data?.total_count || 0);
+
+      if (!data?.root_consultants?.length) {
+        tbody.append('<tr><td colspan="5" class="table-empty">No pending consultant requests found.</td></tr>');
+        return;
+      }
+
+      data.root_consultants.forEach(c => {
+        const name     = escapeHtml(c.full_name || 'Unknown Consultant');
+        const company  = escapeHtml(c.company_name || 'Not Provided');
+        const phone    = escapeHtml(c.phone || 'N/A');
+        const initials = getInitials(c.full_name || 'NA');
+        const statusCls  = c.active_status ? 'approved' : 'pending';
+        const statusText = c.active_status ? 'Approved' : 'Pending';
+
+        tbody.append(`
+          <tr>
+            <td>
+              <div class="t-user">
+                <span class="t-avatar">${initials}</span>
+                <div>
+                  <div class="t-name">${name}</div>
+                  <p class="t-sub">Consultant Request</p>
+                </div>
+              </div>
+            </td>
+            <td style="color:var(--text-secondary)">${company}</td>
+            <td style="color:var(--text-secondary)">${phone}</td>
+            <td><span class="status-badge status-${statusCls}">${statusText}</span></td>
+            <td>
+              <div class="t-actions" style="justify-content:flex-end">
+                <button class="t-btn t-btn-accept accept-link" data-user-id="${c.id}">Accept</button>
+                <button class="t-btn t-btn-reject reject-link" data-user-id="${c.id}">Reject</button>
+              </div>
+            </td>
+          </tr>
+        `);
+      });
+    }
+
+    $.ajax({
+      url: '/root_consultant_list_json/',
+      method: 'GET',
+      success: buildTable,
+      error: () => $('#consultant-table tbody').html('<tr><td colspan="5" class="table-empty">Failed to load requests.</td></tr>')
+    });
+
+    $(document).on('click', '.accept-link', function () {
+      const id = $(this).data('user-id');
+      const csrf = getCookie('csrftoken');
+
+      $.ajax({
+        url: `/grant_permission_consultant/${id}/`,
+        method: 'POST',
+        headers: {'X-CSRFToken': csrf},
+        success: () => Swal.fire({
+          icon:'success',
+          title:'Permission Granted',
+          text:'Consultant approved.',
+          showConfirmButton:false,
+          timer:1500
+        }).then(() => location.reload()),
+        error: () => Swal.fire({
+          icon:'error',
+          title:'Error',
+          text:'Failed to approve.',
+          showConfirmButton:false,
+          timer:1800
+        })
+      });
+    });
+
+    $(document).on('click', '.reject-link', function () {
+      const id = $(this).data('user-id');
+      const csrf = getCookie('csrftoken');
+
+      $.ajax({
+        url: `/reject_consultant/${id}/`,
+        method: 'POST',
+        headers: {'X-CSRFToken': csrf},
+        success: () => Swal.fire({
+          icon:'success',
+          title:'Rejected',
+          text:'Consultant rejected.',
+          showConfirmButton:false,
+          timer:1500
+        }).then(() => location.reload()),
+        error: () => Swal.fire({
+          icon:'error',
+          title:'Error',
+          text:'Failed to reject.',
+          showConfirmButton:false,
+          timer:1800
+        })
+      });
+    });
+  });
+
+  $(function () {
+    $.ajax({
+      url: '/count_consultant_perform/',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        if (data?.consultant_counts?.length) {
+          const t = data.consultant_counts[0];
+          const pid  = escapeHtml(t.consultant_id || 'N/A');
+          const cnt  = escapeHtml(t.count || 0);
+          const last = escapeHtml(t.last_activity || 'N/A');
+          const ini  = getInitials(String(pid));
+
+          $('#topPerformerWrapper').html(`
+            <div class="performer-wrap">
+              <div class="performer-row">
+                <div class="performer-left">
+                  <span class="performer-avatar">${ini}</span>
+                  <div>
+                    <div class="performer-name">Consultant ${pid}</div>
+                    <p class="performer-role">Top performer · Current period</p>
+                  </div>
+                </div>
+                <div class="performer-stat">
+                  <div class="performer-num">${cnt}</div>
+                  <p class="performer-cap">Activities</p>
+                </div>
+              </div>
+              <div class="performer-footer">
+                <span class="performer-meta">ID: <strong>${pid}</strong></span>
+                <span class="performer-meta">Last active: <strong>${last}</strong></span>
+              </div>
+            </div>
+          `);
+        } else {
+          $('#topPerformerWrapper').html('<p style="color:var(--text-muted);font-size:13px">No performer data available.</p>');
+        }
+      },
+      error: () => $('#topPerformerWrapper').html('<p style="color:var(--text-muted);font-size:13px">Failed to load.</p>')
+    });
+  });
+
+  document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
+  document.getElementById('shareBtn')?.addEventListener('click', async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: document.title, url: location.href });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(location.href);
+        Swal.fire({
+          icon:'success',
+          title:'Link Copied',
+          text:'Dashboard URL copied.',
+          showConfirmButton:false,
+          timer:1400
+        });
+      }
+    } catch (e) {}
+  });
+
+  document.getElementById('exportBtn')?.addEventListener('click', function () {
+    $.ajax({
+      url: '/export_dashboard_data/',
+      type: 'POST',
+      dataType: 'json',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      success: function (data) {
+        let csv = 'data:text/csv;charset=utf-8,';
+        csv += 'Total Students,Total Consultants,Total Countries,Total Universities,Avg. Time on Site\n';
+        csv += `${data.total_students},${data.total_consultants},${data.total_countries},${data.total_universities},${data.avg_time_on_site}\n`;
+
+        const a = document.createElement('a');
+        a.href = encodeURI(csv);
+        a.download = 'dashboard_data.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      },
+      error: () => Swal.fire({
+        icon:'error',
+        title:'Export Failed',
+        text:'Unable to export data.',
+        showConfirmButton:false,
+        timer:1800
+      })
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof Chart === 'undefined') return;
+
+    Chart.defaults.font.family = 'DM Sans, sans-serif';
+    Chart.defaults.color = '#64748B';
+
+    const tooltipTheme = {
+      backgroundColor:'#FFFFFF',
+      borderColor:'rgba(15,23,42,0.08)',
+      borderWidth:1,
+      padding:12,
+      cornerRadius:12,
+      titleColor:'#1E293B',
+      bodyColor:'#475569'
+    };
+
+    const balanceLabels = {% if balance_labels %}{{ balance_labels|safe }}{% else %}['Jan','Feb','Mar','Apr','May','Jun','Jul']{% endif %};
+    const creditData    = {% if credit_data %}{{ credit_data|safe }}{% else %}[2200,2800,2400,3100,2950,3520,3800]{% endif %};
+    const debitData     = {% if debit_data %}{{ debit_data|safe }}{% else %}[1400,1650,1500,1800,1720,1600,1900]{% endif %};
+    const studentLabels = {% if student_labels %}{{ student_labels|safe }}{% else %}['Jan','Feb','Mar','Apr','May','Jun']{% endif %};
+    const studentData   = {% if student_data %}{{ student_data|safe }}{% else %}[2,4,5,6,7,8]{% endif %};
+    const cdLabels      = {% if credit_debit_labels %}{{ credit_debit_labels|safe }}{% else %}['Credit','Debit']{% endif %};
+    const cdValues      = {% if credit_debit_values %}{{ credit_debit_values|safe }}{% else %}[9270,5700]{% endif %};
+
+    const bCtx = document.getElementById('monthlyBalanceChart')?.getContext('2d');
+    if (bCtx) {
+      const cg = bCtx.createLinearGradient(0,0,0,280);
+      cg.addColorStop(0,'rgba(59,130,246,0.85)');
+      cg.addColorStop(1,'rgba(59,130,246,0.35)');
+
+      const dg = bCtx.createLinearGradient(0,0,0,280);
+      dg.addColorStop(0,'rgba(6,182,212,0.80)');
+      dg.addColorStop(1,'rgba(6,182,212,0.28)');
+
+      new Chart(bCtx, {
+        type: 'bar',
+        data: {
+          labels: balanceLabels,
+          datasets: [
+            { label:'Credit', data: creditData, backgroundColor: cg, borderRadius:10, borderSkipped:false, barThickness:14 },
+            { label:'Debit',  data: debitData,  backgroundColor: dg, borderRadius:10, borderSkipped:false, barThickness:14 }
+          ]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          interaction: { mode:'index', intersect:false },
+          plugins: {
+            legend: { display:false },
+            tooltip: { ...tooltipTheme, displayColors:true }
+          },
+          scales: {
+            x: {
+              grid:{ display:false },
+              border:{ display:false },
+              ticks:{ color:'#64748B', font:{weight:'600',size:12} }
+            },
+            y: {
+              beginAtZero:true,
+              grid:{ color:'rgba(15,23,42,0.06)' },
+              border:{ display:false },
+              ticks:{ color:'#64748B', callback: v => 'Tk ' + v.toLocaleString() }
+            }
           }
-          return cookieValue;
-      }
-
-      // Function to make an Ajax request to grant permission to the consultant
-      function grantPermission(user_id, csrf_token) {
-          console.log('Grant permission for user:', user_id);
-          $.ajax({
-              url: `/grant_permission_consultant/${user_id}/`,
-              method: 'POST',
-              headers: { "X-CSRFToken": csrf_token },
-              success: function (response) {
-                  // Show success message using SweetAlert2
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Permission Granted',
-                      text: 'Consultant created successfully.',
-                      showConfirmButton: false,
-                      timer: 1500
-                  }).then(() => {
-                      // Reload the page after success message
-                      location.reload();
-                  });
-              },
-              error: function (error) {
-                  // Show error message using SweetAlert2
-                  Swal.fire({
-                      icon: 'error',
-                      title: 'Error',
-                      text: 'Failed to grant permission for the consultant.',
-                      showConfirmButton: false,
-                      timer: 1500
-                  });
-              }
-          });
-      }
-
-      // Function to make an Ajax request to reject the consultant
-      function rejectConsultant(user_id, csrf_token) {
-          console.log('Reject consultant:', user_id);
-          $.ajax({
-              url: `/reject_consultant/${user_id}/`,
-              method: 'POST',
-              headers: { "X-CSRFToken": csrf_token },
-              success: function (response) {
-                  // Show success message using SweetAlert2
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Consultant Rejected',
-                      text: 'Consultant rejected successfully.',
-                      showConfirmButton: false,
-                      timer: 1500
-                  }).then(() => {
-                      // Reload the page after success message
-                      location.reload();
-                  });
-              },
-              error: function (error) {
-                  // Show error message using SweetAlert2
-                  Swal.fire({
-                      icon: 'error',
-                      title: 'Error',
-                      text: 'Failed to reject the consultant.',
-                      showConfirmButton: false,
-                      timer: 1500
-                  });
-              }
-          });
-      }
-
-      // Attach click event handlers to Accept and Reject links
-      $(document).on('click', '.accept-link', function () {
-          var user_id = $(this).data('user-id');
-          var csrf_token = getCookie('csrftoken'); // Get CSRF token from cookies
-          console.log('Accept link clicked for user:', user_id);
-          grantPermission(user_id, csrf_token);
+        }
       });
+    }
 
-      $(document).on('click', '.reject-link', function () {
-          var user_id = $(this).data('user-id');
-          var csrf_token = getCookie('csrftoken'); // Get CSRF token from cookies
-          console.log('Reject link clicked for user:', user_id);
-          rejectConsultant(user_id, csrf_token);
+    const dCtx = document.getElementById('doughnutChart')?.getContext('2d');
+    if (dCtx) {
+      new Chart(dCtx, {
+        type: 'doughnut',
+        data: {
+          labels: cdLabels,
+          datasets: [{
+            data: cdValues,
+            backgroundColor: ['#3B82F6','#06B6D4'],
+            borderWidth: 0,
+            hoverOffset: 8,
+            borderRadius: 8,
+            spacing: 5
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          cutout:'76%',
+          plugins: {
+            legend: {
+              position:'bottom',
+              labels:{
+                usePointStyle:true,
+                pointStyle:'circle',
+                padding:18,
+                color:'#64748B',
+                font:{weight:'700',size:12}
+              }
+            },
+            tooltip: { ...tooltipTheme }
+          }
+        }
       });
+    }
+
+    const sCtx = document.getElementById('studentReport')?.getContext('2d');
+    if (sCtx) {
+      const sg = sCtx.createLinearGradient(0,0,0,220);
+      sg.addColorStop(0,'rgba(139,92,246,0.85)');
+      sg.addColorStop(1,'rgba(59,130,246,0.30)');
+
+      new Chart(sCtx, {
+        type: 'bar',
+        data: {
+          labels: studentLabels,
+          datasets: [{
+            label:'Students',
+            data: studentData,
+            backgroundColor: sg,
+            borderRadius:10,
+            borderSkipped:false,
+            barThickness:20
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins: {
+            legend: { display:false },
+            tooltip: { ...tooltipTheme }
+          },
+          scales: {
+            x: {
+              grid:{ display:false },
+              border:{ display:false },
+              ticks:{ color:'#64748B', font:{weight:'600',size:12} }
+            },
+            y: {
+              beginAtZero:true,
+              grid:{ color:'rgba(15,23,42,0.06)' },
+              border:{ display:false },
+              ticks:{ color:'#64748B', stepSize:1 }
+            }
+          }
+        }
+      });
+    }
   });
 </script>
 {% endblock custom_js %}

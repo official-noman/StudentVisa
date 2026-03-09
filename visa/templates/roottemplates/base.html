@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     {% load static %}
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Student Visa Bangladesh </title>
+
+    <title>{% block title %}Student Visa Bangladesh{% endblock title %}</title>
+
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/feather/feather.css' %}">
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/mdi/css/materialdesignicons.min.css' %}">
@@ -14,75 +14,138 @@
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/typicons/typicons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/simple-line-icons/css/simple-line-icons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/css/vendor.bundle.base.css' %}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
+
+    <!-- Plugin css -->
     <link rel="stylesheet" href="{% static 'assets/dist/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/dist/js/select.dataTables.min.css' %}">
-    <!-- End plugin css for this page -->
+
     <!-- inject:css -->
     <link rel="stylesheet" href="{% static 'assets/dist/css/vertical-layout-light/style.css' %}">
-    <!-- endinject -->
     <link rel="shortcut icon" href="{% static 'assets/images/icon.png' %}" />
+
+    <style>
+        :root {
+            --layout-bg: #F4F7FE;
+            --layout-surface: #FFFFFF;
+            --layout-surface-2: #F8FAFC;
+            --layout-border: rgba(15, 23, 42, 0.08);
+            --layout-text: #1E293B;
+            --layout-muted: #64748B;
+
+            --layout-navbar-height: 92px;
+            --layout-sidebar-width: 256px;
+            --layout-sidebar-mini-width: 80px;
+
+            --layout-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body.with-welcome-text {
+            min-height: 100vh;
+            background: var(--layout-bg);
+            color: var(--layout-text);
+            overflow-x: hidden;
+        }
+
+        .container-scroller {
+            min-height: 100vh;
+            background: var(--layout-bg);
+        }
+
+        .page-body-wrapper {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: var(--layout-navbar-height);
+            background: var(--layout-bg);
+        }
+
+        .main-panel {
+            min-width: 0;
+            width: 100%;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--layout-bg);
+        }
+
+        .content-wrapper {
+            flex: 1 1 auto;
+            width: 100%;
+            min-width: 0;
+            padding: 28px 30px;
+            background: var(--layout-bg);
+        }
+
+        @media (max-width: 991.98px) {
+            .page-body-wrapper {
+                padding-top: var(--layout-navbar-height);
+            }
+
+            .main-panel {
+                width: 100%;
+            }
+
+            .content-wrapper {
+                padding: 20px 16px;
+            }
+        }
+    </style>
 
     {% block custom_css %}{% endblock custom_css %}
 </head>
 
 <body class="with-welcome-text">
+    <div class="container-scroller">
 
-    {% include "roottemplates/partials/_navbar.html" %}
+        {% include "roottemplates/partials/_navbar.html" %}
 
+        <div class="container-fluid page-body-wrapper">
+            {% include "roottemplates/partials/_settings-panel.html" %}
+            {% include "roottemplates/partials/_sidebar.html" %}
 
-        {% include "roottemplates/partials/_settings-panel.html" %}
+            <div class="main-panel">
+                {% block content %}{% endblock content %}
+                {% include "roottemplates/partials/_footer.html" %}
+            </div>
+        </div>
+    </div>
 
-        {% include "roottemplates/partials/_sidebar.html" %}
-
-
-
-
-    {% block content %}
-
-    {% endblock content %}
-
-
-
-    <!-- container-scroller -->
-{% include "roottemplates/partials/_footer.html" %}
     <!-- plugins:js -->
     <script src="{% static 'assets/dist/vendors/js/vendor.bundle.base.js' %}"></script>
     <script src="{% static 'assets/dist/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <script src="{% static 'assets/dist/vendors/chart.js/Chart.min.js' %}"></script>
-    <script src="{% static 'assets/dist/vendors/progressbar.js/progressbar.min.js' %}"></script>
-    <!-- End plugin js for this page -->
+
     <!-- inject:js -->
     <script src="{% static 'assets/dist/js/off-canvas.js' %}"></script>
     <script src="{% static 'assets/dist/js/hoverable-collapse.js' %}"></script>
     <script src="{% static 'assets/dist/js/template.js' %}"></script>
     <script src="{% static 'assets/dist/js/settings.js' %}"></script>
     <script src="{% static 'assets/dist/js/todolist.js' %}"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
     <script src="{% static 'assets/dist/js/jquery.cookie.js' %}" type="text/javascript"></script>
-    <script src="{% static 'assets/dist/js/dashboard.js' %}"></script>
     <script src="{% static 'assets/dist/js/proBanner.js' %}"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-          var greetingText = document.getElementById("greeting-text");
-          var currentTime = new Date().getHours();
-      
-          if (currentTime < 12) {
-            greetingText.textContent = "Good Morning, ";
-          } else if (currentTime < 18) {
-            greetingText.textContent = "Good Afternoon, ";
-          } else {
-            greetingText.textContent = "Good Evening, ";
-          }
-        });
-      </script>
-    {% block custom_js %}{% endblock custom_js %}
-    <!-- <script src="../../assets/js/Chart.roundedBarCharts.js"></script> -->
-    <!-- End custom js for this page-->
-</body>
+            var greetingText = document.getElementById("greeting-text");
+            if (!greetingText) return;
 
+            var currentTime = new Date().getHours();
+
+            if (currentTime < 12) {
+                greetingText.textContent = "Good Morning, ";
+            } else if (currentTime < 18) {
+                greetingText.textContent = "Good Afternoon, ";
+            } else {
+                greetingText.textContent = "Good Evening, ";
+            }
+        });
+    </script>
+
+    {% block custom_js %}{% endblock custom_js %}
+</body>
 </html>

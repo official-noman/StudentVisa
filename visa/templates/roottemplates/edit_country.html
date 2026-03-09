@@ -1,51 +1,81 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
+
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+{% endblock custom_css %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Edit Country Details</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
 
-            {% if message %}
-              <div class="alert alert-success" role="alert">
-                {{ message }}
-              </div>
-            {% endif %}
-
-            <form method="post" action="">
-              {% csrf_token %}
-              {% comment %} <div class="form-group">
-                <label for="country_name">Country Name:</label>
-                <input type="text" id="country_name" name="country_name" value="{{ country.country_name }}" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <label for="country_flag">Country Flag:</label>
-                {% if country.country_flag %}
-                  <img src="{% static 'assets/countries/flags/' %}{{ country.country_flag }}" height="50" width="50">
-                
-                {% else %}
-                  <p>No Flag</p>
-                {% endif %}
-                <input type="file" id="new_country_flag" name="new_country_flag" accept="image/*">
-              </div> {% endcomment %}
-              <div class="form-group">
-                <label for="country_howtoapply">How to Apply:</label>
-                <textarea id="country_howtoapply" name="country_howtoapply" class="form-control" required>{{ country.country_howtoapply }}</textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Update</button>
-            </form>
-            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-            <script>
-              CKEDITOR.replace('country_howtoapply', { versionCheck: false });
-              
-            </script>
-
-            </div>
-          </div>
-        </div>
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Country Management</div>
+        <h1 class="page-title">Edit Country Details</h1>
+        <p class="page-subtitle">
+          Update country-specific application instructions used across scholarship listings.
+        </p>
       </div>
     </div>
+
+    <div class="page-card" style="max-width:900px;">
+      <div class="page-card-body">
+
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Country Editor</div>
+            <h3 class="page-section-title">How To Apply Content</h3>
+            <p class="page-section-subtitle">
+              Maintain instructions displayed on country scholarship pages.
+            </p>
+          </div>
+        </div>
+
+        {% if message %}
+          <div class="alert alert-success page-alert mb-3">
+            {{ message }}
+          </div>
+        {% endif %}
+
+        <form method="post" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="country_howtoapply" class="page-label">
+              How to Apply
+            </label>
+
+            <textarea
+              id="country_howtoapply"
+              name="country_howtoapply"
+              class="form-control"
+              required
+            >{{ country.country_howtoapply }}</textarea>
+          </div>
+
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">
+              Update
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
   </div>
+</div>
 {% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<script>
+  CKEDITOR.replace('country_howtoapply', {
+    versionCheck: false,
+    height: 300
+  });
+</script>
+{% endblock custom_js %}

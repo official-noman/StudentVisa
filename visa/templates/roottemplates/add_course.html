@@ -1,28 +1,43 @@
-<!-- roottemplates/add_course.html -->
-
 {% extends "roottemplates/base.html" %}
 
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+{% endblock custom_css %}
+
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title mb-4">Add Course</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Academic Setup</div>
+        <h1 class="page-title">Add Course</h1>
+        <p class="page-subtitle">Create a new course entry that can be reused across admissions, scholarship, and academic workflow pages.</p>
+      </div>
+    </div>
 
-          <form action="{% url 'add_course' %}" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="course_name">Course Name</label>
-              <input type="text" class="form-control" id="course_name" name="course_name" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Course</button>
-          </form>
-
+    <div class="page-card" style="max-width: 760px;">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Course Management</div>
+            <h3 class="page-section-title">New Course</h3>
+            <p class="page-section-subtitle">Keep naming consistent and production-safe.</p>
+          </div>
         </div>
+
+        <form action="{% url 'add_course' %}" method="post" class="page-form-grid">
+          {% csrf_token %}
+          <div class="page-field">
+            <label class="page-label" for="course_name">Course Name</label>
+            <input type="text" class="form-control" id="course_name" name="course_name" required>
+          </div>
+
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">Add Course</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-</div>
-{% endblock %}
+{% endblock content %}

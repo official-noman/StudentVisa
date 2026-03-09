@@ -1,214 +1,237 @@
 {% extends "roottemplates/base.html" %}
 
 {% block custom_css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    /* Custom Table Styles */
-    .custom-table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-        border-collapse: collapse;
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+    #scholarshiplist_wrapper {
+      padding: 0;
     }
 
-    .custom-table th,
-    .custom-table td {
-        padding: 0.75rem;
-        vertical-align: top;
-        border-top: 1px solid #dee2e6;
+    #scholarshiplist_filter label,
+    #scholarshiplist_length label {
+      color: #475569;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
-    .custom-table thead th {
-        vertical-align: bottom;
-        border-bottom: 2px solid #dee2e6;
-        background-color: #f8f9fa;
+    #scholarshiplist_filter input,
+    #scholarshiplist_length select {
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #F8FAFC !important;
+      border-radius: 12px !important;
+      min-height: 40px;
+      padding: 8px 12px !important;
     }
 
-    .custom-table tbody + tbody {
-        border-top: 2px solid #dee2e6;
+    .cwsl-modal .modal-content {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
     }
 
-    .custom-table-sm th,
-    .custom-table-sm td {
-        padding: 0.3rem;
+    .cwsl-modal .modal-header,
+    .cwsl-modal .modal-footer {
+      border-color: rgba(15, 23, 42, 0.08);
     }
 
-    .custom-table-bordered {
-        border: 1px solid #dee2e6;
+    .cwsl-modal .modal-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      color: #1E293B;
     }
 
-    .custom-table-bordered th,
-    .custom-table-bordered td {
-        border: 1px solid #dee2e6;
+    .action-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .custom-table-bordered thead th,
-    .custom-table-bordered thead td {
-        border-bottom-width: 2px;
+    .btn-soft-primary {
+      background: rgba(59, 130, 246, 0.10);
+      color: #3B82F6;
+      border: 1px solid rgba(59, 130, 246, 0.14);
     }
 
-    /* Hover effect for table rows */
-    .custom-table tbody tr:hover {
-        background-color: #f5f5f5;
+    .btn-soft-primary:hover {
+      background: rgba(59, 130, 246, 0.16);
+      color: #2563EB;
     }
 
-    /* Badge Styles */
-    .badge {
-        display: inline-block;
-        padding: 0.25em 0.4em;
-        font-size: 75%;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 0.25rem;
+    .btn-soft-danger {
+      background: rgba(244, 63, 94, 0.10);
+      color: #F43F5E;
+      border: 1px solid rgba(244, 63, 94, 0.14);
     }
 
-    .badge-success {
-        color: #fff;
-        background-color: #28a745;
+    .btn-soft-danger:hover {
+      background: rgba(244, 63, 94, 0.16);
+      color: #E11D48;
     }
 
-    .badge-secondary {
-        color: #fff;
-        background-color: #6c757d;
+    .select2-container {
+      width: 100% !important;
     }
 
-    /* Custom button styles */
-    .btn-edit,
-    .btn-delete {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        border-radius: 0.25rem;
-        color: #fff;
+    .select2-container--default .select2-selection--single {
+      min-height: 46px !important;
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #F8FAFC !important;
+      border-radius: 14px !important;
+      padding: 8px 12px !important;
     }
 
-    .btn-edit {
-        background-color: #0c193d;
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #334155 !important;
+      line-height: 28px !important;
+      font-size: 14px !important;
+      padding-left: 0 !important;
     }
 
-    .btn-delete {
-        background-color: #dc3545;
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 44px !important;
+      right: 8px !important;
     }
-
-    .btn-edit:hover,
-    .btn-delete:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-</style>
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <a href="{% url 'consultant_wise_root' %}" class="btn btn-primary mt-3">Add Scholarship</a>
-            <br>
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Consultant Wise Scholarship List</h4>
-
-                    {% if instances %}
-                    <table id="scholarshiplist" class="custom-table table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Country Name</th>
-                                <th scope="col">Consultant Name</th>
-                                <th scope="col">Text</th>
-                                <th scope="col">Who Can Apply</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Created At</th>
-                                <th scope="col">Updated At</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for instance in instances %}
-                            <tr id="row_{{ instance.scow_id }}">
-                                <td>{{ instance.scow_id }}</td>
-                                <td>{{ instance.country_name.country_name }}</td>
-                                <td>{{ instance.full_name }}</td>
-                                <td>{{ instance.scow_text|truncatechars:30|safe }}</td>
-                                <td>{{ instance.scow_whocanapply|truncatechars:30|safe }}</td>
-                                <td>
-                                    {% if instance.scow_status == 1 %}
-                                    <span class="badge badge-success">Active</span>
-                                    {% else %}
-                                    <span class="badge badge-secondary">Inactive</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ instance.created_at }}</td>
-                                <td>{{ instance.updated_at }}</td>
-                                <td>
-                                    <a href="#" class="btn btn-primary btn-edit" data-id="{{ instance.scow_id }}">Edit</a>
-                                    <a href="#" class="btn btn-delete btn-danger" data-id="{{ instance.scow_id }}">Delete</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <p>No consultant wise scholarships available.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Scholarship Management</div>
+        <h1 class="page-title">Consultant Wise Scholarship List</h1>
+        <p class="page-subtitle">
+          Review, edit, and maintain consultant-specific scholarship content by country, status, and eligibility rules.
+        </p>
+      </div>
+      <div>
+        <a href="{% url 'consultant_wise_root' %}" class="page-btn page-btn-primary">Add Scholarship</a>
+      </div>
     </div>
+
+    <div class="page-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Scholarship Directory</div>
+            <h3 class="page-section-title">All Consultant Wise Scholarships</h3>
+            <p class="page-section-subtitle">
+              Manage scholarship records, edit content, and control publication status.
+            </p>
+          </div>
+        </div>
+
+        {% if instances %}
+        <div class="page-table-wrap">
+          <table id="scholarshiplist" class="page-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Country Name</th>
+                <th>Consultant Name</th>
+                <th>Text</th>
+                <th>Who Can Apply</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for instance in instances %}
+              <tr id="row_{{ instance.scow_id }}">
+                <td>{{ instance.scow_id }}</td>
+                <td>{{ instance.country_name.country_name }}</td>
+                <td>{{ instance.full_name }}</td>
+                <td>{{ instance.scow_text|truncatechars:30|safe }}</td>
+                <td>{{ instance.scow_whocanapply|truncatechars:30|safe }}</td>
+                <td>
+                  {% if instance.scow_status == 1 %}
+                    <span class="page-badge page-badge-success">Active</span>
+                  {% else %}
+                    <span class="page-badge page-badge-danger">Inactive</span>
+                  {% endif %}
+                </td>
+                <td>{{ instance.created_at }}</td>
+                <td>{{ instance.updated_at }}</td>
+                <td>
+                  <div class="action-inline">
+                    <a href="#" class="btn btn-sm btn-soft-primary btn-edit" data-id="{{ instance.scow_id }}">Edit</a>
+                    <a href="#" class="btn btn-sm btn-soft-danger btn-delete" data-id="{{ instance.scow_id }}">Delete</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+          <div class="page-note">No consultant wise scholarships available.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Scholarship</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div class="modal fade cwsl-modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Scholarship</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editForm">
+          {% csrf_token %}
+          <input type="hidden" name="scow_id" id="scow_id">
+
+          <div class="page-form-grid">
+            <div class="page-field">
+              <label for="scow_text" class="page-label">Text</label>
+              <textarea class="form-control" id="scow_text" name="scow_text"></textarea>
             </div>
-            <div class="modal-body">
-                <form id="editForm">
-                    {% csrf_token %}
-                    <input type="hidden" name="scow_id" id="scow_id">
-                    <div class="form-group">
-                        <label for="scow_text">Text</label>
-                        <textarea class="form-control" id="scow_text" name="scow_text"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="scow_whocanapply">Who Can Apply</label>
-                        <textarea class="form-control" id="scow_whocanapply" name="scow_whocanapply"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="scow_status">Status</label>
-                        <select class="form-control" id="scow_status" name="scow_status">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="country_name">Country</label>
-                        <select class="form-control" id="country_name" name="country_name">
-                            <option value="">Select Country</option>
-                            {% for country in countries %}
-                                <option value="{{ country.id }}">{{ country.country_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </form>
+
+            <div class="page-field">
+              <label for="scow_whocanapply" class="page-label">Who Can Apply</label>
+              <textarea class="form-control" id="scow_whocanapply" name="scow_whocanapply"></textarea>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+
+            <div class="page-form-row-2">
+              <div class="page-field">
+                <label for="scow_status" class="page-label">Status</label>
+                <select class="form-control" id="scow_status" name="scow_status">
+                  <option value="1">Active</option>
+                  <option value="0">Inactive</option>
+                </select>
+              </div>
+
+              <div class="page-field">
+                <label for="country_name" class="page-label">Country</label>
+                <select class="form-control" id="country_name" name="country_name">
+                  <option value="">Select Country</option>
+                  {% for country in countries %}
+                    <option value="{{ country.id }}">{{ country.country_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="page-btn page-btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="page-btn page-btn-primary" id="saveChanges">Save Changes</button>
+      </div>
     </div>
-</div>
+  </div>
 </div>
 {% endblock content %}
 
@@ -217,158 +240,199 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
-<!-- Use an alternative CDN link for Select2 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#scholarshiplist').DataTable();
-        $('.btn-edit').click(function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            $.ajax({
-                type: 'GET',
-                url: '/edit_consultant_wise_scholarship/' + id,
-                success: function (data) {
-                    $('#editModal').modal('show');
-                    $('#scow_id').val(id);
-                    $('#scow_status').val(data.scow_status);
-        
-                    // Populate country dropdown
-                    var countryDropdown = $('#country_name');
-                    countryDropdown.empty(); // Clear existing options
-                    $.each(data.countries, function(index, country) {
-                        countryDropdown.append($('<option></option>').attr('value', country.country_id).text(country.country_name));
-                    });
-                    // Set selected country
-                    if (data.country_id) {
-                        countryDropdown.val(data.country_id);
-                    }
-                    
-                    // Replace the textarea with CKEditor instance
-                    CKEDITOR.replace('scow_text', { versionCheck: false });
-                    CKEDITOR.replace('scow_whocanapply', { versionCheck: false });
+  let scowTextEditor = null;
+  let scowWhoCanApplyEditor = null;
 
-                    // Set CKEditor content
-                    CKEDITOR.instances.scow_text.setData(data.scow_text);
-                    CKEDITOR.instances.scow_whocanapply.setData(data.scow_whocanapply);
-                },
-                error: function (error) {
-                    console.error(error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Failed to fetch scholarship details!'
-                    });
-                }
-            });
-        });
-        
-        // Save changes button click event handler
-        $('#saveChanges').click(function (e) {
-            e.preventDefault();
-            var id = $('#scow_id').val();
-            var scow_text = CKEDITOR.instances.scow_text.getData();
-            var scow_whocanapply = CKEDITOR.instances.scow_whocanapply.getData();
-            var scow_status = $('#scow_status').val();
-            var country_id = $('#country_name').val(); // Get selected country ID
-            var csrftoken = getCookie('csrftoken'); // Function to get the CSRF token value from cookies
-        
-            // Send AJAX request to update scholarship details
-            $.ajax({
-                type: 'POST',
-                url: '/edit_consultant_wise_scholarship/' + id + '/',
-                data: {
-                    'scow_text': scow_text,
-                    'scow_whocanapply': scow_whocanapply,
-                    'scow_status': scow_status,
-                    'country_id': country_id, // Send country ID instead of country name
-                    'csrfmiddlewaretoken': csrftoken
-                },
-                success: function (response) {
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Scholarship details updated successfully!',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        onClose: () => {
-                            // Reload the page after successful update
-                            location.reload();
-                        }
-                    });
-                },
-                error: function (error) {
-                    console.error(error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Failed to update scholarship details!'
-                    });
-                }
-            });
-        });
-        $('.btn-delete').click(function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Get CSRF token from cookies
-                    var csrftoken = getCookie('csrftoken');
-                    $.ajax({
-                        type: 'POST',
-                        url: '/delete_consultant_wise_scholarship/' + id + '/',
-                        headers: {
-                            'X-CSRFToken': csrftoken
-                        },
-                        success: function (data) {
-                            if (data.success) {
-                                $('#row_' + id).remove();
-                                Swal.fire(
-                                    'Deleted!',
-                                    'Scholarship has been deleted.',
-                                    'success'
-                                );
-                            } else {
-                                Swal.fire(
-                                    'Error!',
-                                    'Failed to delete scholarship.',
-                                    'error'
-                                );
-                            }
-                        }
-                    });
-                }
-            });
-        });
-        
-        // Function to get CSRF token from cookies
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-        // Save changes button click event (in modal)
+      }
+    }
+    return cookieValue;
+  }
 
+  $(document).ready(function () {
+    const scholarshipTable = $('#scholarshiplist').DataTable({
+      pageLength: 10,
+      order: [[0, 'desc']]
     });
+
+    $('#country_name').select2({
+      dropdownParent: $('#editModal'),
+      width: '100%'
+    });
+
+    $('.btn-edit').click(function (e) {
+      e.preventDefault();
+      const id = $(this).data('id');
+
+      $.ajax({
+        type: 'GET',
+        url: '/edit_consultant_wise_scholarship/' + id,
+        success: function (data) {
+          $('#editModal').modal('show');
+          $('#scow_id').val(id);
+          $('#scow_status').val(data.scow_status);
+
+          const countryDropdown = $('#country_name');
+          countryDropdown.empty();
+          countryDropdown.append('<option value="">Select Country</option>');
+
+          $.each(data.countries, function(index, country) {
+            countryDropdown.append(
+              $('<option></option>').attr('value', country.country_id).text(country.country_name)
+            );
+          });
+
+          if (data.country_id) {
+            countryDropdown.val(data.country_id).trigger('change');
+          } else {
+            countryDropdown.val('').trigger('change');
+          }
+
+          if (scowTextEditor) {
+            scowTextEditor.destroy(true);
+          }
+          if (scowWhoCanApplyEditor) {
+            scowWhoCanApplyEditor.destroy(true);
+          }
+
+          scowTextEditor = CKEDITOR.replace('scow_text', { versionCheck: false });
+          scowWhoCanApplyEditor = CKEDITOR.replace('scow_whocanapply', { versionCheck: false });
+
+          scowTextEditor.on('instanceReady', function() {
+            scowTextEditor.setData(data.scow_text || '');
+          });
+
+          scowWhoCanApplyEditor.on('instanceReady', function() {
+            scowWhoCanApplyEditor.setData(data.scow_whocanapply || '');
+          });
+        },
+        error: function (error) {
+          console.error(error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to fetch scholarship details!'
+          });
+        }
+      });
+    });
+
+    $('#saveChanges').click(function (e) {
+      e.preventDefault();
+
+      const id = $('#scow_id').val();
+      const scow_text = scowTextEditor ? scowTextEditor.getData() : '';
+      const scow_whocanapply = scowWhoCanApplyEditor ? scowWhoCanApplyEditor.getData() : '';
+      const scow_status = $('#scow_status').val();
+      const country_id = $('#country_name').val();
+      const csrftoken = getCookie('csrftoken');
+
+      $.ajax({
+        type: 'POST',
+        url: '/edit_consultant_wise_scholarship/' + id + '/',
+        data: {
+          'scow_text': scow_text,
+          'scow_whocanapply': scow_whocanapply,
+          'scow_status': scow_status,
+          'country_id': country_id,
+          'csrfmiddlewaretoken': csrftoken
+        },
+        success: function () {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Scholarship details updated successfully!',
+            timer: 1800,
+            timerProgressBar: true
+          }).then(() => {
+            location.reload();
+          });
+        },
+        error: function (error) {
+          console.error(error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to update scholarship details!'
+          });
+        }
+      });
+    });
+
+    $('.btn-delete').click(function (e) {
+      e.preventDefault();
+      const id = $(this).data('id');
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajax({
+          type: 'POST',
+          url: '/delete_consultant_wise_scholarship/' + id + '/',
+          headers: {
+            'X-CSRFToken': csrftoken
+          },
+          success: function (data) {
+            if (data.success) {
+              scholarshipTable.row($('#row_' + id)).remove().draw(false);
+              Swal.fire(
+                'Deleted!',
+                'Scholarship has been deleted.',
+                'success'
+              );
+            } else {
+              Swal.fire(
+                'Error!',
+                'Failed to delete scholarship.',
+                'error'
+              );
+            }
+          },
+          error: function () {
+            Swal.fire(
+              'Error!',
+              'Failed to delete scholarship.',
+              'error'
+            );
+          }
+        });
+      });
+    });
+
+    $('#editModal').on('hidden.bs.modal', function () {
+      if (scowTextEditor) {
+        scowTextEditor.destroy(true);
+        scowTextEditor = null;
+      }
+      if (scowWhoCanApplyEditor) {
+        scowWhoCanApplyEditor.destroy(true);
+        scowWhoCanApplyEditor = null;
+      }
+
+      $('#editForm')[0].reset();
+      $('#country_name').val('').trigger('change');
+    });
+  });
 </script>
 {% endblock custom_js %}

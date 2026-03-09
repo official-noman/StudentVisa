@@ -2,89 +2,86 @@
 {% load static %}
 
 {% block custom_css %}
-<style>
-    .form-group label {
-        font-weight: 600;
-        margin-bottom: 5px;
-        margin-top: 15px;
-    }
-</style>
+  {% include "roottemplates/partials/_page_theme.html" %}
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Add New Visa Service</h4>
-                </div>
-                <div class="card-body p-4">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    <form method="post" action="{% url 'add_visa_service' %}" enctype="multipart/form-data"
-                        id="serviceForm">
-                        {% csrf_token %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="title">Service Title</label>
-                                    <input type="text" name="title" id="title" class="form-control"
-                                        placeholder="e.g. Australian Student Visa" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="subtitle">Subtitle / Category</label>
-                                    <input type="text" name="subtitle" id="subtitle" class="form-control"
-                                        placeholder="e.g. Subclass 500" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="image">Featured Image</label>
-                            <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
-                            <small class="text-muted">This image will be used as the thumbnail and main banner.</small>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="short_description">Short Description (for cards)</label>
-                            <textarea name="short_description" id="short_description" class="form-control" rows="3"
-                                placeholder="Brief summary of the service..." required></textarea>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <label for="content">Full Content Details</label>
-                            <textarea name="content" id="content_editor" class="form-control" rows="10"></textarea>
-                        </div>
-
-                        <div class="mt-4 d-flex justify-content-end">
-                            <a href="{% url 'manage_visa_services' %}" class="btn btn-secondary me-2">Cancel</a>
-                            <button type="submit" class="btn btn-primary px-5">Publish Service</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Visa Services</div>
+        <h1 class="page-title">Add New Visa Service</h1>
+        <p class="page-subtitle">Publish a structured service page with image, short summary, and long-form content for the public website.</p>
+      </div>
     </div>
-</div>
 
-<!-- Using CKEditor 4 CDN which is already used in other project templates -->
+    <div class="page-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Content Publishing</div>
+            <h3 class="page-section-title">Service Information</h3>
+            <p class="page-section-subtitle">Create a polished and reusable visa service entry.</p>
+          </div>
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'add_visa_service' %}" enctype="multipart/form-data" id="serviceForm" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-form-row-2">
+            <div class="page-field">
+              <label class="page-label" for="title">Service Title</label>
+              <input type="text" name="title" id="title" class="form-control" placeholder="e.g. Australian Student Visa" required>
+            </div>
+
+            <div class="page-field">
+              <label class="page-label" for="subtitle">Subtitle / Category</label>
+              <input type="text" name="subtitle" id="subtitle" class="form-control" placeholder="e.g. Subclass 500" required>
+            </div>
+          </div>
+
+          <div class="page-field">
+            <label class="page-label" for="image">Featured Image</label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
+            <div class="page-help">This image will be used as the thumbnail and service banner.</div>
+          </div>
+
+          <div class="page-field">
+            <label class="page-label" for="short_description">Short Description</label>
+            <textarea name="short_description" id="short_description" class="form-control" rows="4" placeholder="Brief summary of the service..." required></textarea>
+          </div>
+
+          <div class="page-field">
+            <label class="page-label" for="content_editor">Full Content Details</label>
+            <textarea name="content" id="content_editor" class="form-control" rows="10"></textarea>
+          </div>
+
+          <div class="page-actions">
+            <a href="{% url 'manage_visa_services' %}" class="page-btn page-btn-secondary">Cancel</a>
+            <button type="submit" class="page-btn page-btn-primary">Publish Service</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block custom_js %}
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('content_editor',
-        versionCheck: false,{
-        height: 400,
-        // Optional: you can add more config here if needed
-    });
+  CKEDITOR.replace('content_editor', {
+    versionCheck: false,
+    height: 400
+  });
 </script>
-{% endblock content %}
+{% endblock custom_js %}

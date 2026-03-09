@@ -1,5 +1,33 @@
+{% load static %}
 
-<div class="container-fluid page-body-wrapper">
+<style>
+  #settings-trigger {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  }
+
+  .settings-panel {
+    border-left: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: -10px 0 30px rgba(15, 23, 42, 0.06);
+  }
+
+  .settings-panel .settings-heading {
+    color: #334155;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .settings-panel .nav-tabs .nav-link {
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .settings-panel .nav-tabs .nav-link.active {
+    color: #3b82f6;
+  }
+</style>
+
 <div class="theme-setting-wrapper">
   <div id="settings-trigger"><i class="ti-settings"></i></div>
   <div id="theme-settings" class="settings-panel">
@@ -22,6 +50,7 @@
     </div>
   </div>
 </div>
+
 <div id="right-sidebar" class="settings-panel">
   <i class="settings-close ti-close"></i>
   <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
@@ -34,6 +63,7 @@
         aria-controls="chats-section">CHATS</a>
     </li>
   </ul>
+
   <div class="tab-content" id="setting-content">
     <div class="tab-pane fade show active scroll-wrapper" id="todo-section" role="tabpanel"
       aria-labelledby="todo-section">
@@ -45,6 +75,7 @@
           </div>
         </form>
       </div>
+
       <div class="list-wrapper px-3">
         <ul class="d-flex flex-column-reverse todo-list">
           <li>
@@ -94,6 +125,7 @@
           </li>
         </ul>
       </div>
+
       <h4 class="px-3 text-muted mt-5 fw-light mb-0">Events</h4>
       <div class="events pt-4 px-3">
         <div class="wrapper d-flex mb-2">
@@ -112,15 +144,19 @@
         <p class="text-gray mb-0 ">Call Sarah Graves</p>
       </div>
     </div>
+
     <!-- To do section tab ends -->
     <div class="tab-pane fade" id="chats-section" role="tabpanel" aria-labelledby="chats-section">
       <div class="d-flex align-items-center justify-content-between border-bottom">
         <p class="settings-heading border-top-0 mb-3 pl-3 pt-0 border-bottom-0 pb-0">Friends</p>
         <small class="settings-heading border-top-0 mb-3 pt-0 border-bottom-0 pb-0 pr-3 fw-normal">See All</small>
       </div>
+
       <ul class="chat-list">
         <li class="list active">
-          <div class="profile"><img src="../assets/images/faces/face1.jpg" alt="image"><span class="online"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face1.jpg' %}" alt="image">
+            <span class="online"></span>
           </div>
           <div class="info">
             <p>Thomas Douglas</p>
@@ -128,8 +164,11 @@
           </div>
           <small class="text-muted my-auto">19 min</small>
         </li>
+
         <li class="list">
-          <div class="profile"><img src="../assets/images/faces/face2.jpg" alt="image"><span class="offline"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face2.jpg' %}" alt="image">
+            <span class="offline"></span>
           </div>
           <div class="info">
             <div class="wrapper d-flex">
@@ -140,8 +179,11 @@
           <div class="badge badge-success badge-pill my-auto mx-2">4</div>
           <small class="text-muted my-auto">23 min</small>
         </li>
+
         <li class="list">
-          <div class="profile"><img src="../assets/images/faces/face3.jpg" alt="image"><span class="online"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face3.jpg' %}" alt="image">
+            <span class="online"></span>
           </div>
           <div class="info">
             <p>Daniel Russell</p>
@@ -149,8 +191,11 @@
           </div>
           <small class="text-muted my-auto">14 min</small>
         </li>
+
         <li class="list">
-          <div class="profile"><img src="../assets/images/faces/face4.jpg" alt="image"><span class="offline"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face4.jpg' %}" alt="image">
+            <span class="offline"></span>
           </div>
           <div class="info">
             <p>James Richardson</p>
@@ -158,8 +203,11 @@
           </div>
           <small class="text-muted my-auto">2 min</small>
         </li>
+
         <li class="list">
-          <div class="profile"><img src="../assets/images/faces/face5.jpg" alt="image"><span class="online"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face5.jpg' %}" alt="image">
+            <span class="online"></span>
           </div>
           <div class="info">
             <p>Madeline Kennedy</p>
@@ -167,8 +215,11 @@
           </div>
           <small class="text-muted my-auto">5 min</small>
         </li>
+
         <li class="list">
-          <div class="profile"><img src="../assets/images/faces/face6.jpg" alt="image"><span class="online"></span>
+          <div class="profile">
+            <img src="{% static 'assets/images/faces/face6.jpg' %}" alt="image">
+            <span class="online"></span>
           </div>
           <div class="info">
             <p>Sarah Graves</p>

@@ -1,81 +1,215 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .service-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #fff;
+      display: block;
+    }
+
+    .service-title {
+      font-weight: 700;
+      color: #1E293B;
+      margin-bottom: 2px;
+    }
+
+    .service-sub {
+      font-size: 12px;
+      color: #64748B;
+    }
+
+    .action-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-soft-primary {
+      background: rgba(59, 130, 246, 0.10);
+      color: #3B82F6;
+      border: 1px solid rgba(59, 130, 246, 0.14);
+    }
+
+    .btn-soft-primary:hover {
+      background: rgba(59, 130, 246, 0.16);
+      color: #2563EB;
+    }
+
+    .btn-soft-danger {
+      background: rgba(244, 63, 94, 0.10);
+      color: #F43F5E;
+      border: 1px solid rgba(244, 63, 94, 0.14);
+    }
+
+    .btn-soft-danger:hover {
+      background: rgba(244, 63, 94, 0.16);
+      color: #E11D48;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-pill-active {
+      background: rgba(16,185,129,0.10);
+      color: #10B981;
+      border: 1px solid rgba(16,185,129,0.16);
+    }
+
+    .status-pill-inactive {
+      background: rgba(244,63,94,0.10);
+      color: #F43F5E;
+      border: 1px solid rgba(244,63,94,0.16);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
+      color: #64748B;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  </style>
+{% endblock custom_css %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="card-title mb-0">Manage Visa Services</h4>
-                        <a href="{% url 'add_visa_service' %}" class="btn btn-primary">Add New Service</a>
-                    </div>
-
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Subtitle</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for service in services %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>
-                                        {% if service.image %}
-                                        <img src="{{ service.image.url }}" alt="{{ service.title }}"
-                                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
-                                        {% else %}
-                                        <span class="badge bg-secondary">No Image</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ service.title }}</td>
-                                    <td>{{ service.subtitle }}</td>
-                                    <td>
-                                        {% if service.is_active %}
-                                        <span class="badge bg-success">Active</span>
-                                        {% else %}
-                                        <span class="badge bg-danger">Inactive</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'service_detail' service.slug %}" class="btn btn-sm btn-info"
-                                            target="_blank">View</a>
-                                        <button class="btn btn-sm btn-danger deleteBtn"
-                                            data-id="{{ service.id }}">Delete</button>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted">No visa services found.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Visa Services</div>
+        <h1 class="page-title">Manage Visa Services</h1>
+        <p class="page-subtitle">
+          Review published visa service entries, verify active status, open public detail pages, and manage service records.
+        </p>
+      </div>
+      <div>
+        <a href="{% url 'add_visa_service' %}" class="page-btn page-btn-primary">Add New Service</a>
+      </div>
     </div>
-</div>
 
+    <div class="page-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Service Directory</div>
+            <h3 class="page-section-title">All Visa Services</h3>
+            <p class="page-section-subtitle">
+              Monitor visibility, content quality, and service inventory from one place.
+            </p>
+          </div>
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="page-table-wrap">
+          <table class="page-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for service in services %}
+              <tr id="service-row-{{ service.id }}">
+                <td>{{ forloop.counter }}</td>
+
+                <td>
+                  {% if service.image %}
+                    <img src="{{ service.image.url }}" alt="{{ service.title }}" class="service-thumb">
+                  {% else %}
+                    <span class="page-note" style="padding:8px 12px;">No Image</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  <div class="service-title">{{ service.title }}</div>
+                </td>
+
+                <td>
+                  <div class="service-sub">{{ service.subtitle }}</div>
+                </td>
+
+                <td>
+                  {% if service.is_active %}
+                    <span class="status-pill status-pill-active">Active</span>
+                  {% else %}
+                    <span class="status-pill status-pill-inactive">Inactive</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  <div class="action-inline">
+                    <a
+                      href="{% url 'service_detail' service.slug %}"
+                      class="btn btn-sm btn-soft-primary"
+                      target="_blank"
+                    >
+                      View
+                    </a>
+
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-soft-danger deleteBtn"
+                      data-id="{{ service.id }}"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6">
+                  <div class="empty-state">No visa services found.</div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block custom_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-    // Logic for delete can be added later if views are implemented
+  // Delete logic can be connected here later when backend endpoint is ready.
+  document.querySelectorAll('.deleteBtn').forEach((button) => {
+    button.addEventListener('click', function () {
+      Swal.fire({
+        icon: 'info',
+        title: 'Delete action not connected yet',
+        text: 'Connect the backend delete endpoint to enable this action.'
+      });
+    });
+  });
 </script>
-{% endblock %}
+{% endblock custom_js %}

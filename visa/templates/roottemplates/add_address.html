@@ -1,69 +1,92 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+{% endblock custom_css %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Add Your Address</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Location Settings</div>
+        <h1 class="page-title">Office Address</h1>
+        <p class="page-subtitle">Manage office contact details, hotline information, and embedded map location for the public-facing contact section.</p>
+      </div>
+    </div>
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-
-            <form method="post" action="" id="addressForm">
-              {% csrf_token %}
-
-              <div class="form-group">
-                <label for="office_name">Office Name</label>
-                <input type="text" name="office_name" class="form-control" value="{{ existing_address.office_name }}">
-              </div>
-
-              <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" name="address" class="form-control" value="{{ existing_address.address }}">
-              </div>
-
-              <div class="form-group">
-                <label for="hotline">Hotline</label>
-                <input type="text" name="hotline" class="form-control" value="{{ existing_address.hotline }}">
-              </div>
-
-              <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="text" name="phone" class="form-control" value="{{ existing_address.phone }}">
-              </div>
-
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" name="email" class="form-control" value="{{ existing_address.email }}">
-              </div>
-
-              <div class="form-group">
-                <label for="map_location">Map Location</label>
-                <input type="text" name="map_location" class="form-control" value="{{ existing_map.map_location }}">
-              </div>
-
-              <button type="submit" class="btn btn-primary me-2">Save Address</button>
-              <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
-            </form>
-
+    <div class="page-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Address Management</div>
+            <h3 class="page-section-title">Add or Update Address</h3>
+            <p class="page-section-subtitle">Keep contact information accurate and consistent.</p>
           </div>
         </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="" id="addressForm" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-form-row-2">
+            <div class="page-field">
+              <label class="page-label" for="office_name">Office Name</label>
+              <input type="text" id="office_name" name="office_name" class="form-control" value="{{ existing_address.office_name|default:'' }}">
+            </div>
+
+            <div class="page-field">
+              <label class="page-label" for="hotline">Hotline</label>
+              <input type="text" id="hotline" name="hotline" class="form-control" value="{{ existing_address.hotline|default:'' }}">
+            </div>
+          </div>
+
+          <div class="page-field">
+            <label class="page-label" for="address">Address</label>
+            <input type="text" id="address" name="address" class="form-control" value="{{ existing_address.address|default:'' }}">
+          </div>
+
+          <div class="page-form-row-2">
+            <div class="page-field">
+              <label class="page-label" for="phone">Phone</label>
+              <input type="text" id="phone" name="phone" class="form-control" value="{{ existing_address.phone|default:'' }}">
+            </div>
+
+            <div class="page-field">
+              <label class="page-label" for="email">Email</label>
+              <input type="email" id="email" name="email" class="form-control" value="{{ existing_address.email|default:'' }}">
+            </div>
+          </div>
+
+          <div class="page-field">
+            <label class="page-label" for="map_location">Map Location</label>
+            <input type="text" id="map_location" name="map_location" class="form-control" value="{{ existing_map.map_location|default:'' }}">
+            <div class="page-help">Paste a Google Maps embed / shareable location reference if applicable.</div>
+          </div>
+
+          <div class="page-actions">
+            <button type="button" class="page-btn page-btn-secondary" onclick="resetForm()">Reset</button>
+            <button type="submit" class="page-btn page-btn-primary">Save Address</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-  <script>
-    function resetForm() {
-      document.getElementById("addressForm").reset();
-    }
-  </script>
 {% endblock content %}
+
+{% block custom_js %}
+<script>
+  function resetForm() {
+    document.getElementById("addressForm").reset();
+  }
+</script>
+{% endblock custom_js %}

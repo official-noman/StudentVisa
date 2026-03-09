@@ -1,60 +1,149 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+{% include "roottemplates/partials/_page_theme.html" %}
+<style>
+
+.offer-preview-img{
+  max-width: 260px;
+  border-radius: 12px;
+  margin-top: 10px;
+  border:1px solid rgba(0,0,0,0.08);
+}
+
+</style>
+{% endblock custom_css %}
+
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Offer Letters</h4>
+<div class="content-wrapper">
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
+<div class="page-shell">
 
-            <form method="post" action="{% url 'offer_letters' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" class="form-control" value="{% if instance %}{{ instance.title }}{% endif %}" required>
-              </div>
-
-              <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" class="form-control" required>{% if instance %}{{ instance.description }}{% endif %}</textarea>
-              </div>
+<div class="page-hero">
+<div>
+<div class="page-eyebrow">Content Manager</div>
+<h1 class="page-title">Offer Letters</h1>
+<p class="page-subtitle">
+Create or update offer letter content shown to users.
+</p>
+</div>
+</div>
 
 
+<div class="page-card">
 
-              <div class="form-group">
-                <label for="image">Image:</label>
-                {% if instance and instance.image %}
-                    <img src="{{ instance.image.url }}" alt="Existing Image" style="max-width: 100%; height: auto;">
-                    <br>
-                {% endif %}
-                <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
-              </div>
+<div class="page-card-body">
 
-              <button type="submit" class="btn btn-primary">{% if instance %}Update{% else %}Create{% endif %}</button>
-            </form>
+<div class="page-card-head">
+<div>
+<div class="page-section-kicker">Editor</div>
+<h3 class="page-section-title">Offer Letter Form</h3>
+<p class="page-section-subtitle">
+Manage title, description and associated image.
+</p>
+</div>
+</div>
 
-            <!-- Include CKEditor library -->
-            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-            <script>
-              CKEDITOR.replace('description', { versionCheck: false });
-            </script>
 
-          </div>
-        </div>
-    </div>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} page-alert">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
 
-      </div>
-    </div>
-  </div>
+
+<form method="post" action="{% url 'offer_letters' %}" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+
+<div class="form-group mb-3">
+
+<label class="form-label">Title</label>
+
+<input
+type="text"
+name="title"
+class="form-control"
+value="{% if instance %}{{ instance.title }}{% endif %}"
+required
+>
+
+</div>
+
+
+<div class="form-group mb-3">
+
+<label class="form-label">Description</label>
+
+<textarea
+id="description"
+name="description"
+class="form-control"
+rows="6"
+required
+>{% if instance %}{{ instance.description }}{% endif %}</textarea>
+
+</div>
+
+
+<div class="form-group mb-4">
+
+<label class="form-label">Image</label>
+
+{% if instance and instance.image %}
+<div>
+<img src="{{ instance.image.url }}" class="offer-preview-img">
+</div>
+{% endif %}
+
+<input
+type="file"
+name="image"
+accept="image/*"
+class="form-control"
+>
+
+</div>
+
+
+<button type="submit" class="page-btn page-btn-primary">
+
+{% if instance %}
+Update Offer Letter
+{% else %}
+Create Offer Letter
+{% endif %}
+
+</button>
+
+
+</form>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
 {% endblock content %}
+
+
+
+{% block custom_js %}
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
+<script>
+CKEDITOR.replace('description',{
+height:300,
+versionCheck:false
+});
+</script>
+
+{% endblock custom_js %}

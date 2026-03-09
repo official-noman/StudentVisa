@@ -1,311 +1,311 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
+
 {% block custom_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .root-form-card {
+      max-width: 720px;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap .form-control {
+      padding-right: 52px !important;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(59, 130, 246, 0.10);
+      color: #3B82F6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .password-toggle-btn:hover {
+      background: rgba(59, 130, 246, 0.16);
+      color: #2563EB;
+    }
+
+    .field-error {
+      font-size: 12px;
+      color: #DC2626;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .error-border {
+      border-color: rgba(220, 38, 38, 0.45) !important;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08) !important;
+      background: #fff !important;
+    }
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-5">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Creat Root</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Admin Access</div>
+        <h1 class="page-title">Create Root User</h1>
+        <p class="page-subtitle">
+          Create a privileged root account with validated email, phone number, and secure password input.
+        </p>
+      </div>
+    </div>
 
-            {% if messages %}
-            <div class="alert alert-danger">
-              <ul>
-                {% for message in messages %}
-                  <li>{{ message }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
-
-          <form id="creat-form" method="post" action="{% url 'create_root' %}">
-            {% csrf_token %}
-
-            <div class="form-group">
-              <label for="full_name">Full Name:</label>
-              <input type="text" value="{{ full_name }}" name="full_name" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-              <label for="email" class="signup-label">Email:</label>
-              <input type="email" id="email" value="{{ email }}"  class="form-control" name="email" placeholder="Email" />
-              <div class="d-flex justify-content-start"><span id="email-error" style="color: red;"></span></div>
-            </div>
-
-            
-
-            <div class="form-group">
-              <label for="phone">Phone:</label>
-   
-              <input type="text" id="phone"  class="form-control" name="phone" placeholder="phone"  maxlength="11" required>
-            </div>
-            <div class="form-group">
-              <label for="password">Password:</label>
-              <div class="input-group">
-                  <input id="password" type="password" name="password" class="form-control" required>
-              
-                      <button type="button" id="togglePassword" class="btn btn-outline-secondary" style="height:32px; padding:10px"><span>
-                        <i class="fas fa-eye eye-icon" style="
-                        margin-top: -9px;
-                    "></i>
-                      </span></button>
-            
-              </div>
-          </div>
-                
-          <div class="w-100">
-            <div id="error-message-div" class="d-flex error-message-div">
-                <p><span id="message-text" class="message-text text-center"></span></p>
-            </div>
-        </div>
-
-        <button type="submit" id="submit-btn" class="btn btn-primary">Create Root User</button>
-          </form>
-
-            <!-- Include CKEditor library -->
-       
-
+    <div class="page-card root-form-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">User Provisioning</div>
+            <h3 class="page-section-title">Root Account Setup</h3>
+            <p class="page-section-subtitle">
+              Fill in unique credentials to create a new root-level user.
+            </p>
           </div>
         </div>
-        </div>
+
+        {% if messages %}
+          <div class="alert alert-danger page-alert mb-3">
+            <ul class="mb-0 ps-3">
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <form id="creat-form" method="post" action="{% url 'create_root' %}" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="full_name" class="page-label">Full Name</label>
+            <input
+              type="text"
+              id="full_name"
+              name="full_name"
+              value="{{ full_name|default:'' }}"
+              class="form-control"
+              required
+            >
+          </div>
+
+          <div class="page-field">
+            <label for="email" class="page-label">Email</label>
+            <input
+              type="email"
+              id="email"
+              value="{{ email|default:'' }}"
+              class="form-control"
+              name="email"
+              placeholder="Email"
+              required
+            >
+            <span id="email-error" class="field-error"></span>
+          </div>
+
+          <div class="page-field">
+            <label for="phone" class="page-label">Phone</label>
+            <input
+              type="text"
+              id="phone"
+              class="form-control"
+              name="phone"
+              placeholder="Phone"
+              maxlength="11"
+              required
+            >
+            <span id="phone-error" class="field-error"></span>
+          </div>
+
+          <div class="page-field">
+            <label for="password" class="page-label">Password</label>
+            <div class="password-wrap">
+              <input
+                id="password"
+                type="password"
+                name="password"
+                class="form-control"
+                required
+              >
+              <button type="button" id="togglePassword" class="password-toggle-btn" aria-label="Toggle password visibility">
+                <i class="fas fa-eye eye-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="page-actions">
+            <button type="submit" id="submit-btn" class="page-btn page-btn-primary">Create Root User</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>
+{% endblock content %}
 
-  {% endblock content %}
-
-  {% block custom_js %}
-  
-  <script>
-    // Phone validation starts
-    function validateForm() {
-        var requiredFields = [
-            { field: 'name', message: 'Your Name is required.' },
-            { field: 'email', message: 'Email address is required.' },
-            { field: 'phone', message: 'Phone Number is required.' },
-            { field: 'subject', message: 'Subject is required.' },
-            { field: 'category', message: 'Category is required.' },
-            { field: 'message', message: 'Message is required.' }
-        ];
-        var isValid = true;
-        requiredFields.forEach(function (item) {
-            var value = $('#' + item.field).val();
-            if (!value) {
-                $('#' + item.field).addClass('error-border');
-                // Set the error message text
-                $('#' + item.field + '_error').text(item.message);
-                isValid = false;
-            } else {
-                $('#' + item.field).removeClass('error-border');
-                // Clear the error message
-                $('#' + item.field + '_error').text('');
-            }
-        });
-        if (!isValid) {
-            // Use a more user-friendly method than alert, e.g., displaying messages on the page
-            alert('Please fill in all required fields.');
-        }
-    }
-</script>
-
+{% block custom_js %}
 <script>
-  const togglePassword = document.getElementById('togglePassword');
-  const passwordInput = document.getElementById('password');
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('creat-form');
+    const fullNameInput = document.getElementById('full_name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const emailError = document.getElementById('email-error');
+    const phoneError = document.getElementById('phone-error');
 
-  togglePassword.addEventListener('click', function() {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    function validateFullNameInput() {
+      fullNameInput.value = fullNameInput.value
+        .replace(/\s{2,}/g, ' ')
+        .replace(/[0-9]/g, '');
+
+      if (!/\S/.test(fullNameInput.value)) {
+        fullNameInput.value = fullNameInput.value.replace(/\s/g, '');
+      }
+    }
+
+    async function handleEmailValidation() {
+      const email = emailInput.value.trim();
+
+      if (!validateEmail(email)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailInput.classList.add('error-border');
+        return false;
+      }
+
+      emailError.textContent = '';
+      emailInput.classList.remove('error-border');
+
+      try {
+        const csrftoken = getCookie('csrftoken');
+        const response = await $.ajax({
+          type: "POST",
+          url: "/check_email_exist/",
+          data: { email: email },
+          headers: { "X-CSRFToken": csrftoken },
+          dataType: "json"
+        });
+
+        if (response.exists) {
+          emailError.textContent = 'Email already exists';
+          emailInput.classList.add('error-border');
+          return false;
+        }
+
+        emailError.textContent = '';
+        emailInput.classList.remove('error-border');
+        return true;
+      } catch (error) {
+        console.error("Email validation error:", error);
+        return true;
+      }
+    }
+
+    async function handlePhoneValidation() {
+      let numericPhone = phoneInput.value.replace(/\D/g, "");
+      phoneInput.value = numericPhone;
+
+      if (numericPhone.length !== 11) {
+        phoneError.textContent = 'Phone Number must be 11 digits';
+        phoneInput.classList.add('error-border');
+        return false;
+      }
+
+      const allowedPrefixes = ["019", "018", "017", "016", "013", "014"];
+      const isValidPrefix = allowedPrefixes.some(prefix => numericPhone.startsWith(prefix));
+
+      if (!isValidPrefix) {
+        phoneError.textContent = 'Invalid Format';
+        phoneInput.classList.add('error-border');
+        return false;
+      }
+
+      phoneError.textContent = '';
+      phoneInput.classList.remove('error-border');
+
+      try {
+        const csrftoken = getCookie('csrftoken');
+        const response = await $.ajax({
+          type: "POST",
+          url: "/check_phone_exist/",
+          data: { phone: numericPhone },
+          headers: { "X-CSRFToken": csrftoken },
+          dataType: "json"
+        });
+
+        if (response.exists) {
+          phoneError.textContent = 'Phone number already exists';
+          phoneInput.classList.add('error-border');
+          return false;
+        }
+
+        phoneError.textContent = '';
+        phoneInput.classList.remove('error-border');
+        return true;
+      } catch (error) {
+        console.error("Phone validation error:", error);
+        return true;
+      }
+    }
+
+    togglePassword.addEventListener('click', function() {
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
-      this.querySelector('i').classList.toggle('fa-eye');
-      this.querySelector('i').classList.toggle('fa-eye-slash');
-  });
-</script>
-<script>
-  $(document).ready(function(){
-    // Function to validate email format
-    function validateEmail(email) {
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
 
-    // Function to handle email validation starts
-    function handleEmailValidation() {
-        var emailInput = $('#email');
-        var email = emailInput.val();
-        var emailError = $('#email-error');
-
-        if (validateEmail(email)) {
-            // Valid email format
-            emailError.text('');
-            emailInput.removeClass('error-border');
-
-            // AJAX request to check if the email exists
-            var csrftoken = getCookie('csrftoken');
-            $.ajax({
-                type: "POST",
-                url: "/check_email_exist/",
-                data: {
-                    email: email
-                },
-                headers: { "X-CSRFToken": csrftoken },  // Include CSRF token in headers
-                dataType: "json",
-                success: function(response) {
-                    if (response.exists) {
-                        // Email already exists
-                        emailError.text('Email already exists');
-                        emailInput.addClass("error-border");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                }
-            });
-
-            return true;
-        } else {
-            // Invalid email format
-            emailError.text('Please enter a valid email address');
-            emailInput.addClass('error-border');
-            return false;
-        }
-    }
-
-    // Attach input event to the email input field
-    $('#email').on('input', handleEmailValidation);
-
-    // Phone validation starts 
-    $("#phone").on("input", function() {
-        var phone = $(this).val();
-        var numericPhone = phone.replace(/\D/g, ""); // Remove non-digit characters
-        
-        // Check if the phone number length is not 11
-        if (numericPhone.length !== 11) {
-            $(".phone_error").remove();
-            $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone Number must be 11 digits</span></div>").insertAfter("#phone");
-            $("#phone").addClass("error-border");
-            return false;
-        }
-        
-        // Check if the phone number starts with the allowed prefixes
-        var allowedPrefixes = ["019", "018", "017", "016", "013", "014"];
-        var isValidPrefix = false;
-        for (var i = 0; i < allowedPrefixes.length; i++) {
-            if (numericPhone.startsWith(allowedPrefixes[i])) {
-                isValidPrefix = true;
-                break;
-            }
-        }
-        if (!isValidPrefix) {
-            $(".phone_error").remove();
-            $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Invalid Format</div></span>").insertAfter("#phone");
-            $("#phone").addClass("error-border");
-            return false;
-        }
-    
-        // If the input is valid, remove any error messages and styling
-        $(".phone_error").remove();
-        $("#phone").removeClass("error-border");
-    
-        // Get CSRF token
-        var csrftoken = getCookie('csrftoken');
-
-        // AJAX request to check if the phone number exists
-        $.ajax({
-            type: "POST",
-            url: "/check_phone_exist/",
-            data: {
-                phone: numericPhone
-            },
-            headers: { "X-CSRFToken": csrftoken },  // Include CSRF token in headers
-            dataType: "json",
-            success: function(response) {
-                if (response.exists) {
-                    // Phone number already exists
-                    $(".phone_error").remove();
-                    $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone number already exists</div></span>").insertAfter("#phone");
-                    $("#phone").addClass("error-border");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });
+      const icon = this.querySelector('i');
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
     });
 
-    $('#creat-form').on('submit', function(event) {
-      // Validate email
-      if (!handleEmailValidation()) {
-          event.preventDefault(); // Prevent form submission if email is invalid
-          return false; // Stop further execution of the function
+    fullNameInput.addEventListener('input', validateFullNameInput);
+    emailInput.addEventListener('input', handleEmailValidation);
+    phoneInput.addEventListener('input', handlePhoneValidation);
+
+    form.addEventListener('submit', async function(event) {
+      const isEmailValid = await handleEmailValidation();
+      const isPhoneValid = await handlePhoneValidation();
+
+      if (!isEmailValid || !isPhoneValid) {
+        event.preventDefault();
       }
-  
-      // Perform phone validation
-      if (!$("#phone").trigger("input")) {
-          event.preventDefault(); // Prevent form submission if phone validation fails
-          return false; // Stop further execution of the function
-      }
-  
-      // Check if any errors exist
-      var errorsExist = $('.phone_error').length > 0 || $('#email-error').text() !== '';
-      
-      // If errors exist, prevent form submission
-      if (errorsExist) {
-          event.preventDefault();
-          return false;
-      } else {
-          // If no errors, the form will be submitted as usual
-          return true;
-      }
+    });
   });
-    // Function to retrieve CSRF token from cookies
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-});
 </script>
-</script>
-
-    <script>
-    function validateFullName(inputElement) {
-        // Remove consecutive spaces with a single space
-        inputElement.value = inputElement.value.replace(/\s{2,}/g, ' ');
-    
-        // Prevent entering numbers in real-time
-        inputElement.value = inputElement.value.replace(/[0-9]/g, '');
-    
-        // If there is no word entered, do not allow spaces
-        if (!/\S/.test(inputElement.value)) {
-            inputElement.value = inputElement.value.replace(/\s/g, '');
-        }
-    }
-    </script>
-
-  <script>
-    $(document).ready(function() {
-      $('#phone').on('input', function() {
-          // Remove any non-numeric characters from the input
-          var sanitized = $(this).val().replace(/\D/g, '');
-          $(this).val(sanitized);
-      });
-  });
-  </script>
-  
-  
-  {% endblock custom_js %}
-
+{% endblock custom_js %}

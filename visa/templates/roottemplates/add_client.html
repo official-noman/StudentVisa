@@ -1,56 +1,90 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
-{% block custom_css %}
 
-<style>
-    .form-control, .typeahead, .tt-query, .tt-hint, .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single, .dataTables_wrapper select, .asColorPicker-input {
-        border: 1px solid #dee2e6;
-        font-weight: 400;
-        font-size: 0.875rem;
-        border-radius: 4px;
-        height: 2rem;
-        padding: 9px;
-    }
-</style>
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
 {% endblock custom_css %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-    <div class="col-md-6">
-  
-          <div class="card">
-            <div class="card-body">
-          <h4 class="card-title mb-4">Add Client</h4>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        {{ message }}
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Homepage Assets</div>
+        <h1 class="page-title">Add Client</h1>
+        <p class="page-subtitle">
+          Add a new client showcase item with name, website URL, and logo/image for the homepage partner section.
+        </p>
+      </div>
     </div>
-    {% endfor %}
-    {% endif %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="client_name" class="form-label">Client Name:</label>
-            <input type="text" class="form-control" id="client_name" name="client_name" required>
+
+    <div class="page-card" style="max-width: 860px;">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Client Management</div>
+            <h3 class="page-section-title">Create Client Entry</h3>
+            <p class="page-section-subtitle">
+              Use a consistent image size to keep the client grid clean and visually balanced.
+            </p>
+          </div>
         </div>
-        <div class="mb-3">
-            <label for="client_name" class="form-label">Website URL:</label>
-            <input type="url" class="form-control" id="client_url" name="client_url" required>
-        </div>
-        <div class="mb-3">
-            <label for="client_image" class="form-label">Client Image:</label>
-            <input type="file" class="form-control" id="client_image" name="client_image" accept="image/*" required>
-        </div>
-               <div>
-            <p style="font-size: 14px; font-weight: 600; color:red !important;">Width: 190px; Height: 90px</p>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
             </div>
-        <button type="submit" class="btn btn-primary">Add Client</button>
-    </form>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="client_name" class="page-label">Client Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="client_name"
+              name="client_name"
+              required
+            >
+          </div>
+
+          <div class="page-field">
+            <label for="client_url" class="page-label">Website URL</label>
+            <input
+              type="url"
+              class="form-control"
+              id="client_url"
+              name="client_url"
+              required
+            >
+          </div>
+
+          <div class="page-field">
+            <label for="client_image" class="page-label">Client Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="client_image"
+              name="client_image"
+              accept="image/*"
+              required
+            >
+          </div>
+
+          <div class="page-note">
+            Recommended image size: <strong>190px × 90px</strong>
+          </div>
+
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">Add Client</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-{% endblock %}
+{% endblock content %}

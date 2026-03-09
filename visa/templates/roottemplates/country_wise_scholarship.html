@@ -1,114 +1,138 @@
 {% extends "roottemplates/base.html" %}
+{% load static %}
 
 {% block custom_css %}
-<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    .select2-container{
-      margin-top: 10px !important;
-  }
-  .select2-container--default .select2-selection--single{
-      border: 1px solid !important;
-      padding: 12px 15px !important;
-      height: 40px !important;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #444 !important;
-    line-height: 17px;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__arrow{
-      top: 7px !important;
-      right: 5px !important;
-  }
-  .select2-container--open .select2-dropdown--below{
-      border-radius: 5px !important;
-      border: 1px solid !important;
-  }
-  .select2-container--default .select2-search--dropdown .select2-search__field{
-      border-radius: 4px !important;
-      border: 1px solid  !important
-  }
-  .select2-container--default .select2-selection--single .select2-selection__rendered{
-      color: #707070 !important;
-      font-size: 15px !important;
-  }
-  label {
-    display: block;
-  }
-  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
-    font-size: 0.812rem;
-    border-radius: 6px;
-  }
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+    .select2-container {
+      width: 100% !important;
+      margin-top: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+      min-height: 46px !important;
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #F8FAFC !important;
+      border-radius: 14px !important;
+      padding: 8px 12px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #334155 !important;
+      line-height: 28px !important;
+      font-size: 14px !important;
+      padding-left: 0 !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 44px !important;
+      right: 8px !important;
+    }
   </style>
 {% endblock custom_css %}
-{% load static %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Country Wise Scholarship</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Scholarship Management</div>
+        <h1 class="page-title">Country Wise Scholarship</h1>
+        <p class="page-subtitle">
+          Create scholarship content by country with title, eligibility details, description, and featured image.
+        </p>
+      </div>
+    </div>
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-            <form method="post" action="{% url 'country_wise' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                  <label for="country_id">Select Country:</label>
-                  <select id="country_id" name="country_id" class="form-control" required>
-                      {% for country in country %}
-                          <option value="{{ country.country_id }}">{{ country.country_name }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-              <div class="form-group">
-                <label for="scw_title">Title:</label>
-                <input id="scw_title" name="scw_title" class="form-control" required>{{ instances.scw_title }}</input>
-            </div>
-              <div class="form-group">
-                  <label for="scw_text">Description:</label>
-                  <textarea id="scw_text" name="scw_text" class="form-control" required>{{ instances.scw_text }}</textarea>
-              </div>
-              <div class="form-group">
-                  <label for="scw_whocanapply">Who Can Apply:</label>
-                  <textarea id="scw_whocanapply" name="scw_whocanapply" class="form-control">{{ instances.scw_whocanapply }}</textarea>
-              </div>
-              <div class="form-group">
-                  <label for="scw_image">Upload Image:</label>
-                  <input type="file" id="scw_image" name="scw_image">
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-          </form>
-            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-            <script>
-              CKEDITOR.replace('scw_whocanapply', { versionCheck: false });
-              CKEDITOR.replace('scw_text', { versionCheck: false });
-            </script>
-
+    <div class="page-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Scholarship Entry</div>
+            <h3 class="page-section-title">Add Country Wise Scholarship</h3>
+            <p class="page-section-subtitle">
+              Publish country-specific scholarship information in a structured format.
+            </p>
           </div>
         </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'country_wise' %}" enctype="multipart/form-data" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="country_id" class="page-label">Select Country</label>
+            <select id="country_id" name="country_id" class="form-control" required>
+              {% for item in country %}
+                <option value="{{ item.country_id }}">{{ item.country_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="page-field">
+            <label for="scw_title" class="page-label">Title</label>
+            <input
+              type="text"
+              id="scw_title"
+              name="scw_title"
+              class="form-control"
+              value="{{ instances.scw_title|default:'' }}"
+              required
+            >
+          </div>
+
+          <div class="page-field">
+            <label for="scw_text" class="page-label">Description</label>
+            <textarea
+              id="scw_text"
+              name="scw_text"
+              class="form-control"
+              required
+            >{{ instances.scw_text|default:'' }}</textarea>
+          </div>
+
+          <div class="page-field">
+            <label for="scw_whocanapply" class="page-label">Who Can Apply</label>
+            <textarea
+              id="scw_whocanapply"
+              name="scw_whocanapply"
+              class="form-control"
+            >{{ instances.scw_whocanapply|default:'' }}</textarea>
+          </div>
+
+          <div class="page-field">
+            <label for="scw_image" class="page-label">Upload Image</label>
+            <input type="file" id="scw_image" name="scw_image" class="form-control" accept="image/*">
+          </div>
+
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">Save Scholarship</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
 {% endblock content %}
+
 {% block custom_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
-<!-- Use an alternative CDN link for Select2 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<!-- If the CDN link does not work, download select2.min.js and host it locally -->
-<!-- <script src="{% static 'path/to/select2.min.js' %}"></script> -->
-<script>
-    // Initialize Select2 for the dropdown element
-    $(document).ready(function() {
-        console.log('Select2 initialization script executed.');
-        $('#country_id').select2();
-    });
-</script>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
+<script>
+  $(document).ready(function() {
+    $('#country_id').select2();
+
+    CKEDITOR.replace('scw_whocanapply', { versionCheck: false });
+    CKEDITOR.replace('scw_text', { versionCheck: false });
+  });
+</script>
 {% endblock custom_js %}

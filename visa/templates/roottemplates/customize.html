@@ -1,64 +1,135 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .customize-card {
+      max-width: 980px;
+    }
+
+    .image-preview-wrap {
+      margin-top: 12px;
+    }
+
+    .image-preview-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      width: 100%;
+      max-width: 560px;
+      background: #F8FAFC;
+      border: 1px dashed rgba(15, 23, 42, 0.14);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .image-preview-box img {
+      max-width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .image-empty-text {
+      color: #64748B;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 24px;
+      text-align: center;
+    }
+  </style>
+{% endblock custom_css %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Home Page</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Homepage Content</div>
+        <h1 class="page-title">Customize Home Page</h1>
+        <p class="page-subtitle">
+          Update the homepage description and hero/banner image used on the public-facing landing section.
+        </p>
+      </div>
+    </div>
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
+    <div class="page-card customize-card">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Content Editor</div>
+            <h3 class="page-section-title">Homepage Settings</h3>
+            <p class="page-section-subtitle">
+              Maintain clean copy and use the recommended banner size for best visual consistency.
+            </p>
+          </div>
+        </div>
 
-            <form method="post" action="{% url 'root_customize' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-<div class="form-group">
-  <label for="description">Customize Description:</label>
-  <textarea id="description" name="description">{% if instance %}{{ instance.description }}{% endif %}</textarea>
-</div>
-      
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
 
-        <div class="form-group row justify-content-between">
-                
-                    <label for="image">Upload Image:</label>
-                    <input id="wizard-picture" type="file" id="image" name="image">
-                    {% if instance.image %}
-                    <img src="{{ instance.image.url }}" alt="Customization Image" style="max-width: 400px;">
+        <form method="post" action="{% url 'root_customize' %}" enctype="multipart/form-data" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="description" class="page-label">Customize Description</label>
+            <textarea id="description" name="description">{% if instance %}{{ instance.description }}{% endif %}</textarea>
+          </div>
+
+          <div class="page-field">
+            <label for="wizard-picture" class="page-label">Upload Image</label>
+            <input id="wizard-picture" type="file" name="image" class="form-control" accept="image/*">
+
+            <div class="page-note">
+              Recommended image size: <strong>960px × 300px</strong>
+            </div>
+
+            <div class="image-preview-wrap">
+              <div class="image-preview-box">
+                {% if instance.image %}
+                  <img
+                    id="wizardPicturePreview"
+                    src="{{ instance.image.url }}"
+                    alt="Customization Image"
+                  >
+                {% else %}
+                  <img
+                    id="wizardPicturePreview"
+                    src=""
+                    alt="Customization Preview"
+                    style="display:none;"
+                  >
+                  <div id="imageEmptyText" class="image-empty-text">
+                    No image selected yet.
+                  </div>
                 {% endif %}
-     
               </div>
-                <div>
-                <p style="font-size: 14px; font-weight: 600; color:red !important;">Width: 960px; Height: 300px</p>
-                </div>
+            </div>
+          </div>
 
-              <button type="submit" class="btn btn-primary">{% if instance %}Update{% else %}Create{% endif %}</button>
-            </form>
-
-        </div>
-        </div>
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">
+              {% if instance %}Update{% else %}Create{% endif %}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  </div>
+</div>
 {% endblock content %}
 
 {% block custom_js %}
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<!-- Include CKEditor library -->
-
 <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
-<script>
-  tinymce.init({
-    selector: '#description'
-  });
-</script>
+
 <script>
   tinymce.init({
     selector: '#description',
@@ -71,25 +142,26 @@
 </script>
 
 <script>
-    $(document).ready(function(){
-        console.log('page loaded')
-        // Prepare the preview for profile picture
-        $("#wizard-picture").change(function(){
-            console.log('something changed')
-            readURL(this);
-        });
-
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-        
-                reader.onload = function (e) {
-                    $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+  $(document).ready(function(){
+    $("#wizard-picture").on("change", function(){
+      readURL(this);
     });
-    
+
+    function readURL(input) {
+      const preview = $('#wizardPicturePreview');
+      const emptyText = $('#imageEmptyText');
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.attr('src', e.target.result).show();
+          emptyText.hide();
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  });
 </script>
 {% endblock custom_js %}

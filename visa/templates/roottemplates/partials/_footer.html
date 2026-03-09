@@ -1,7 +1,37 @@
+<style>
+  .footer {
+    width: 100%;
+    margin-top: auto;
+    background: transparent;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    padding: 18px 30px;
+    color: #64748b;
+  }
+
+  .footer a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767.98px) {
+    .footer {
+      padding: 16px;
+    }
+  }
+</style>
+
 <footer class="footer">
-  <div class="d-sm-flex justify-content-center justify-content-sm-between">
-    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Premium <a
-        href="https://iglweb.com/web//" target="_blank">IGL Web LTd.</a></span>
-    <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">Copyright © 2024. All rights reserved.</span>
+  <div class="d-sm-flex justify-content-center justify-content-sm-between align-items-center">
+    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+      Premium by <a href="https://iglweb.com/web//" target="_blank" rel="noopener noreferrer">IGL Web Ltd.</a>
+    </span>
+    <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
+      Copyright © {% now "Y" %}. All rights reserved.
+    </span>
   </div>
 </footer>

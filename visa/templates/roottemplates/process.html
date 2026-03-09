@@ -1,66 +1,126 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .process-preview-img {
+      max-width: 390px;
+      max-height: 300px;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #fff;
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+{% endblock custom_css %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Add/Edit Explanation</h4>
+<div class="content-wrapper">
+  <div class="page-shell">
+    <div class="page-hero">
+      <div>
+        <div class="page-eyebrow">Homepage Content</div>
+        <h1 class="page-title">Add / Edit Explanation</h1>
+        <p class="page-subtitle">
+          Manage the process explanation section with title, rich description, and a featured illustration image.
+        </p>
+      </div>
+    </div>
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-
-            <form method="post" action="{% url 'explenation' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <div class="form-group">
-                <label for="exp_title">Title:</label>
-                <input type="text" id="exp_title" name="exp_title" class="form-control" value="{% if instance %}{{ instance.exp_title }}{% endif %}" required>
-              </div>
-
-              <div class="form-group">
-                <label for="exp_des">Description:</label>
-                <textarea id="exp_des" name="exp_des" class="form-control" rows="4" required>{% if instance %}{{ instance.exp_des }}{% endif %}</textarea>
-              </div>
-
-               <div class="form-group row justify-content-between">
-                <label for="exp_img"> Uploaded Image:</label>
-                {% if instance and instance.exp_img %}
-                    <img src="{{ instance.exp_img.url }}" alt="Existing Image" style="max-width: 400px; height: auto;">
-                    <br>
-                {% endif %}
-                <br>
-                <input type="file" id="exp_img" name="exp_img" accept="image/*" class="form-control-file">
-            </div>
-              <div>
-          <p style="font-size: 14px; font-weight: 600;  color:red !important;">Width: 390px; Height: 300px</p>
-          </div>
-
-              <!-- Include the user's id as a hidden field -->
-              <input type="hidden" name="root_id" value="{{ request.user.id }}">
-
-              <button type="submit" class="btn btn-primary">{% if instance %}Update{% else %}Create{% endif %}</button>
-            </form>
-
+    <div class="page-card" style="max-width: 980px;">
+      <div class="page-card-body">
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Content Editor</div>
+            <h3 class="page-section-title">Explanation Form</h3>
+            <p class="page-section-subtitle">
+              Keep the explanation copy clear and use the recommended image size for consistent presentation.
+            </p>
           </div>
         </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'explenation' %}" enctype="multipart/form-data" class="page-form-grid">
+          {% csrf_token %}
+
+          <div class="page-field">
+            <label for="exp_title" class="page-label">Title</label>
+            <input
+              type="text"
+              id="exp_title"
+              name="exp_title"
+              class="form-control"
+              value="{% if instance %}{{ instance.exp_title }}{% endif %}"
+              required
+            >
+          </div>
+
+          <div class="page-field">
+            <label for="exp_des" class="page-label">Description</label>
+            <textarea
+              id="exp_des"
+              name="exp_des"
+              class="form-control"
+              rows="4"
+              required
+            >{% if instance %}{{ instance.exp_des }}{% endif %}</textarea>
+          </div>
+
+          <div class="page-field">
+            <label for="exp_img" class="page-label">Uploaded Image</label>
+
+            {% if instance and instance.exp_img %}
+              <img
+                src="{{ instance.exp_img.url }}"
+                alt="Existing Image"
+                class="process-preview-img"
+              >
+            {% endif %}
+
+            <input
+              type="file"
+              id="exp_img"
+              name="exp_img"
+              accept="image/*"
+              class="form-control"
+            >
+
+            <div class="page-note">
+              Recommended size: <strong>390px × 300px</strong>
+            </div>
+          </div>
+
+          <input type="hidden" name="root_id" value="{{ request.user.id }}">
+
+          <div class="page-actions">
+            <button type="submit" class="page-btn page-btn-primary">
+              {% if instance %}Update{% else %}Create{% endif %}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-  <!-- Include CKEditor library -->
-  <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-  <script>
-    // Replace the textarea with id 'exp_des' with CKEditor
-    CKEDITOR.replace('exp_des', { versionCheck: false });
-    
-  </script>
-
 {% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+  CKEDITOR.replace('exp_des', {
+    versionCheck: false,
+    height: 300
+  });
+</script>
+{% endblock custom_js %}
