@@ -3,46 +3,261 @@
 
 {% block custom_css %}
   {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .benefit-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .benefit-page .benefit-shell {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .benefit-page .benefit-hero {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .benefit-page .benefit-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .benefit-page .benefit-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .benefit-page .benefit-subtitle {
+      margin: 0 auto;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .benefit-page .benefit-card {
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .benefit-page .benefit-card-body {
+      padding: 24px;
+    }
+
+    .benefit-page .benefit-card-head {
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .benefit-page .benefit-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .benefit-page .benefit-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .benefit-page .benefit-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .benefit-page .benefit-alert {
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .benefit-page .benefit-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .benefit-page .benefit-field {
+      width: 100%;
+    }
+
+    .benefit-page .benefit-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .benefit-page .benefit-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .benefit-page .benefit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .benefit-page .benefit-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    .benefit-page .cke {
+      width: 100% !important;
+      display: block !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+
+    .benefit-page .cke_top {
+      background: #f8fafc !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .benefit-page .cke_bottom {
+      background: #f8fafc !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .benefit-page .cke_contents {
+      min-height: 240px !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .benefit-page {
+        padding: 20px 16px 32px;
+      }
+
+      .benefit-page .benefit-title {
+        font-size: 28px;
+      }
+
+      .benefit-page .benefit-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .benefit-page {
+        padding: 16px 12px 28px;
+      }
+
+      .benefit-page .benefit-title {
+        font-size: 24px;
+      }
+
+      .benefit-page .benefit-subtitle {
+        font-size: 14px;
+      }
+
+      .benefit-page .benefit-section-title {
+        font-size: 20px;
+      }
+
+      .benefit-page .benefit-card-body {
+        padding: 14px;
+      }
+
+      .benefit-page .benefit-actions {
+        width: 100%;
+      }
+
+      .benefit-page .benefit-actions .benefit-btn {
+        width: 100%;
+      }
+
+      .benefit-page .cke_contents {
+        min-height: 210px !important;
+      }
+    }
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="benefit-page">
+  <div class="benefit-shell">
+    <div class="benefit-hero">
       <div>
-        <div class="page-eyebrow">How to Apply</div>
-        <h1 class="page-title">Benefit Content</h1>
-        <p class="page-subtitle">Manage benefit information that appears in the application guidance flow.</p>
+        <div class="benefit-eyebrow">How to Apply</div>
+        <h1 class="benefit-title">Benefit Content</h1>
+        <p class="benefit-subtitle">
+          Manage benefit information that appears in the application guidance flow.
+        </p>
       </div>
     </div>
 
-    <div class="page-card" style="max-width: 900px;">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="benefit-card">
+      <div class="benefit-card-body">
+        <div class="benefit-card-head">
           <div>
-            <div class="page-section-kicker">Content Editor</div>
-            <h3 class="page-section-title">Add Benefit</h3>
-            <p class="page-section-subtitle">Update benefit items using rich text if needed.</p>
+            <div class="benefit-section-kicker">Content Editor</div>
+            <h3 class="benefit-section-title">Add Benefit</h3>
+            <p class="benefit-section-subtitle">
+              Update benefit items using rich text if needed.
+            </p>
           </div>
         </div>
 
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+            <div class="alert alert-{{ message.tags }} benefit-alert">
               {{ message }}
             </div>
           {% endfor %}
         {% endif %}
 
-        <form method="post" action="{% url 'save_benefit' %}" class="page-form-grid">
+        <form method="post" action="{% url 'save_benefit' %}" class="benefit-form">
           {% csrf_token %}
-          <div class="page-field">
-            <label class="page-label" for="benefit_list">Benefit List</label>
-            <textarea id="benefit_list" name="benefit_list[]" rows="6" class="form-control">{% for benefit in benefit_list %}{{ benefit }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
+
+          <div class="benefit-field">
+            <label class="benefit-label" for="benefit_list">Benefit List</label>
+            <textarea id="benefit_list" name="benefit_list[]" rows="6">{% for benefit in benefit_list %}{{ benefit }}{% if not forloop.last %}, {% endif %}{% endfor %}</textarea>
           </div>
 
-          <div class="page-actions">
-            <button type="submit" class="page-btn page-btn-primary">Save Benefit</button>
+          <div class="benefit-actions">
+            <button type="submit" class="benefit-btn">Save Benefit</button>
           </div>
         </form>
       </div>
@@ -55,7 +270,14 @@
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script>
   CKEDITOR.replace('benefit_list', {
-    versionCheck: false
+    versionCheck: false,
+    height: 260,
+    toolbar: [
+      ['Bold', 'Italic', 'Underline'],
+      ['NumberedList', 'BulletedList'],
+      ['Link', 'Unlink'],
+      ['Undo', 'Redo']
+    ]
   });
 </script>
 {% endblock custom_js %}

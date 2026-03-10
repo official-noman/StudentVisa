@@ -3,10 +3,33 @@
 
 {% block custom_css %}
   {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .edit-country-page .edit-country-card {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .edit-country-page .cke {
+      width: 100% !important;
+      display: block !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+    }
+
+    @media (max-width: 767.98px) {
+      .edit-country-page .page-actions {
+        width: 100%;
+      }
+
+      .edit-country-page .page-actions .page-btn {
+        width: 100%;
+      }
+    }
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
+<div class="content-wrapper edit-country-page">
   <div class="page-shell">
 
     <div class="page-hero">
@@ -19,7 +42,7 @@
       </div>
     </div>
 
-    <div class="page-card" style="max-width:900px;">
+    <div class="page-card edit-country-card">
       <div class="page-card-body">
 
         <div class="page-card-head">
@@ -75,7 +98,13 @@
 <script>
   CKEDITOR.replace('country_howtoapply', {
     versionCheck: false,
-    height: 300
+    height: 300,
+    toolbar: [
+      ['Bold', 'Italic', 'Underline'],
+      ['NumberedList', 'BulletedList'],
+      ['Link', 'Unlink'],
+      ['Undo', 'Redo']
+    ]
   });
 </script>
 {% endblock custom_js %}

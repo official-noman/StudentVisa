@@ -3,78 +3,258 @@
 {% block custom_css %}
   {% include "roottemplates/partials/_page_theme.html" %}
   <style>
-    .course-modal .modal-content {
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    .course-list-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
     }
 
-    .course-modal .modal-header,
-    .course-modal .modal-footer {
-      border-color: rgba(15, 23, 42, 0.08);
+    .course-list-page .cl-shell {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
     }
 
-    .course-modal .modal-title {
-      font-family: 'Sora', sans-serif;
+    .course-list-page .cl-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .course-list-page .cl-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
       font-weight: 700;
-      color: #1E293B;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
     }
 
-    .action-inline {
+    .course-list-page .cl-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .course-list-page .cl-subtitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .course-list-page .cl-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .course-list-page .cl-add-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    .course-list-page .cl-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .course-list-page .cl-card-body {
+      padding: 24px;
+    }
+
+    .course-list-page .cl-card-head {
+      margin-bottom: 18px;
+    }
+
+    .course-list-page .cl-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .course-list-page .cl-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .course-list-page .cl-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .course-list-page .cl-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .course-list-page #courseTable {
+      width: 100%;
+      min-width: 680px;
+    }
+
+    .course-list-page .action-inline {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .btn-soft-primary {
+    .course-list-page .btn-soft-primary {
       background: rgba(59, 130, 246, 0.10);
       color: #3B82F6;
       border: 1px solid rgba(59, 130, 246, 0.14);
     }
 
-    .btn-soft-primary:hover {
+    .course-list-page .btn-soft-primary:hover {
       background: rgba(59, 130, 246, 0.16);
       color: #2563EB;
     }
 
-    .btn-soft-danger {
+    .course-list-page .btn-soft-danger {
       background: rgba(244, 63, 94, 0.10);
       color: #F43F5E;
       border: 1px solid rgba(244, 63, 94, 0.14);
     }
 
-    .btn-soft-danger:hover {
+    .course-list-page .btn-soft-danger:hover {
       background: rgba(244, 63, 94, 0.16);
       color: #E11D48;
+    }
+
+    .course-list-page .course-modal .modal-content {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .course-list-page .course-modal .modal-header,
+    .course-list-page .course-modal .modal-footer {
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+
+    .course-list-page .course-modal .modal-title {
+      font-weight: 700;
+      color: #1E293B;
+    }
+
+    .course-list-page .cl-modal-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .course-list-page .cl-modal-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    @media (max-width: 991.98px) {
+      .course-list-page {
+        padding: 20px 16px 32px;
+      }
+
+      .course-list-page .cl-title {
+        font-size: 28px;
+      }
+
+      .course-list-page .cl-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .course-list-page {
+        padding: 16px 12px 28px;
+      }
+
+      .course-list-page .cl-title {
+        font-size: 24px;
+      }
+
+      .course-list-page .cl-subtitle {
+        font-size: 14px;
+      }
+
+      .course-list-page .cl-card-body {
+        padding: 14px;
+      }
+
+      .course-list-page .cl-hero {
+        flex-direction: column;
+      }
+
+      .course-list-page .cl-add-btn {
+        width: 100%;
+      }
+
+      .course-list-page .action-inline {
+        min-width: 130px;
+      }
     }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="course-list-page">
+  <div class="cl-shell">
+    <div class="cl-hero">
       <div>
-        <div class="page-eyebrow">Academic Setup</div>
-        <h1 class="page-title">Course List</h1>
-        <p class="page-subtitle">
+        <div class="cl-eyebrow">Academic Setup</div>
+        <h1 class="cl-title">Course List</h1>
+        <p class="cl-subtitle">
           Review, update, and maintain available course names used across the platform.
         </p>
       </div>
       <div>
-        <button id="addCourseBtn" class="page-btn page-btn-primary">Add Course</button>
+        <button id="addCourseBtn" class="cl-add-btn">Add Course</button>
       </div>
     </div>
 
-    <div class="page-card">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="cl-card">
+      <div class="cl-card-body">
+        <div class="cl-card-head">
           <div>
-            <div class="page-section-kicker">Course Management</div>
-            <h3 class="page-section-title">All Courses</h3>
-            <p class="page-section-subtitle">
+            <div class="cl-section-kicker">Course Management</div>
+            <h3 class="cl-section-title">All Courses</h3>
+            <p class="cl-section-subtitle">
               Edit existing course names or remove obsolete course records.
             </p>
           </div>
@@ -88,7 +268,7 @@
           {% endfor %}
         {% endif %}
 
-        <div class="page-table-wrap">
+        <div class="cl-table-wrap">
           <table id="courseTable" class="page-table">
             <thead>
               <tr>
@@ -118,25 +298,26 @@
   </div>
 </div>
 
-<!-- Edit Course Modal -->
-<div class="modal fade course-modal" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+<div class="modal fade course-list-page course-modal" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <div class="modal-body">
         <div class="page-field">
           <label for="editCourseName" class="page-label">New Course Name</label>
-          <input type="text" class="form-control" id="editCourseName" placeholder="Enter new course name">
+          <input type="text" class="cl-modal-input" id="editCourseName" placeholder="Enter new course name">
         </div>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="page-btn page-btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" id="saveEditCourseBtn" class="page-btn page-btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button type="button" id="saveEditCourseBtn" class="btn btn-primary">Save Changes</button>
       </div>
     </div>
   </div>
@@ -153,6 +334,21 @@
     const addCourseBtn = document.getElementById('addCourseBtn');
 
     let courseIdToEdit = null;
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
 
     courseTable.addEventListener('click', function (event) {
       const editButton = event.target.closest('.editBtn');
@@ -181,10 +377,10 @@
         }).then(result => {
           if (!result.isConfirmed) return;
 
-          fetch(`/delete_course/${courseId}/`, {
+          fetch('/delete_course/' + courseId + '/', {
             method: 'POST',
             headers: {
-              'X-CSRFToken': '{{ csrf_token }}'
+              'X-CSRFToken': getCookie('csrftoken')
             }
           })
           .then(response => response.json())
@@ -213,11 +409,11 @@
         return;
       }
 
-      fetch(`/edit_course/${courseIdToEdit}/`, {
+      fetch('/edit_course/' + courseIdToEdit + '/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
+          'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({ new_course_name: newCourseName })
       })
@@ -229,28 +425,16 @@
       })
       .then(data => {
         if (data.success) {
-          Swal.fire(
-            'Success!',
-            'Course updated successfully',
-            'success'
-          ).then(() => {
+          Swal.fire('Success!', 'Course updated successfully', 'success').then(() => {
             location.reload();
           });
         } else {
-          Swal.fire(
-            'Error!',
-            'Something went wrong.',
-            'error'
-          );
+          Swal.fire('Error!', 'Something went wrong.', 'error');
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        Swal.fire(
-          'Error!',
-          'Something went wrong.',
-          'error'
-        );
+        Swal.fire('Error!', 'Something went wrong.', 'error');
       });
     });
 

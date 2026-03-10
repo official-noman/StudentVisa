@@ -5,28 +5,197 @@
   {% include "roottemplates/partials/_page_theme.html" %}
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
   <style>
-    #countrylist_wrapper {
+    .country-list-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .country-list-page .clp-shell {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .country-list-page .clp-hero {
+      margin-bottom: 24px;
+    }
+
+    .country-list-page .clp-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .country-list-page .clp-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .country-list-page .clp-subtitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .country-list-page .clp-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .country-list-page .clp-card-body {
+      padding: 24px;
+    }
+
+    .country-list-page .clp-card-head {
+      margin-bottom: 18px;
+    }
+
+    .country-list-page .clp-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .country-list-page .clp-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .country-list-page .clp-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .country-list-page .clp-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .country-list-page #countrylist_wrapper {
       padding: 0;
     }
 
-    #countrylist_filter label,
-    #countrylist_length label {
+    .country-list-page #countrylist {
+      width: 100% !important;
+      min-width: 760px;
+      border-collapse: separate !important;
+      border-spacing: 0;
+    }
+
+    .country-list-page #countrylist thead th {
+      background: #f8fafc !important;
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+
+    .country-list-page #countrylist th,
+    .country-list-page #countrylist td {
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+      color: #334155;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .country-list-page #countrylist tbody tr:hover td {
+      background: #f8fbff;
+    }
+
+    .country-list-page table.dataTable thead th,
+    .country-list-page table.dataTable thead td {
+      position: relative;
+      background-image: none !important;
+    }
+
+    .country-list-page table.dataTable thead .sorting,
+    .country-list-page table.dataTable thead .sorting_asc,
+    .country-list-page table.dataTable thead .sorting_desc,
+    .country-list-page table.dataTable thead .sorting_asc_disabled,
+    .country-list-page table.dataTable thead .sorting_desc_disabled {
+      background-image: none !important;
+    }
+
+    .country-list-page table.dataTable thead th:before,
+    .country-list-page table.dataTable thead th:after,
+    .country-list-page table.dataTable thead td:before,
+    .country-list-page table.dataTable thead td:after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .country-list-page table.dataTable.no-footer {
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .country-list-page #countrylist_filter label,
+    .country-list-page #countrylist_length label {
       color: #475569;
       font-weight: 600;
       margin-bottom: 12px;
+      font-size: 14px;
     }
 
-    #countrylist_filter input,
-    #countrylist_length select {
+    .country-list-page #countrylist_filter input,
+    .country-list-page #countrylist_length select {
       border: 1px solid rgba(15, 23, 42, 0.10) !important;
       background: #F8FAFC !important;
       border-radius: 12px !important;
       min-height: 40px;
       padding: 8px 12px !important;
+      color: #334155;
+      box-shadow: none !important;
+      outline: none !important;
     }
 
-    .country-flag {
+    .country-list-page .dt-buttons {
+      margin-bottom: 12px;
+    }
+
+    .country-list-page .dt-button {
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #ffffff !important;
+      color: #334155 !important;
+      border-radius: 10px !important;
+      padding: 8px 12px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+    }
+
+    .country-list-page .dt-button:hover {
+      background: #f8fafc !important;
+      color: #0f172a !important;
+    }
+
+    .country-list-page .country-flag {
       width: 52px;
       height: 52px;
       object-fit: cover;
@@ -36,57 +205,106 @@
       display: inline-block;
     }
 
-    .action-inline {
+    .country-list-page .country-no-flag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .country-list-page .action-inline {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .btn-soft-primary {
+    .country-list-page .btn-soft-primary {
       background: rgba(59, 130, 246, 0.10);
       color: #3B82F6;
       border: 1px solid rgba(59, 130, 246, 0.14);
     }
 
-    .btn-soft-primary:hover {
+    .country-list-page .btn-soft-primary:hover {
       background: rgba(59, 130, 246, 0.16);
       color: #2563EB;
     }
 
-    .btn-soft-danger {
+    .country-list-page .btn-soft-danger {
       background: rgba(244, 63, 94, 0.10);
       color: #F43F5E;
       border: 1px solid rgba(244, 63, 94, 0.14);
     }
 
-    .btn-soft-danger:hover {
+    .country-list-page .btn-soft-danger:hover {
       background: rgba(244, 63, 94, 0.16);
       color: #E11D48;
+    }
+
+    @media (max-width: 991.98px) {
+      .country-list-page {
+        padding: 20px 16px 32px;
+      }
+
+      .country-list-page .clp-title {
+        font-size: 28px;
+      }
+
+      .country-list-page .clp-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .country-list-page {
+        padding: 16px 12px 28px;
+      }
+
+      .country-list-page .clp-title {
+        font-size: 24px;
+      }
+
+      .country-list-page .clp-subtitle {
+        font-size: 14px;
+      }
+
+      .country-list-page .clp-card-body {
+        padding: 14px;
+      }
+
+      .country-list-page .action-inline {
+        min-width: 150px;
+      }
     }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="country-list-page">
+  <div class="clp-shell">
+    <div class="clp-hero">
       <div>
-        <div class="page-eyebrow">Location Directory</div>
-        <h1 class="page-title">Country List</h1>
-        <p class="page-subtitle">
+        <div class="clp-eyebrow">Location Directory</div>
+        <h1 class="clp-title">Country List</h1>
+        <p class="clp-subtitle">
           Review and manage available countries, flags, and edit entries used across the application and scholarship workflows.
         </p>
       </div>
     </div>
 
-    <div class="page-card">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="clp-card">
+      <div class="clp-card-body">
+        <div class="clp-card-head">
           <div>
-            <div class="page-section-kicker">Country Management</div>
-            <h3 class="page-section-title">All Countries</h3>
-            <p class="page-section-subtitle">
+            <div class="clp-section-kicker">Country Management</div>
+            <h3 class="clp-section-title">All Countries</h3>
+            <p class="clp-section-subtitle">
               Maintain country metadata and related display assets.
             </p>
           </div>
@@ -100,8 +318,8 @@
           {% endfor %}
         {% endif %}
 
-        <div class="page-table-wrap">
-          <table id="countrylist" class="page-table">
+        <div class="clp-table-wrap">
+          <table id="countrylist" class="table">
             <thead>
               <tr>
                 <th>#</th>
@@ -123,7 +341,7 @@
                       class="country-flag"
                     >
                   {% else %}
-                    <span class="page-note" style="padding:8px 12px;">No Flag</span>
+                    <span class="country-no-flag">No Flag</span>
                   {% endif %}
                 </td>
                 <td>
@@ -133,20 +351,17 @@
                       class="btn btn-sm btn-soft-primary"
                       title="Edit"
                     >
-                      <i class="fa fa-edit"></i>
+                      Edit
                     </a>
 
-                    {# Future-ready delete button: uncomment when backend flow is confirmed #}
-                    {#
                     <button
                       type="button"
                       class="btn btn-sm btn-soft-danger"
                       onclick="deleteCountry({{ country.country_id }})"
                       title="Delete"
                     >
-                      <i class="fa fa-trash-alt"></i>
+                      Delete
                     </button>
-                    #}
                   </div>
                 </td>
               </tr>
@@ -154,6 +369,7 @@
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   </div>
@@ -170,8 +386,25 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  let countryTable = null;
+
   $(document).ready(function() {
-    $('#countrylist').DataTable({
+    countryTable = $('#countrylist').DataTable({
       dom: 'Bfrtip',
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
       pageLength: 10,
@@ -191,17 +424,23 @@
     }).then((result) => {
       if (!result.isConfirmed) return;
 
-      fetch(`/delete_country/${countryId}/`, {
+      fetch('/delete_country/' + countryId + '/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
+          'X-CSRFToken': getCookie('csrftoken')
+        }
       })
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          location.reload();
+          if (countryTable) {
+            countryTable.row($('#country-row-' + countryId)).remove().draw(false);
+          } else {
+            location.reload();
+          }
+
+          Swal.fire('Deleted!', data.message || 'Country deleted successfully.', 'success');
         } else {
           Swal.fire('Error', data.message || 'Failed to delete country.', 'error');
         }

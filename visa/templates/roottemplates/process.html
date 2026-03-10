@@ -2,125 +2,264 @@
 {% load static %}
 
 {% block custom_css %}
-  {% include "roottemplates/partials/_page_theme.html" %}
-  <style>
-    .process-preview-img {
-      max-width: 390px;
-      max-height: 300px;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 16px;
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      background: #fff;
-      display: block;
-      margin-top: 10px;
-    }
-  </style>
+{% include "roottemplates/partials/_page_theme.html" %}
+
+<style>
+
+.exp-page{
+  width:100%;
+  padding:30px 20px;
+}
+
+.exp-shell{
+  max-width:1100px;
+  margin:auto;
+}
+
+.exp-hero{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.exp-eyebrow{
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  color:#2563eb;
+  margin-bottom:6px;
+  display:inline-block;
+}
+
+.exp-title{
+  font-size:32px;
+  font-weight:700;
+  color:#0f172a;
+  margin-bottom:8px;
+}
+
+.exp-sub{
+  color:#64748b;
+  max-width:700px;
+  margin:auto;
+}
+
+.exp-card{
+  background:#fff;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,0.05);
+  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+.exp-card-body{
+  padding:30px;
+}
+
+.exp-head{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.exp-head-title{
+  font-size:22px;
+  font-weight:600;
+  color:#1e293b;
+}
+
+.exp-head-sub{
+  color:#64748b;
+  font-size:14px;
+}
+
+.exp-field{
+  margin-bottom:20px;
+}
+
+.exp-label{
+  font-weight:600;
+  margin-bottom:6px;
+  display:block;
+  color:#1e293b;
+}
+
+.exp-input{
+  width:100%;
+  min-height:44px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  padding:10px 12px;
+}
+
+.exp-input:focus{
+  outline:none;
+  border-color:#2563eb;
+}
+
+.exp-preview{
+  margin-bottom:12px;
+  text-align:center;
+}
+
+.exp-preview img{
+  max-width:390px;
+  max-height:300px;
+  border-radius:12px;
+}
+
+.exp-note{
+  font-size:13px;
+  color:#64748b;
+}
+
+.exp-actions{
+  margin-top:20px;
+}
+
+.exp-btn{
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:30px;
+  padding:12px 26px;
+  font-weight:600;
+}
+
+.exp-btn:hover{
+  background:#1d4ed8;
+}
+
+@media(max-width:768px){
+
+.exp-title{
+font-size:24px;
+}
+
+.exp-card-body{
+padding:20px;
+}
+
+.exp-btn{
+width:100%;
+}
+
+}
+
+</style>
+
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
-      <div>
-        <div class="page-eyebrow">Homepage Content</div>
-        <h1 class="page-title">Add / Edit Explanation</h1>
-        <p class="page-subtitle">
-          Manage the process explanation section with title, rich description, and a featured illustration image.
-        </p>
-      </div>
-    </div>
 
-    <div class="page-card" style="max-width: 980px;">
-      <div class="page-card-body">
-        <div class="page-card-head">
-          <div>
-            <div class="page-section-kicker">Content Editor</div>
-            <h3 class="page-section-title">Explanation Form</h3>
-            <p class="page-section-subtitle">
-              Keep the explanation copy clear and use the recommended image size for consistent presentation.
-            </p>
-          </div>
-        </div>
+<div class="exp-page">
+<div class="exp-shell">
 
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} page-alert mb-3">
-              {{ message }}
-            </div>
-          {% endfor %}
-        {% endif %}
-
-        <form method="post" action="{% url 'explenation' %}" enctype="multipart/form-data" class="page-form-grid">
-          {% csrf_token %}
-
-          <div class="page-field">
-            <label for="exp_title" class="page-label">Title</label>
-            <input
-              type="text"
-              id="exp_title"
-              name="exp_title"
-              class="form-control"
-              value="{% if instance %}{{ instance.exp_title }}{% endif %}"
-              required
-            >
-          </div>
-
-          <div class="page-field">
-            <label for="exp_des" class="page-label">Description</label>
-            <textarea
-              id="exp_des"
-              name="exp_des"
-              class="form-control"
-              rows="4"
-              required
-            >{% if instance %}{{ instance.exp_des }}{% endif %}</textarea>
-          </div>
-
-          <div class="page-field">
-            <label for="exp_img" class="page-label">Uploaded Image</label>
-
-            {% if instance and instance.exp_img %}
-              <img
-                src="{{ instance.exp_img.url }}"
-                alt="Existing Image"
-                class="process-preview-img"
-              >
-            {% endif %}
-
-            <input
-              type="file"
-              id="exp_img"
-              name="exp_img"
-              accept="image/*"
-              class="form-control"
-            >
-
-            <div class="page-note">
-              Recommended size: <strong>390px × 300px</strong>
-            </div>
-          </div>
-
-          <input type="hidden" name="root_id" value="{{ request.user.id }}">
-
-          <div class="page-actions">
-            <button type="submit" class="page-btn page-btn-primary">
-              {% if instance %}Update{% else %}Create{% endif %}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+<div class="exp-hero">
+<div class="exp-eyebrow">Homepage Content</div>
+<div class="exp-title">Add / Edit Explanation</div>
+<div class="exp-sub">
+Manage the explanation section content with title, description and illustration image.
 </div>
+</div>
+
+<div class="exp-card">
+<div class="exp-card-body">
+
+<div class="exp-head">
+<div class="exp-head-title">Explanation Form</div>
+<div class="exp-head-sub">
+Update homepage explanation section content.
+</div>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<form method="post" action="{% url 'explenation' %}" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="exp-field">
+<label class="exp-label">Title</label>
+<input type="text"
+name="exp_title"
+class="exp-input"
+value="{% if instance %}{{ instance.exp_title }}{% endif %}"
+required>
+</div>
+
+<div class="exp-field">
+<label class="exp-label">Description</label>
+<textarea id="exp_des"
+name="exp_des"
+class="exp-input"
+rows="5"
+required>{% if instance %}{{ instance.exp_des }}{% endif %}</textarea>
+</div>
+
+<div class="exp-field">
+
+<label class="exp-label">Uploaded Image</label>
+
+{% if instance and instance.exp_img %}
+<div class="exp-preview">
+<img src="{{ instance.exp_img.url }}">
+</div>
+{% endif %}
+
+<input type="file"
+name="exp_img"
+accept="image/*"
+class="exp-input">
+
+<div class="exp-note">
+Recommended size: <b>390px × 300px</b>
+</div>
+
+</div>
+
+<input type="hidden" name="root_id" value="{{ request.user.id }}">
+
+<div class="exp-actions">
+<button type="submit" class="exp-btn">
+{% if instance %}
+Update Explanation
+{% else %}
+Create Explanation
+{% endif %}
+</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+</div>
+</div>
+
 {% endblock content %}
 
 {% block custom_js %}
+
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
 <script>
-  CKEDITOR.replace('exp_des', {
-    versionCheck: false,
-    height: 300
-  });
+
+CKEDITOR.replace('exp_des',{
+versionCheck:false,
+height:260,
+toolbar:[
+['Bold','Italic','Underline'],
+['NumberedList','BulletedList'],
+['Link','Unlink'],
+['Undo','Redo']
+]
+});
+
 </script>
+
 {% endblock custom_js %}

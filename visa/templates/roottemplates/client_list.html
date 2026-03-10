@@ -1,359 +1,786 @@
 {% extends "roottemplates/base.html" %}
+{% load static %}
 
 {% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-   
+  <style>
+    .client-list-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
 
+    .client-list-page .client-page-shell {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
 
-    <style>
+    .client-list-page .client-page-hero {
+      margin-bottom: 24px;
+    }
 
+    .client-list-page .client-page-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
 
-        /* Add custom styles for DataTables */
-        #scholarshiplist {
-          border-collapse: collapse;
-          width: 100%;
-        }
-    
+    .client-list-page .client-page-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
 
-        #scholarshiplist th,
-        #scholarshiplist td {
-          border: 1px solid #ddd; /* Add border to table cells */
-          padding: 8px;
-          text-align: left;
-        }
-    
+    .client-list-page .client-page-subtitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
 
-        #scholarshiplist th {
-          background-color: #f2f2f2; /* Add background color to header cells */
-        }
-        .dataTables_wrapper .dataTable .btn, .dataTables_wrapper .dataTable .swal2-modal .swal2-buttonswrapper .swal2-styled, .swal2-modal .swal2-buttonswrapper .dataTables_wrapper .dataTable .swal2-styled, .dataTables_wrapper .dataTable .ajax-upload-dragdrop .ajax-file-upload, .ajax-upload-dragdrop .dataTables_wrapper .dataTable .ajax-file-upload {
-          padding: 0.5rem 1rem;
-          vertical-align: top;
+    .client-list-page .client-page-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .client-list-page .client-page-card-body {
+      padding: 24px;
+    }
+
+    .client-list-page .client-page-card-head {
+      margin-bottom: 18px;
+    }
+
+    .client-list-page .client-page-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .client-list-page .client-page-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .client-list-page .client-page-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .client-list-page .client-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .client-list-page .client-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .client-list-page .client-add-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .client-list-page .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .client-list-page #rootclientlist {
+      width: 100% !important;
+      min-width: 720px;
+      border-collapse: separate !important;
+      border-spacing: 0;
+    }
+
+    .client-list-page #rootclientlist thead th {
+      background: #f8fafc !important;
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+
+    .client-list-page #rootclientlist th,
+    .client-list-page #rootclientlist td {
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+      color: #334155;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .client-list-page #rootclientlist tbody tr:hover td {
+      background: #f8fbff;
+    }
+
+    .client-list-page table.dataTable thead th,
+    .client-list-page table.dataTable thead td {
+      position: relative;
+      background-image: none !important;
+    }
+
+    .client-list-page table.dataTable thead .sorting,
+    .client-list-page table.dataTable thead .sorting_asc,
+    .client-list-page table.dataTable thead .sorting_desc,
+    .client-list-page table.dataTable thead .sorting_asc_disabled,
+    .client-list-page table.dataTable thead .sorting_desc_disabled {
+      background-image: none !important;
+    }
+
+    .client-list-page table.dataTable thead th:before,
+    .client-list-page table.dataTable thead th:after,
+    .client-list-page table.dataTable thead td:before,
+    .client-list-page table.dataTable thead td:after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .client-list-page table.dataTable.no-footer {
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .client-list-page .client-logo-box {
+      width: 114px;
+      height: 74px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .client-list-page .client-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .client-list-page .client-logo-empty {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .client-list-page .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .client-list-page .btn {
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .client-list-page .btn-sm {
+      padding: 0.45rem 0.75rem;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .client-list-page .btn-update {
+      background-color: #2563eb;
+      border-color: #2563eb;
+      color: #fff;
+    }
+
+    .client-list-page .btn-update:hover {
+      background-color: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+
+    .client-list-page .btn-delete {
+      background-color: #dc2626;
+      border-color: #dc2626;
+      color: #fff;
+    }
+
+    .client-list-page .btn-delete:hover {
+      background-color: #b91c1c;
+      border-color: #b91c1c;
+      color: #fff;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_length,
+    .client-list-page .dataTables_wrapper .dataTables_filter {
+      margin-bottom: 14px;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_length label,
+    .client-list-page .dataTables_wrapper .dataTables_filter label {
+      font-size: 14px;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_filter input,
+    .client-list-page .dataTables_wrapper .dataTables_length select {
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      min-height: 38px;
+      padding: 6px 10px;
+      outline: none;
+      box-shadow: none;
+      background: #fff;
+      color: #334155;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_filter input {
+      margin-left: 8px;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_info,
+    .client-list-page .dataTables_wrapper .dataTables_paginate {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .client-list-page .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border-radius: 8px !important;
+    }
+
+    .client-list-page .dataTables_empty {
+      text-align: center;
+      color: #64748b;
+      padding: 20px 12px !important;
+    }
+
+    .client-list-page .modal-content {
+      border: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+    }
+
+    .client-list-page .modal-header,
+    .client-list-page .modal-footer {
+      border-color: #e2e8f0;
+    }
+
+    .client-list-page .modal-title {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .client-list-page .form-label {
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .client-list-page .client-modal-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .client-list-page .client-modal-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .client-list-page .client-preview-wrap {
+      margin-top: 12px;
+    }
+
+    .client-list-page .client-preview-box {
+      width: 100%;
+      max-width: 280px;
+      min-height: 180px;
+      border-radius: 16px;
+      border: 1px dashed rgba(15, 23, 42, 0.14);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    .client-list-page .client-preview-image {
+      width: 100%;
+      max-width: 240px;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .client-list-page .client-preview-empty {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      text-align: center;
+      padding: 18px;
+    }
+
+    @media (max-width: 991.98px) {
+      .client-list-page {
+        padding: 20px 16px 32px;
       }
- 
-        .btn-edit,
-        .btn-delete {
 
+      .client-list-page .client-page-title {
+        font-size: 28px;
+      }
 
-            color: #fff;
-        }
-    
-        .btn-edit {
-            background-color: #007bff;
-        }
-    
-        .btn-delete {
-            background-color: #dc3545;
-        }
-    
-        .btn-edit:hover,
-        .btn-delete:hover {
-            color: #fff;
-            text-decoration: none;
-        }
-        #scholarshiplist_filter input {
-            margin-right: 40px !important; /* Increase the right margin */
-        }
-        div.dataTables_wrapper div.dataTables_length label {
+      .client-list-page .client-page-card-body {
+        padding: 18px;
+      }
+    }
 
-            margin: 14px !important;
-        }
-        .datepicker td.disabled,
-        .datepicker th.disabled,
-        .datepicker tfoot.disabled,
-        .datepicker thead.disabled {
-          color: #999 !important; /* Change color of disabled dates */
-          cursor: not-allowed; /* Change cursor for disabled dates */
-        }
-    </style>
-    <!-- Additional custom CSS can be added here -->
+    @media (max-width: 767.98px) {
+      .client-list-page {
+        padding: 16px 12px 28px;
+      }
+
+      .client-list-page .client-page-title {
+        font-size: 24px;
+      }
+
+      .client-list-page .client-page-subtitle {
+        font-size: 14px;
+      }
+
+      .client-list-page .client-page-section-title {
+        font-size: 20px;
+      }
+
+      .client-list-page .client-page-card-body {
+        padding: 14px;
+      }
+
+      .client-list-page .client-toolbar {
+        justify-content: stretch;
+      }
+
+      .client-list-page .client-toolbar .client-add-btn {
+        width: 100%;
+      }
+
+      .client-list-page .action-group {
+        min-width: 140px;
+      }
+
+      .client-list-page .btn-sm {
+        font-size: 12px;
+        padding: 0.42rem 0.65rem;
+      }
+
+      .client-list-page .client-logo-box {
+        width: 90px;
+        height: 60px;
+      }
+
+      .client-list-page .dataTables_wrapper .dataTables_length,
+      .client-list-page .dataTables_wrapper .dataTables_filter,
+      .client-list-page .dataTables_wrapper .dataTables_info,
+      .client-list-page .dataTables_wrapper .dataTables_paginate {
+        text-align: left;
+        float: none;
+      }
+    }
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Consultant Uploaded Scholarship List</h4>
-                    <table id="scholarshiplist"class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Company Name</th>
-                                <th>Description</th>
-                                <th>Apply Process</th>
-                                <th>Expire Date</th>
-                                <th>Created At</th>
-                                <th>Actions</th> 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for scholarship in uploaded_scholarships %}
-                                <tr>
-                                    <td>{{ scholarship.company_name }}</td>
-                                    <td>{{ scholarship.schp_description |truncatechars:30|safe }}</td>
-                                    <td>{{ scholarship.apply_process |truncatechars:30|safe }}</td>
-                                    <td>
-                                        {% if scholarship.expiration_time %}
-                                            {% with days_left=scholarship.expiration_time|timeuntil %}
-                                                {{ days_left }}
-                                            {% endwith %}
-                                        {% else %}
-                                            Expiration time not set
-                                        {% endif %}
-                                    </td>
-                             
-                                    <td>{{ scholarship.created_at }}</td>
-                                    <td>
-                                        {% if scholarship.status == 0 %}
-                                        <button onclick="openApproveModal('{{ scholarship.id }}')" class="btn btn-success btn-approve btn-sm">Approve</button>
-                                    {% endif %}
-                                        <a href="#" class="btn btn-primary btn-view btn-sm" data-id="{{ scholarship.id }}">View</a>
-                                        <a href="#" class="btn btn-danger btn-delete  btn-sm" data-id="{{ scholarship.id }}">Delete</a>
-
-                                  
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-          
-            </div>
-            
-        </div>
-        
+<div class="client-list-page">
+  <div class="client-page-shell">
+    <div class="client-page-hero">
+      <div>
+        <div class="client-page-eyebrow">Client Management</div>
+        <h1 class="client-page-title">Client List</h1>
+        <p class="client-page-subtitle">
+          Manage client branding items, update company details, and maintain the homepage client showcase from one place.
+        </p>
+      </div>
     </div>
-</div>
-</div>
-<div class="modal fade" id="scholarshipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="scholarshipModalTitle">Scholarship Details</h5>
-          <button type="button" class="close" onclick="window.location.reload()" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+
+    <div class="client-page-card">
+      <div class="client-page-card-body">
+        <div class="client-page-card-head">
+          <div>
+            <div class="client-page-section-kicker">Data Table</div>
+            <h3 class="client-page-section-title">All Clients</h3>
+            <p class="client-page-section-subtitle">
+              View, update, and remove client entries while keeping the dashboard layout consistent.
+            </p>
+          </div>
         </div>
-        <div class="modal-body">
-          <p id="description"></p>
-          <p id="applyProcess"></p>
-     
-          <p id="createdAt"></p>
+
+        <div class="client-toolbar">
+          <a href="{% url 'add_client' %}" class="client-add-btn">
+            <i class="fas fa-plus"></i>
+            <span>Add Client</span>
+          </a>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" onclick="window.location.reload()" data-dismiss="modal">Close</button>
+
+        <div class="table-wrap">
+          <table id="rootclientlist" class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Client Name</th>
+                <th>Client Image</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for client in clients %}
+              <tr id="client-row-{{ client.id }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ client.client_name }}</td>
+                <td>
+                  <div class="client-logo-box">
+                    {% if client.client_image %}
+                      <img src="{{ client.client_image.url }}" alt="{{ client.client_name }}">
+                    {% else %}
+                      <div class="client-logo-empty">No Image</div>
+                    {% endif %}
+                  </div>
+                </td>
+                <td>
+                  <div class="action-group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-update update-client"
+                      data-id="{{ client.id }}"
+                      data-name="{{ client.client_name }}"
+                      data-url="{{ client.client_url|default:'' }}"
+                      data-image="{% if client.client_image %}{{ client.client_image.url }}{% endif %}"
+                    >
+                      <i class="fas fa-pen"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-delete delete-client"
+                      data-id="{{ client.id }}"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No clients found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
 </div>
 
+{% for client in clients %}
+<div class="modal fade client-list-page" id="updateClientModal{{ client.id }}" tabindex="-1" role="dialog" aria-labelledby="updateClientModalLabel{{ client.id }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateClientModalLabel{{ client.id }}">Update Client</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
 
-{% for scholarship in uploaded_scholarships %}
+      <form class="updateClientForm" method="post" enctype="multipart/form-data" action="{% url 'update_client' client.id %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" class="clientId" name="client_id" value="{{ client.id }}">
 
-<!-- Approve Scholarship Modal -->
-<div class="modal fade" id="approveScholarshipModal{{ scholarship.id }}" tabindex="-1" role="dialog" aria-labelledby="approveScholarshipModalLabel{{ scholarship.id }}" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveScholarshipModalLabel{{ scholarship.id }}">Approve Scholarship</h5>
-                <button type="button" class="close" onclick="closeApproveModal('{{ scholarship.id }}')" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-           
+          <div class="form-group">
+            <label for="clientName{{ client.id }}" class="form-label">Client Name</label>
+            <input
+              type="text"
+              class="client-modal-input"
+              id="clientName{{ client.id }}"
+              name="client_name"
+              value="{{ client.client_name }}"
+              required
+            >
+          </div>
 
-                <div class="form-group">
-                    <label for="expiration_date">Expiration Date:</label>
-                    <div id="expiration_date-popup" class="input-group date datepicker navbar-date-picker">
-                      <span class="input-group-addon input-group-prepend border-right">
-                        <span class="icon-calendar input-group-text calendar-icon"></span>
-                      </span>
-                      <input   id="expiration_date{{ scholarship.id }}" type="text" name="expiration_date" class="form-control">
-                    </div>   
-                  </div>
-                  
+          <div class="form-group">
+            <label for="clientUrl{{ client.id }}" class="form-label">Website URL</label>
+            <input
+              type="url"
+              class="client-modal-input"
+              id="clientUrl{{ client.id }}"
+              name="client_url"
+              value="{{ client.client_url }}"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="clientImage{{ client.id }}" class="form-label">Client Image</label>
+            <input
+              type="file"
+              class="client-modal-input client-image-input"
+              id="clientImage{{ client.id }}"
+              name="client_image"
+              accept="image/*"
+              data-preview-image="#previewImage{{ client.id }}"
+              data-preview-empty="#previewEmpty{{ client.id }}"
+            >
+          </div>
+
+          <div class="client-preview-wrap">
+            <div class="client-preview-box">
+              {% if client.client_image %}
+                <img src="{{ client.client_image.url }}" alt="{{ client.client_name }}" id="previewImage{{ client.id }}" class="client-preview-image">
+                <div id="previewEmpty{{ client.id }}" class="client-preview-empty" style="display:none;">No image selected</div>
+              {% else %}
+                <img src="" alt="Preview" id="previewImage{{ client.id }}" class="client-preview-image" style="display:none;">
+                <div id="previewEmpty{{ client.id }}" class="client-preview-empty">No image selected</div>
+              {% endif %}
             </div>
-            <div class="modal-footer">
-                <input type="hidden" id="approveScholarshipId{{ scholarship.id }}" value="{{ scholarship.id }}"> <!-- Hidden field to store scholarship ID -->
-                <button type="button" class="btn btn-secondary" onclick="closeApproveModal('{{ scholarship.id }}')" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="approveScholarship('{{ scholarship.id }}')">Approve</button>
-            </div>
+          </div>
         </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update Client</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 {% endfor %}
-
-
 {% endblock content %}
 
 {% block custom_js %}
-<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
 <script>
-    $(document).ready(function() {
-        // Initialize datepicker
-        $('#expiration_date-popup').datepicker({
-            format: 'yyyy-mm-dd',
-            startDate: '+1d', // Start from tomorrow
-            todayHighlight: true, // Highlight today
-            autoclose: true
-        });
-    });
+  function getCookie(name) {
+    var cookieValue = null;
 
-    // Function to open the approve scholarship modal
-    function openApproveModal(scholarshipId) {
-        $('#approveScholarshipModal' + scholarshipId).modal('show');
-        // Calculate the next date
-        var today = new Date();
-        today.setDate(today.getDate() + 1); // Add 1 day to get the next date
-        var nextDate = today.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-        // Set the next date in the datepicker
-        $('#expiration_date' + scholarshipId).val(nextDate);
-    }
-
-    // Function to close the approve scholarship modal
-    function closeApproveModal(scholarshipId) {
-        $('#approveScholarshipModal' + scholarshipId).modal('hide');
-    }
-
-    // Function to approve the scholarship
-    function approveScholarship(scholarshipId) {
-        // Retrieve expiration date from the modal
-        var expirationDate = $('#expiration_date' + scholarshipId).val();
-
-        // Send an AJAX request to approve the scholarship
-        $.ajax({
-            type: 'POST',
-            url: '{% url 'approve_scholarship' %}',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}', // Include CSRF token
-                'scholarship_id': scholarshipId, // Include scholarship ID
-                'expiration_time': expirationDate // Include expiration date
-            },
-            success: function(response) {
-                // Display a success message using SweetAlert
-                Swal.fire(
-                    'Approved!',
-                    'The scholarship has been approved.',
-                    'success'
-                ).then(() => {
-                    // Reload the page after approval
-                    location.reload();
-                });
-            },
-            error: function(xhr, status, error) {
-                // Display an error message using SweetAlert
-                Swal.fire(
-                    'Error!',
-                    'An error occurred while approving the scholarship.',
-                    'error'
-                );
-            }
-        });
-
-        // Close the modal
-        closeApproveModal(scholarshipId);
-    }
-</script>
-<script>
-    $(document).ready(function () {
-        $('#scholarshiplist').DataTable();
-
-        // View button click event handler
-        $('.btn-view').click(function(e) {
-            e.preventDefault();
-            var scholarshipId = $(this).data('id');
-            // Send AJAX request to view scholarship details
-            $.ajax({
-                type: 'GET',
-                url: `/view-scholarship/${scholarshipId}/`,
-                success: function(response) {
-                    // Populate modal content with scholarship details
-                    $('#scholarshipModalTitle').text('Scholarship Details');
-                    $('#description').html('<h4>Description:</h4><p>' + response.scholarship.description + '</p>'); // Wrap description inside h4 tag
-                    $('#applyProcess').html('<h4>Apply Process:</h4><p>' + response.scholarship.apply_process + '</p>'); // Wrap apply process inside h4 tag
-                   // Wrap consultant ID inside h4 tag
-                    $('#createdAt').html('<h4>Created At:</h4><p>' + response.scholarship.created_at + '</p>'); // Wrap created at inside h4 tag
-                    // Open the modal
-                    $('#scholarshipModal').modal('show');
-                },
-                error: function(error) {
-                    console.error(error);
-                    // Display error message
-                    alert('Failed to fetch scholarship details!');
-                }
-            });
-        });
-        // Delete button click event handler
-        $('.btn-delete').click(function(e) {
-            e.preventDefault();
-            var scholarshipId = $(this).data('id');
-            var csrftoken = getCookie('csrftoken'); // Function to get the CSRF token value from cookies
-        
-            // Send AJAX request to delete scholarship
-            $.ajax({
-                type: 'POST',
-                url: `/delete_scholarship_uploaded/${scholarshipId}/`,
-                headers: {
-                    'X-CSRFToken': csrftoken // Include the CSRF token in the request headers
-                },
-                success: function(response) {
-                    // Check if the deletion was successful
-                    if (response.success) {
-                        // Show success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.message,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            onClose: () => {
-                                // Remove the deleted scholarship row from the table
-                                $('#scholarshiplist').DataTable().row($(`#scholarship-${response.scholarship_id}`)).remove().draw(false);
-                            }
-                        });
-                    } else {
-                        // Show error message
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Failed to delete scholarship!'
-                        });
-                    }
-                },
-                error: function(error) {
-                    console.error(error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Failed to delete scholarship!'
-                    });
-                }
-            });
-        });
-        // Function to retrieve CSRF token from cookies
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    // Check if the cookie name matches the specified name
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
+      }
+    }
+
+    return cookieValue;
+  }
+
+  $(document).ready(function () {
+    $('#rootclientlist').DataTable({
+      autoWidth: false,
+      responsive: false,
+      pageLength: 10,
+      ordering: true,
+      language: {
+        emptyTable: 'No clients found.'
+      },
+      columnDefs: [
+        { orderable: false, targets: [2, 3] }
+      ]
     });
+
+    $('.update-client').on('click', function () {
+      var clientId = $(this).data('id');
+      var clientName = $(this).data('name') || '';
+      var clientUrl = $(this).data('url') || '';
+      var clientImage = $(this).data('image') || '';
+
+      var modal = $('#updateClientModal' + clientId);
+      modal.find('.clientId').val(clientId);
+      modal.find('#clientName' + clientId).val(clientName);
+      modal.find('#clientUrl' + clientId).val(clientUrl);
+
+      var imagePreview = modal.find('#previewImage' + clientId);
+      var emptyText = modal.find('#previewEmpty' + clientId);
+
+      if (clientImage) {
+        imagePreview.attr('src', clientImage).show();
+        emptyText.hide();
+      } else {
+        imagePreview.attr('src', '').hide();
+        emptyText.show();
+      }
+
+      modal.modal('show');
+    });
+
+    $('.client-image-input').on('change', function () {
+      var input = this;
+      var previewSelector = $(this).data('preview-image');
+      var emptySelector = $(this).data('preview-empty');
+      var preview = $(previewSelector);
+      var emptyText = $(emptySelector);
+
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.attr('src', e.target.result).show();
+          emptyText.hide();
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.attr('src', '').hide();
+        emptyText.show();
+      }
+    });
+
+    $('.delete-client').on('click', function () {
+      var clientId = $(this).data('id');
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this client!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          fetch('/delete_client/' + clientId, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken')
+            }
+          })
+          .then(function (response) {
+            if (response.ok) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Client deleted successfully.'
+              }).then(function () {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to delete client!'
+              });
+            }
+          })
+          .catch(function (error) {
+            console.error('Error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'An error occurred while deleting the client.'
+            });
+          });
+        }
+      });
+    });
+
+    $('.updateClientForm').on('submit', function (event) {
+      event.preventDefault();
+
+      var form = this;
+      var clientId = $(form).find('.clientId').val();
+      var formData = new FormData(form);
+
+      fetch('/update_client/' + clientId + '/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        }
+      })
+      .then(function (response) {
+        if (response.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Client updated successfully.'
+          }).then(function () {
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to update client!'
+          });
+        }
+      })
+      .catch(function (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'An error occurred while updating the client.'
+        });
+      });
+    });
+  });
 </script>
 {% endblock custom_js %}

@@ -32,6 +32,8 @@ from urllib3.util import Retry
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
+from .models import CustomUser
+from django.db.models import Q
 
 
 def home(request):
@@ -1055,73 +1057,140 @@ def save_student_signup(request):
             return JsonResponse({"error": "Incorrect OTP"})
 
 
+# def login_user(request):
+#     page_name = "Login User"
+#     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
+#     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
+#     if request.method == "POST":
+#         # captcha_token = request.POST.get("g-recaptcha-response")
+#         # cap_url = "https://www.google.com/recaptcha/api/siteverify"
+#         # cap_secret = "6LcxvG8pAAAAAIaMvcT9M_ys9A7ytKR1UCIZFvKW"
+#         # cap_data = {"secret": cap_secret, "response": captcha_token}
+#         # cap_server_response = requests.post(url=cap_url, data=cap_data)
+#         # cap_json = json.loads(cap_server_response.text)
+
+#         # if cap_json['success'] == False:
+#         #     messages.error(request, "Invalid Captcha. Try Again.")
+#         #     return redirect("login_user")
+
+#         cap_json = {"success": True}
+
+#         identifier = request.POST.get("identifier")
+#         password = request.POST.get("password")
+
+#         if identifier is not None and password is not None:
+#             if "@" in identifier:  # Assuming email contains '@'
+#                 # user = EmailBackend().authenticate(request, email=identifier, password=password)
+#                 root_user = EmailBackend().authenticate(
+#                     request, email=identifier, password=password, user_type=0
+#                 )
+#                 consultant_user = EmailBackend().authenticate(
+#                     request, email=identifier, password=password, user_type=1
+#                 )
+
+#                 if root_user:
+#                     user = root_user
+#                 elif consultant_user:
+#                     user = consultant_user
+#                 else:
+#                     user = None
+
+#             else:
+#                 # user = EmailBackend().authenticate(request, phone=identifier, password=password)
+#                 root_user = EmailBackend().authenticate(
+#                     request, phone=identifier, password=password, user_type=0
+#                 )
+#                 consultant_user = EmailBackend().authenticate(
+#                     request, phone=identifier, password=password, user_type=1
+#                 )
+
+#                 if root_user:
+#                     user = root_user
+#                 elif consultant_user:
+#                     user = consultant_user
+#                 else:
+#                     user = None
+
+#             if user is not None and (user.user_type == 0 or user.user_type == 1):
+#                 login(request, user)
+
+#                 if user.user_type == 0:
+#                     return redirect(
+#                         "root_home"
+#                     )  # Redirect to admin_home for user_type 0
+#                 elif user.user_type == 1:
+#                     return redirect(
+#                         "consultant_home"
+#                     )  # Redirect to consultant_home for user_type 1
+#             else:
+#                 messages.error(request, "Invalid credentials")
+#         else:
+#             messages.error(request, "Please provide both identifier and password.")
+
+#     return render(
+#         request,
+#         "user_login/login_user.html",
+#         {
+#             "page_name": page_name,
+#             "page_description": page_description,
+#             "page_keywords": page_keywords,
+#         },
+#     )
+
 def login_user(request):
     page_name = "Login User"
-    page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
-    page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
+    page_description = "This is a top level student visa related information web portal..."
+    page_keywords = "education visa consultant agent..."
+    
     if request.method == "POST":
-        # captcha_token = request.POST.get("g-recaptcha-response")
-        # cap_url = "https://www.google.com/recaptcha/api/siteverify"
-        # cap_secret = "6LcxvG8pAAAAAIaMvcT9M_ys9A7ytKR1UCIZFvKW"
-        # cap_data = {"secret": cap_secret, "response": captcha_token}
-        # cap_server_response = requests.post(url=cap_url, data=cap_data)
-        # cap_json = json.loads(cap_server_response.text)
+        identifier = request.POST.get("identifier", "").strip()
+        password = request.POST.get("password", "")
 
-        # if cap_json['success'] == False:
-        #     messages.error(request, "Invalid Captcha. Try Again.")
-        #     return redirect("login_user")
-
-        cap_json = {"success": True}
-
-        identifier = request.POST.get("identifier")
-        password = request.POST.get("password")
-
-        if identifier is not None and password is not None:
-            if "@" in identifier:  # Assuming email contains '@'
-                # user = EmailBackend().authenticate(request, email=identifier, password=password)
-                root_user = EmailBackend().authenticate(
-                    request, email=identifier, password=password, user_type=0
-                )
-                consultant_user = EmailBackend().authenticate(
-                    request, email=identifier, password=password, user_type=1
-                )
-
-                if root_user:
-                    user = root_user
-                elif consultant_user:
-                    user = consultant_user
-                else:
-                    user = None
-
+        if identifier and password:
+            # ১. প্রথমে মেইন (Approved) CustomUser টেবিলে খুঁজবে
+            if "@" in identifier:
+                user = CustomUser.objects.filter(
+                    Q(email__iexact=identifier) | Q(username__iexact=identifier)
+                ).first()
             else:
-                # user = EmailBackend().authenticate(request, phone=identifier, password=password)
-                root_user = EmailBackend().authenticate(
-                    request, phone=identifier, password=password, user_type=0
-                )
-                consultant_user = EmailBackend().authenticate(
-                    request, phone=identifier, password=password, user_type=1
-                )
+                user = CustomUser.objects.filter(phone=identifier).first()
 
-                if root_user:
-                    user = root_user
-                elif consultant_user:
-                    user = consultant_user
+            if user is not None:
+                # মেইন টেবিলে ইউজার আছে, এবার পাসওয়ার্ড চেক
+                if user.check_password(password):
+                    if str(user.user_type) == '1': # কনসালট্যান্ট
+                        is_verified = getattr(user, 'active_status', getattr(user, 'is_active', True))
+                        if is_verified: 
+                            login(request, user)
+                            return redirect("consultant_home")
+                        else:
+                            messages.warning(request, "Verification Pending: Your account is currently under review by the Admin.")
+                            return redirect("login_user")
+
+                    elif str(user.user_type) == '0': # রুট এডমিন
+                        login(request, user)
+                        return redirect("root_home")
+                    else:
+                        messages.error(request, "Access Denied. You do not have permission.")
+                        return redirect("login_user")
                 else:
-                    user = None
-
-            if user is not None and (user.user_type == 0 or user.user_type == 1):
-                login(request, user)
-
-                if user.user_type == 0:
-                    return redirect(
-                        "root_home"
-                    )  # Redirect to admin_home for user_type 0
-                elif user.user_type == 1:
-                    return redirect(
-                        "consultant_home"
-                    )  # Redirect to consultant_home for user_type 1
+                    messages.error(request, "Invalid Password. Please try again.")
+            
             else:
-                messages.error(request, "Invalid credentials")
+                # ২. মেইন টেবিলে নেই! এবার পেন্ডিং (Users) টেবিলে খুঁজবে
+                if "@" in identifier:
+                    pending_user = Users.objects.filter(email__iexact=identifier, user_role=5).first()
+                else:
+                    pending_user = Users.objects.filter(phone=identifier, user_role=5).first()
+
+                if pending_user:
+                    # ইউজার পেন্ডিং টেবিলে পাওয়া গেছে! 
+                    messages.warning(request, "Verification Pending: Your account is currently under review by the Admin.")
+                    return redirect("login_user")
+                else:
+                    # কোনো টেবিলেই নেই
+                    messages.error(request, "No account found. Please check your spelling.")
+                
         else:
             messages.error(request, "Please provide both identifier and password.")
 
@@ -1132,9 +1201,8 @@ def login_user(request):
             "page_name": page_name,
             "page_description": page_description,
             "page_keywords": page_keywords,
-        },
+        }
     )
-
 
 def login_student(request):
     base_template = "base.html"

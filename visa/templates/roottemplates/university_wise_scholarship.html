@@ -1,138 +1,390 @@
 {% extends "roottemplates/base.html" %}
 {% load static %}
+
 {% block custom_css %}
-<link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    .select2-container{
-      margin-top: 10px !important;
-  }
-  .select2-container--default .select2-selection--single{
-      border: 1px solid !important;
-      padding: 12px 15px !important;
-      height: 40px !important;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #444 !important;
-    line-height: 17px;
-  }
-  .select2-container--default .select2-selection--single .select2-selection__arrow{
-      top: 7px !important;
-      right: 5px !important;
-  }
-  .select2-container--open .select2-dropdown--below{
-      border-radius: 5px !important;
-      border: 1px solid !important;
-  }
-  .select2-container--default .select2-search--dropdown .select2-search__field{
-      border-radius: 4px !important;
-      border: 1px solid  !important
-  }
-  .select2-container--default .select2-selection--single .select2-selection__rendered{
-      color: #707070 !important;
-      font-size: 15px !important;
-  }
-  label {
-    display: block;
-  }
-  .btn.btn-sm, .swal2-modal .swal2-buttonswrapper .btn-sm.swal2-styled, .ajax-upload-dragdrop .btn-sm.ajax-file-upload, .btn-group-sm > .btn, .swal2-modal .swal2-buttonswrapper .btn-group-sm > .swal2-styled, .ajax-upload-dragdrop .btn-group-sm > .ajax-file-upload {
-    font-size: 0.812rem;
-    border-radius: 6px;
-  }
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+
+  <style>
+    .university-scholarship-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .university-scholarship-page .uw-shell {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .university-scholarship-page .uw-hero {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .university-scholarship-page .uw-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .university-scholarship-page .uw-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .university-scholarship-page .uw-subtitle {
+      margin: 0 auto;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .university-scholarship-page .uw-card {
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .university-scholarship-page .uw-card-body {
+      padding: 24px;
+    }
+
+    .university-scholarship-page .uw-card-head {
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .university-scholarship-page .uw-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .university-scholarship-page .uw-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .university-scholarship-page .uw-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .university-scholarship-page .uw-alert {
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .university-scholarship-page .uw-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .university-scholarship-page .uw-field {
+      width: 100%;
+    }
+
+    .university-scholarship-page .uw-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .university-scholarship-page .uw-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .university-scholarship-page .uw-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .university-scholarship-page .uw-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .university-scholarship-page .uw-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .university-scholarship-page .uw-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    .university-scholarship-page .cke {
+      width: 100% !important;
+      display: block !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+
+    .university-scholarship-page .cke_top {
+      background: #f8fafc !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .university-scholarship-page .cke_bottom {
+      background: #f8fafc !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .university-scholarship-page .cke_contents {
+      min-height: 220px !important;
+    }
+
+    /* Scoped Select2 */
+    .university-scholarship-page .select2-container {
+      width: 100% !important;
+      margin-top: 8px !important;
+    }
+
+    .university-scholarship-page .select2-container--default .select2-selection--single {
+      min-height: 46px !important;
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #F8FAFC !important;
+      border-radius: 14px !important;
+      padding: 8px 12px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .university-scholarship-page .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #334155 !important;
+      line-height: 28px !important;
+      font-size: 14px !important;
+      padding-left: 0 !important;
+      padding-right: 24px !important;
+    }
+
+    .university-scholarship-page .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 44px !important;
+      right: 8px !important;
+    }
+
+    .university-scholarship-page .select2-container--open .select2-dropdown--below {
+      border-radius: 8px !important;
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+    }
+
+    .university-scholarship-page .select2-container--default .select2-search--dropdown .select2-search__field {
+      border-radius: 8px !important;
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      outline: none;
+    }
+
+    @media (max-width: 991.98px) {
+      .university-scholarship-page {
+        padding: 20px 16px 32px;
+      }
+
+      .university-scholarship-page .uw-title {
+        font-size: 28px;
+      }
+
+      .university-scholarship-page .uw-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .university-scholarship-page {
+        padding: 16px 12px 28px;
+      }
+
+      .university-scholarship-page .uw-title {
+        font-size: 24px;
+      }
+
+      .university-scholarship-page .uw-subtitle {
+        font-size: 14px;
+      }
+
+      .university-scholarship-page .uw-section-title {
+        font-size: 20px;
+      }
+
+      .university-scholarship-page .uw-card-body {
+        padding: 14px;
+      }
+
+      .university-scholarship-page .uw-actions {
+        width: 100%;
+      }
+
+      .university-scholarship-page .uw-actions .uw-btn {
+        width: 100%;
+      }
+    }
   </style>
 {% endblock custom_css %}
-{% load static %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">University Wise Scholarship</h4>
+<div class="university-scholarship-page">
+  <div class="uw-shell">
+    <div class="uw-hero">
+      <div>
+        <div class="uw-eyebrow">Scholarship Management</div>
+        <h1 class="uw-title">University Wise Scholarship</h1>
+        <p class="uw-subtitle">
+          Create scholarship details for a university with description and eligibility content.
+        </p>
+      </div>
+    </div>
 
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-
-            <form method="post" action="{% url 'university_wise' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label for="university_id">Select University:</label>
-                  <select id="university_id" name="uw_university_name" class="form-control" required>
-                      <option value="">Select University</option>
-                  </select>
-              </div>
-                <div class="form-group">
-                  <label for="uw_text">Description:</label>
-                  <textarea id="uw_text" name="uw_text" class="form-control" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                  <label for="uw_whocanapply">Who Can Apply:</label>
-                  <textarea id="uw_whocanapply" name="uw_whocanapply" class="form-control"></textarea>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Save</button>
-              </form>
-            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-            <script>
-              CKEDITOR.replace('uw_text', { versionCheck: false });
-              CKEDITOR.replace('uw_whocanapply', { versionCheck: false });
-            </script>
-
+    <div class="uw-card">
+      <div class="uw-card-body">
+        <div class="uw-card-head">
+          <div>
+            <div class="uw-section-kicker">Scholarship Entry</div>
+            <h3 class="uw-section-title">Add University Wise Scholarship</h3>
+            <p class="uw-section-subtitle">
+              Publish university-specific scholarship information in a structured format.
+            </p>
           </div>
         </div>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} uw-alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'university_wise' %}" class="uw-form">
+          {% csrf_token %}
+
+          <div class="uw-field">
+            <label for="university_id" class="uw-label">Select University</label>
+            <select id="university_id" name="uw_university_name" class="uw-input" required>
+              <option value="">Select University</option>
+            </select>
+          </div>
+
+          <div class="uw-field">
+            <label for="uw_text" class="uw-label">Description</label>
+            <textarea id="uw_text" name="uw_text" class="uw-input" required></textarea>
+          </div>
+
+          <div class="uw-field">
+            <label for="uw_whocanapply" class="uw-label">Who Can Apply</label>
+            <textarea id="uw_whocanapply" name="uw_whocanapply" class="uw-input"></textarea>
+          </div>
+
+          <div class="uw-actions">
+            <button type="submit" class="uw-btn">Save</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-
 {% endblock content %}
+
 {% block custom_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
-<!-- Use an alternative CDN link for Select2 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<!-- If the CDN link does not work, download select2.min.js and host it locally -->
-<!-- <script src="{% static 'path/to/select2.min.js' %}"></script> -->
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
 <script>
-    // Initialize Select2 for the dropdown element
-    $(document).ready(function() {
-        console.log('Select2 initialization script executed.');
-        $('#university_id').select2();
+  $(document).ready(function() {
+    CKEDITOR.replace('uw_text', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
     });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Fetch JSON data from the file
+
+    CKEDITOR.replace('uw_whocanapply', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
+    });
+
     fetch('/static/assets/json/universities.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Fetched data:', data); // Log the fetched data
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const selectElement = document.getElementById('university_id');
 
-            // Get the select element
-            const selectElement = document.getElementById("university_id");
+        data.forEach(function(university) {
+          const option = document.createElement('option');
+          option.text = university;
+          option.value = university;
+          selectElement.appendChild(option);
+        });
 
-            // Loop through the JSON data and create option elements
-            data.forEach(function(university) {
-                const option = document.createElement("option");
-                option.text = university;
-                option.value = university; // You may assign a different value here if needed
-                selectElement.appendChild(option);
-            });
-
-            // Initialize Select2 for the dropdown element
-            $('#university_id').select2();
-        })
-        .catch(error => console.error('Error fetching JSON:', error));
-});
+        $('#university_id').select2({
+          width: '100%'
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching JSON:', error);
+      });
+  });
 </script>
 {% endblock custom_js %}

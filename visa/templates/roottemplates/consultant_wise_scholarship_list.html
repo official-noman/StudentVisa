@@ -4,131 +4,432 @@
   {% include "roottemplates/partials/_page_theme.html" %}
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+
   <style>
-    #scholarshiplist_wrapper {
+    .cwsl-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .cwsl-page .cwsl-shell {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .cwsl-page .cwsl-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .cwsl-page .cwsl-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .cwsl-page .cwsl-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .cwsl-page .cwsl-subtitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .cwsl-page .cwsl-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .cwsl-page .cwsl-add-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .cwsl-page .cwsl-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .cwsl-page .cwsl-card-body {
+      padding: 24px;
+    }
+
+    .cwsl-page .cwsl-card-head {
+      margin-bottom: 18px;
+    }
+
+    .cwsl-page .cwsl-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .cwsl-page .cwsl-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .cwsl-page .cwsl-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .cwsl-page .cwsl-note {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .cwsl-page .cwsl-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .cwsl-page #scholarshiplist_wrapper {
       padding: 0;
     }
 
-    #scholarshiplist_filter label,
-    #scholarshiplist_length label {
+    .cwsl-page #scholarshiplist {
+      width: 100% !important;
+      min-width: 1100px;
+      border-collapse: separate !important;
+      border-spacing: 0;
+    }
+
+    .cwsl-page #scholarshiplist thead th {
+      background: #f8fafc !important;
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+
+    .cwsl-page #scholarshiplist th,
+    .cwsl-page #scholarshiplist td {
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+      color: #334155;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .cwsl-page #scholarshiplist tbody tr:hover td {
+      background: #f8fbff;
+    }
+
+    .cwsl-page table.dataTable thead th,
+    .cwsl-page table.dataTable thead td {
+      position: relative;
+      background-image: none !important;
+    }
+
+    .cwsl-page table.dataTable thead .sorting,
+    .cwsl-page table.dataTable thead .sorting_asc,
+    .cwsl-page table.dataTable thead .sorting_desc,
+    .cwsl-page table.dataTable thead .sorting_asc_disabled,
+    .cwsl-page table.dataTable thead .sorting_desc_disabled {
+      background-image: none !important;
+    }
+
+    .cwsl-page table.dataTable thead th:before,
+    .cwsl-page table.dataTable thead th:after,
+    .cwsl-page table.dataTable thead td:before,
+    .cwsl-page table.dataTable thead td:after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .cwsl-page table.dataTable.no-footer {
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .cwsl-page #scholarshiplist_filter label,
+    .cwsl-page #scholarshiplist_length label {
       color: #475569;
       font-weight: 600;
       margin-bottom: 12px;
+      font-size: 14px;
     }
 
-    #scholarshiplist_filter input,
-    #scholarshiplist_length select {
+    .cwsl-page #scholarshiplist_filter input,
+    .cwsl-page #scholarshiplist_length select {
       border: 1px solid rgba(15, 23, 42, 0.10) !important;
       background: #F8FAFC !important;
       border-radius: 12px !important;
       min-height: 40px;
       padding: 8px 12px !important;
+      color: #334155;
+      box-shadow: none !important;
+      outline: none !important;
     }
 
-    .cwsl-modal .modal-content {
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
-    }
-
-    .cwsl-modal .modal-header,
-    .cwsl-modal .modal-footer {
-      border-color: rgba(15, 23, 42, 0.08);
-    }
-
-    .cwsl-modal .modal-title {
-      font-family: 'Sora', sans-serif;
-      font-weight: 700;
-      color: #1E293B;
-    }
-
-    .action-inline {
+    .cwsl-page .action-inline {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .btn-soft-primary {
+    .cwsl-page .btn-soft-primary {
       background: rgba(59, 130, 246, 0.10);
       color: #3B82F6;
       border: 1px solid rgba(59, 130, 246, 0.14);
     }
 
-    .btn-soft-primary:hover {
+    .cwsl-page .btn-soft-primary:hover {
       background: rgba(59, 130, 246, 0.16);
       color: #2563EB;
     }
 
-    .btn-soft-danger {
+    .cwsl-page .btn-soft-danger {
       background: rgba(244, 63, 94, 0.10);
       color: #F43F5E;
       border: 1px solid rgba(244, 63, 94, 0.14);
     }
 
-    .btn-soft-danger:hover {
+    .cwsl-page .btn-soft-danger:hover {
       background: rgba(244, 63, 94, 0.16);
       color: #E11D48;
     }
 
-    .select2-container {
+    .cwsl-page .cwsl-modal .modal-content {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .cwsl-page .cwsl-modal .modal-header,
+    .cwsl-page .cwsl-modal .modal-footer {
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+
+    .cwsl-page .cwsl-modal .modal-title {
+      font-weight: 700;
+      color: #1E293B;
+    }
+
+    .cwsl-page .cwsl-modal-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .cwsl-page .cwsl-modal-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .cwsl-page .cwsl-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cwsl-page .cwsl-badge-success {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .cwsl-page .cwsl-badge-danger {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .cwsl-page .cke {
+      width: 100% !important;
+      display: block !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+
+    .cwsl-page .cke_top {
+      background: #f8fafc !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .cwsl-page .cke_bottom {
+      background: #f8fafc !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .cwsl-page .cke_contents {
+      min-height: 220px !important;
+    }
+
+    /* Scoped Select2 */
+    .cwsl-page .select2-container {
       width: 100% !important;
     }
 
-    .select2-container--default .select2-selection--single {
+    .cwsl-page .select2-container--default .select2-selection--single {
       min-height: 46px !important;
       border: 1px solid rgba(15, 23, 42, 0.10) !important;
       background: #F8FAFC !important;
       border-radius: 14px !important;
       padding: 8px 12px !important;
+      display: flex !important;
+      align-items: center !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    .cwsl-page .select2-container--default .select2-selection--single .select2-selection__rendered {
       color: #334155 !important;
       line-height: 28px !important;
       font-size: 14px !important;
       padding-left: 0 !important;
+      padding-right: 24px !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
+    .cwsl-page .select2-container--default .select2-selection--single .select2-selection__arrow {
       height: 44px !important;
       right: 8px !important;
+    }
+
+    .cwsl-page .select2-container--default.select2-container--focus .select2-selection--single,
+    .cwsl-page .select2-container--default.select2-container--open .select2-selection--single {
+      border-color: #2563eb !important;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12) !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .cwsl-page {
+        padding: 20px 16px 32px;
+      }
+
+      .cwsl-page .cwsl-title {
+        font-size: 28px;
+      }
+
+      .cwsl-page .cwsl-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .cwsl-page {
+        padding: 16px 12px 28px;
+      }
+
+      .cwsl-page .cwsl-title {
+        font-size: 24px;
+      }
+
+      .cwsl-page .cwsl-subtitle {
+        font-size: 14px;
+      }
+
+      .cwsl-page .cwsl-card-body {
+        padding: 14px;
+      }
+
+      .cwsl-page .cwsl-hero {
+        flex-direction: column;
+      }
+
+      .cwsl-page .cwsl-add-btn {
+        width: 100%;
+      }
+
+      .cwsl-page .action-inline {
+        min-width: 130px;
+      }
+
+      .cwsl-page .cwsl-modal .page-btn,
+      .cwsl-page .cwsl-modal .btn {
+        width: auto;
+      }
     }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="cwsl-page">
+  <div class="cwsl-shell">
+    <div class="cwsl-hero">
       <div>
-        <div class="page-eyebrow">Scholarship Management</div>
-        <h1 class="page-title">Consultant Wise Scholarship List</h1>
-        <p class="page-subtitle">
+        <div class="cwsl-eyebrow">Scholarship Management</div>
+        <h1 class="cwsl-title">Consultant Wise Scholarship List</h1>
+        <p class="cwsl-subtitle">
           Review, edit, and maintain consultant-specific scholarship content by country, status, and eligibility rules.
         </p>
       </div>
       <div>
-        <a href="{% url 'consultant_wise_root' %}" class="page-btn page-btn-primary">Add Scholarship</a>
+        <a href="{% url 'consultant_wise_root' %}" class="cwsl-add-btn">Add Scholarship</a>
       </div>
     </div>
 
-    <div class="page-card">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="cwsl-card">
+      <div class="cwsl-card-body">
+        <div class="cwsl-card-head">
           <div>
-            <div class="page-section-kicker">Scholarship Directory</div>
-            <h3 class="page-section-title">All Consultant Wise Scholarships</h3>
-            <p class="page-section-subtitle">
+            <div class="cwsl-section-kicker">Scholarship Directory</div>
+            <h3 class="cwsl-section-title">All Consultant Wise Scholarships</h3>
+            <p class="cwsl-section-subtitle">
               Manage scholarship records, edit content, and control publication status.
             </p>
           </div>
         </div>
 
         {% if instances %}
-        <div class="page-table-wrap">
-          <table id="scholarshiplist" class="page-table">
+        <div class="cwsl-table-wrap">
+          <table id="scholarshiplist" class="table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -152,9 +453,9 @@
                 <td>{{ instance.scow_whocanapply|truncatechars:30|safe }}</td>
                 <td>
                   {% if instance.scow_status == 1 %}
-                    <span class="page-badge page-badge-success">Active</span>
+                    <span class="cwsl-badge cwsl-badge-success">Active</span>
                   {% else %}
-                    <span class="page-badge page-badge-danger">Inactive</span>
+                    <span class="cwsl-badge cwsl-badge-danger">Inactive</span>
                   {% endif %}
                 </td>
                 <td>{{ instance.created_at }}</td>
@@ -171,20 +472,21 @@
           </table>
         </div>
         {% else %}
-          <div class="page-note">No consultant wise scholarships available.</div>
+          <div class="cwsl-note">No consultant wise scholarships available.</div>
         {% endif %}
       </div>
     </div>
   </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade cwsl-modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade cwsl-page cwsl-modal" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editModalLabel">Edit Scholarship</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <div class="modal-body">
@@ -192,43 +494,41 @@
           {% csrf_token %}
           <input type="hidden" name="scow_id" id="scow_id">
 
-          <div class="page-form-grid">
-            <div class="page-field">
-              <label for="scow_text" class="page-label">Text</label>
-              <textarea class="form-control" id="scow_text" name="scow_text"></textarea>
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="scow_text" class="font-weight-bold">Text</label>
+              <textarea class="cwsl-modal-input" id="scow_text" name="scow_text"></textarea>
             </div>
 
-            <div class="page-field">
-              <label for="scow_whocanapply" class="page-label">Who Can Apply</label>
-              <textarea class="form-control" id="scow_whocanapply" name="scow_whocanapply"></textarea>
+            <div class="col-12 mb-3">
+              <label for="scow_whocanapply" class="font-weight-bold">Who Can Apply</label>
+              <textarea class="cwsl-modal-input" id="scow_whocanapply" name="scow_whocanapply"></textarea>
             </div>
 
-            <div class="page-form-row-2">
-              <div class="page-field">
-                <label for="scow_status" class="page-label">Status</label>
-                <select class="form-control" id="scow_status" name="scow_status">
-                  <option value="1">Active</option>
-                  <option value="0">Inactive</option>
-                </select>
-              </div>
+            <div class="col-md-6 mb-3">
+              <label for="scow_status" class="font-weight-bold">Status</label>
+              <select class="cwsl-modal-input" id="scow_status" name="scow_status">
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+              </select>
+            </div>
 
-              <div class="page-field">
-                <label for="country_name" class="page-label">Country</label>
-                <select class="form-control" id="country_name" name="country_name">
-                  <option value="">Select Country</option>
-                  {% for country in countries %}
-                    <option value="{{ country.id }}">{{ country.country_name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
+            <div class="col-md-6 mb-3">
+              <label for="country_name" class="font-weight-bold">Country</label>
+              <select class="cwsl-modal-input" id="country_name" name="country_name">
+                <option value="">Select Country</option>
+                {% for country in countries %}
+                  <option value="{{ country.id }}">{{ country.country_name }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
         </form>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="page-btn page-btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="page-btn page-btn-primary" id="saveChanges">Save Changes</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChanges">Save Changes</button>
       </div>
     </div>
   </div>
@@ -306,8 +606,27 @@
             scowWhoCanApplyEditor.destroy(true);
           }
 
-          scowTextEditor = CKEDITOR.replace('scow_text', { versionCheck: false });
-          scowWhoCanApplyEditor = CKEDITOR.replace('scow_whocanapply', { versionCheck: false });
+          scowTextEditor = CKEDITOR.replace('scow_text', {
+            versionCheck: false,
+            height: 220,
+            toolbar: [
+              ['Bold', 'Italic', 'Underline'],
+              ['NumberedList', 'BulletedList'],
+              ['Link', 'Unlink'],
+              ['Undo', 'Redo']
+            ]
+          });
+
+          scowWhoCanApplyEditor = CKEDITOR.replace('scow_whocanapply', {
+            versionCheck: false,
+            height: 220,
+            toolbar: [
+              ['Bold', 'Italic', 'Underline'],
+              ['NumberedList', 'BulletedList'],
+              ['Link', 'Unlink'],
+              ['Undo', 'Redo']
+            ]
+          });
 
           scowTextEditor.on('instanceReady', function() {
             scowTextEditor.setData(data.scow_text || '');

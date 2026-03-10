@@ -1,79 +1,343 @@
 {% extends "roottemplates/base.html" %}
+{% load static %}
 
 {% block custom_css %}
-<style>
-  .form-check {
-    margin-bottom: 13px;
-  }
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
-  .form-check-label {
-    cursor: pointer;
-  }
+  <style>
+    .root-user-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
 
-  .toggle-button {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 58px;
-    height: 26px;
-    background-color: #ddd;
-    border-radius: 20px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+    .root-user-page .rup-shell {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
 
-.toggle-button:checked {
-    background-color: #05a34a;
-}
+    .root-user-page .rup-hero {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
 
+    .root-user-page .rup-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
 
+    .root-user-page .rup-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
 
-  .toggle-button::before {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    transition: left 0.3s;
-  }
+    .root-user-page .rup-subtitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
 
-  .toggle-button:checked::before {
-    left: 37px;
-  }
+    .root-user-page .rup-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
 
-  .form-check .form-check-label {
-    min-height: 18px;
-    display: block;
-    margin-left: 2.75rem;
-    font-size: 0.812rem;
-    line-height: 2.5;
-  }
-</style>
+    .root-user-page .rup-add-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .root-user-page .rup-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .root-user-page .rup-card-body {
+      padding: 24px;
+    }
+
+    .root-user-page .rup-card-head {
+      margin-bottom: 18px;
+    }
+
+    .root-user-page .rup-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .root-user-page .rup-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .root-user-page .rup-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .root-user-page .rup-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .root-user-page #rootUserTable {
+      width: 100% !important;
+      min-width: 760px;
+      border-collapse: separate !important;
+      border-spacing: 0;
+    }
+
+    .root-user-page table.dataTable thead th,
+    .root-user-page table.dataTable thead td {
+      position: relative;
+      background-image: none !important;
+    }
+
+    .root-user-page table.dataTable thead .sorting,
+    .root-user-page table.dataTable thead .sorting_asc,
+    .root-user-page table.dataTable thead .sorting_desc,
+    .root-user-page table.dataTable thead .sorting_asc_disabled,
+    .root-user-page table.dataTable thead .sorting_desc_disabled {
+      background-image: none !important;
+    }
+
+    .root-user-page table.dataTable thead th:before,
+    .root-user-page table.dataTable thead th:after,
+    .root-user-page table.dataTable thead td:before,
+    .root-user-page table.dataTable thead td:after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .root-user-page .action-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .root-user-page .rup-modal .modal-content {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .root-user-page .rup-modal .modal-header,
+    .root-user-page .rup-modal .modal-footer {
+      border-color: rgba(15, 23, 42, 0.08);
+    }
+
+    .root-user-page .rup-modal .modal-title {
+      font-weight: 700;
+      color: #1E293B;
+    }
+
+    .root-user-page .permission-grid .col-md-4 {
+      margin-bottom: 10px;
+    }
+
+    .root-user-page .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .root-user-page .toggle-button {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 58px;
+      min-width: 58px;
+      height: 26px;
+      background-color: #ddd;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border: none;
+      outline: none;
+      margin: 0;
+    }
+
+    .root-user-page .toggle-button:checked {
+      background-color: #05a34a;
+    }
+
+    .root-user-page .toggle-button::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: left 0.3s;
+    }
+
+    .root-user-page .toggle-button:checked::before {
+      left: 35px;
+    }
+
+    .root-user-page .toggle-label {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #334155;
+      cursor: pointer;
+      word-break: break-word;
+    }
+
+    .root-user-page #rootUserTable_filter label,
+    .root-user-page #rootUserTable_length label {
+      color: #475569;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .root-user-page #rootUserTable_filter input,
+    .root-user-page #rootUserTable_length select {
+      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+      background: #F8FAFC !important;
+      border-radius: 12px !important;
+      min-height: 40px;
+      padding: 8px 12px !important;
+      color: #334155;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .root-user-page {
+        padding: 20px 16px 32px;
+      }
+
+      .root-user-page .rup-title {
+        font-size: 28px;
+      }
+
+      .root-user-page .rup-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .root-user-page {
+        padding: 16px 12px 28px;
+      }
+
+      .root-user-page .rup-title {
+        font-size: 24px;
+      }
+
+      .root-user-page .rup-subtitle {
+        font-size: 14px;
+      }
+
+      .root-user-page .rup-card-body {
+        padding: 14px;
+      }
+
+      .root-user-page .rup-hero {
+        flex-direction: column;
+      }
+
+      .root-user-page .rup-add-btn {
+        width: 100%;
+      }
+    }
+  </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title mb-4">All Root Users</h4>
+<div class="content-wrapper root-user-page">
+  <div class="page-shell rup-shell">
+    <div class="page-hero rup-hero">
+      <div>
+        <div class="rup-eyebrow">Admin Access</div>
+        <h1 class="rup-title">All Root Users</h1>
+        <p class="rup-subtitle">
+          Review root users and manage their permission groups from a centralized admin screen.
+        </p>
+      </div>
+      <div>
+        <a href="{% url 'create_root' %}" class="rup-add-btn">Add Root User</a>
+      </div>
+    </div>
 
-          {% if messages %}
+    <div class="rup-card">
+      <div class="rup-card-body">
+        <div class="rup-card-head">
+          <div>
+            <div class="rup-section-kicker">Permission Management</div>
+            <h3 class="rup-section-title">Root User Directory</h3>
+            <p class="rup-section-subtitle">
+              Grant or update permission groups assigned to each root-level user.
+            </p>
+          </div>
+        </div>
+
+        {% if messages %}
           {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-          </div>
+            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+              {{ message }}
+            </div>
           {% endfor %}
-          {% endif %}
-          <div class="mb-3">
-            <a href="{% url 'create_root' %}" class="btn btn-info">Add Root User</a>
-          </div>
-          <table class="table table-bordered">
+        {% endif %}
+
+        <div class="rup-table-wrap">
+          <table id="rootUserTable" class="table">
             <thead>
               <tr>
                 <th>#</th>
@@ -85,166 +349,194 @@
             </thead>
             <tbody>
               {% for root_user in root_users %}
-              <tr>
+              <tr id="root-user-row-{{ root_user.id }}">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ root_user.full_name }}</td>
                 <td>{{ root_user.email }}</td>
                 <td>{{ root_user.phone }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary" data-toggle="modal"
-                    data-target="#permissionModal{{ root_user.id }}">
-                    Grant Permission
-                  </button>
+                  <div class="action-inline">
+                    <button
+                      type="button"
+                      class="btn btn-primary grant-permission-open-btn"
+                      data-userid="{{ root_user.id }}"
+                      data-toggle="modal"
+                      data-target="#permissionModal{{ root_user.id }}"
+                    >
+                      Grant Permission
+                    </button>
+                  </div>
                 </td>
               </tr>
-
-              <!-- Permission Modal -->
-              <div class="modal fade" id="permissionModal{{ root_user.id }}" tabindex="-1" role="dialog" aria-labelledby="permissionModalLabel" aria-hidden="true" data-user-id="{{ root_user.id }}">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="permissionModalLabel">Grant Permission</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <form id="grantPermissionForm{{ root_user.id }}">
-                        {% csrf_token %}
-                        <div class="row">
-                          {% for group_name, permissions in grouped_permissions.items %}
-                          {% if forloop.counter0|divisibleby:3 %}
-                          </div><div class="row">
-                          {% endif %}
-                          <div class="col-md-4">
-                            <div class="form-group">
-                              <div class="form-check">
-                                <input class="form-check-input toggle-button" type="checkbox" id="group_{{ group_name }}" name="groups" value="{{ group_name }}">
-                                <label class="form-check-label" for="group_{{ group_name }}">{{ group_name }}</label>
-                              </div>
-                            </div>
-                          </div>
-                          {% endfor %}
-                        </div>
-                      </form>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary grant-permission-btn" data-userid="{{ root_user.id }}">Grant Permission</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Permission Modal -->
               {% endfor %}
             </tbody>
           </table>
         </div>
+
       </div>
-    </div>
     </div>
   </div>
 </div>
-{% endblock %}
+
+{% for root_user in root_users %}
+<div
+  class="modal fade rup-modal"
+  id="permissionModal{{ root_user.id }}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="permissionModalLabel{{ root_user.id }}"
+  aria-hidden="true"
+  data-user-id="{{ root_user.id }}"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="permissionModalLabel{{ root_user.id }}">Grant Permission</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="grantPermissionForm{{ root_user.id }}">
+          {% csrf_token %}
+          <div class="row permission-grid">
+            {% for group_name, permissions in grouped_permissions.items %}
+            <div class="col-md-4">
+              <div class="toggle-row">
+                <input
+                  class="toggle-button"
+                  type="checkbox"
+                  id="group_{{ root_user.id }}_{{ forloop.counter }}"
+                  name="groups"
+                  value="{{ group_name }}"
+                >
+                <label class="toggle-label" for="group_{{ root_user.id }}_{{ forloop.counter }}">
+                  {{ group_name }}
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary grant-permission-btn" data-userid="{{ root_user.id }}">
+          Grant Permission
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock content %}
 
 {% block custom_js %}
-<!-- Include your JavaScript links here -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
-</script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js">
-</script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js">
-</script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
-  $(document).ready(function() {
-    // Function to handle modal shown event
-    $('.modal').on('shown.bs.modal', function () {
-        var modal = $(this);
-        var userId = modal.data('user-id'); // Assuming you pass user id to the modal via data attribute
-        // Make AJAX call to fetch existing permissions
-        $.ajax({
-            url: '/get_existing_permissions/' + userId + '/',
-            type: 'GET',
-            success: function(response) {
-                var existingPermissions = response.existing_permissions;
-                // Find all toggle buttons within the modal
-                modal.find('.toggle-button').each(function() {
-                    var toggleButton = $(this);
-                    var groupName = toggleButton.val();
-                    // Check if the group name matches any existing permission
-                    if (existingPermissions.includes(groupName)) {
-                        toggleButton.prop('checked', true); // Check the toggle button
-                    } else {
-                        toggleButton.prop('checked', false); // Uncheck the toggle button
-                    }
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching existing permissions:', error);
-                // Handle error if needed
-            }
-        });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  $(document).ready(function () {
+    $('#rootUserTable').DataTable({
+      pageLength: 10,
+      order: [[0, 'asc']]
     });
-    // Function to handle grant permission button click
-    $(document).on('click', '.grant-permission-btn', function() {
-      var userId = $(this).data('userid');
-      var groups = [];
-      // Find selected permissions for the user
-      $('#permissionModal' + userId + ' input[name="groups"]:checked').each(function() {
-          groups.push($(this).val());
+
+    $('.modal').on('shown.bs.modal', function () {
+      const modal = $(this);
+      const userId = modal.data('user-id');
+
+      $.ajax({
+        url: '/get_existing_permissions/' + userId + '/',
+        type: 'GET',
+        success: function (response) {
+          const existingPermissions = response.existing_permissions || [];
+
+          modal.find('.toggle-button').each(function () {
+            const toggleButton = $(this);
+            const groupName = toggleButton.val();
+            toggleButton.prop('checked', existingPermissions.includes(groupName));
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error('Error fetching existing permissions:', error);
+        }
       });
-      // Print the data before sending it via AJAX
-      console.log('User ID:', userId);
-      console.log('Selected Groups:', groups);
-      // Prepare data for the Fetch request
-      var formData = new FormData();
-      formData.append('csrfmiddlewaretoken', $('input[name="csrfmiddlewaretoken"]').val());
-      groups.forEach(function(group) {
-          formData.append('groups', group);
+    });
+
+    $(document).on('click', '.grant-permission-btn', function () {
+      const userId = $(this).data('userid');
+      const modal = $('#permissionModal' + userId);
+      const form = $('#grantPermissionForm' + userId);
+      const groups = [];
+
+      form.find('input[name="groups"]:checked').each(function () {
+        groups.push($(this).val());
       });
-      // Send Fetch request to grant permissions
+
+      const formData = new FormData();
+      formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+      groups.forEach(function (group) {
+        formData.append('groups', group);
+      });
+
       fetch('/grant_permission/' + userId + '/', {
-          method: 'POST',
-          body: formData
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
       })
       .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
       .then(data => {
-        // Display success message with OK button
         Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: data.message,
-            showConfirmButton: true,
-            confirmButtonText: 'OK'
+          icon: 'success',
+          title: 'Success',
+          text: data.message,
+          showConfirmButton: true,
+          confirmButtonText: 'OK'
         }).then((result) => {
-            // Reload the page or perform any other action as needed
-            if (result.isConfirmed) {
-                location.reload(); // Reload the page
-            }
+          if (result.isConfirmed) {
+            modal.modal('hide');
+            location.reload();
+          }
         });
-    })
+      })
       .catch(error => {
-          // Display error message in console
-          console.error('Error:', error);
-          // Show error message in a popup
-          Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred while granting permissions. Please try again.',
-          });
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred while granting permissions. Please try again.'
+        });
       });
+    });
   });
-});
 </script>
-{% endblock %}
+{% endblock custom_js %}

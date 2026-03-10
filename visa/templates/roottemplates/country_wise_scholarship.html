@@ -4,54 +4,287 @@
 {% block custom_css %}
   {% include "roottemplates/partials/_page_theme.html" %}
   <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+
   <style>
-    .select2-container {
+    .country-scholarship-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .country-scholarship-page .cws-shell {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .country-scholarship-page .cws-hero {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .country-scholarship-page .cws-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .country-scholarship-page .cws-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .country-scholarship-page .cws-subtitle {
+      margin: 0 auto;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .country-scholarship-page .cws-card {
+      width: 100%;
+      max-width: 1020px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .country-scholarship-page .cws-card-body {
+      padding: 24px;
+    }
+
+    .country-scholarship-page .cws-card-head {
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .country-scholarship-page .cws-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .country-scholarship-page .cws-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .country-scholarship-page .cws-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .country-scholarship-page .cws-alert {
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .country-scholarship-page .cws-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .country-scholarship-page .cws-field {
+      width: 100%;
+    }
+
+    .country-scholarship-page .cws-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .country-scholarship-page .cws-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .country-scholarship-page .cws-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .country-scholarship-page .cws-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .country-scholarship-page .cws-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .country-scholarship-page .cws-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    .country-scholarship-page .cke {
+      width: 100% !important;
+      display: block !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+
+    .country-scholarship-page .cke_top {
+      background: #f8fafc !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .country-scholarship-page .cke_bottom {
+      background: #f8fafc !important;
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .country-scholarship-page .cke_contents {
+      min-height: 220px !important;
+    }
+
+    /* Scoped Select2 */
+    .country-scholarship-page .select2-container {
       width: 100% !important;
       margin-top: 8px !important;
     }
 
-    .select2-container--default .select2-selection--single {
+    .country-scholarship-page .select2-container--default .select2-selection--single {
       min-height: 46px !important;
       border: 1px solid rgba(15, 23, 42, 0.10) !important;
       background: #F8FAFC !important;
       border-radius: 14px !important;
       padding: 8px 12px !important;
+      display: flex !important;
+      align-items: center !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    .country-scholarship-page .select2-container--default .select2-selection--single .select2-selection__rendered {
       color: #334155 !important;
       line-height: 28px !important;
       font-size: 14px !important;
       padding-left: 0 !important;
+      padding-right: 24px !important;
     }
 
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
+    .country-scholarship-page .select2-container--default .select2-selection--single .select2-selection__arrow {
       height: 44px !important;
       right: 8px !important;
+    }
+
+    .country-scholarship-page .select2-container--default.select2-container--focus .select2-selection--single,
+    .country-scholarship-page .select2-container--default.select2-container--open .select2-selection--single {
+      border-color: #2563eb !important;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12) !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .country-scholarship-page {
+        padding: 20px 16px 32px;
+      }
+
+      .country-scholarship-page .cws-title {
+        font-size: 28px;
+      }
+
+      .country-scholarship-page .cws-card-body {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .country-scholarship-page {
+        padding: 16px 12px 28px;
+      }
+
+      .country-scholarship-page .cws-title {
+        font-size: 24px;
+      }
+
+      .country-scholarship-page .cws-subtitle {
+        font-size: 14px;
+      }
+
+      .country-scholarship-page .cws-section-title {
+        font-size: 20px;
+      }
+
+      .country-scholarship-page .cws-card-body {
+        padding: 14px;
+      }
+
+      .country-scholarship-page .cws-actions {
+        width: 100%;
+      }
+
+      .country-scholarship-page .cws-actions .cws-btn {
+        width: 100%;
+      }
     }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="country-scholarship-page">
+  <div class="cws-shell">
+    <div class="cws-hero">
       <div>
-        <div class="page-eyebrow">Scholarship Management</div>
-        <h1 class="page-title">Country Wise Scholarship</h1>
-        <p class="page-subtitle">
+        <div class="cws-eyebrow">Scholarship Management</div>
+        <h1 class="cws-title">Country Wise Scholarship</h1>
+        <p class="cws-subtitle">
           Create scholarship content by country with title, eligibility details, description, and featured image.
         </p>
       </div>
     </div>
 
-    <div class="page-card">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="cws-card">
+      <div class="cws-card-body">
+        <div class="cws-card-head">
           <div>
-            <div class="page-section-kicker">Scholarship Entry</div>
-            <h3 class="page-section-title">Add Country Wise Scholarship</h3>
-            <p class="page-section-subtitle">
+            <div class="cws-section-kicker">Scholarship Entry</div>
+            <h3 class="cws-section-title">Add Country Wise Scholarship</h3>
+            <p class="cws-section-subtitle">
               Publish country-specific scholarship information in a structured format.
             </p>
           </div>
@@ -59,62 +292,62 @@
 
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} page-alert mb-3">
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} cws-alert">
               {{ message }}
             </div>
           {% endfor %}
         {% endif %}
 
-        <form method="post" action="{% url 'country_wise' %}" enctype="multipart/form-data" class="page-form-grid">
+        <form method="post" action="{% url 'country_wise' %}" enctype="multipart/form-data" class="cws-form">
           {% csrf_token %}
 
-          <div class="page-field">
-            <label for="country_id" class="page-label">Select Country</label>
-            <select id="country_id" name="country_id" class="form-control" required>
+          <div class="cws-field">
+            <label for="country_id" class="cws-label">Select Country</label>
+            <select id="country_id" name="country_id" class="cws-input" required>
               {% for item in country %}
                 <option value="{{ item.country_id }}">{{ item.country_name }}</option>
               {% endfor %}
             </select>
           </div>
 
-          <div class="page-field">
-            <label for="scw_title" class="page-label">Title</label>
+          <div class="cws-field">
+            <label for="scw_title" class="cws-label">Title</label>
             <input
               type="text"
               id="scw_title"
               name="scw_title"
-              class="form-control"
+              class="cws-input"
               value="{{ instances.scw_title|default:'' }}"
               required
             >
           </div>
 
-          <div class="page-field">
-            <label for="scw_text" class="page-label">Description</label>
+          <div class="cws-field">
+            <label for="scw_text" class="cws-label">Description</label>
             <textarea
               id="scw_text"
               name="scw_text"
-              class="form-control"
+              class="cws-input"
               required
             >{{ instances.scw_text|default:'' }}</textarea>
           </div>
 
-          <div class="page-field">
-            <label for="scw_whocanapply" class="page-label">Who Can Apply</label>
+          <div class="cws-field">
+            <label for="scw_whocanapply" class="cws-label">Who Can Apply</label>
             <textarea
               id="scw_whocanapply"
               name="scw_whocanapply"
-              class="form-control"
+              class="cws-input"
             >{{ instances.scw_whocanapply|default:'' }}</textarea>
           </div>
 
-          <div class="page-field">
-            <label for="scw_image" class="page-label">Upload Image</label>
-            <input type="file" id="scw_image" name="scw_image" class="form-control" accept="image/*">
+          <div class="cws-field">
+            <label for="scw_image" class="cws-label">Upload Image</label>
+            <input type="file" id="scw_image" name="scw_image" class="cws-input" accept="image/*">
           </div>
 
-          <div class="page-actions">
-            <button type="submit" class="page-btn page-btn-primary">Save Scholarship</button>
+          <div class="cws-actions">
+            <button type="submit" class="cws-btn">Save Scholarship</button>
           </div>
         </form>
       </div>
@@ -129,10 +362,31 @@
 
 <script>
   $(document).ready(function() {
-    $('#country_id').select2();
+    $('#country_id').select2({
+      width: '100%'
+    });
 
-    CKEDITOR.replace('scw_whocanapply', { versionCheck: false });
-    CKEDITOR.replace('scw_text', { versionCheck: false });
+    CKEDITOR.replace('scw_whocanapply', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
+    });
+
+    CKEDITOR.replace('scow_text', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
+    });
   });
 </script>
 {% endblock custom_js %}

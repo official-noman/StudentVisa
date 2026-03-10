@@ -4,64 +4,311 @@
 {% block custom_css %}
   {% include "roottemplates/partials/_page_theme.html" %}
   <style>
-    .customize-card {
-      max-width: 980px;
-    }
-
-    .image-preview-wrap {
-      margin-top: 12px;
-    }
-
-    .image-preview-box {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 220px;
+    .home-customize-page {
       width: 100%;
-      max-width: 560px;
-      background: #F8FAFC;
-      border: 1px dashed rgba(15, 23, 42, 0.14);
-      border-radius: 18px;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+
+    .home-customize-page .hc-shell {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .home-customize-page .hc-hero {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .home-customize-page .hc-eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .home-customize-page .hc-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .home-customize-page .hc-subtitle {
+      margin: 0 auto;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .home-customize-page .hc-card {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
       overflow: hidden;
     }
 
-    .image-preview-box img {
-      max-width: 100%;
-      max-height: 320px;
-      object-fit: contain;
-      display: block;
+    .home-customize-page .hc-card-body {
+      padding: 24px;
     }
 
-    .image-empty-text {
-      color: #64748B;
+    .home-customize-page .hc-card-head {
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .home-customize-page .hc-section-kicker {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+
+    .home-customize-page .hc-section-title {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .home-customize-page .hc-section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+    }
+
+    .home-customize-page .hc-alert {
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+
+    .home-customize-page .hc-form {
+      display: grid;
+      gap: 22px;
+    }
+
+    .home-customize-page .hc-field {
+      width: 100%;
+    }
+
+    .home-customize-page .hc-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .home-customize-page .hc-file-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #334155;
+      box-shadow: none;
+      outline: none;
+    }
+
+    .home-customize-page .hc-file-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .home-customize-page .hc-note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .home-customize-page .hc-note strong {
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .home-customize-page .hc-preview-wrap {
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .home-customize-page .hc-preview-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 280px;
+      background: #f8fafc;
+      border: 1px dashed rgba(15, 23, 42, 0.14);
+      border-radius: 18px;
+      overflow: hidden;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    .home-customize-page .hc-preview-box img {
+      max-width: 100%;
+      max-height: 340px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .home-customize-page .hc-empty-text {
+      color: #64748b;
       font-size: 14px;
       font-weight: 500;
       padding: 24px;
       text-align: center;
     }
+
+    .home-customize-page .hc-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    .home-customize-page .hc-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .home-customize-page .hc-btn:hover {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    .home-customize-page .tox.tox-tinymce {
+      width: 100% !important;
+      border-radius: 14px !important;
+      border: 1px solid #cbd5e1 !important;
+      overflow: hidden;
+      box-shadow: none !important;
+    }
+
+    .home-customize-page .tox .tox-toolbar,
+    .home-customize-page .tox .tox-toolbar__primary,
+    .home-customize-page .tox .tox-editor-header {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    .home-customize-page .tox .tox-statusbar {
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .home-customize-page {
+        padding: 20px 16px 32px;
+      }
+
+      .home-customize-page .hc-title {
+        font-size: 28px;
+      }
+
+      .home-customize-page .hc-card-body {
+        padding: 18px;
+      }
+
+      .home-customize-page .hc-preview-box {
+        min-height: 240px;
+      }
+
+      .home-customize-page .hc-preview-box img {
+        max-height: 300px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .home-customize-page {
+        padding: 16px 12px 28px;
+      }
+
+      .home-customize-page .hc-title {
+        font-size: 24px;
+      }
+
+      .home-customize-page .hc-subtitle {
+        font-size: 14px;
+      }
+
+      .home-customize-page .hc-section-title {
+        font-size: 20px;
+      }
+
+      .home-customize-page .hc-card-body {
+        padding: 14px;
+      }
+
+      .home-customize-page .hc-preview-box {
+        min-height: 210px;
+        padding: 12px;
+      }
+
+      .home-customize-page .hc-preview-box img {
+        max-height: 240px;
+      }
+
+      .home-customize-page .hc-actions {
+        width: 100%;
+      }
+
+      .home-customize-page .hc-actions .hc-btn {
+        width: 100%;
+      }
+    }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
-  <div class="page-shell">
-    <div class="page-hero">
+<div class="home-customize-page">
+  <div class="hc-shell">
+    <div class="hc-hero">
       <div>
-        <div class="page-eyebrow">Homepage Content</div>
-        <h1 class="page-title">Customize Home Page</h1>
-        <p class="page-subtitle">
+        <div class="hc-eyebrow">Homepage Content</div>
+        <h1 class="hc-title">Customize Home Page</h1>
+        <p class="hc-subtitle">
           Update the homepage description and hero/banner image used on the public-facing landing section.
         </p>
       </div>
     </div>
 
-    <div class="page-card customize-card">
-      <div class="page-card-body">
-        <div class="page-card-head">
+    <div class="hc-card">
+      <div class="hc-card-body">
+        <div class="hc-card-head">
           <div>
-            <div class="page-section-kicker">Content Editor</div>
-            <h3 class="page-section-title">Homepage Settings</h3>
-            <p class="page-section-subtitle">
+            <div class="hc-section-kicker">Content Editor</div>
+            <h3 class="hc-section-title">Homepage Settings</h3>
+            <p class="hc-section-subtitle">
               Maintain clean copy and use the recommended banner size for best visual consistency.
             </p>
           </div>
@@ -69,44 +316,53 @@
 
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} page-alert mb-3">
+            <div class="alert alert-{{ message.tags }} hc-alert">
               {{ message }}
             </div>
           {% endfor %}
         {% endif %}
 
-        <form method="post" action="{% url 'root_customize' %}" enctype="multipart/form-data" class="page-form-grid">
+        <form method="post" action="{% url 'root_customize' %}" enctype="multipart/form-data" class="hc-form">
           {% csrf_token %}
 
-          <div class="page-field">
-            <label for="description" class="page-label">Customize Description</label>
+          <div class="hc-field">
+            <label for="description" class="hc-label">Customize Description</label>
             <textarea id="description" name="description">{% if instance %}{{ instance.description }}{% endif %}</textarea>
           </div>
 
-          <div class="page-field">
-            <label for="wizard-picture" class="page-label">Upload Image</label>
-            <input id="wizard-picture" type="file" name="image" class="form-control" accept="image/*">
+          <div class="hc-field">
+            <label for="wizard-picture" class="hc-label">Upload Image</label>
+            <input
+              id="wizard-picture"
+              type="file"
+              name="image"
+              class="hc-file-input"
+              accept="image/*"
+            >
 
-            <div class="page-note">
+            <div class="hc-note">
               Recommended image size: <strong>960px × 300px</strong>
             </div>
 
-            <div class="image-preview-wrap">
-              <div class="image-preview-box">
+            <div class="hc-preview-wrap">
+              <div class="hc-preview-box">
                 {% if instance.image %}
                   <img
                     id="wizardPicturePreview"
                     src="{{ instance.image.url }}"
-                    alt="Customization Image"
+                    alt="Homepage banner preview"
                   >
+                  <div id="imageEmptyText" class="hc-empty-text" style="display:none;">
+                    No image selected yet.
+                  </div>
                 {% else %}
                   <img
                     id="wizardPicturePreview"
                     src=""
-                    alt="Customization Preview"
+                    alt="Preview"
                     style="display:none;"
                   >
-                  <div id="imageEmptyText" class="image-empty-text">
+                  <div id="imageEmptyText" class="hc-empty-text">
                     No image selected yet.
                   </div>
                 {% endif %}
@@ -114,9 +370,13 @@
             </div>
           </div>
 
-          <div class="page-actions">
-            <button type="submit" class="page-btn page-btn-primary">
-              {% if instance %}Update{% else %}Create{% endif %}
+          <div class="hc-actions">
+            <button type="submit" class="hc-btn">
+              {% if instance %}
+                Update Homepage
+              {% else %}
+                Create Homepage
+              {% endif %}
             </button>
           </div>
         </form>
@@ -127,23 +387,38 @@
 {% endblock content %}
 
 {% block custom_js %}
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
 
 <script>
   tinymce.init({
     selector: '#description',
-    plugins: 'image code link',
-    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image link',
-    menubar: 'file edit view insert format tools table help',
-    toolbar_mode: 'floating',
-    height: 400
+    plugins: 'link image lists code',
+    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
+    menubar: false,
+    toolbar_mode: 'sliding',
+    branding: false,
+    statusbar: false,
+    resize: true,
+    height: 420,
+    content_style: `
+      body {
+        font-family: Inter, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #1e293b;
+        padding: 1rem;
+      }
+    `,
+    mobile: {
+      menubar: false,
+      toolbar_mode: 'sliding',
+      toolbar: 'undo redo | bold italic | bullist numlist | link'
+    }
   });
-</script>
 
-<script>
-  $(document).ready(function(){
-    $("#wizard-picture").on("change", function(){
+  $(document).ready(function () {
+    $('#wizard-picture').on('change', function () {
       readURL(this);
     });
 
@@ -160,6 +435,9 @@
         };
 
         reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.attr('src', '').hide();
+        emptyText.show();
       }
     }
   });

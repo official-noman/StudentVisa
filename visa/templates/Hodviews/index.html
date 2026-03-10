@@ -1,320 +1,258 @@
 {% extends "Hodviews/base.html" %}
+{% load static %}
 
+{% block custom_css %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg:            #F4F7FE;
+    --surface:       #FFFFFF;
+    --border:        rgba(15, 23, 42, 0.08);
+    --accent:        #4e73df;
+    --accent-glow:   rgba(78, 115, 223, 0.12);
+    --text-primary:  #1E293B;
+    --text-secondary:#475569;
+    --text-muted:    #64748B;
+    --radius-lg:     22px;
+    --shadow-card:   0 12px 32px rgba(15,23,42,0.06);
+  }
+
+  .content-wrapper { background: var(--bg) !important; color: var(--text-primary); font-family: 'DM Sans', sans-serif; padding: 28px !important; }
+  
+  /* ── Page Header ── */
+  .db-page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; }
+  .db-page-title { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.03em; margin: 0; }
+  .db-eyebrow { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .live-badge { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.18); border-radius: 999px; padding: 7px 14px; font-size: 12px; color: #10B981; font-weight: 700; }
+
+  /* ── Stat Cards ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-card); transition: 0.3s; }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+  .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; background: var(--accent-glow); color: var(--accent); }
+  .stat-value { font-family: 'Sora'; font-size: 28px; font-weight: 800; }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+
+  /* ── Glass Cards ── */
+  .g-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); margin-bottom: 24px; overflow: hidden; }
+  .g-card-body { padding: 26px; }
+  .g-card-title { font-family: 'Sora'; font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+
+  /* ── Modern Table ── */
+  .dash-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  .dash-table thead th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding: 0 15px 10px; border: none; }
+  .dash-table tbody td { background: #F8FAFC; border: none; padding: 15px; font-size: 13px; }
+  .dash-table tbody td:first-child { border-radius: 12px 0 0 12px; }
+  .dash-table tbody td:last-child { border-radius: 0 12px 12px 0; }
+
+  /* ── Todo List ── */
+  .todo-list-rounded { list-style: none; padding: 0; }
+  .todo-item { background: #F8FAFC; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; transition: 0.2s; }
+  .todo-item:hover { border-color: var(--accent); }
+
+  .view-all-btn { background: #fff; border: 1px solid var(--border); color: var(--accent); padding: 8px 16px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 12px; }
+</style>
+{% endblock custom_css %}
 
 {% block content %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="home-tab">
-          <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab"
-                  aria-controls="overview" aria-selected="true">Overview</a>
-              </li>
-            
-            </ul>
-            <div>
-              <div class="btn-wrapper">
-                <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
-                <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                <a href="#" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Export</a>
+<div class="content-wrapper">
+
+  <!-- Header -->
+  <div class="db-page-header anim-in">
+    <div>
+      <div class="db-eyebrow">Consultant Portal</div>
+      <h1 class="db-page-title">{{ consultant.company_name }} Overview</h1>
+      <p class="text-muted mt-2">Manage your student pipeline and financial intelligence.</p>
+    </div>
+    <div class="db-page-header-right">
+      <span class="live-badge">Live Performance</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="mdi mdi-account-group mdi-24px"></i></div>
+      <p class="stat-label">Total Students</p>
+      <div class="stat-value">{{ total_students }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:#10B981; background:rgba(16,185,129,0.1);"><i class="mdi mdi-cash-multiple mdi-24px"></i></div>
+      <p class="stat-label">Total Balance</p>
+      <div class="stat-value">Tk {{ total_balance }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:#F59E0B; background:rgba(245,158,11,0.1);"><i class="mdi mdi-trending-down mdi-24px"></i></div>
+      <p class="stat-label">Total Cost</p>
+      <div class="stat-value">Tk {{ total_debit }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="color:#8B5CF6; background:rgba(139,92,246,0.1);"><i class="mdi mdi-account-plus mdi-24px"></i></div>
+      <p class="stat-label">New Students</p>
+      <div class="stat-value">{{ new_students_count }}</div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Balance & Table -->
+    <div class="col-xl-8">
+      <!-- Balance Chart -->
+      <div class="g-card">
+        <div class="g-card-body">
+          <div class="d-flex justify-content-between">
+            <h3 class="g-card-title">Balance Overview</h3>
+            <span class="text-muted font-weight-bold" style="font-size: 12px;">THIS MONTH</span>
+          </div>
+          <div style="height: 300px;">
+            <canvas id="customChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Students Table -->
+      <div class="g-card">
+        <div class="g-card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="g-card-title mb-0">New Student Requests</h3>
+            <a href="{% url 'student_list' %}" class="view-all-btn">View All Student</a>
+          </div>
+          <div class="table-responsive">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Country</th>
+                  <th>Gender</th>
+                  <th>Result (S/H)</th>
+                  <th>Level</th>
+                </tr>
+              </thead>
+              <tbody id="newStudentsTableBody">
+                <tr><td colspan="6" class="text-center py-4">Loading student data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Todo & Rating -->
+    <div class="col-xl-4">
+      <!-- Todo List -->
+      <div class="g-card">
+        <div class="g-card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="g-card-title mb-0">Priority Tasks</h3>
+            <button class="btn btn-primary btn-sm rounded-circle"><i class="mdi mdi-plus"></i></button>
+          </div>
+          <div class="todo-list-rounded">
+            <div class="todo-item">
+              <input type="checkbox" class="form-check-input mt-0">
+              <div>
+                <p class="mb-0 font-weight-bold" style="font-size:14px;">Review Australian Visa App</p>
+                <small class="text-muted">Due: Tomorrow</small>
+              </div>
+            </div>
+            <div class="todo-item">
+              <input type="checkbox" class="form-check-input mt-0">
+              <div>
+                <p class="mb-0 font-weight-bold" style="font-size:14px;">Update Scholarship List</p>
+                <small class="text-muted">Status: Ongoing</small>
               </div>
             </div>
           </div>
-          <div class="tab-content tab-content-basic">
-            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
-              <div class="row">
-                <div class="col-sm-12">
-                  <div class="statistics-details d-flex align-items-center justify-content-between">
-                    <div>
-                      <p class="statistics-title">Total Students</p>
-                      <h3 class="rate-percentage">{{total_students}}</h3>
-                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>-0.5%</span></p> {% endcomment %}
-                    </div>
-                    <div>
-                      <p class="statistics-title">Total Balance</p>
-                      <h3 class="rate-percentage">{{ total_balance }}</h3>
-                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-up"></i><span>+0.1%</span></p> {% endcomment %}
-                    </div>
-                    <div>
-                      <p class="statistics-title">Total Cost</p>
-                      <h3 class="rate-percentage">{{total_debit}}</h3>
-                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
-                    </div>
-                    <div class="d-none d-md-block">
-                      <p class="statistics-title">Avg. Student View</p>
-                      <h3 class="rate-percentage">{{average_students}}%</h3>
-                      {% comment %} <p class="text-success d-flex"><i class="mdi mdi-menu-down"></i><span>+0.8%</span></p> {% endcomment %}
-                    </div>
-                    <div class="d-none d-md-block">
-                      <p class="statistics-title">New Student</p>
-                      <h3 class="rate-percentage">{{new_students_count}}</h3>
-                      {% comment %} <p class="text-danger d-flex"><i class="mdi mdi-menu-down"></i><span>68.8</span></p> {% endcomment %}
-                    </div>
-                    {% comment %} <div class="d-none d-md-block">
-                      <p class="statistics-title">Avg. Time on Site</p>
-                      <h3 class="rate-percentage">2m:35s</h3>
-                     
-                    </div> {% endcomment %}
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-8 d-flex flex-column">
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="d-sm-flex justify-content-between align-items-start">
-                            <div>
-                              <h4 class="card-title card-title-dash">Balance Overview</h4>
-                              <p class="card-subtitle card-subtitle-dash">{{consultant.company_name}}</p>
-                            </div>
-                            <div>
-                              <div class="dropdown">
-                                <button class="btn btn-light dropdown-toggle toggle-dark btn-lg mb-0 me-0"
-                                  type="button" 
-                                  aria-haspopup="true" aria-expanded="false"> This month </button>
-                            
-                              </div>
-                            </div>
-                          </div>
-                          <div class="d-sm-flex align-items-center mt-1 justify-content-between">
-                            <div class="d-sm-flex align-items-center mt-4 justify-content-between">
-                              <h2 class="me-2 fw-bold">{{total_balance}}</h2>
-                              <h4 class="me-2">Tk</h4>
-                            
-                            </div>
-                            <div class="me-3">
-                              <div id="marketingOverview-legend"></div>
-                            </div>
-                          </div>
-                          <div class="chartjs-bar-wrapper mt-3">
-                            <canvas id="customChart"></canvas>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                     <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                        <div class="card card-rounded">
-                            <div class="card-body">
-                                <div class="d-sm-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h4 class="card-title card-title-dash">New Students</h4>
-                                        <p class="card-subtitle card-subtitle-dash">You have <span id="newStudentsCount">{{new_students_count}}</span> new Students</p>
-                                    </div>
-                                    <div>
-                                      <a href="{% url 'student_list' %}" class="btn btn-primary btn-lg text-white mb-0 me-0">
-                                        <i class="mdi mdi-account-plus"></i> View Student
-                                    </a>
-                                    </div>
-                                </div>
-                                <div class="table-responsive mt-1">
-                                    <table class="table select-table">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <div class="form-check form-check-flat mt-0">
-                                                        <label class="form-check-label">
-                                                            <input type="checkbox" class="form-check-input" aria-checked="false"><i class="input-helper"></i>
-                                                        </label>
-                                                    </div>
-                                                </th>
-                                                <th>Name</th>
-                                                <th>Country</th>
-                                                <th>Gender</th>
-                                                <th>Secondary Result</th>
-                                                <th>Higher Result</th>
-                                                <th>Level</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="newStudentsTableBody">
-                                            <!-- New students data will be inserted here dynamically -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                  <div class="row flex-grow">
-                 
-                  
-                  </div>
-                </div>
-                <div class="col-lg-4 d-flex flex-column">
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                      <div class="card card-rounded">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-lg-12">
-                              <div class="d-flex justify-content-between align-items-center">
-                                <h4 class="card-title card-title-dash">Todo list</h4>
-                                <div class="add-items d-flex mb-0">
-                                  <!-- <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> -->
-                                  <button
-                                    class="add btn btn-icons btn-rounded btn-primary todo-list-add-btn text-white me-0 pl-12p"><i
-                                      class="mdi mdi-plus"></i></button>
-                                </div>
-                              </div>
-                              <div class="list-wrapper">
-                                <ul class="todo-list todo-list-rounded">
-                                  <li class="d-block">
-                                    <div class="form-check w-100">
-                                      <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                        of the printing <i class="input-helper rounded"></i>
-                                      </label>
-                                      <div class="d-flex mt-2">
-                                        <div class="ps-4 text-small me-3">24 June 2020</div>
-                                        <div class="badge badge-opacity-warning me-3">Due tomorrow</div>
-                                        <i class="mdi mdi-flag ms-2 flag-color"></i>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li class="d-block">
-                                    <div class="form-check w-100">
-                                      <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                        of the printing <i class="input-helper rounded"></i>
-                                      </label>
-                                      <div class="d-flex mt-2">
-                                        <div class="ps-4 text-small me-3">23 June 2020</div>
-                                        <div class="badge badge-opacity-success me-3">Done</div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div class="form-check w-100">
-                                      <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                        of the printing <i class="input-helper rounded"></i>
-                                      </label>
-                                      <div class="d-flex mt-2">
-                                        <div class="ps-4 text-small me-3">24 June 2020</div>
-                                        <div class="badge badge-opacity-success me-3">Done</div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li class="border-bottom-0">
-                                    <div class="form-check w-100">
-                                      <label class="form-check-label">
-                                        <input class="checkbox" type="checkbox"> Lorem Ipsum is simply dummy text
-                                        of the printing <i class="input-helper rounded"></i>
-                                      </label>
-                                      <div class="d-flex mt-2">
-                                        <div class="ps-4 text-small me-3">24 June 2020</div>
-                                        <div class="badge badge-opacity-danger me-3">Expired</div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row flex-grow">
-                    <div class="col-12 grid-margin stretch-card">
-                        <div class="card card-rounded">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                      <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="card-title card-title-dash">My Rating</h4>
-                                    </div>
-                                    <div>
-                                        <canvas class="my-auto" id="ratingsDoughnutChart"></canvas>
-                                    </div>
-                                    <div id="ratingsDoughnutChart-legend" class="mt-5 text-center"></div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                  <div class="row flex-grow">
-                  
-                  </div>
-                  <div class="row flex-grow">
-                  
-                  </div>
-                </div>
-              </div>
-            </div>
+        </div>
+      </div>
+
+      <!-- Rating Doughnut -->
+      <div class="g-card">
+        <div class="g-card-body">
+          <h3 class="g-card-title">Consultant Rating</h3>
+          <div style="height: 220px;">
+            <canvas id="ratingsDoughnutChart"></canvas>
+          </div>
+          <div class="mt-4 text-center">
+            <span class="badge badge-success px-3 py-2 rounded-pill">Top Rated Consultant</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+</div>
 {% endblock content %}
 
 {% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Function to fetch new student data from Django backend
+  // AJAX for New Students Table
   function fetchNewStudentsData() {
-    // Make an AJAX request to the endpoint
     fetch('/new_students_view/')
         .then(response => response.json())
-        .then(data => {
-            // Once data is received, call function to populate the table
-            populateTable(data.new_students);
-        })
-        .catch(error => {
-            console.error('Error fetching new students data:', error);
-        });
+        .then(data => populateTable(data.new_students))
+        .catch(err => console.error('Error:', err));
   }
 
-  // Function to populate the table with student data
-  function populateTable(newStudentsData) {
-    var tableBody = document.getElementById("newStudentsTableBody");
-    var counter = 1; // Counter for serial number
-
-    // Clear existing table rows
+  function populateTable(data) {
+    const tableBody = document.getElementById("newStudentsTableBody");
     tableBody.innerHTML = "";
+    let counter = 1;
 
-    // Loop through the received student data and create table rows
-    newStudentsData.forEach(function(student) {
-        var row = tableBody.insertRow();
-        
-        // Insert serial number cell
-        var serialCell = row.insertCell();
-        serialCell.textContent = counter++;
-        
-        // Insert cells for each property of the student object
-        var nameCell = row.insertCell();
-        nameCell.textContent = student.name;
+    if(data.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No new students found.</td></tr>';
+      return;
+    }
 
-        var countriesCell = row.insertCell();
-        countriesCell.textContent = student.countries.join(', '); // Join the list of countries with a comma
-
-        var genderCell = row.insertCell();
-        genderCell.innerHTML = student.gender === 0 ? '<span class="badge bg-primary">Female</span>' : '<span class="badge bg-danger">Male</span>';
-
-        var secondaryResultCell = row.insertCell();
-        secondaryResultCell.textContent = student.secondary_result;
-
-        var higherResultCell = row.insertCell();
-        higherResultCell.textContent = student.higher_result;
-
-        var levelCell = row.insertCell();
-        levelCell.textContent = student.level != null ? "Level " + student.level : "-";
+    data.forEach(student => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+          <td>${counter++}</td>
+          <td class="font-weight-bold">${student.name}</td>
+          <td>${student.countries.join(', ')}</td>
+          <td>${student.gender === 0 ? '<span class="badge bg-soft-primary text-primary">Female</span>' : '<span class="badge bg-soft-info text-info">Male</span>'}</td>
+          <td>${student.secondary_result} / ${student.higher_result}</td>
+          <td><span class="font-weight-bold">Level ${student.level || '-'}</span></td>
+        `;
     });
   }
 
-  // Call the function to fetch new students data when the page loads
   document.addEventListener("DOMContentLoaded", function() {
     fetchNewStudentsData();
+
+    // Chart.js - Premium Theme Config
+    Chart.defaults.font.family = "'DM Sans', sans-serif";
+    Chart.defaults.color = '#64748B';
+
+    // Balance Chart Initialization (Sample setup)
+    const ctx = document.getElementById('customChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+          label: 'Credit',
+          data: [12000, 19000, 15000, 22000],
+          backgroundColor: '#4e73df',
+          borderRadius: 8
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.03)' } }, x: { grid: { display: false } } }
+      }
+    });
+
+    // Rating Doughnut
+    const dCtx = document.getElementById('ratingsDoughnutChart').getContext('2d');
+    new Chart(dCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Satisfied', 'Neutral'],
+        datasets: [{ data: [85, 15], backgroundColor: ['#4e73df', '#E9EEF7'], borderWidth: 0 }]
+      },
+      options: { cutout: '80%', plugins: { legend: { position: 'bottom' } } }
+    });
   });
 </script>
-
 {% endblock custom_js %}

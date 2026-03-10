@@ -4,45 +4,89 @@
   {% include "roottemplates/partials/_page_theme.html" %}
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <style>
-    #scholarshiplist_wrapper {
+    .uploaded-scholarship-page #scholarshiplist_wrapper {
       padding: 0;
     }
 
-    #scholarshiplist_filter label,
-    #scholarshiplist_length label {
+    .uploaded-scholarship-page #scholarshiplist_filter label,
+    .uploaded-scholarship-page #scholarshiplist_length label {
       color: #475569;
       font-weight: 600;
       margin-bottom: 12px;
+      font-size: 14px;
     }
 
-    #scholarshiplist_filter input,
-    #scholarshiplist_length select {
+    .uploaded-scholarship-page #scholarshiplist_filter input,
+    .uploaded-scholarship-page #scholarshiplist_length select {
       border: 1px solid rgba(15, 23, 42, 0.10) !important;
       background: #F8FAFC !important;
       border-radius: 12px !important;
       min-height: 40px;
       padding: 8px 12px !important;
+      color: #334155;
+      box-shadow: none !important;
+      outline: none !important;
     }
 
-    .scholarship-modal .modal-content {
+    .uploaded-scholarship-page .uploaded-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .uploaded-scholarship-page #scholarshiplist {
+      width: 100% !important;
+      min-width: 980px;
+    }
+
+    .uploaded-scholarship-page table.dataTable thead th,
+    .uploaded-scholarship-page table.dataTable thead td {
+      position: relative;
+      background-image: none !important;
+    }
+
+    .uploaded-scholarship-page table.dataTable thead .sorting,
+    .uploaded-scholarship-page table.dataTable thead .sorting_asc,
+    .uploaded-scholarship-page table.dataTable thead .sorting_desc,
+    .uploaded-scholarship-page table.dataTable thead .sorting_asc_disabled,
+    .uploaded-scholarship-page table.dataTable thead .sorting_desc_disabled {
+      background-image: none !important;
+    }
+
+    .uploaded-scholarship-page table.dataTable thead th:before,
+    .uploaded-scholarship-page table.dataTable thead th:after,
+    .uploaded-scholarship-page table.dataTable thead td:before,
+    .uploaded-scholarship-page table.dataTable thead td:after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .uploaded-scholarship-page table.dataTable.no-footer {
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .uploaded-scholarship-page .scholarship-modal .modal-content {
       border: 1px solid rgba(15, 23, 42, 0.08);
       border-radius: 22px;
       overflow: hidden;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
     }
 
-    .scholarship-modal .modal-header,
-    .scholarship-modal .modal-footer {
+    .uploaded-scholarship-page .scholarship-modal .modal-header,
+    .uploaded-scholarship-page .scholarship-modal .modal-footer {
       border-color: rgba(15, 23, 42, 0.08);
     }
 
-    .scholarship-modal .modal-title {
-      font-family: 'Sora', sans-serif;
+    .uploaded-scholarship-page .scholarship-modal .modal-title {
       font-weight: 700;
       color: #1E293B;
     }
 
-    .scholarship-detail-block h6 {
+    .uploaded-scholarship-page .scholarship-detail-block {
+      margin-bottom: 18px;
+    }
+
+    .uploaded-scholarship-page .scholarship-detail-block h6 {
       font-size: 13px;
       font-weight: 800;
       text-transform: uppercase;
@@ -51,68 +95,107 @@
       margin-bottom: 8px;
     }
 
-    .scholarship-detail-block {
-      margin-bottom: 18px;
-    }
-
-    .scholarship-detail-content {
+    .uploaded-scholarship-page .scholarship-detail-content {
       color: #334155;
       line-height: 1.7;
       font-size: 14px;
+      word-break: break-word;
     }
 
-    .action-inline {
+    .uploaded-scholarship-page .action-inline {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .btn-soft-primary {
+    .uploaded-scholarship-page .btn-soft-primary {
       background: rgba(59, 130, 246, 0.10);
       color: #3B82F6;
       border: 1px solid rgba(59, 130, 246, 0.14);
     }
 
-    .btn-soft-primary:hover {
+    .uploaded-scholarship-page .btn-soft-primary:hover {
       background: rgba(59, 130, 246, 0.16);
       color: #2563EB;
     }
 
-    .btn-soft-danger {
+    .uploaded-scholarship-page .btn-soft-danger {
       background: rgba(244, 63, 94, 0.10);
       color: #F43F5E;
       border: 1px solid rgba(244, 63, 94, 0.14);
     }
 
-    .btn-soft-danger:hover {
+    .uploaded-scholarship-page .btn-soft-danger:hover {
       background: rgba(244, 63, 94, 0.16);
       color: #E11D48;
     }
 
-    .btn-soft-success {
+    .uploaded-scholarship-page .btn-soft-success {
       background: rgba(16, 185, 129, 0.10);
       color: #10B981;
       border: 1px solid rgba(16, 185, 129, 0.14);
     }
 
-    .btn-soft-success:hover {
+    .uploaded-scholarship-page .btn-soft-success:hover {
       background: rgba(16, 185, 129, 0.16);
       color: #059669;
     }
 
-    .datepicker td.disabled,
-    .datepicker th.disabled,
-    .datepicker tfoot.disabled,
-    .datepicker thead.disabled {
+    .uploaded-scholarship-page .datepicker td.disabled,
+    .uploaded-scholarship-page .datepicker th.disabled,
+    .uploaded-scholarship-page .datepicker tfoot.disabled,
+    .uploaded-scholarship-page .datepicker thead.disabled {
       color: #999 !important;
       cursor: not-allowed;
+    }
+
+    .uploaded-scholarship-page .approve-date-wrap {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .uploaded-scholarship-page .approve-date-wrap:focus-within {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+    }
+
+    .uploaded-scholarship-page .approve-date-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 46px;
+      background: #f8fafc;
+      color: #475569;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .uploaded-scholarship-page .approve-date-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 0;
+      outline: none;
+      box-shadow: none;
+      background: #fff;
+      color: #334155;
+    }
+
+    @media (max-width: 767.98px) {
+      .uploaded-scholarship-page .action-inline {
+        min-width: 160px;
+      }
     }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="content-wrapper">
+<div class="content-wrapper uploaded-scholarship-page">
   <div class="page-shell">
     <div class="page-hero">
       <div>
@@ -136,7 +219,7 @@
           </div>
         </div>
 
-        <div class="page-table-wrap">
+        <div class="uploaded-table-wrap">
           <table id="scholarshiplist" class="page-table">
             <thead>
               <tr>
@@ -190,7 +273,9 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="scholarshipModalTitle">Scholarship Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
             <div class="scholarship-detail-block">
@@ -207,7 +292,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="page-btn page-btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="page-btn page-btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -220,17 +305,24 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="approveScholarshipModalLabel{{ scholarship.id }}">Approve Scholarship</h5>
-            <button type="button" class="btn-close" onclick="closeApproveModal('{{ scholarship.id }}')" aria-label="Close"></button>
+            <button type="button" class="close" onclick="closeApproveModal('{{ scholarship.id }}')" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
             <div class="page-form-grid">
               <div class="page-field">
                 <label for="expiration_date{{ scholarship.id }}" class="page-label">Expiration Date</label>
-                <div class="input-group date scholarship-datepicker" id="expiration_date_popup_{{ scholarship.id }}">
-                  <span class="input-group-text">
+                <div class="approve-date-wrap scholarship-datepicker" id="expiration_date_popup_{{ scholarship.id }}">
+                  <span class="approve-date-icon">
                     <span class="icon-calendar"></span>
                   </span>
-                  <input id="expiration_date{{ scholarship.id }}" type="text" name="expiration_date" class="form-control">
+                  <input
+                    id="expiration_date{{ scholarship.id }}"
+                    type="text"
+                    name="expiration_date"
+                    class="approve-date-input"
+                  >
                 </div>
               </div>
             </div>
@@ -254,29 +346,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 <script>
-  $(document).ready(function() {
-    $('#scholarshiplist').DataTable({
-      pageLength: 10,
-      order: [[4, 'desc']]
-    });
+  let scholarshipTable = null;
 
-    $('.scholarship-datepicker').each(function() {
-      $(this).datepicker({
-        format: 'yyyy-mm-dd',
-        startDate: '+1d',
-        todayHighlight: true,
-        autoclose: true
-      });
-    });
-  });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function getNextDateString() {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+  }
 
   function openApproveModal(scholarshipId) {
     $('#approveScholarshipModal' + scholarshipId).modal('show');
-
-    const today = new Date();
-    today.setDate(today.getDate() + 1);
-    const nextDate = today.toISOString().split('T')[0];
-    $('#expiration_date' + scholarshipId).val(nextDate);
+    $('#expiration_date' + scholarshipId).val(getNextDateString());
   }
 
   function closeApproveModal(scholarshipId) {
@@ -285,12 +383,15 @@
 
   function approveScholarship(scholarshipId) {
     const expirationDate = $('#expiration_date' + scholarshipId).val();
+    const csrftoken = getCookie('csrftoken');
 
     $.ajax({
       type: 'POST',
       url: "{% url 'approve_scholarship' %}",
+      headers: {
+        'X-CSRFToken': csrftoken
+      },
       data: {
-        'csrfmiddlewaretoken': '{{ csrf_token }}',
         'scholarship_id': scholarshipId,
         'expiration_time': expirationDate
       },
@@ -314,17 +415,29 @@
 
     closeApproveModal(scholarshipId);
   }
-</script>
 
-<script>
-  $(document).ready(function () {
-    $('.btn-view').click(function(e) {
+  $(document).ready(function() {
+    scholarshipTable = $('#scholarshiplist').DataTable({
+      pageLength: 10,
+      order: [[4, 'desc']]
+    });
+
+    $('.scholarship-datepicker').each(function() {
+      $(this).datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: '+1d',
+        todayHighlight: true,
+        autoclose: true
+      });
+    });
+
+    $('.btn-view').on('click', function(e) {
       e.preventDefault();
       const scholarshipId = $(this).data('id');
 
       $.ajax({
         type: 'GET',
-        url: `/view-scholarship/${scholarshipId}/`,
+        url: '/view-scholarship/' + scholarshipId + '/',
         success: function(response) {
           $('#scholarshipModalTitle').text('Scholarship Details');
           $('#description').html(response.scholarship.description || '<p>No description available.</p>');
@@ -343,7 +456,7 @@
       });
     });
 
-    $('.btn-delete').click(function(e) {
+    $('.btn-delete').on('click', function(e) {
       e.preventDefault();
       const scholarshipId = $(this).data('id');
       const csrftoken = getCookie('csrftoken');
@@ -360,7 +473,7 @@
 
         $.ajax({
           type: 'POST',
-          url: `/delete_scholarship_uploaded/${scholarshipId}/`,
+          url: '/delete_scholarship_uploaded/' + scholarshipId + '/',
           headers: {
             'X-CSRFToken': csrftoken
           },
@@ -373,7 +486,11 @@
                 timer: 1800,
                 timerProgressBar: true
               }).then(() => {
-                $('#scholarshiplist').DataTable().row($('#scholarship-' + scholarshipId)).remove().draw(false);
+                if (scholarshipTable) {
+                  scholarshipTable.row($('#scholarship-' + scholarshipId)).remove().draw(false);
+                } else {
+                  location.reload();
+                }
               });
             } else {
               Swal.fire({
@@ -394,21 +511,6 @@
         });
       });
     });
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
-    }
   });
 </script>
 {% endblock custom_js %}

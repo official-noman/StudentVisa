@@ -7,256 +7,390 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
 
 <style>
+  .consultant-scholarship-page {
+    width: 100%;
+    padding: 24px 20px 40px;
+    box-sizing: border-box;
+  }
 
-.select2-container{
-margin-top:8px !important;
-width:100% !important;
-}
+  .consultant-scholarship-page .csp-shell {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
 
-.select2-container--default .select2-selection--single{
-min-height:46px !important;
-border:1px solid rgba(15,23,42,.1) !important;
-background:#F8FAFC !important;
-border-radius:14px !important;
-padding:8px 12px !important;
-}
+  .consultant-scholarship-page .csp-hero {
+    margin-bottom: 24px;
+    text-align: center;
+  }
 
-.select2-container--default .select2-selection__rendered{
-line-height:28px !important;
-font-size:14px !important;
-color:#334155 !important;
-}
+  .consultant-scholarship-page .csp-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #2563eb;
+  }
 
-.select2-container--default .select2-selection__arrow{
-height:44px !important;
-right:8px !important;
-}
+  .consultant-scholarship-page .csp-title {
+    margin: 0 0 8px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #0f172a;
+  }
 
+  .consultant-scholarship-page .csp-subtitle {
+    margin: 0 auto;
+    max-width: 760px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #64748b;
+  }
+
+  .consultant-scholarship-page .csp-card {
+    width: 100%;
+    max-width: 1020px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+
+  .consultant-scholarship-page .csp-card-body {
+    padding: 24px;
+  }
+
+  .consultant-scholarship-page .csp-alert {
+    border-radius: 14px;
+    margin-bottom: 16px;
+  }
+
+  .consultant-scholarship-page .csp-form-grid {
+    display: grid;
+    gap: 20px;
+  }
+
+  .consultant-scholarship-page .csp-field {
+    width: 100%;
+  }
+
+  .consultant-scholarship-page .csp-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .consultant-scholarship-page .csp-input,
+  .consultant-scholarship-page .csp-date-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #334155;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .consultant-scholarship-page .csp-input:focus,
+  .consultant-scholarship-page .csp-date-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+  }
+
+  .consultant-scholarship-page .csp-date-wrap {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .consultant-scholarship-page .csp-date-wrap:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
+  }
+
+  .consultant-scholarship-page .csp-date-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    background: #f8fafc;
+    color: #475569;
+    border-right: 1px solid #e2e8f0;
+  }
+
+  .consultant-scholarship-page .csp-date-wrap .csp-date-input {
+    border: 0;
+    border-radius: 0;
+    min-height: 46px;
+  }
+
+  .consultant-scholarship-page .csp-actions {
+    margin-top: 20px;
+  }
+
+  .consultant-scholarship-page .csp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+    cursor: pointer;
+  }
+
+  .consultant-scholarship-page .csp-btn:hover {
+    background: #1d4ed8;
+    color: #fff;
+  }
+
+  .consultant-scholarship-page .cke {
+    width: 100% !important;
+    display: block !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+
+  .consultant-scholarship-page .cke_top {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  .consultant-scholarship-page .cke_bottom {
+    background: #f8fafc !important;
+    border-top: 1px solid #e2e8f0 !important;
+  }
+
+  .consultant-scholarship-page .cke_contents {
+    min-height: 220px !important;
+  }
+
+  /* Scoped Select2 */
+  .consultant-scholarship-page .select2-container {
+    margin-top: 0 !important;
+    width: 100% !important;
+  }
+
+  .consultant-scholarship-page .select2-container--default .select2-selection--single {
+    min-height: 46px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 8px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .consultant-scholarship-page .select2-container--default .select2-selection__rendered {
+    line-height: 28px !important;
+    font-size: 14px !important;
+    color: #334155 !important;
+    padding-left: 0 !important;
+    padding-right: 24px !important;
+  }
+
+  .consultant-scholarship-page .select2-container--default .select2-selection__arrow {
+    height: 44px !important;
+    right: 8px !important;
+  }
+
+  .consultant-scholarship-page .select2-container--default.select2-container--focus .select2-selection--single,
+  .consultant-scholarship-page .select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12) !important;
+  }
+
+  @media (max-width: 991.98px) {
+    .consultant-scholarship-page {
+      padding: 20px 16px 32px;
+    }
+
+    .consultant-scholarship-page .csp-title {
+      font-size: 28px;
+    }
+
+    .consultant-scholarship-page .csp-card-body {
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .consultant-scholarship-page {
+      padding: 16px 12px 28px;
+    }
+
+    .consultant-scholarship-page .csp-title {
+      font-size: 24px;
+    }
+
+    .consultant-scholarship-page .csp-subtitle {
+      font-size: 14px;
+    }
+
+    .consultant-scholarship-page .csp-card-body {
+      padding: 14px;
+    }
+
+    .consultant-scholarship-page .csp-actions .csp-btn {
+      width: 100%;
+    }
+  }
 </style>
-
 {% endblock custom_css %}
 
-
-
 {% block content %}
+<div class="consultant-scholarship-page">
+  <div class="csp-shell">
+    <div class="csp-hero">
+      <div>
+        <div class="csp-eyebrow">Scholarship Management</div>
+        <h1 class="csp-title">Consultant Wise Scholarship</h1>
+        <p class="csp-subtitle">
+          Create scholarship information specific to a consultant and country.
+        </p>
+      </div>
+    </div>
 
-<div class="content-wrapper">
+    <div class="csp-card">
+      <div class="csp-card-body">
 
-<div class="page-shell">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} csp-alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
 
-<div class="page-hero">
+        <form method="post" action="{% url 'consultant_wise_root' %}">
+          {% csrf_token %}
 
-<div>
-<div class="page-eyebrow">Scholarship Management</div>
+          <div class="csp-form-grid">
 
-<h1 class="page-title">
-Consultant Wise Scholarship
-</h1>
+            <div class="csp-field">
+              <label class="csp-label" for="consultant_id">Select Consultant</label>
+              <select id="consultant_id" name="consultant_id" class="csp-input" required>
+                {% for consultant in consultants %}
+                  <option value="{{ consultant.id }}"
+                    {% if consultant.id == instance.scow_consultant_id %}selected{% endif %}>
+                    {{ consultant.company_name }} ({{ consultant.full_name }})
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
 
-<p class="page-subtitle">
-Create scholarship information specific to a consultant and country.
-</p>
+            <div class="csp-field">
+              <label class="csp-label" for="country_id">Select Country</label>
+              <select id="country_id" name="country_id" class="csp-input" required>
+                <option value="">Select Country</option>
+                {% for country in countries %}
+                  <option value="{{ country.country_id }}">
+                    {{ country.country_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
 
+            <div class="csp-field">
+              <label class="csp-label" for="scow_text">Description</label>
+              <textarea id="scow_text" name="scow_text" class="csp-input" required>{{ instance.scow_text }}</textarea>
+            </div>
+
+            <div class="csp-field">
+              <label class="csp-label" for="scow_whocanapply">Who Can Apply</label>
+              <textarea id="scow_whocanapply" name="scow_whocanapply" class="csp-input">{{ instance.scow_whocanapply }}</textarea>
+            </div>
+
+            <div class="csp-field">
+              <label class="csp-label" for="expiration_time">Expiration Time</label>
+              <div id="expiration_time-popup" class="csp-date-wrap">
+                <span class="csp-date-icon">
+                  <span class="icon-calendar"></span>
+                </span>
+                <input
+                  id="expiration_time"
+                  type="text"
+                  name="expiration_time"
+                  class="csp-date-input"
+                >
+              </div>
+            </div>
+
+          </div>
+
+          <div class="csp-actions">
+            <button type="submit" class="csp-btn">Save Scholarship</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
 </div>
-
-</div>
-
-
-
-<div class="page-card">
-
-<div class="page-card-body">
-
-{% if messages %}
-{% for message in messages %}
-
-<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
-{{ message }}
-</div>
-
-{% endfor %}
-{% endif %}
-
-
-<form method="post" action="{% url 'consultant_wise_root' %}">
-
-{% csrf_token %}
-
-<div class="page-form-grid">
-
-
-<div class="page-field">
-
-<label class="page-label">Select Consultant</label>
-
-<select id="consultant_id"
-name="consultant_id"
-class="form-control"
-required>
-
-{% for consultant in consultants %}
-
-<option value="{{ consultant.id }}"
-{% if consultant.id == instance.scow_consultant_id %}selected{% endif %}>
-
-{{ consultant.company_name }} ({{ consultant.full_name }})
-
-</option>
-
-{% endfor %}
-
-</select>
-
-</div>
-
-
-
-<div class="page-field">
-
-<label class="page-label">Select Country</label>
-
-<select id="country_id"
-name="country_id"
-class="form-control"
-required>
-
-<option value="">Select Country</option>
-
-{% for country in countries %}
-
-<option value="{{ country.country_id }}">
-{{ country.country_name }}
-</option>
-
-{% endfor %}
-
-</select>
-
-</div>
-
-
-
-<div class="page-field">
-
-<label class="page-label">Description</label>
-
-<textarea
-id="scow_text"
-name="scow_text"
-class="form-control"
-required>
-
-{{ instance.scow_text }}
-
-</textarea>
-
-</div>
-
-
-
-<div class="page-field">
-
-<label class="page-label">Who Can Apply</label>
-
-<textarea
-id="scow_whocanapply"
-name="scow_whocanapply"
-class="form-control">
-
-{{ instance.scow_whocanapply }}
-
-</textarea>
-
-</div>
-
-
-
-<div class="page-field">
-
-<label class="page-label">Expiration Time</label>
-
-<div
-id="expiration_time-popup"
-class="input-group date datepicker navbar-date-picker">
-
-<span class="input-group-text">
-<span class="icon-calendar"></span>
-</span>
-
-<input
-id="expiration_time"
-type="text"
-name="expiration_time"
-class="form-control">
-
-</div>
-
-</div>
-
-
-</div>
-
-
-<div style="margin-top:20px">
-
-<button
-type="submit"
-class="page-btn page-btn-primary">
-
-Save Scholarship
-
-</button>
-
-</div>
-
-
-</form>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 {% endblock content %}
 
-
-
 {% block custom_js %}
-
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
 <script>
+  $(document).ready(function () {
+    $('#consultant_id').select2({
+      width: '100%'
+    });
 
-$(document).ready(function(){
+    $('#country_id').select2({
+      width: '100%'
+    });
 
-$('#consultant_id').select2();
+    $('#expiration_time').datepicker({
+      format: 'yyyy-mm-dd',
+      startDate: 'today',
+      todayHighlight: true,
+      autoclose: true
+    });
 
-$('#country_id').select2();
+    CKEDITOR.replace('scow_text', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
+    });
 
-
-$('#expiration_time-popup').datepicker({
-
-format:'yyyy-mm-dd',
-
-startDate:'today',
-
-todayHighlight:true,
-
-autoclose:true
-
-});
-
-
-CKEDITOR.replace('scow_text',{versionCheck:false});
-
-CKEDITOR.replace('scow_whocanapply',{versionCheck:false});
-
-});
-
+    CKEDITOR.replace('scow_whocanapply', {
+      versionCheck: false,
+      height: 220,
+      toolbar: [
+        ['Bold', 'Italic', 'Underline'],
+        ['NumberedList', 'BulletedList'],
+        ['Link', 'Unlink'],
+        ['Undo', 'Redo']
+      ]
+    });
+  });
 </script>
-
 {% endblock custom_js %}

@@ -4,146 +4,529 @@
 {% block custom_css %}
 {% include "roottemplates/partials/_page_theme.html" %}
 <style>
-
-.offer-preview-img{
+/* Enhanced preview image styles */
+.offer-preview-img {
   max-width: 260px;
-  border-radius: 12px;
-  margin-top: 10px;
-  border:1px solid rgba(0,0,0,0.08);
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin-top: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.offer-preview-img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* Custom styles for centered, premium layout */
+.content-wrapper {
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.page-shell {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Enhanced hero section */
+.page-hero {
+  margin-bottom: 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.page-hero > div {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.page-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2563eb;
+  margin-bottom: 0.75rem;
+  background: rgba(37, 99, 235, 0.08);
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  border-radius: 30px;
+  backdrop-filter: blur(4px);
+}
+
+.page-title {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: #475569;
+  margin-bottom: 0;
+  line-height: 1.5;
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Premium card styling */
+.page-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 32px;
+  box-shadow: 
+    0 20px 40px -12px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-card:hover {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.page-card-body {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* Card header section */
+.page-card-head {
+  margin-bottom: 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.page-card-head > div {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-section-kicker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.page-section-title {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.page-section-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* Alert styling */
+.page-alert {
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  margin-bottom: 2rem;
+  font-weight: 500;
+  background: white;
+  border-left: 4px solid transparent;
+}
+
+.alert-success {
+  background: #f0fdf4;
+  border-left-color: #22c55e;
+  color: #166534;
+}
+
+.alert-error {
+  background: #fef2f2;
+  border-left-color: #ef4444;
+  color: #991b1b;
+}
+
+.alert-warning {
+  background: #fffbeb;
+  border-left-color: #f59e0b;
+  color: #92400e;
+}
+
+.alert-info {
+  background: #eff6ff;
+  border-left-color: #3b82f6;
+  color: #1e40af;
+}
+
+/* Form styling */
+.form-group {
+  margin-bottom: 1.75rem;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  display: block;
+  letter-spacing: -0.01em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  background: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.form-control:hover {
+  border-color: #cbd5e1;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.6;
+}
+
+/* File input styling */
+input[type="file"].form-control {
+  padding: 0.5rem;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  cursor: pointer;
+}
+
+input[type="file"].form-control:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+input[type="file"].form-control::file-selector-button {
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  border: none;
+  background: #e2e8f0;
+  border-radius: 12px;
+  color: #334155;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+input[type="file"].form-control::file-selector-button:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+/* Image preview container */
+.form-group.mb-4 .offer-preview-img + div {
+  margin-top: 1rem;
+}
+
+/* Submit button styling */
+.page-btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -8px rgba(37, 99, 235, 0.3);
+  width: auto;
+  min-width: 220px;
+  display: inline-block;
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -8px rgba(37, 99, 235, 0.4);
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.page-btn-primary:hover::before {
+  opacity: 1;
+}
+
+.page-btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px -5px rgba(37, 99, 235, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 1.5rem 1rem;
+  }
+  
+  .page-card-body {
+    padding: 1.75rem;
+  }
+  
+  .page-btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .form-group.mb-4 {
+    margin-bottom: 2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-wrapper {
+    padding: 1rem 0.75rem;
+  }
+  
+  .page-card-body {
+    padding: 1.5rem;
+  }
+  
+  .page-eyebrow {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.875rem;
+  }
+  
+  .form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+  }
+  
+  .page-btn-primary {
+    padding: 0.875rem 1.5rem;
+    border-radius: 30px;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .content-wrapper {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+  
+  .page-card {
+    background: rgba(30, 41, 59, 0.95);
+  }
+  
+  .page-title {
+    color: #f1f5f9;
+  }
+  
+  .page-subtitle {
+    color: #94a3b8;
+  }
+  
+  .form-label {
+    color: #cbd5e1;
+  }
+  
+  .form-control {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+  
+  .form-control:hover {
+    border-color: #475569;
+  }
+  
+  input[type="file"].form-control {
+    background: #1e293b;
+  }
+  
+  .page-section-title {
+    color: #f1f5f9;
+  }
+  
+  .page-section-subtitle {
+    color: #94a3b8;
+  }
+}
 </style>
 {% endblock custom_css %}
 
-
 {% block content %}
 <div class="content-wrapper">
+  <div class="page-shell">
+    <!-- Hero Section -->
+    <div class="page-hero">
+      <div>
+        <span class="page-eyebrow">Content Manager</span>
+        <h1 class="page-title">Offer Letters</h1>
+        <p class="page-subtitle">
+          Create or update offer letter content shown to users.
+        </p>
+      </div>
+    </div>
 
-<div class="page-shell">
+    <!-- Main Card -->
+    <div class="page-card">
+      <div class="page-card-body">
+        <!-- Card Header -->
+        <div class="page-card-head">
+          <div>
+            <div class="page-section-kicker">Editor</div>
+            <h3 class="page-section-title">Offer Letter Form</h3>
+            <p class="page-section-subtitle">
+              Manage title, description and associated image.
+            </p>
+          </div>
+        </div>
 
-<div class="page-hero">
-<div>
-<div class="page-eyebrow">Content Manager</div>
-<h1 class="page-title">Offer Letters</h1>
-<p class="page-subtitle">
-Create or update offer letter content shown to users.
-</p>
+        <!-- Messages -->
+        {% if messages %}
+          <div class="messages-container">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} page-alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="post" action="{% url 'offer_letters' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              class="form-control"
+              value="{% if instance %}{{ instance.title }}{% endif %}"
+              required
+              placeholder="Enter offer letter title"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-control"
+              rows="6"
+              required
+              placeholder="Write the offer letter description..."
+            >{% if instance %}{{ instance.description }}{% endif %}</textarea>
+          </div>
+
+          <div class="form-group mb-4">
+            <label class="form-label">Image</label>
+            {% if instance and instance.image %}
+              <div class="image-preview-container">
+                <img src="{{ instance.image.url }}" class="offer-preview-img" alt="Offer preview">
+              </div>
+            {% endif %}
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="page-btn page-btn-primary">
+              {% if instance %}
+                Update Offer Letter
+              {% else %}
+                Create Offer Letter
+              {% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-
-
-<div class="page-card">
-
-<div class="page-card-body">
-
-<div class="page-card-head">
-<div>
-<div class="page-section-kicker">Editor</div>
-<h3 class="page-section-title">Offer Letter Form</h3>
-<p class="page-section-subtitle">
-Manage title, description and associated image.
-</p>
-</div>
-</div>
-
-
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} page-alert">
-{{ message }}
-</div>
-{% endfor %}
-{% endif %}
-
-
-<form method="post" action="{% url 'offer_letters' %}" enctype="multipart/form-data">
-
-{% csrf_token %}
-
-
-<div class="form-group mb-3">
-
-<label class="form-label">Title</label>
-
-<input
-type="text"
-name="title"
-class="form-control"
-value="{% if instance %}{{ instance.title }}{% endif %}"
-required
->
-
-</div>
-
-
-<div class="form-group mb-3">
-
-<label class="form-label">Description</label>
-
-<textarea
-id="description"
-name="description"
-class="form-control"
-rows="6"
-required
->{% if instance %}{{ instance.description }}{% endif %}</textarea>
-
-</div>
-
-
-<div class="form-group mb-4">
-
-<label class="form-label">Image</label>
-
-{% if instance and instance.image %}
-<div>
-<img src="{{ instance.image.url }}" class="offer-preview-img">
-</div>
-{% endif %}
-
-<input
-type="file"
-name="image"
-accept="image/*"
-class="form-control"
->
-
-</div>
-
-
-<button type="submit" class="page-btn page-btn-primary">
-
-{% if instance %}
-Update Offer Letter
-{% else %}
-Create Offer Letter
-{% endif %}
-
-</button>
-
-
-</form>
-
-
-</div>
-</div>
-
-</div>
-</div>
-
 {% endblock content %}
 
-
-
 {% block custom_js %}
-
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-
 <script>
-CKEDITOR.replace('description',{
-height:300,
-versionCheck:false
-});
-</script>
+  CKEDITOR.replace('description', {
+    height: 300,
+    versionCheck: false,
+    // Additional CKEditor configuration for better mobile experience
+    toolbarGroups: [
+      { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+      { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+      { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+      { name: 'forms' },
+      { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+      { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+      { name: 'links' },
+      { name: 'insert' },
+      { name: 'styles' },
+      { name: 'colors' },
+      { name: 'tools' },
+      { name: 'others' }
+    ],
+    removeButtons: 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,TextColor,BGColor,Maximize,ShowBlocks,About'
+  });
 
+  // Optional: Add smooth scroll to form on error
+  document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error') || document.querySelector('.alert')) {
+      document.querySelector('.page-card').scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  });
+</script>
 {% endblock custom_js %}
