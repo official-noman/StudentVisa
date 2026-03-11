@@ -7,173 +7,197 @@
     .form-div-container {
         background-color: transparent;
         position: relative;
-        overflow: hidden;
-        max-width: 420px;
-        min-height: 480px;
         margin: 0 auto;
+        max-width: 480px; 
     }
 
     .wrapper {
         width: 100%;
-        padding: 40px 35px 50px 35px;
-        background: #111827; /* Deep modern slate background */
-        border-radius: 16px;
-        text-align: center;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.08);
+        padding: 45px 35px 55px 35px;
+        background: #0F172A; /* Modern Dark Slate */
+        border-radius: 24px;
+        box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .wrapper header {
         font-size: 28px;
-        font-weight: 700;
+        font-weight: 800;
         color: #F8FAFC;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
+        text-align: center;
+        font-family: 'Sora', sans-serif;
         letter-spacing: -0.5px;
     }
 
-    /* ── Form Fields ── */
-    form .field {
+    /* ── 🎯 Premium Alert Messages ── */
+    .msg-container {
         width: 100%;
-        margin-bottom: 22px;
-        position: relative;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideDown 0.4s ease-out;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
+
+    /* Error - Red */
+    .msg-error {
+        background: rgba(220, 38, 38, 0.15);
+        border: 2px solid #ef4444;
+        color: #fca5a5;
+    }
+    .msg-error i { color: #ef4444; font-size: 18px; }
+
+    /* Warning (Pending) - Yellow/Gold */
+    .msg-warning {
+        background: rgba(245, 158, 11, 0.15);
+        border: 2px solid #f59e0b;
+        color: #fcd34d;
+    }
+    .msg-warning i { color: #f59e0b; font-size: 18px; }
+
+    .msg-text {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Input Fields ── */
+    form .field { width: 100%; margin-bottom: 25px; }
 
     form .field .input-area {
-        height: 52px;
-        width: 100%;
-        position: relative;
-    }
-
-    form input {
-        width: 100%;
-        height: 100%;
-        outline: none;
-        padding: 0 45px;
-        font-size: 15px;
-        background: rgba(255, 255, 255, 0.04);
-        color: #F1F5F9;
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        height: 72px;
+        display: flex;
+        align-items: center;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 2px solid transparent;
         transition: all 0.3s ease;
+        overflow: hidden;
     }
 
-    form input:focus {
-        border-color: #00C9A7;
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.1);
+    form .field .input-area:focus-within {
+        border-color: #10B981;
+        box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.15);
     }
 
-    form input::placeholder {
-        color: #64748B;
-        font-size: 14px;
-    }
-
-    /* ── Icons ── */
-    .input-area-icon {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 16px;
-        color: #64748B;
-        transition: color 0.3s ease;
-    }
-
-    .input-area .icon { left: 16px; }
-    form input:focus ~ .icon { color: #00C9A7; }
-
-    /* Password Eye Toggle */
-    .password-toggle {
-        position: absolute;
-        top: 50%;
-        right: 16px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #64748B;
-        z-index: 10;
-        transition: 0.3s;
-    }
-    .password-toggle:hover { color: #00C9A7; }
-    .eye-color { color: #00C9A7 !important; }
-
-    /* ── Links ── */
-    .pass-txt {
-        text-align: left;
-        margin-top: 10px;
-        font-size: 13px;
-        color: #94A3B8;
-    }
-    .pass-txt a {
-        color: #00C9A7;
-        text-decoration: none;
-        font-weight: 500;
-        transition: 0.2s;
-    }
-    .pass-txt a:hover { color: #22E4AC; text-decoration: underline; }
-
-    /* ── Submit Button ── */
-    form input[type="submit"] {
-        height: 52px;
-        margin-top: 30px;
-        color: #111827;
-        font-weight: 700;
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        border: none;
-        background: linear-gradient(135deg, #00C9A7, #00A68A);
-        cursor: pointer;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 20px rgba(0, 201, 167, 0.25);
-    }
-
-    form input[type="submit"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(0, 201, 167, 0.35);
-    }
-
-    /* ── 🎯 Premium Notification/Message Boxes ── */
-    .msg-box {
-        width: 100%;
-        padding: 14px 16px;
-        margin-bottom: 25px;
-        border-radius: 10px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.3px;
-        transition: opacity 0.5s ease-out;
+    .icon-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        width: 60px;
+        height: 100%;
+        background: #F1F5F9;
+        border-right: 2px solid #E2E8F0;
+        color: #475569;
+        font-size: 20px;
     }
 
-    /* Error (Red) */
-    .msg-error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #F87171;
-        box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.05);
+    /* Country Code (+880) */
+    .country-code {
+        display: none;
+        padding-left: 18px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1E293B; 
+        letter-spacing: 0.5px;
     }
 
-    /* Warning (Yellow/Gold) */
-    .msg-warning {
-        background: rgba(245, 158, 11, 0.1);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        color: #FBBF24;
-        box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.05);
+    form input {
+        flex: 1;
+        height: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #0F172A;
+        padding: 0 15px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%;
     }
 
-    /* Responsive */
+    /* Phone number big font */
+    .is-phone-input {
+        font-size: 32px !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+    }
+
+    .password-toggle {
+        width: 60px;
+        text-align: center;
+        cursor: pointer;
+        color: #94A3B8;
+        font-size: 20px;
+    }
+    .eye-color { color: #10B981 !important; }
+
+    /* ── Action Links (Fixes Applied Here) ── */
+    .form-actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        font-size: 14.5px;
+    }
+    
+    .form-actions-row a {
+        color: #10B981;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .form-actions-row a:hover {
+        color: #059669;
+        text-decoration: underline;
+    }
+
+    .text-muted-custom { color: #94A3B8; margin-right: 4px; }
+
+    /* ── Submit Button ── */
+    form input[type="submit"] {
+        height: 60px;
+        width: 100%;
+        margin-top: 30px;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 19px;
+        border: none;
+        background: linear-gradient(135deg, #10B981, #059669);
+        cursor: pointer;
+        border-radius: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+    }
+    form input[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.5);
+    }
+
     @media (max-width: 992px) {
         .signin-left-ad-div-outer { display: none; }
         .main-content-div { width: 100% !important; }
+    }
+    
+    @media (max-width: 480px) {
+        .is-phone-input { font-size: 24px !important; }
+        .wrapper { padding: 35px 20px; }
+        .form-actions-row { flex-direction: column; gap: 15px; text-align: center; }
     }
 </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
 
         <!-- Ad Section -->
@@ -187,7 +211,7 @@
                          data-ad-client="ca-pub-5227250042742723"
                          data-ad-slot="9902546305">
                     </ins>
-                    <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+                    <script> (adsbygoogle = window.adsbygoogle ||[]).push({}); </script>
                  </div>
               </div>
             </div>
@@ -195,70 +219,75 @@
 
         <!-- Login Form Section -->
         <div class="col-12 col-lg-6 main-content-div" style="display: flex; justify-content: center; align-items: center;">
-            <div class="form-div-container my-4">
+            <div class="form-div-container">
                 <div class="wrapper">
                     <header>Login to Portal</header>
 
-                    <form id="login-form" method="POST" action="#">
+                    <form id="login-form" method="POST" action="">
                         {% csrf_token %}
                         
-                        <!-- 🎯 Premium Messages Block -->
+                        <!-- Premium Alert Messages -->
                         {% if messages %}
                             {% for message in messages %}
-                                <div class="msg-box auto-hide-msg {% if message.tags == 'warning' %}msg-warning{% else %}msg-error{% endif %}">
+                                <div class="msg-container auto-hide-msg {% if message.tags == 'warning' %}msg-warning{% else %}msg-error{% endif %}">
                                     {% if message.tags == 'warning' %}
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <i class="fas fa-clock"></i>
                                     {% else %}
-                                        <i class="fas fa-times-circle"></i>
+                                        <i class="fas fa-exclamation-circle"></i>
                                     {% endif %}
-                                    <span>{{ message }}</span>
+                                    <div class="msg-text">{{ message }}</div>
                                 </div>
                             {% endfor %}
                         {% endif %}
 
                         <!-- Identifier Field -->
-                        <div class="field email">
+                        <div class="field">
                             <div class="input-area">
-                                <input type="text" name="identifier" placeholder="Email or Phone number" required />
-                                <i class="icon fas fa-envelope input-area-icon"></i>
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-user-shield" id="main-icon"></i>
+                                </div>
+                                <span class="country-code" id="code-prefix">+880</span>
+                                <input type="text" id="identifier" name="identifier" placeholder="Email or Phone number" required autocomplete="off" />
                             </div>
                         </div>
 
                         <!-- Password Field -->
-                        <div class="field password">
+                        <div class="field">
                             <div class="input-area">
-                                <input type="password" name="password" placeholder="Enter your password" required />
-                                <i class="icon fas fa-lock input-area-icon"></i>
-                                <span class="password-toggle" id="password-toggle-eye">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <input type="password" name="password" placeholder="Password" required />
+                                <div class="password-toggle" id="toggle-pw">
                                     <i class="fa-regular fa-eye-slash"></i>
-                                </span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Links -->
-                        <div class="pass-txt">
-                            {% if request.resolver_match.url_name == 'login_student' %}
-                                <a href="{% url 'forgot_password_phone_or_email_student' %}">Forgot your password?</a>
-                            {% else %}
-                                <a href="{% url 'forgot_password_phone_or_email' %}">Forgot your password?</a>
-                            {% endif %}
-                        </div>
-
-                        <div class="pass-txt mt-3">
-                            <span>New to the platform?</span>
-                            {% if request.resolver_match.url_name == 'login_student' %}
-                                <a href="{% url 'signup_student' %}" style="font-weight: 600; margin-left: 5px;">Create an account</a>
-                            {% else %}
-                                <a href="{% url 'signup_user' %}" style="font-weight: 600; margin-left: 5px;">Create an account</a>
-                            {% endif %}
+                        <!-- 🎯 Dynamic Links (Fixed) -->
+                        <div class="form-actions-row">
+                            <div class="forgot-link">
+                                {% if request.resolver_match.url_name == 'login_student' %}
+                                    <a href="{% url 'forgot_password_phone_or_email_student' %}">Forgot Password?</a>
+                                {% else %}
+                                    <a href="{% url 'forgot_password_phone_or_email' %}">Forgot Password?</a>
+                                {% endif %}
+                            </div>
+                            <div class="signup-link">
+                                <span class="text-muted-custom">New here?</span>
+                                {% if request.resolver_match.url_name == 'login_student' %}
+                                    <a href="{% url 'signup_student' %}">Join Now</a>
+                                {% else %}
+                                    <a href="{% url 'signup_user' %}">Join Now</a>
+                                {% endif %}
+                            </div>
                         </div>
                         
-                        <input type="submit" value="Sign In">
+                        <input type="submit" value="Sign In to Dashboard">
                     </form>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock content %}
@@ -266,32 +295,55 @@
 {% block js %}
 <script>
     $(document).ready(function() {
-        // Password Eye Toggle Fix
-        $('.password-toggle').click(function () {
-            var passwordInput = $(this).siblings('input');
-            var icon = $(this).find('i');
-            
-            if (passwordInput.attr('type') === 'password') {
-                passwordInput.attr('type', 'text');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye eye-color');
+        const $input = $('#identifier');
+        const $prefix = $('#code-prefix');
+        const $icon = $('#main-icon');
+
+        // Phone vs Email Formatting Logic
+        $input.on('input', function() {
+            let val = $(this).val();
+            const isNumber = /^[0-9+]+$/.test(val.replace(/\s|-/g, ''));
+
+            if (isNumber && val.length > 0) {
+                $prefix.show();
+                $input.addClass('is-phone-input');
+                $icon.removeClass('fa-user-shield fa-envelope').addClass('fa-phone-alt');
+                
+                let digits = val.replace(/\D/g, '');
+                if (digits.startsWith('880')) digits = digits.substring(3);
+                else if (digits.startsWith('0')) digits = digits.substring(1);
+
+                let formatted = digits.substring(0, 5);
+                if (digits.length > 5) formatted += '-' + digits.substring(5, 10);
+                $(this).val(formatted);
             } else {
-                passwordInput.attr('type', 'password');
-                icon.addClass('fa-eye-slash').removeClass('fa-eye eye-color');
+                $prefix.hide();
+                $input.removeClass('is-phone-input');
+                if(val.includes('@')) $icon.removeClass('fa-user-shield fa-phone-alt').addClass('fa-envelope');
+                else $icon.removeClass('fa-envelope fa-phone-alt').addClass('fa-user-shield');
             }
         });
 
-        // 🎯 Auto Hide Messages after 5 seconds
-        const msgs = document.querySelectorAll('.auto-hide-msg');
-        if (msgs.length > 0) {
-            msgs.forEach(function(msg) {
-                setTimeout(function() {
-                    msg.style.opacity = "0"; // Fade out slowly
-                    setTimeout(function() {
-                        msg.style.display = "none"; // Remove entirely
-                    }, 500); 
-                }, 5000); // 5 Seconds Wait
-            });
-        }
+        // Unmask Phone Number Before Submit
+        $('#login-form').on('submit', function() {
+            if ($input.hasClass('is-phone-input')) {
+                let cleanNum = '0' + $input.val().replace(/\D/g, '');
+                $input.val(cleanNum);
+            }
+        });
+
+        // Password Eye Toggle
+        $('#toggle-pw').click(function() {
+            const $pwInput = $(this).siblings('input');
+            const isPw = $pwInput.attr('type') === 'password';
+            $pwInput.attr('type', isPw ? 'text' : 'password');
+            $(this).find('i').toggleClass('fa-eye-slash fa-eye').toggleClass('eye-color');
+        });
+
+        // Auto-hide messages after 6 seconds
+        setTimeout(function() {
+            $('.auto-hide-msg').fadeOut(600);
+        }, 6000);
     });
 </script>
 {% endblock js %}

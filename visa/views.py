@@ -34,6 +34,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 from .models import CustomUser
 from django.db.models import Q
+from .models import OTPRequest 
 
 
 def home(request):
@@ -598,40 +599,33 @@ def forgot_password_phone_or_email(request):
             consultant = Users.objects.filter(phone=phone).first()
 
             if consultant is not None:
-                otp = str(random.randint(1000, 9999))
-
-                valid_phone_number = re.match(
-                    r"^(013|019|018|014|015|016|017)\d{8}$", str(phone)
-                )
-                temp_user_data = {"phone": phone, "otp": otp}
+                otp = str(random.randint(100000, 999999)) # ৬ ডিজিট ওটিপি
+                valid_phone_number = re.match(r"^(013|019|018|014|015|016|017)\d{8}$", str(phone))
 
                 if valid_phone_number:
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                    # 🎯 ১. সেশনে ফোন নাম্বার এবং ওটিপি ডাটা আলাদাভাবে রাখা
+                    request.session['otp_phone'] = phone 
+                    request.session['temp_user_data'] = {
+                        "phone": phone, 
+                        "otp": otp, 
+                        "expiration_time": int(time()) + 300
+                    }
+                    
+                    # আপনার SMS API কল
+                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your verification code. Expire in 5 mins."
                     response = requests.get(url)
-                    if response.status_code == 200:
-                        response = JsonResponse(
-                            {
-                                "success": True,
-                                "redirect_url": "/forgot_password_otp_verification/",
-                            }
-                        )
-                        expiration_time = int(time()) + 300
-                        temp_user_data["expiration_time"] = expiration_time
-                        request.session["temp_user_data"] = temp_user_data
 
-                        response_data = {
+                    if response.status_code == 200:
+                        # ২. ওটিপি রিকোয়েস্ট ট্র্যাকিং (Security)
+                        OTPRequest.objects.create(phone_number=phone)
+                        
+                        return JsonResponse({
                             "success": True,
                             "redirect_url": "/forgot_password_otp_verification/",
-                            "expiration_time": expiration_time,  # Send expiration time to client
-                        }
-
-                        response = JsonResponse(response_data)
-
-                        return response
-
+                            "expiration_time": int(time()) + 300
+                        })
                 else:
                     return JsonResponse({"error": "Invalid Phone Number Provided"})
-
             else:
                 return JsonResponse({"error": "Phone Number is not registered"})
 
@@ -4550,3 +4544,54 @@ def feedback_view(request):
 def service_detail(request, slug):
     service = get_object_or_404(VisaService, slug=slug)
     return render(request, "service_detail.html", {"service": service})
+
+# views.py
+
+# ... আপনার অন্যান্য সব import ...
+import random
+import requests
+from time import time
+
+def resend_otp(request):
+    if request.method == 'POST':
+        # সেশন থেকে ফোন নাম্বার নেওয়া (Signup বা Forgot Password যেখান থেকেই আসুক)
+        phone_number = request.session.get('otp_phone') or request.session.get('temp_user_data', {}).get('phone')
+        
+        if not phone_number:
+            return JsonResponse({'success': False, 'error': 'Session expired. Please enter phone number again.'})
+        
+        # 🎯 ২৪ ঘণ্টায় ২ বারের বেশি ওটিপি লিমিট চেক
+        day_ago = datetime.now() - timedelta(hours=24)
+        requests_count = OTPRequest.objects.filter(
+            phone_number=phone_number, 
+            timestamp__gte=day_ago
+        ).count()
+
+        if requests_count >= 2:
+            return JsonResponse({'success': False, 'error': 'Security Alert: Maximum 2 OTPs allowed in 24 hours.'})
+
+        # ৩. নতুন ৬ ডিজিট ওটিপি তৈরি এবং সেশন আপডেট
+        new_otp = "".join(random.choice("0123456789") for _ in range(6))
+        expiration_time = int(time()) + 300
+        
+        request.session['temp_user_data'] = {
+            'phone': phone_number,
+            'otp': new_otp,
+            'expiration_time': expiration_time
+        }
+        request.session['otp_phone'] = phone_number
+        request.session.modified = True
+
+        # ৪. SMS পাঠানো
+        try:
+            url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone_number}&senderid=01844532638&msg={new_otp} is your new code. Expire in 5 mins."
+            requests.get(url, timeout=10)
+            
+            # ট্র্যাকিং সেভ করা
+            OTPRequest.objects.create(phone_number=phone_number)
+            return JsonResponse({'success': True, 'expiration_time': expiration_time})
+            
+        except:
+            return JsonResponse({'success': False, 'error': 'SMS Gateway error.'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request.'})

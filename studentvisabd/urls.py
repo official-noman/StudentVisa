@@ -645,6 +645,7 @@ urlpatterns = [
     path(
         "delete_course/<int:course_id>/", rootviews.delete_course, name="delete_course"
     ),
+    path('resend-otp/', views.resend_otp, name='resend_otp_url'),
     path(
         "update_verification_status/",
         rootviews.update_verification_status,

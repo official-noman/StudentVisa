@@ -1,253 +1,292 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block custom_css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link href={% static "assets/css/signup.css"%} rel="stylesheet">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+    body { background-color: #E9EEF7 !important; font-family: 'Inter', sans-serif; }
+
+    .otp-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 85vh;
+        padding: 20px;
+    }
+
+    .wrapper {
+        width: 100%;
+        max-width: 500px;
+        padding: 45px 35px 55px;
+        background: #0F172A; /* Premium Dark Navy */
+        border-radius: 28px;
+        box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+
+    .wrapper header {
+        font-size: 26px;
+        font-weight: 800;
+        color: #F8FAFC;
+        margin-bottom: 12px;
+        font-family: 'Sora', sans-serif;
+    }
+
+    .subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
+    .subtitle strong { color: #10B981; font-weight: 700; }
+
+    /* ── 🎯 OTP Input (Premium Spacing) ── */
+    .otp-input-field {
+        height: 90px;
+        width: 100%;
+        background: #1E293B;
+        border: 2px solid transparent;
+        border-radius: 20px;
+        color: #F8FAFC;
+        font-size: 42px;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: 20px;
+        outline: none;
+        transition: all 0.3s ease;
+        padding-left: 20px; /* Balance for letter-spacing */
+    }
+
+    .otp-input-field:focus {
+        border-color: #10B981;
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.15);
+    }
+
+    /* ── no change Change Number Panel (Fixed Alignment) ── */
+    #number-change-panel {
+        display: none;
+        background: rgba(255,255,255,0.03);
+        padding: 20px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+        border: 1px dashed rgba(255,255,255,0.15);
+    }
+    
+    .mini-input {
+        background: #1E293B;
+        border: 1px solid #334155;
+        color: #fff;
+        border-radius: 10px;
+        padding: 12px 15px;
+        width: 100%;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .panel-btn-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px; /* Cancel এবং Update বাটনের মাঝে গ্যাপ */
+    }
+
+    /* ── 🎯 Actions & Buttons ── */
+    .actions-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .countdown-timer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #94A3B8;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    #timer-circle { width: 24px; height: 24px; transform: rotate(-90deg); }
+    #timer-circle circle { fill: none; stroke-width: 3; }
+    #timer-circle .bg { stroke: #334155; }
+    #timer-circle .progress {
+        stroke: #10B981;
+        stroke-dasharray: 63;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear;
+    }
+
+    .action-btn {
+        color: #10B981;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    
+    .action-btn:hover { opacity: 0.8; text-decoration: underline; }
+    .action-btn:disabled { color: #4B5563; cursor: not-allowed; opacity: 0.5; text-decoration: none; }
+
+    /* Change Number এবং Resend OTP এর মাঝে গ্যাপ */
+    .btn-gap { margin-right: 15px !important; }
+
+    /* Premium Alert Box */
+    .premium-alert {
+        display: none;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-left: 4px solid #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        color: #fca5a5;
+    }
+
+    /* ── Verify Button ── */
+    .verify-btn {
+        height: 62px; width: 100%; margin-top: 35px;
+        color: #ffffff; font-weight: 800; font-size: 18px;
+        border: none;
+        background: linear-gradient(135deg, #10B981, #059669);
+        cursor: pointer; border-radius: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+    .verify-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); }
+</style>
 {% endblock custom_css %}
 
 {% block content %}
-    <div class="otp-container mt-4 d-flex justify-content-center">
-        <form id="otp-form" method="POST" action="">
-            {% csrf_token %}
-            <div class="otp-card p-5 my-4" style="max-height:500px; max-width: 500px;">
-                <h5 class="mb-3">OTP verification</h5>
+<div class="otp-wrapper">
+    <div class="wrapper">
+        <header>Account Verification</header>
+        <p class="subtitle">Enter the 6-digit code we sent to:<br><strong id="display-phone">+880-{{ phone }}</strong></p>
 
-                <div id="number-change-div" class="otp-header change-number-outer-div">
-                    <div class="change-number-div otp-hide">
-                        <p class="text-left mb-1" style="font-weight: 600;">Send OTP to ({{ phone }}):</p>
-                        
-                        <input type="text" id="change-number-input" class="otp-input" name="otp" placeholder="Phone Number" value="{{ phone }}">
-
-                        <div class="d-flex justify-content-end mt-2">
-                            <button type="button" id="send-change-number" class="change-number-btn">Change</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="otp-header">
-                    <div class="otp-body">
-                        <p id="change-number" class="change-number mb-1 text-left">Change Number({{ phone }})</p>
-
-                        <p id="enter-otp-text" class="text-left mb-1" style="font-weight: 600;">Enter OTP</p>
-                        <input type="text" id="phone-number-input" class="otp-input" name="otp" placeholder="Enter OTP">
-                    </div>
-                </div>
-
-                <div class="otp-header">
-                    <div class="w-100">
-                        <div id="error-message-div" class="d-flex error-message-div justify-content-center">
-                            <p><span id="message-text" class="message-text text-center">Invalid Phone number</span></p>
-                        </div>
-                    </div>
-    
-                    <div class="row justify-content-start p-2">
-                        <div id="countdown" class="col-6 text-left"></div>
-                        <div class="resend-otp otp-hide col-6 d-none text-right">
-                            <a id="resend-otp" href="" style="color: blue; font-weight: 600;">Resend</a>
-                        </div>
-                    </div>
-    
-                    <div class="d-flex justify-content-center mt-3">
-                        <button type="submit" class="signup-btn">Verify OTP</button>
-                    </div>
-                </div>
-                
+        <!-- Change Number Panel (Fixed Gap) -->
+        <div id="number-change-panel">
+            <p class="text-left mb-2" style="color: #94A3B8; font-size: 13px; font-weight: 600;">Update Phone Number:</p>
+            <input type="text" id="new-phone-input" class="mini-input" value="{{ phone }}" maxlength="11">
+            <div class="panel-btn-group">
+                <button type="button" class="action-btn" style="color:#94A3B8" onclick="$('#number-change-panel').slideUp()">Cancel</button>
+                <button type="button" id="confirm-change-btn" class="action-btn">Update & Resend</button>
             </div>
+        </div>
+
+        <div id="alert-box" class="premium-alert"></div>
+
+        <form id="otp-form" method="POST">
+            {% csrf_token %}
+            <div class="field">
+                <input type="text" id="otp-input" name="otp" class="otp-input-field" placeholder="------" maxlength="6" inputmode="numeric" required autocomplete="off">
+            </div>
+
+            <div class="actions-row">
+                <div class="countdown-timer">
+                    <svg id="timer-circle">
+                        <circle class="bg" cx="12" cy="12" r="10"></circle>
+                        <circle class="progress" cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    <span id="countdown-text">05:00</span>
+                </div>
+                <div>
+                    <button type="button" class="action-btn btn-gap" id="show-change-num">Change Number</button>
+                    <button type="button" id="resend-otp-btn" class="action-btn" disabled>Resend OTP</button>
+                </div>
+            </div>
+
+            <button type="submit" class="verify-btn">Verify & Complete Signup</button>
         </form>
     </div>
-
-    <div id="popup-container" class="popup-container">
-        <div class="popup d-flex justify-content-center">
-            <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
-            <div class="registration-success-div">
-                <p class="mb-2"><span class="successful-text text-center">Registration Successful</span></p>
-                <p class="text-center"><span class="successful-text">Please Login</span></p>
-            </div>
-            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
-        </div>
-    </div>
-
+</div>
 {% endblock content %}
 
 {% block js %}
-<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-
 <script>
-    $(document).ready(function() {
-        var expirationTime = {{ expiration_time }};
-        var countdownElement = $('#countdown');
-        var resendOtpDiv = $('.resend-otp');
+$(document).ready(function() {
+    let expirationTime = {{ expiration_time }};
+    const $timerText = $('#countdown-text');
+    const $resendBtn = $('#resend-otp-btn');
+    const progressCircle = document.querySelector('#timer-circle .progress');
+    const circumference = 63; 
 
-        updateCountdown(expirationTime); // Call initially
-        var countdownInterval; // Update countdown every second
-        countdownInterval = setInterval(updateCountdown, 1000, expirationTime);
+    function updateTimer() {
+        const now = Math.floor(Date.now() / 1000);
+        const timeLeft = expirationTime - now;
 
-        function updateCountdown(expirationTimeOTP) {
-            var now = Math.floor(Date.now() / 1000);
-            var timeLeft = expirationTimeOTP - now;
-
-            if (timeLeft <= -1) {
-                // Session expired
-                clearInterval(countdownInterval); // Stop the countdown
-                resendOtpDiv.removeClass('d-none');
-                return;
-            }
-            else {
-                resendOtpDiv.addClass('d-none');
-            }
-
-            var minutes = Math.floor(timeLeft / 60);
-            var seconds = timeLeft % 60;
-
-            // Pad the seconds with leading zero if less than 10
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-            countdownElement.html(minutes + ':' + (seconds < 0 ? '00' : seconds));
+        if (timeLeft <= 0) {
+            $timerText.text("Expired");
+            $resendBtn.prop('disabled', false);
+            progressCircle.style.strokeDashoffset = circumference;
+            return;
         }
 
-        $('form#otp-form-student fieldset').on('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        $timerText.text(`${mins}:${secs < 10 ? '0' + secs : secs}`);
+        
+        const offset = circumference - (timeLeft / 300) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+
+        setTimeout(updateTimer, 1000);
+    }
+    updateTimer();
+
+    // Show Change Number Panel
+    $('#show-change-num').click(() => $('#number-change-panel').slideToggle());
+
+    // Confirm Change Number Logic
+    $('#confirm-change-btn').click(function() {
+        const newPhone = $('#new-phone-input').val();
+        fetch('/change_number/?phone=' + newPhone)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                expirationTime = data.expiration_time;
+                $('#display-phone').text('+880-' + data.changed_phone);
+                $('#number-change-panel').slideUp();
+                $('#alert-box').hide();
+                updateTimer();
+            } else {
+                $('#alert-box').text(data.error).fadeIn();
             }
         });
+    });
 
-        $('#change-number').on('click', function(){
-            //$('#change-number').text('Enter Otp');
-            $('#change-number').addClass('d-none')
-            $("#number-change-div").addClass("change-number-show");
-        })
-
-        // Resend the otp
-        $('#send-change-number').click(function(event) {
-            event.preventDefault(); // Prevent the default action of the link
-
-            var phoneNumber = $('#change-number-input').val();
-
-            // Make fetch GET request
-            fetch('/change_number/?phone=' + phoneNumber, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to resend OTP');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Handle successful response
-                if (data.success) {
-                    // Update expiration time and OTP in session
-                    var expirationTime = data.expiration_time;
-                    var changedPhone = data.changed_phone;
-                    var phoneNumberText = ' (' + changedPhone + ')'
-                    var otp = data.otp;
-
-                    $('#enter-otp-text').append(phoneNumberText);
-
-                    $("#number-change-div").removeClass("change-number-show");
-            
-                    updateCountdown(expirationTime); // Call initially
-                    clearInterval(countdownInterval);
-            
-                    countdownInterval = setInterval(updateCountdown, 1000, expirationTime); // Update countdown every second
-                }
-                else if(data.error){
-                    console.log('errors: ', data.error);
-                    $('#message-text').text(data.error);
-                    $('#error-message-div').addClass('error-message-show');
-                }
-                else {
-                    console.error('Failed to resend OTP');
-                }
-            })
-            .catch(error => {
-                // Handle fetch error
-                console.error('Fetch request failed:', error);
-            });
-        });
-
-        $('#otp-form').on('submit', function(event){
-            event.preventDefault();
-            var formData = new FormData(this);
-            
-            fetch('/save_user_signup/', {
-                method: 'POST',
-                //body: JSON.stringify(data),
-                body: formData,
-                headers: {
-                    'x-CSRFToken': '{{csrf_token}}',
-                    //'Content-Type': 'application/json'
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-
-                if (data.success) {
-                    console.log('data.success: ', data.success)
-                    $('#popup-container').addClass('show');
-
-                    setTimeout(function(){
-                        window.location.href = '/login_user/'
-                    }, 1000)
-                }
-                
-                else if (data.error) {
-                    console.log('errors: ', data.error);
-                    $('#message-text').text(data.error);
-                    $('#error-message-div').addClass('error-message-show');
-                }
-            })
-            .catch(error => {
-                // Handle errors, e.g., show an error message
-                console.error('Error:', error);
-            });
-        })
-
-        // Resend the otp
-        $('#resend-otp').click(function(event) {
-            event.preventDefault(); // Prevent the default action of the link
-            
-            // Make fetch GET request
-            fetch('/otp_verification_signup/?resend=true', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to resend OTP');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Handle successful response
-                if (data.success) {
-                    // Update expiration time and OTP in session
-                    var expirationTime = data.expiration_time;
-                    var otp = data.otp;
-
-                    updateCountdown(expirationTime); // Call initially
-                    clearInterval(countdownInterval);
-            
-                    countdownInterval = setInterval(updateCountdown, 1000, expirationTime); // Update countdown every second
-                }
-                else {
-                    console.error('Failed to resend OTP');
-                }
-            })
-            .catch(error => {
-                // Handle fetch error
-                console.error('Fetch request failed:', error);
-            });
+    // Resend OTP Logic
+    $resendBtn.click(function() {
+        fetch('/otp_verification_signup/?resend=true')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                expirationTime = data.expiration_time;
+                $resendBtn.prop('disabled', true);
+                updateTimer();
+                $('#alert-box').hide();
+            } else {
+                $('#alert-box').text(data.error).fadeIn();
+            }
         });
     });
+
+    // Form Submit AJAX
+    $('#otp-form').on('submit', function(e) {
+        e.preventDefault();
+        fetch('/save_user_signup/', {
+            method: 'POST',
+            body: new FormData(this),
+            headers: { 'x-CSRFToken': '{{csrf_token}}' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/login_user/?reg=success';
+            } else {
+                $('#alert-box').text(data.error || "Verification Failed").fadeIn();
+            }
+        });
+    });
+});
 </script>
 {% endblock js %}
-

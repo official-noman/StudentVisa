@@ -1160,3 +1160,12 @@ class VisaService(models.Model):
 
     def __str__(self):
         return self.title
+    
+    # models.py
+
+class OTPRequest(models.Model):
+    phone_number = models.CharField(max_length=15)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"OTP request for {self.phone_number} at {self.timestamp}"
