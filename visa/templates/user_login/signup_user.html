@@ -2,167 +2,470 @@
 {% load static %}
 {% block custom_css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
-    {% comment %} <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> {% endcomment %}
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href={% static "assets/css/signup.css"%} rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #F0F4F8;
+            --card: #FFFFFF;
+            --brand: #2563EB;
+            --brand-light: #EFF6FF;
+            --brand-dark: #1D4ED8;
+            --accent: #10B981;
+            --accent-light: #ECFDF5;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border: #E2E8F0;
+            --border-focus: #2563EB;
+            --input-bg: #F8FAFC;
+            --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.04), 0 20px 50px -10px rgba(0,0,0,0.07);
+            --shadow-btn: 0 4px 14px rgba(37,99,235,0.35);
+            --radius-card: 20px;
+            --radius-input: 10px;
+            --radius-pill: 50px;
+            --font: 'Plus Jakarta Sans', sans-serif;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg);
+            min-height: 100vh;
+        }
+
+        /* ── Page wrapper ── */
+        .signup-page-wrapper {
+            min-height: 100vh;
+            padding: 40px 16px 60px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            background:
+                radial-gradient(ellipse 80% 50% at 10% 0%, rgba(37,99,235,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 90% 100%, rgba(16,185,129,0.06) 0%, transparent 60%),
+                var(--bg);
+        }
+
+        /* ── Card ── */
+        .signup-card {
+            background: var(--card);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(226,232,240,0.8);
+            width: 100%;
+            max-width: 760px;
+            padding: 48px 52px 52px;
+            position: relative;
+            overflow: hidden;
+        }
+        .signup-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand), var(--accent));
+            border-radius: var(--radius-card) var(--radius-card) 0 0;
+        }
+
+        /* ── Header ── */
+        .signup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .signup-logo-mark {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--brand), #60A5FA);
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+        }
+        .signup-logo-mark svg { width: 26px; height: 26px; color: #fff; }
+        .signup-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .signup-header p {
+            margin-top: 6px;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ── Section labels ── */
+        .form-section { margin-bottom: 28px; }
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Field groups ── */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .field-row.full { grid-template-columns: 1fr; }
+        @media (max-width: 600px) {
+            .field-row { grid-template-columns: 1fr; }
+            .signup-card { padding: 32px 24px 40px; }
+            .signup-header h1 { font-size: 22px; }
+        }
+
+        /* ── Field wrapper ── */
+        .field-wrap { display: flex; flex-direction: column; gap: 5px; }
+        .field-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
+        }
+        .field-label .req { color: #EF4444; margin-left: 2px; }
+
+        /* ── Inputs ── */
+        .field-wrap input[type="text"],
+        .field-wrap input[type="email"],
+        .field-wrap input[type="password"],
+        .field-wrap input[type="tel"] {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 11px 14px;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+            outline: none;
+        }
+        .field-wrap input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .field-wrap input:focus {
+            border-color: var(--brand);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        }
+        .field-wrap input.error-border {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        /* ── Password eye wrapper ── */
+        .password-field { position: relative; }
+        .password-field input { padding-right: 42px; }
+        .password-field .password-toggle,
+        .password-field .confirm_password-toggle {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color var(--transition);
+            line-height: 1;
+        }
+        .password-field .password-toggle:hover,
+        .password-field .confirm_password-toggle:hover { color: var(--brand); }
+
+        /* ── Select2 overrides ── */
+        .select2-container .select2-selection--single,
+        .select2-container .select2-selection--multiple {
+            background: var(--input-bg) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: var(--radius-input) !important;
+            min-height: 44px !important;
+            padding: 4px 6px !important;
+            font-family: var(--font);
+            font-size: 14px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--focus .select2-selection--multiple,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: var(--brand) !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12) !important;
+            background: #fff !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--text-primary) !important;
+            line-height: 34px !important;
+            font-weight: 500;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: var(--text-muted) !important;
+            font-weight: 400;
+        }
+        .select2-dropdown {
+            border: 1.5px solid var(--border) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+            font-family: var(--font);
+            overflow: hidden;
+        }
+        .select2-results__options { padding: 4px; }
+        .select2-results__option {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary) !important;
+            padding: 9px 12px;
+            border-radius: 7px;
+            margin-bottom: 1px;
+        }
+        .select2-results__option[aria-selected="true"] {
+            background-color: var(--brand-light) !important;
+            color: var(--brand) !important;
+        }
+        .select2-container--default .select2-results__option--highlighted[aria-selected],
+        .select2-container--default .select2-results__option--highlighted {
+            background-color: var(--brand-light) !important;
+            color: var(--brand) !important;
+            font-weight: 600;
+        }
+        .select2-search--dropdown .select2-search__field {
+            border: 1.5px solid var(--border) !important;
+            border-radius: 7px !important;
+            padding: 7px 10px !important;
+            font-family: var(--font);
+            font-size: 13px;
+            color: var(--text-primary);
+            outline: none;
+        }
+        .select2-search--dropdown .select2-search__field:focus {
+            border-color: var(--brand) !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1) !important;
+        }
+        .select2-container { width: 100% !important; }
+
+        /* ── Inline helpers ── */
+        .field-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+        .field-error { font-size: 11.5px; color: #EF4444; margin-top: 3px; }
+        #password_match { font-size: 11.5px; margin-top: 3px; }
+        .phone_error { font-size: 11.5px; color: #EF4444; display: block; margin-top: 3px; }
+
+        /* ── Error message banner ── */
+        .error-message-div {
+            display: none;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+        .error-message-div.error-message-show { display: flex; }
+        .message-text { font-size: 13px; color: #DC2626; font-weight: 500; }
+
+        /* ── reCAPTCHA ── */
+        .recaptcha-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        /* ── Submit button ── */
+        .signup-submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            border: none;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            box-shadow: var(--shadow-btn);
+            transition: transform var(--transition), box-shadow var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .signup-submit-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1D4ED8, #2563EB);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .signup-submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(37,99,235,0.45);
+        }
+        .signup-submit-btn:hover::before { opacity: 1; }
+        .signup-submit-btn:active { transform: translateY(0); }
+        .signup-submit-btn span { position: relative; z-index: 1; }
+
+        /* ── Sign-in link ── */
+        .signin-nudge {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+        .signin-nudge a {
+            color: var(--brand);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .signin-nudge a:hover { text-decoration: underline; }
+    </style>
 {% endblock custom_css %}
+
 {% block content %}
-    <div class="container">
-        <div class="d-flex justify-content-center">
-            <div class="left-ad-div">
-                <div class="d-flex justify-content-start">
-                    <img src="{% static 'assets/images/r-vertical.jpg' %}" alt="">
-                </div>
+<div class="signup-page-wrapper">
+    <div class="signup-card">
+
+        <!-- Header -->
+        <div class="signup-header">
+            <div class="signup-logo-mark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+                </svg>
             </div>
-
-            <div class="container signup-container col-12 my-4" id="container">
-                <div class="form-container sign-in-container signup-form-div-container">
-                    <form id="signup-form" method="POST" class="signup-form">
-                        {% csrf_token %}
-                        <h1>Sign up</h1>
-                        <div class="social-container">
-                            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                        
-        
-                        <!--Input fields starts-->
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-md-6 col-12 input-div">
-                                    <label for="company-name" class="signup-label">Company Name<span class="required-star">*</span></label>
-                                    <input type="text" id="company-name" oninput="validateFullName(this)" name="company_name" placeholder="Name of Commpany" />
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label for="owner-name" class="signup-label">Full Name (Owner)<span class="required-star">*</span></label>
-                                    <input type="text" id="owner-name" name="owner_name" placeholder="Full Name of Owner" />
-                                </div>
-
-                            </div>
-                        </div>
-        
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-md-6 col-12">
-                                    <label for="email" class="signup-label">Email<span class="required-star">*</span></label>
-                                    <input type="email" id="email" name="email" placeholder="Email" />
-                                    <div class="d-flex justify-content-start"><span id="email-error" style="color: red;"></span></div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label for="phone" class="signup-label">Mobile<span class="required-star">*</span></label>
-                                    <input type="text" id="phone" name="phone" placeholder="Moblie"  maxlength="11">
-                                </div>
-                            </div>
-                        </div>
-        
-
-
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-md-6 col-12 input-div">
-                                    <label for="password" class="signup-label">Password<span class="required-star">*</span></label>
-                                    <div class="eye-div">
-                                        <input type="password" id="password" name="password" placeholder="Password" />
-                                        <span class="password-toggle" id="password-toggle-eye">
-                                            <i class="fa-regular fa-eye-slash"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <label for="password" class="signup-label">Confirm Password<span class="required-star">*</span></label>
-                                    <div class="eye-div w-100">
-                                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Retype Password" />
-                                        <span class="confirm_password-toggle" id="confirm_password-toggle-eye">
-                                            <i class="fa-regular fa-eye-slash"></i>
-                                        </span>
-                                    </div>
-                                       <p id="password_match"></p>
-                                </div>
-                            </div>
-                        </div>
-        
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-md-6 col-12 input-div">
-                                    <label class="signup-label col-12" for="district-name">District<span class="required-star">*</span></label>
-                                    <select class="form-control" name="district_name" id="district-name">
-                                        <option value="" selected disabled>Select District</option>
-                                        {% for district in districts %}
-                                            <option id="id_{{ district.name }}" value="{{ district.id }}">{{ district.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-md-6 col-12 input-div">
-                                    <label class="signup-label col-12" for="thana-name">Thana<span class="required-star">*</span></label>
-                                    <select class="form-control" name="thana_name" id="thana-name">
-                                        <option value="" selected disabled>Select Thana</option>
-                                        {% for thana in thanas %}
-                                            <option value="{{ thana.id }}">{{ thana.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-100">
-                            <div class="row">
-                                <div class="col-12 input-div">
-                                    <label for="office_address" class="signup-label">Office Address<span class="required-star">*</span></label>
-                                    <input type="text" id="office-address" name="office_address" placeholder="Office Address" />
-                                </div>
-                            </div>
-                        </div>
-        
-                    
-                        
-                        
-                        {% comment %} <input type="text" placeholder="Name of Commpany" />
-                        <input type="text" placeholder="Date" />
-                        <input type="url" placeholder="https://www.example.com" />
-                        <input type="tel" placeholder="Phone" />
-                        <input type="email" placeholder="Email" />
-                        <input type="text" placeholder="Name of Commpany" />
-                        <input type="text" placeholder="Password" />
-                        <input type="text" placeholder="Name of Commpany" />
-                        <input type="text" placeholder="Password" />
-                        <input type="text" placeholder="Name of Commpany" />
-                        <input type="text" placeholder="Password" />
-                        <input type="text" placeholder="Name of Commpany" />
-                        <input type="text" placeholder="Password" /> {% endcomment %}
-                        <!--Input fields ends-->
-        
-                        <p>
-                            Already have an account?
-                            <a href="{% url 'login_user' %}" style="color: blue; font-weight: 600;">Sign In</a>
-                        </p>
-                        
-                        <div class="w-100">
-                            <div id="error-message-div" class="d-flex error-message-div">
-                                <p><span id="message-text" class="message-text text-center"></span></p>
-                            </div>
-                        </div>
-
-                        <!--google recaptcha starts-->
-                        <div class="input-group my-4 d-flex justify-content-center">
-                            <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
-                        </div>
-                        <!--google recaptcha ends-->
-
-                        <button type='submit' class="signup-btn mt-3" data-signup-type={{ signup_type }}>Sign Up</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="right-ad-div">
-                <div class="d-flex justify-content-end">
-                    <img src="{% static 'assets/images/r-vertical.jpg' %}" alt="">
-                </div>
-            </div>
+            <h1>Register your Agency</h1>
+            <p>Create a business account to connect with students and guardians</p>
         </div>
+
+        <!-- Form -->
+        <form id="signup-form" method="POST" class="signup-form" novalidate>
+            {% csrf_token %}
+
+            <!-- ── Company Info ── -->
+            <div class="form-section">
+                <div class="section-label">Company Information</div>
+
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <label for="company-name" class="field-label">Company Name <span class="req">*</span></label>
+                        <input type="text" id="company-name" name="company_name" placeholder="e.g. Horizon Education Ltd." oninput="validateFullName(this)" />
+                    </div>
+                    <div class="field-wrap">
+                        <label for="owner-name" class="field-label">Full Name (Owner) <span class="req">*</span></label>
+                        <input type="text" id="owner-name" name="owner_name" placeholder="Owner's full name" />
+                    </div>
+                </div>
+
+                <div class="field-row full">
+                    <div class="field-wrap">
+                        <label for="office-address" class="field-label">Office Address <span class="req">*</span></label>
+                        <input type="text" id="office-address" name="office_address" placeholder="House, Road, Area" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Contact Details ── -->
+            <div class="form-section">
+                <div class="section-label">Contact Details</div>
+
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <label for="email" class="field-label">Email Address <span class="req">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="company@example.com" />
+                        <span id="email-error" class="field-error"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="phone" class="field-label">Mobile Number <span class="req">*</span></label>
+                        <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Location ── -->
+            <div class="form-section">
+                <div class="section-label">Location</div>
+
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <label class="field-label" for="district-name">District <span class="req">*</span></label>
+                        <select class="form-control" name="district_name" id="district-name">
+                            <option value="" selected disabled>Select District</option>
+                            {% for district in districts %}
+                                <option id="id_{{ district.name }}" value="{{ district.id }}">{{ district.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field-wrap">
+                        <label class="field-label" for="thana-name">Thana <span class="req">*</span></label>
+                        <select class="form-control" name="thana_name" id="thana-name">
+                            <option value="" selected disabled>Select Thana</option>
+                            {% for thana in thanas %}
+                                <option value="{{ thana.id }}">{{ thana.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Security ── -->
+            <div class="form-section">
+                <div class="section-label">Security</div>
+
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <label for="password" class="field-label">Password <span class="req">*</span></label>
+                        <div class="password-field">
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" />
+                            <span class="password-toggle" id="password-toggle-eye"><i class="fa-regular fa-eye-slash"></i></span>
+                        </div>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="confirm_password" class="field-label">Confirm Password <span class="req">*</span></label>
+                        <div class="password-field">
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Retype your password" />
+                            <span class="confirm_password-toggle" id="confirm_password-toggle-eye"><i class="fa-regular fa-eye-slash"></i></span>
+                        </div>
+                        <p id="password_match"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error banner -->
+            <div id="error-message-div" class="error-message-div">
+                <p><span id="message-text" class="message-text"></span></p>
+            </div>
+
+            <!-- reCAPTCHA -->
+            <div class="recaptcha-wrap">
+                <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="signup-submit-btn" data-signup-type={{ signup_type }}>
+                <span>Create Agency Account →</span>
+            </button>
+        </form>
+
+        <!-- Sign-in nudge -->
+        <p class="signin-nudge">
+            Already have an account?
+            <a href="{% url 'login_user' %}">Sign In</a>
+        </p>
+
     </div>
+</div>
 {% endblock content %}
 
 {% block js %}
@@ -172,9 +475,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    
-    $('#district-name').select2();
-    $('#thana-name').select2();
+    $('#district-name').select2({ placeholder: 'Select District', allowClear: true });
+    $('#thana-name').select2({ placeholder: 'Select Thana', allowClear: true });
 
     $('.datepicker').datepicker({
         format: 'yyyy-mm-dd',
@@ -182,7 +484,6 @@
         toggleActive: true,
         autoclose: true
     });
-    
 </script>
 
 <script>
@@ -201,17 +502,14 @@
             var value = $('#' + item.field).val();
             if (!value) {
                 $('#' + item.field).addClass('error-border');
-                // Set the error message text
                 $('#' + item.field + '_error').text(item.message);
                 isValid = false;
             } else {
                 $('#' + item.field).removeClass('error-border');
-                // Clear the error message
                 $('#' + item.field + '_error').text('');
             }
         });
         if (!isValid) {
-            // Use a more user-friendly method than alert, e.g., displaying messages on the page
             alert('Please fill in all required fields.');
         }
     }
@@ -219,18 +517,17 @@
 
 <script>
     $(document).ready(function(){
+        // ── Password toggle ──
         $('.password-toggle').click(function () {
             var passwordInput = $(this).siblings('input');
             if (passwordInput.attr('type') === 'password') {
                 passwordInput.attr('type', 'text');
                 $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye eye-color');
-
             } else {
                 passwordInput.attr('type', 'password');
                 $(this).find('i').addClass('fa-eye-slash').removeClass('fa-eye eye-color');
             }
         });
-
         $('.confirm_password-toggle').click(function () {
             var passwordInput = $(this).siblings('input');
             if (passwordInput.attr('type') === 'password') {
@@ -242,91 +539,66 @@
             }
         });
 
-
-        // Function to validate email format
+        // ── Email validation ──
         function validateEmail(email) {
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         }
-        // Function to handle email validation starts
         function handleEmailValidation() {
-            var emailInput = $('#email');
-            var email = emailInput.val();
-            var emailError = $('#email-error');
+            var emailInput = $('#email'), email = emailInput.val(), emailError = $('#email-error');
             if (validateEmail(email)) {
-                // Valid email format
-                emailError.text('');
-                emailInput.removeClass('error-border');
+                emailError.text(''); emailInput.removeClass('error-border');
             } else {
-                // Invalid email format
-                emailError.text('Please enter a valid email address');
-                emailInput.addClass('error-border');
+                emailError.text('Please enter a valid email address'); emailInput.addClass('error-border');
             }
         }
-        // Attach input event to the email input field
         $('#email').on('input', handleEmailValidation);
-        // Function to handle email validation ends
-        // Phone validation starts
+
+        // ── Phone validation ──
         $("#phone").on("input", function() {
             var phone = $(this).val();
-            var numericPhone = phone.replace(/\D/g, ""); // Remove non-digit characters
-            $(this).val(numericPhone); // Update the input value with the numeric version
-            // Check if the phone number length is not 11
+            var numericPhone = phone.replace(/\D/g, "");
+            $(this).val(numericPhone);
             if (numericPhone.length !== 11) {
                 $(".phone_error").remove();
-                $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone Number must be 11 digits</span></div>").insertAfter("#phone");
+                $("<span class='phone_error'>Phone number must be 11 digits</span>").insertAfter("#phone");
                 $("#phone").addClass("error-border");
                 return;
             }
-            // Check if the phone number starts with the allowed prefixes
             var allowedPrefixes = ["019", "018", "017", "016", "013", "014"];
-            var isValidPrefix = false;
-            for (var i = 0; i < allowedPrefixes.length; i++) {
-                if (numericPhone.startsWith(allowedPrefixes[i])) {
-                    isValidPrefix = true;
-                    break;
-                }
-            }
+            var isValidPrefix = allowedPrefixes.some(p => numericPhone.startsWith(p));
             if (!isValidPrefix) {
                 $(".phone_error").remove();
-                $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Invalid Format</div></span>").insertAfter("#phone");
+                $("<span class='phone_error'>Invalid operator prefix</span>").insertAfter("#phone");
                 $("#phone").addClass("error-border");
                 return;
             }
-            // If the input is valid, remove any error messages and styling
             $(".phone_error").remove();
             $("#phone").removeClass("error-border");
-            // Get CSRF token
             var csrftoken = getCookie('csrftoken');
-            // Send AJAX request to check if the phone number exists
             $.ajax({
                 type: "POST",
                 url: "/check_phone_exist_user/",
-                data: {
-                    phone: numericPhone
-                },
-                headers: { "X-CSRFToken": csrftoken },  // Include CSRF token in headers
+                data: { phone: numericPhone },
+                headers: { "X-CSRFToken": csrftoken },
                 dataType: "json",
                 success: function(response) {
                     if (response.exists) {
-                        // Phone number already exists
                         $(".phone_error").remove();
-                        $("<div class='d-flex justify-content-start'><span class='phone_error' style='color: red;'>Phone number already exists</div></span>").insertAfter("#phone");
+                        $("<span class='phone_error'>Phone number already registered</span>").insertAfter("#phone");
                         $("#phone").addClass("error-border");
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                }
+                error: function(xhr, status, error) { console.error("Error:", error); }
             });
         });
+
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie !== '') {
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
                     var cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -335,164 +607,90 @@
             }
             return cookieValue;
         }
-        // Phone validation ends
-        // URL validation starts
+
+        // ── URL validation ──
         function validateURL(url) {
-            //var urlRegex = /^(ftp|http|https):\/\/(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\.[a-zA-Z]{2,})?$/;
             var urlRegex = /^(ftp|http|https)?(:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\.[a-zA-Z]{2,})?$/;
             return urlRegex.test(url);
         }
-        // Function to handle URL validation
         function handleURLValidation() {
-            var urlInput = $('#website');
-            var url = urlInput.val();
-            var urlError = $('#url-error');
+            var urlInput = $('#website'), url = urlInput.val(), urlError = $('#url-error');
             if (validateURL(url)) {
-                // Valid URL format
-                urlError.text('');
-                urlInput.removeClass('error-border');
+                urlError.text(''); urlInput.removeClass('error-border');
             } else {
-                // Invalid URL format
-                urlError.text('Please enter a valid URL');
-                urlInput.addClass('error-border');
+                urlError.text('Please enter a valid URL'); urlInput.addClass('error-border');
             }
         }
         $('#website').on('input', handleURLValidation);
-        // URL validation ends
-        // Get Thana name when District is selected
+
+        // ── District → Thana ──
         $('#district-name').on('change', function(){
             var selectedDistrictName = $(this).val();
-            // var selectedDivisionName = $(this).find('option:selected').text()  // it will send the division name
-            fetch('/get_thana/?district_id=' + selectedDistrictName, {
-                method: 'GET',
-            })
+            fetch('/get_thana/?district_id=' + selectedDistrictName, { method: 'GET' })
             .then(response => {
-                if (response.ok) {
-                    return response.json();  // Parse the JSON data if the response is successful
-                }
+                if (response.ok) return response.json();
                 throw new Error('Response not OK');
             })
             .then(data => {
                 var thanaDropdown = $('#thana-name');
-                // Clear existing options from upazila dropdown
-                thanaDropdown.empty(); // Clear the dropdown before adding new options
-                // Add new options for upazilas
-                data.thanas.forEach(thana => {
-                    //const option = document.createElement('option');
-                    //option.value = district.district_id;
-                    //option.textContent = district.district_name;
-                    const option = new Option(thana.name, thana.id);
-                    thanaDropdown.append(option);
-                });
-                var thanaDropdownValue = thanaDropdown.val();
-                // fetch thanas
-                /*var selectedUpazilaID = $('#thana-name').val()
-                fetchLocations('/thanas/?district_id=' + thanaDropdownValue, '#thana-name', 'thana_id', 'thana_name', 'thana')*/
+                thanaDropdown.empty();
+                thanaDropdown.append(new Option('Select Thana', '', true, false));
+                data.thanas.forEach(thana => { thanaDropdown.append(new Option(thana.name, thana.id)); });
+                thanaDropdown.trigger('change.select2');
             })
-            .catch(error => {
-            console.error('Error fetching districts:', error);
-            });
+            .catch(error => console.error('Error fetching thanas:', error));
         });
+
+        // ── Form submit ──
         $('#signup-form').on('submit', function(event){
             event.preventDefault();
             var formData = new FormData(this);
-            var signupType = $(this).find('.signup-btn').data('signup-type');
-            formData.append('signup_type', signupType)
+            var signupType = $(this).find('.signup-submit-btn').data('signup-type');
+            formData.append('signup_type', signupType);
             fetch('/redirect_to_otp/', {
                 method: 'POST',
-                //body: JSON.stringify(data),
                 body: formData,
-                headers: {
-                    'x-CSRFToken': '{{csrf_token}}',
-                    //'Content-Type': 'application/json'
-                },
+                headers: { 'x-CSRFToken': '{{csrf_token}}' },
             })
             .then(response => response.json())
             .then(data => {
-                // Handle the response data, e.g., show a success message
                 if (data.success) {
-                    // Redirect to the URL provided in the response
                     window.location.href = data.redirect_url;
-                }
-                else if (data.errors) {
+                } else if (data.errors) {
                     $('#message-text').text(data.errors);
                     $('#error-message-div').addClass('error-message-show');
-                    
-                    // Reload reCAPTCHA using the official grecaptcha API (assuming v2):
-                    if (typeof grecaptcha !== 'undefined') { // Check for existence
-                        grecaptcha.reset();
-                    } else {
-                        console.warn('reCAPTCHA API not loaded. Consider adding it asynchronously or conditionally.');
-                    }
+                    if (typeof grecaptcha !== 'undefined') { grecaptcha.reset(); }
+                    else { console.warn('reCAPTCHA API not loaded.'); }
                 }
             })
-            .catch(error => {
-                // Handle errors, e.g., show an error message
-                console.error('Error:', error);
-            });
-        })
+            .catch(error => console.error('Error:', error));
+        });
     });
 </script>
 
-    <script>
+<script>
     function validateFullName(inputElement) {
-        // Remove consecutive spaces with a single space
         inputElement.value = inputElement.value.replace(/\s{2,}/g, ' ');
-    
-        // Prevent entering numbers in real-time
         inputElement.value = inputElement.value.replace(/[0-9]/g, '');
-    
-        // If there is no word entered, do not allow spaces
         if (!/\S/.test(inputElement.value)) {
             inputElement.value = inputElement.value.replace(/\s/g, '');
         }
     }
-    </script>
-    
-        <script>
-    function validateFullName(inputElement) {
-        // Remove consecutive spaces with a single space
-        inputElement.value = inputElement.value.replace(/\s{2,}/g, ' ');
-    
-        // Prevent entering numbers in real-time
-        inputElement.value = inputElement.value.replace(/[0-9]/g, '');
-    
-        // If there is no word entered, do not allow spaces
-        if (!/\S/.test(inputElement.value)) {
-            inputElement.value = inputElement.value.replace(/\s/g, '');
-        }
-    }
-    </script>
-            <script>
-$(document).ready(function() {
-    $('#confirm_password').on('keyup', function () {
-        var password = $('#password').val();
-        var confirmPassword = $(this).val();
-        var passwordMatchMsg = $('#password_match');
+</script>
 
-        if (password === confirmPassword) {
-            passwordMatchMsg.text('Passwords match').css('color', 'green');
-        } else {
-            passwordMatchMsg.text('Passwords do not match').css('color', 'red');
-        }
+<script>
+    $(document).ready(function() {
+        $('#confirm_password').on('keyup', function () {
+            var password = $('#password').val(), confirmPassword = $(this).val(), msg = $('#password_match');
+            if (password === confirmPassword) { msg.text('Passwords match').css('color', '#10B981'); }
+            else { msg.text('Passwords do not match').css('color', '#EF4444'); }
+        });
+        $('#password').on('keyup', function () {
+            var password = $(this).val(), confirmPassword = $('#confirm_password').val(), msg = $('#password_match');
+            if (password === confirmPassword && password !== '') { msg.text('Passwords match').css('color', '#10B981'); }
+            else if (password !== '' && confirmPassword !== '') { msg.text('Passwords do not match').css('color', '#EF4444'); }
+            else { msg.text(''); }
+        });
     });
-
-    $('#password').on('keyup', function () {
-        var password = $(this).val();
-        var confirmPassword = $('#confirm_password').val();
-        var passwordMatchMsg = $('#password_match');
-
-        if (password === confirmPassword && password !== '') {
-            passwordMatchMsg.text('Passwords match').css('color', 'green');
-        } else if (password !== '' && confirmPassword !== '') {
-            passwordMatchMsg.text('Passwords do not match').css('color', 'red');
-        } else {
-            passwordMatchMsg.text('');
-        }
-    });
-});
-    </script>
-    
-    
-    
+</script>
 {% endblock js %}

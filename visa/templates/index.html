@@ -509,38 +509,48 @@
         </div>
 
         <div class="row clearfix">
-            {% for consultant, details in top_consultants %}
-            <div class="col-lg-3 col-md-6 col-sm-12 team-block">
-                <div class="team-block-one wow fadeInUp animated animated" data-wow-delay="00ms"
-                    data-wow-duration="1500ms">
-                    <div class="inner-box">
-                        <figure class="image-box" style="height: 170px !important;">
-                            {% if consultant.consultant_img %}
-                            <img src="{{ consultant.consultant_img.url }}" alt="{{ consultant.full_name }}">
-                            {% else %}
-                            <!-- Provide a default image or placeholder if no image is available -->
-                            <img src="{% static 'path/to/default/image.jpg' %}" alt="{{ consultant.full_name }}">
-                            {% endif %}
-                            <ul class="social-links clearfix">
-                                <!-- Access social links from the ConsultantDetails model -->
-                                <li><a href="{{ details.consultant_twitter }}" target="_blank"><i
-                                            class="fab fa-twitter"></i></a></li>
-                                <li><a href="{{ details.consultant_facebook }}" target="_blank"><i
-                                            class="fab fa-facebook"></i></a></li>
-                            </ul>
-                        </figure>
-                        <div class="lower-content">
-                            <h4><a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}">{{
-                                    consultant.full_name }}</a></h4>
-                            <span class="designation">{{ consultant.company_name }}</span>
-                        </div>
-                    </div>
+    {% for consultant, details in top_consultants %}
+    <div class="col-lg-3 col-md-6 col-sm-12 team-block">
+        <div class="team-block-one wow fadeInUp animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+            <div class="inner-box">
+
+                <figure class="image-box" style="height:170px !important;">
+
+                    {% if consultant.consultant_img %}
+                    <img src="{{ consultant.consultant_img.url }}" alt="{{ consultant.full_name }}">
+                    {% else %}
+                    <img src="{% static 'images/default-consultant.jpg' %}" alt="{{ consultant.full_name }}">
+                    {% endif %}
+
+                    <ul class="social-links clearfix">
+                        <li>
+                            <a href="{{ details.consultant_twitter }}" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ details.consultant_facebook }}" target="_blank">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                </figure>
+
+                <div class="lower-content">
+                    <h4>
+                        <a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}">
+                            {{ consultant.full_name }}
+                        </a>
+                    </h4>
+                    <span class="designation">{{ consultant.company_name }}</span>
                 </div>
+
             </div>
-            {% endfor %}
         </div>
     </div>
-</section>
+    {% endfor %}
+</div>
 
 {% comment %} <section class="testimonial-style-two bg-color-3">
     <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-6.png'%});"></div>
