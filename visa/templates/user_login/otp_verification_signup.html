@@ -2,202 +2,520 @@
 {% load static %}
 
 {% block custom_css %}
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+    :root {
+        --brand:          #2563EB;
+        --brand-light:    #EFF6FF;
+        --brand-dark:     #1D4ED8;
+        --accent:         #10B981;
+        --card:           #FFFFFF;
+        --text-primary:   #0F172A;
+        --text-secondary: #334155;
+        --text-label:     #475569;
+        --text-muted:     #64748B;
+        --placeholder:    #94A3B8;
+        --border:         #CBD5E1;
+        --border-light:   #E2E8F0;
+        --input-bg:       #F1F5F9;
+        --font: 'Plus Jakarta Sans', sans-serif;
+        --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 
-    body { background-color: #E9EEF7 !important; font-family: 'Inter', sans-serif; }
+        /* Layered card shadow — strong contrast on dark bg */
+        --shadow-card:
+            0 0 0 1px rgba(203,213,225,0.55),
+            0 4px 8px  rgba(15,23,42,0.06),
+            0 14px 30px rgba(15,23,42,0.11),
+            0 36px 60px rgba(15,23,42,0.11);
 
-    .otp-wrapper {
+        --shadow-btn:
+            0 1px 2px  rgba(37,99,235,0.28),
+            0 4px 12px rgba(37,99,235,0.32),
+            0 8px 24px rgba(37,99,235,0.16);
+
+        --radius-card:  22px;
+        --radius-input: 11px;
+    }
+
+    body { font-family: var(--font); }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PAGE WRAPPER — dark soft overlay
+       ~62% so image is clearly visible
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-page-wrapper {
+        min-height: calc(100vh - 72px);
         display: flex;
-        justify-content: center;
         align-items: center;
-        min-height: 85vh;
-        padding: 20px;
+        padding: 56px 0 64px;
+        background:
+            linear-gradient(
+                160deg,
+                rgba(15, 23, 42, 0.62) 0%,
+                rgba(15, 28, 58, 0.58) 50%,
+                rgba(10, 20, 40, 0.65) 100%
+            ),
+            url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1800&auto=format&fit=crop&q=80')
+            center / cover no-repeat fixed;
     }
 
-    .wrapper {
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       AD COLUMNS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-ad-col {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 4px;
+    }
+    @media (max-width: 992px) { .otp-ad-col { display: none !important; } }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CARD — strong contrast on dark bg
+       subtle 1px border + layered shadow
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-card {
         width: 100%;
-        max-width: 500px;
-        padding: 45px 35px 55px;
-        background: #0F172A; /* Premium Dark Navy */
-        border-radius: 28px;
-        box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255,255,255,0.1);
+        max-width: 448px;
+        margin: 0 auto;
+        padding: 44px 40px 48px;
+        background: var(--card);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        border: 1px solid rgba(203,213,225,0.55);
         text-align: center;
+        position: relative;
+        overflow: hidden;
     }
 
-    .wrapper header {
-        font-size: 26px;
+    /* 3px gradient top bar: blue → sky → green */
+    .otp-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #2563EB 0%, #38BDF8 50%, #10B981 100%);
+        border-radius: var(--radius-card) var(--radius-card) 0 0;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ICON MARK — hero focal point
+       Polished square with layered shadow
+       icon → title: 20px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-icon-mark {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(145deg, #3B82F6 0%, #2563EB 55%, #1D4ED8 100%);
+        border-radius: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: #fff;
+        font-size: 23px;
+        /* ring + depth shadow */
+        box-shadow:
+            0 0 0 5px rgba(37,99,235,0.10),
+            0 4px 10px rgba(37,99,235,0.20),
+            0 10px 24px rgba(37,99,235,0.25);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       TITLE + SUBTITLE
+       title → subtitle: 6px
+       subtitle → OTP input: 28px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-card h1 {
+        font-size: 24px;
         font-weight: 800;
-        color: #F8FAFC;
-        margin-bottom: 12px;
-        font-family: 'Sora', sans-serif;
+        color: var(--text-primary);
+        letter-spacing: -0.4px;
+        margin-bottom: 6px;
+        line-height: 1.25;
+        font-family: var(--font);
     }
 
-    .subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
-    .subtitle strong { color: #10B981; font-weight: 700; }
-
-    /* ── 🎯 OTP Input (Premium Spacing) ── */
-    .otp-input-field {
-        height: 90px;
-        width: 100%;
-        background: #1E293B;
-        border: 2px solid transparent;
-        border-radius: 20px;
-        color: #F8FAFC;
-        font-size: 42px;
-        font-weight: 800;
-        text-align: center;
-        letter-spacing: 20px;
-        outline: none;
-        transition: all 0.3s ease;
-        padding-left: 20px; /* Balance for letter-spacing */
+    .otp-subtitle {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.65;
+        margin-bottom: 28px;
+        font-weight: 400;
+    }
+    .otp-subtitle strong {
+        color: var(--brand);
+        font-weight: 700;
     }
 
-    .otp-input-field:focus {
-        border-color: #10B981;
-        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.15);
-    }
-
-    /* ── no change Change Number Panel (Fixed Alignment) ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CHANGE NUMBER PANEL
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #number-change-panel {
         display: none;
-        background: rgba(255,255,255,0.03);
-        padding: 20px;
-        border-radius: 18px;
-        margin-bottom: 25px;
-        border: 1px dashed rgba(255,255,255,0.15);
+        background: var(--brand-light);
+        border: 1.5px dashed rgba(37,99,235,0.25);
+        padding: 18px 20px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        text-align: left;
     }
-    
-    .mini-input {
-        background: #1E293B;
-        border: 1px solid #334155;
-        color: #fff;
-        border-radius: 10px;
-        padding: 12px 15px;
-        width: 100%;
-        margin-bottom: 15px;
-        font-size: 16px;
+
+    #number-change-panel p {
+        font-size: 11px;
         font-weight: 600;
+        color: var(--text-label);
+        margin-bottom: 10px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .mini-input {
+        background: #fff;
+        border: 1.5px solid var(--border-light);
+        color: var(--text-primary);
+        border-radius: var(--radius-input);
+        padding: 11px 14px;
+        width: 100%;
+        margin-bottom: 14px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: var(--font);
+        outline: none;
+        transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .mini-input:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
     }
 
     .panel-btn-group {
         display: flex;
         justify-content: flex-end;
-        gap: 20px; /* Cancel এবং Update বাটনের মাঝে গ্যাপ */
+        gap: 16px;
     }
 
-    /* ── 🎯 Actions & Buttons ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ALERT BOX
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    #alert-box {
+        display: none;
+        padding: 12px 15px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        font-size: 13px;
+        font-weight: 600;
+        background: #FEF2F2;
+        border: 1.5px solid #FECACA;
+        color: #DC2626;
+        text-align: left;
+        font-family: var(--font);
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       OTP INPUT FIELD
+       90px tall, 42px bold, strong focus
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .otp-input-wrapper {
+        position: relative;
+        margin-bottom: 8px;
+    }
+
+    .otp-input-field {
+        height: 90px;
+        width: 100%;
+        background: var(--input-bg);
+        border: 1.5px solid var(--border-light);
+        border-radius: 14px;
+        color: var(--text-primary);
+        font-size: 42px;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: 20px;
+        padding-left: 20px;
+        outline: none;
+        font-family: var(--font);
+        caret-color: var(--brand);
+        transition:
+            border-color var(--transition),
+            box-shadow   var(--transition),
+            background   var(--transition);
+    }
+
+    .otp-input-field::placeholder {
+        color: var(--border);
+        letter-spacing: 16px;
+        font-size: 36px;
+        font-weight: 400;
+    }
+
+    /* Strong focus state — matches login page */
+    .otp-input-field:focus {
+        border-color: var(--brand);
+        background: #fff;
+        box-shadow:
+            0 0 0 4px rgba(37,99,235,0.14),
+            0 1px 4px rgba(37,99,235,0.08);
+    }
+
+    .otp-hint {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        font-weight: 400;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ACTIONS ROW — timer + links
+       OTP input → actions row: 22px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .actions-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 30px;
+        margin-top: 22px;
+        margin-bottom: 4px;
     }
 
+    /* Timer */
     .countdown-timer {
         display: flex;
         align-items: center;
-        gap: 10px;
-        color: #94A3B8;
+        gap: 8px;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13.5px;
+        color: var(--text-secondary);
     }
-
-    #timer-circle { width: 24px; height: 24px; transform: rotate(-90deg); }
+    #timer-circle {
+        width: 26px;
+        height: 26px;
+        transform: rotate(-90deg);
+        flex-shrink: 0;
+    }
     #timer-circle circle { fill: none; stroke-width: 3; }
-    #timer-circle .bg { stroke: #334155; }
+    #timer-circle .bg { stroke: var(--border-light); }
     #timer-circle .progress {
-        stroke: #10B981;
+        stroke: var(--brand);
         stroke-dasharray: 63;
         stroke-dashoffset: 0;
         transition: stroke-dashoffset 1s linear;
     }
 
+    /* Action buttons (Change Number / Resend) */
     .action-btn {
-        color: #10B981;
-        font-weight: 700;
-        font-size: 14px;
+        color: var(--brand);
+        font-weight: 600;
+        font-size: 12.5px;
         cursor: pointer;
         background: none;
         border: none;
         text-decoration: none;
-        transition: 0.3s;
+        font-family: var(--font);
+        transition: color var(--transition);
+        padding: 0;
     }
-    
-    .action-btn:hover { opacity: 0.8; text-decoration: underline; }
-    .action-btn:disabled { color: #4B5563; cursor: not-allowed; opacity: 0.5; text-decoration: none; }
+    .action-btn:hover { color: var(--brand-dark); text-decoration: underline; }
+    .action-btn:disabled {
+        color: var(--placeholder);
+        cursor: not-allowed;
+        text-decoration: none;
+    }
+    .action-btn.muted-btn { color: var(--text-muted); }
+    .action-btn.muted-btn:hover { color: var(--text-secondary); text-decoration: none; }
 
-    /* Change Number এবং Resend OTP এর মাঝে গ্যাপ */
-    .btn-gap { margin-right: 15px !important; }
-
-    /* Premium Alert Box */
-    .premium-alert {
-        display: none;
-        padding: 15px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        border-left: 4px solid #ef4444;
-        background: rgba(239, 68, 68, 0.1);
-        color: #fca5a5;
+    .btn-divider {
+        color: var(--border);
+        margin: 0 8px;
+        font-size: 13px;
+        user-select: none;
     }
 
-    /* ── Verify Button ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       VERIFY BUTTON
+       54px, pill, glossy gradient
+       actions row → button: 24px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .verify-btn {
-        height: 62px; width: 100%; margin-top: 35px;
-        color: #ffffff; font-weight: 800; font-size: 18px;
+        height: 54px;
+        width: 100%;
+        margin-top: 24px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.025em;
+        font-family: var(--font);
         border: none;
-        background: linear-gradient(135deg, #10B981, #059669);
-        cursor: pointer; border-radius: 16px;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        /* glossy: lighter top → brand mid → deep bottom */
+        background: linear-gradient(160deg, #3B82F6 0%, #2563EB 45%, #1D4ED8 100%);
+        cursor: pointer;
+        border-radius: 50px;
+        position: relative;
+        overflow: hidden;
+        transition:
+            transform    var(--transition),
+            box-shadow   var(--transition),
+            background   var(--transition);
+        box-shadow: var(--shadow-btn);
     }
-    .verify-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4); }
+
+    /* Hover: lift 2px + darker gradient */
+    .verify-btn:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(160deg, #2563EB 0%, #1D4ED8 45%, #1E40AF 100%);
+        box-shadow:
+            0 2px 4px  rgba(37,99,235,0.22),
+            0 8px 20px rgba(37,99,235,0.44),
+            0 18px 38px rgba(37,99,235,0.20);
+    }
+    .verify-btn:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-btn);
+    }
+    .verify-btn span { position: relative; z-index: 1; }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECURITY NOTE
+       button → badge: 20px breathing room
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .security-note {
+        margin-top: 20px;
+        font-size: 11.5px;
+        color: #64748B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+    .security-note i {
+        color: var(--accent);
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       RESPONSIVE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media (max-width: 576px) {
+        .otp-page-wrapper { padding: 40px 0 48px; align-items: flex-start; }
+        .otp-card { padding: 36px 24px 42px; }
+        .otp-input-field { height: 76px; font-size: 34px; letter-spacing: 14px; }
+        .otp-card h1 { font-size: 21px; }
+    }
 </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="otp-wrapper">
-    <div class="wrapper">
-        <header>Account Verification</header>
-        <p class="subtitle">Enter the 6-digit code we sent to:<br><strong id="display-phone">+880-{{ phone }}</strong></p>
+<div class="otp-page-wrapper">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
 
-        <!-- Change Number Panel (Fixed Gap) -->
-        <div id="number-change-panel">
-            <p class="text-left mb-2" style="color: #94A3B8; font-size: 13px; font-weight: 600;">Update Phone Number:</p>
-            <input type="text" id="new-phone-input" class="mini-input" value="{{ phone }}" maxlength="11">
-            <div class="panel-btn-group">
-                <button type="button" class="action-btn" style="color:#94A3B8" onclick="$('#number-change-panel').slideUp()">Cancel</button>
-                <button type="button" id="confirm-change-btn" class="action-btn">Update & Resend</button>
-            </div>
-        </div>
-
-        <div id="alert-box" class="premium-alert"></div>
-
-        <form id="otp-form" method="POST">
-            {% csrf_token %}
-            <div class="field">
-                <input type="text" id="otp-input" name="otp" class="otp-input-field" placeholder="------" maxlength="6" inputmode="numeric" required autocomplete="off">
-            </div>
-
-            <div class="actions-row">
-                <div class="countdown-timer">
-                    <svg id="timer-circle">
-                        <circle class="bg" cx="12" cy="12" r="10"></circle>
-                        <circle class="progress" cx="12" cy="12" r="10"></circle>
-                    </svg>
-                    <span id="countdown-text">05:00</span>
-                </div>
+            <!-- Left Ad -->
+            <div class="col-lg-3 otp-ad-col">
                 <div>
-                    <button type="button" class="action-btn btn-gap" id="show-change-num">Change Number</button>
-                    <button type="button" id="resend-otp-btn" class="action-btn" disabled>Resend OTP</button>
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:200px;height:750px"
+                         data-ad-client="ca-pub-5227250042742723"
+                         data-ad-slot="9902546305">
+                    </ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                 </div>
             </div>
 
-            <button type="submit" class="verify-btn">Verify & Complete Signup</button>
-        </form>
+            <!-- OTP Card -->
+            <div class="col-12 col-lg-6">
+                <div class="otp-card">
+
+                    <!-- Icon mark -->
+                    <div class="otp-icon-mark">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+
+                    <h1>Account Verification</h1>
+                    <p class="otp-subtitle">
+                        Enter the 6-digit code we sent to:<br>
+                        <strong id="display-phone">+880-{{ phone }}</strong>
+                    </p>
+
+                    <!-- Change Number Panel -->
+                    <div id="number-change-panel">
+                        <p>Update Phone Number</p>
+                        <input type="text" id="new-phone-input" class="mini-input" value="{{ phone }}" maxlength="11" placeholder="01XXXXXXXXX">
+                        <div class="panel-btn-group">
+                            <button type="button" class="action-btn muted-btn" onclick="$('#number-change-panel').slideUp()">Cancel</button>
+                            <button type="button" id="confirm-change-btn" class="action-btn">Update &amp; Resend</button>
+                        </div>
+                    </div>
+
+                    <!-- Alert -->
+                    <div id="alert-box"></div>
+
+                    <form id="otp-form" method="POST">
+                        {% csrf_token %}
+
+                        <!-- OTP Input -->
+                        <div class="otp-input-wrapper">
+                            <input
+                                type="text"
+                                id="otp-input"
+                                name="otp"
+                                class="otp-input-field"
+                                placeholder="— — — — — —"
+                                maxlength="6"
+                                inputmode="numeric"
+                                required
+                                autocomplete="off"
+                            >
+                        </div>
+                        <p class="otp-hint">Enter the 6-digit code without spaces</p>
+
+                        <!-- Actions Row -->
+                        <div class="actions-row">
+                            <div class="countdown-timer">
+                                <svg id="timer-circle" viewBox="0 0 24 24">
+                                    <circle class="bg" cx="12" cy="12" r="10"></circle>
+                                    <circle class="progress" cx="12" cy="12" r="10"></circle>
+                                </svg>
+                                <span id="countdown-text">05:00</span>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <button type="button" class="action-btn" id="show-change-num">Change Number</button>
+                                <span class="btn-divider">|</span>
+                                <button type="button" id="resend-otp-btn" class="action-btn" disabled>Resend OTP</button>
+                            </div>
+                        </div>
+
+                        <!-- Verify Button -->
+                        <button type="submit" class="verify-btn">
+                            <span>Verify &amp; Complete Signup →</span>
+                        </button>
+                    </form>
+
+                    <!-- Security note -->
+                    <p class="security-note">
+                        <i class="fas fa-lock"></i>
+                        Your data is encrypted and secure
+                    </p>
+
+                </div>
+            </div>
+
+            <!-- Right Ad -->
+            <div class="col-lg-3 otp-ad-col">
+                <div>
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:200px;height:750px"
+                         data-ad-client="ca-pub-5227250042742723"
+                         data-ad-slot="9902546305">
+                    </ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 {% endblock content %}
@@ -209,7 +527,7 @@ $(document).ready(function() {
     const $timerText = $('#countdown-text');
     const $resendBtn = $('#resend-otp-btn');
     const progressCircle = document.querySelector('#timer-circle .progress');
-    const circumference = 63; 
+    const circumference = 63;
 
     function updateTimer() {
         const now = Math.floor(Date.now() / 1000);
@@ -225,7 +543,7 @@ $(document).ready(function() {
         const mins = Math.floor(timeLeft / 60);
         const secs = timeLeft % 60;
         $timerText.text(`${mins}:${secs < 10 ? '0' + secs : secs}`);
-        
+
         const offset = circumference - (timeLeft / 300) * circumference;
         progressCircle.style.strokeDashoffset = offset;
 

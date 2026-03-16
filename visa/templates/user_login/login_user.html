@@ -5,200 +5,267 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     :root {
-        --bg: #F0F4F8;
-        --card: #FFFFFF;
-        --brand: #2563EB;
-        --brand-light: #EFF6FF;
-        --brand-dark: #1D4ED8;
-        --accent: #10B981;
-        --text-primary: #0F172A;
-        --text-secondary: #475569;
-        --text-muted: #94A3B8;
-        --border: #E2E8F0;
-        --input-bg: #F8FAFC;
-        --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.04), 0 20px 50px -10px rgba(0,0,0,0.07);
-        --shadow-btn: 0 4px 14px rgba(37,99,235,0.35);
-        --radius-card: 20px;
-        --radius-input: 10px;
+        --brand:          #2563EB;
+        --brand-light:    #EFF6FF;
+        --brand-dark:     #1D4ED8;
+        --accent:         #10B981;
+        --card:           #FFFFFF;
+        --text-primary:   #0F172A;
+        --text-secondary: #334155;
+        --text-label:     #475569;
+        --text-muted:     #64748B;
+        --placeholder:    #94A3B8;
+        --border:         #CBD5E1;
+        --border-light:   #E2E8F0;
+        --input-bg:       #F1F5F9;
         --font: 'Plus Jakarta Sans', sans-serif;
-        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+        /* Layered card shadow — strong contrast on dark bg */
+        --shadow-card:
+            0 0 0 1px rgba(203,213,225,0.55),
+            0 4px 8px  rgba(15,23,42,0.06),
+            0 14px 30px rgba(15,23,42,0.11),
+            0 36px 60px rgba(15,23,42,0.11);
+
+        --shadow-btn:
+            0 1px 2px  rgba(37,99,235,0.28),
+            0 4px 12px rgba(37,99,235,0.32),
+            0 8px 24px rgba(37,99,235,0.16);
+
+        --radius-card:  22px;
+        --radius-input: 11px;
     }
 
-    body { font-family: var(--font); background-color: var(--bg); }
+    body { font-family: var(--font); }
 
-    /* ── Page wrapper ── */
-    /* Base handles the outer layout with .content-div + sidebar ad.
-       We just need the content-div area to center the card. */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PAGE WRAPPER
+       Dark-soft overlay: ~62% so image
+       is clearly visible (not washed out)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .login-page-wrapper {
-        min-height: calc(100vh - 120px);
+        min-height: calc(100vh - 72px);
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 40px 16px;
+        /* Top padding tuned so card feels grounded, not floating */
+        padding: 56px 0 64px;
         background:
-            radial-gradient(ellipse 90% 60% at 0% 0%, rgba(37,99,235,0.05) 0%, transparent 60%),
-            radial-gradient(ellipse 70% 50% at 100% 100%, rgba(16,185,129,0.05) 0%, transparent 60%),
-            transparent;
+            linear-gradient(
+                160deg,
+                rgba(15, 23, 42, 0.62) 0%,
+                rgba(15, 28, 58, 0.58) 50%,
+                rgba(10, 20, 40, 0.65) 100%
+            ),
+            url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&auto=format&fit=crop&q=80')
+            center / cover no-repeat fixed;
     }
 
-    /* ── Card ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       AD COLUMNS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .login-ad-col {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 4px;
+    }
+    @media (max-width: 992px) { .login-ad-col { display: none !important; } }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CARD CONTAINER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .form-div-container {
-        background-color: transparent;
-        position: relative;
-        margin: 0 auto;
-        max-width: 480px;
         width: 100%;
+        max-width: 448px;
+        margin: 0 auto;
     }
 
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CARD
+       Strong contrast against dark bg:
+       subtle 1px border + layered shadow
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .wrapper {
         width: 100%;
-        padding: 45px 40px 52px;
+        /* Mathematically balanced:
+           top 44px | sides 40px | bottom 48px */
+        padding: 44px 40px 48px;
         background: var(--card);
         border-radius: var(--radius-card);
         box-shadow: var(--shadow-card);
-        border: 1px solid rgba(226,232,240,0.8);
+        border: 1px solid rgba(203,213,225,0.55);
         position: relative;
         overflow: hidden;
     }
 
-    /* Top gradient bar */
+    /* 3px gradient top bar: blue → sky → green */
     .wrapper::before {
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--brand), var(--accent));
+        height: 3px;
+        background: linear-gradient(90deg, #2563EB 0%, #38BDF8 50%, #10B981 100%);
         border-radius: var(--radius-card) var(--radius-card) 0 0;
     }
 
-    /* ── Header ── */
-    .wrapper header {
-        font-size: 26px;
-        font-weight: 800;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-        text-align: center;
-        font-family: var(--font);
-        letter-spacing: -0.5px;
-        line-height: 1.2;
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ICON MARK — hero focal point
+       Polished square with layered shadow
+       icon → title: 20px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .login-logo-mark {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(145deg, #3B82F6 0%, #2563EB 55%, #1D4ED8 100%);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        /* ring + depth shadow */
+        box-shadow:
+            0 0 0 5px rgba(37,99,235,0.10),
+            0 4px 10px rgba(37,99,235,0.20),
+            0 10px 24px rgba(37,99,235,0.25);
+        font-size: 23px;
+        color: #fff;
     }
 
-    .wrapper .header-sub {
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       TITLE + SUBTITLE
+       title → subtitle: 6px
+       subtitle → first input: 28px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .wrapper header {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+        text-align: center;
+        font-family: var(--font);
+        letter-spacing: -0.4px;
+        line-height: 1.25;
+        display: block;
+    }
+
+    .header-sub {
         text-align: center;
         font-size: 14px;
         color: var(--text-muted);
         font-weight: 400;
-        margin-bottom: 36px;
+        margin-bottom: 28px;
+        line-height: 1.55;
     }
 
-    /* Logo mark */
-    .login-logo-mark {
-        width: 52px; height: 52px;
-        background: linear-gradient(135deg, var(--brand), #60A5FA);
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 16px;
-        box-shadow: 0 8px 20px rgba(37,99,235,0.3);
-        font-size: 22px;
-        color: #fff;
-    }
-
-    /* ── Alert Messages ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ALERT MESSAGES
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .msg-container {
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         border-radius: 10px;
-        padding: 13px 16px;
+        padding: 12px 15px;
         display: flex;
         align-items: center;
         gap: 10px;
-        animation: slideDown 0.4s ease-out;
+        animation: slideDown 0.32s ease-out;
         font-family: var(--font);
     }
-
-    .msg-error {
-        background: #FEF2F2;
-        border: 1.5px solid #FECACA;
-        color: #DC2626;
-    }
-    .msg-error i { color: #EF4444; font-size: 16px; }
-
-    .msg-warning {
-        background: #FFFBEB;
-        border: 1.5px solid #FDE68A;
-        color: #B45309;
-    }
-    .msg-warning i { color: #F59E0B; font-size: 16px; }
-
-    .msg-text { font-size: 13.5px; font-weight: 600; line-height: 1.4; }
+    .msg-error   { background: #FEF2F2; border: 1.5px solid #FECACA; color: #DC2626; }
+    .msg-error i { color: #EF4444; font-size: 15px; }
+    .msg-warning { background: #FFFBEB; border: 1.5px solid #FDE68A; color: #B45309; }
+    .msg-warning i { color: #F59E0B; font-size: 15px; }
+    .msg-text { font-size: 13px; font-weight: 600; line-height: 1.4; }
 
     @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-8px); }
+        from { opacity: 0; transform: translateY(-7px); }
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Field label ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FIELD LABEL
+       weight 600, readable #475569
+       label → input: 7px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .field-label-text {
-        font-size: 12.5px;
+        font-size: 11.5px;
         font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 6px;
+        color: var(--text-label);
+        margin-bottom: 7px;
         display: block;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
     }
 
-    /* ── Input Fields ── */
-    form .field { width: 100%; margin-bottom: 18px; }
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       INPUT FIELDS
+       Consistent height 56px
+       input 1 → input 2: 18px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    form .field {
+        width: 100%;
+        margin-bottom: 18px;
+    }
 
     form .field .input-area {
-        height: 48px;
+        height: 56px;
         display: flex;
         align-items: center;
         background: var(--input-bg);
         border-radius: var(--radius-input);
-        border: 1.5px solid var(--border);
-        transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+        border: 1.5px solid var(--border-light);
+        transition:
+            border-color var(--transition),
+            box-shadow   var(--transition),
+            background   var(--transition);
         overflow: hidden;
     }
 
+    /* Strong focus state: blue glow + border + bg */
     form .field .input-area:focus-within {
         border-color: var(--brand);
-        box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        box-shadow:
+            0 0 0 4px rgba(37,99,235,0.14),
+            0 1px 4px rgba(37,99,235,0.08);
         background: #fff;
     }
 
+    /* ── Icon — perfectly aligned, consistent 50px ── */
     .icon-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 46px;
+        width: 50px;
         height: 100%;
         background: transparent;
-        border-right: 1.5px solid var(--border);
-        color: var(--text-muted);
+        border-right: 1.5px solid var(--border-light);
+        color: var(--placeholder);
         font-size: 15px;
         flex-shrink: 0;
-        transition: color var(--transition);
+        transition: color var(--transition), border-color var(--transition), background var(--transition);
     }
-
     form .field .input-area:focus-within .icon-wrapper {
         color: var(--brand);
-        border-right-color: rgba(37,99,235,0.2);
+        border-right-color: rgba(37,99,235,0.16);
+        background: rgba(37,99,235,0.03);
     }
 
-    /* Country Code (+880) */
+    /* ── +880 country code prefix ── */
     .country-code {
         display: none;
-        padding-left: 14px;
+        padding-left: 12px;
+        padding-right: 2px;
         font-size: 15px;
         font-weight: 700;
-        color: var(--text-primary);
-        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        letter-spacing: 0.4px;
         white-space: nowrap;
+        flex-shrink: 0;
+        line-height: 1;
     }
 
+    /* ── Base input text ── */
     form input {
         flex: 1;
         height: 100%;
@@ -207,169 +274,284 @@
         background: transparent;
         color: var(--text-primary);
         padding: 0 14px;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 500;
         font-family: var(--font);
         width: 100%;
+        min-width: 0;
     }
-    form input::placeholder { color: var(--text-muted); font-weight: 400; }
+    form input::placeholder {
+        color: var(--placeholder);
+        font-weight: 400;
+        font-size: 14px;
+    }
 
-    /* Phone big font */
+    /* ── PHONE: 40px, weight 600, #334155 ── */
     .is-phone-input {
-        font-size: 20px !important;
-        font-weight: 700 !important;
-        color: var(--text-primary) !important;
-        letter-spacing: 1px;
+        font-size: 40px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        letter-spacing: 3px !important;
+        line-height: 1 !important;
+        padding-left: 4px !important;
     }
 
+    /* ── EMAIL: compact, fits in box ── */
+    .is-email-input {
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #475569 !important;
+        letter-spacing: 0 !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ── Password eye toggle ── */
     .password-toggle {
-        width: 44px;
+        width: 46px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        color: var(--text-muted);
+        color: var(--placeholder);
         font-size: 15px;
         flex-shrink: 0;
+        height: 100%;
         transition: color var(--transition);
     }
     .password-toggle:hover { color: var(--brand); }
     .eye-color { color: var(--brand) !important; }
 
-    /* ── Action Links ── */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HELPER ROW — Forgot / Join Now
+       Same alignment, clear hierarchy:
+       muted text + one strong brand link
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .form-actions-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 14px;
-        margin-bottom: 4px;
-        font-size: 13px;
+        margin-top: -6px;
+        padding: 10px 2px 4px;
     }
-    .form-actions-row a {
-        color: var(--brand);
-        text-decoration: none;
+
+    .forgot-link a {
+        font-size: 12.5px;
         font-weight: 600;
+        color: var(--text-muted);
+        text-decoration: none;
         transition: color var(--transition);
     }
-    .form-actions-row a:hover {
-        color: var(--brand-dark);
-        text-decoration: underline;
-    }
-    .text-muted-custom { color: var(--text-muted); margin-right: 3px; }
+    .forgot-link a:hover { color: var(--brand); }
 
-    /* ── Submit Button ── */
+    .signup-link {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .text-muted-custom {
+        font-size: 12.5px;
+        font-weight: 400;
+        color: var(--text-muted);
+    }
+    .signup-link a {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--brand);
+        text-decoration: none;
+        transition: color var(--transition);
+    }
+    .signup-link a:hover { color: var(--brand-dark); text-decoration: underline; }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SUBMIT BUTTON
+       54px height, pill, glossy gradient
+       helper row → button: 24px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     form input[type="submit"] {
-        height: 50px;
+        height: 54px;
         width: 100%;
-        margin-top: 28px;
-        color: #ffffff;
+        margin-top: 24px;
+        color: #fff;
         font-weight: 700;
         font-size: 15px;
+        letter-spacing: 0.025em;
         border: none;
-        background: linear-gradient(135deg, #2563EB, #1D4ED8);
+        /* glossy: lighter top → brand mid → deep bottom */
+        background: linear-gradient(160deg, #3B82F6 0%, #2563EB 45%, #1D4ED8 100%);
         cursor: pointer;
         border-radius: 50px;
-        transition: transform var(--transition), box-shadow var(--transition);
-        box-shadow: var(--shadow-btn);
         font-family: var(--font);
-        letter-spacing: 0.01em;
+        transition:
+            transform    var(--transition),
+            box-shadow   var(--transition),
+            background   var(--transition);
+        box-shadow: var(--shadow-btn);
     }
+
+    /* Hover: lift 2px + darker gradient */
     form input[type="submit"]:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 22px rgba(37,99,235,0.45);
+        transform: translateY(-2px);
+        background: linear-gradient(160deg, #2563EB 0%, #1D4ED8 45%, #1E40AF 100%);
+        box-shadow:
+            0 2px 4px  rgba(37,99,235,0.22),
+            0 8px 20px rgba(37,99,235,0.44),
+            0 18px 38px rgba(37,99,235,0.20);
     }
-    form input[type="submit"]:active { transform: translateY(0); }
-
-    @media (max-width: 992px) {
-        .signin-left-ad-div-outer { display: none; }
-        .main-content-div { width: 100% !important; }
+    form input[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-btn);
     }
 
-    @media (max-width: 480px) {
-        .is-phone-input { font-size: 18px !important; }
-        .wrapper { padding: 36px 24px 44px; }
-        .form-actions-row { flex-direction: column; gap: 12px; text-align: center; }
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECURITY BADGE
+       button → badge: 20px
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .security-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: #64748B;
+        margin-top: 20px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+    .security-badge i {
+        color: var(--accent);
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       RESPONSIVE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    @media (max-width: 576px) {
+        .login-page-wrapper { padding: 40px 0 48px; align-items: flex-start; }
+        .wrapper { padding: 36px 24px 42px; }
+        .is-phone-input { font-size: 30px !important; letter-spacing: 2px !important; }
+        .form-actions-row { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
 </style>
 {% endblock custom_css %}
 
 {% block content %}
 <div class="login-page-wrapper">
-    <div class="form-div-container">
-        <div class="wrapper">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
 
-            <!-- Logo mark -->
-            <div class="login-logo-mark">
-                <i class="fas fa-user-shield"></i>
+            <!-- Left Ad -->
+            <div class="col-lg-3 login-ad-col">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:200px;height:750px"
+                     data-ad-client="ca-pub-5227250042742723"
+                     data-ad-slot="9902546305">
+                </ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
 
-            <header>Welcome Back</header>
-            <p class="header-sub">Sign in to continue to your portal</p>
+            <!-- Login Card -->
+            <div class="col-12 col-lg-6">
+                <div class="form-div-container">
+                    <div class="wrapper">
 
-            <form id="login-form" method="POST" action="">
-                {% csrf_token %}
+                        <!-- Logo mark -->
+                        <div class="login-logo-mark">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
 
-                <!-- Alert Messages -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="msg-container auto-hide-msg {% if message.tags == 'warning' %}msg-warning{% else %}msg-error{% endif %}">
-                            {% if message.tags == 'warning' %}
-                                <i class="fas fa-clock"></i>
-                            {% else %}
-                                <i class="fas fa-exclamation-circle"></i>
+                        <header>Welcome Back</header>
+                        <p class="header-sub">Sign in to continue to your portal</p>
+
+                        <form id="login-form" method="POST" action="">
+                            {% csrf_token %}
+
+                            <!-- Alert Messages -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="msg-container auto-hide-msg {% if message.tags == 'warning' %}msg-warning{% else %}msg-error{% endif %}">
+                                        {% if message.tags == 'warning' %}
+                                            <i class="fas fa-clock"></i>
+                                        {% else %}
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        {% endif %}
+                                        <div class="msg-text">{{ message }}</div>
+                                    </div>
+                                {% endfor %}
                             {% endif %}
-                            <div class="msg-text">{{ message }}</div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
 
-                <!-- Identifier Field -->
-                <div class="field">
-                    <span class="field-label-text">Email or Phone Number</span>
-                    <div class="input-area">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-user-shield" id="main-icon"></i>
-                        </div>
-                        <span class="country-code" id="code-prefix">+880</span>
-                        <input type="text" id="identifier" name="identifier" placeholder="Email or Phone number" required autocomplete="off" />
+                            <!-- Identifier Field -->
+                            <div class="field">
+                                <span class="field-label-text">Email or Phone Number</span>
+                                <div class="input-area">
+                                    <div class="icon-wrapper">
+                                        <i class="fas fa-user-shield" id="main-icon"></i>
+                                    </div>
+                                    <span class="country-code" id="code-prefix">+880</span>
+                                    <input type="text" id="identifier" name="identifier" placeholder="Email or phone number" required autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="field">
+                                <span class="field-label-text">Password</span>
+                                <div class="input-area">
+                                    <div class="icon-wrapper">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                    <input type="password" name="password" placeholder="Enter your password" required />
+                                    <div class="password-toggle" id="toggle-pw">
+                                        <i class="fa-regular fa-eye-slash"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Links -->
+                            <div class="form-actions-row">
+                                <div class="forgot-link">
+                                    {% if request.resolver_match.url_name == 'login_student' %}
+                                        <a href="{% url 'forgot_password_phone_or_email_student' %}">Forgot Password?</a>
+                                    {% else %}
+                                        <a href="{% url 'forgot_password_phone_or_email' %}">Forgot Password?</a>
+                                    {% endif %}
+                                </div>
+                                <div class="signup-link">
+                                    <span class="text-muted-custom">New here?</span>
+                                    {% if request.resolver_match.url_name == 'login_student' %}
+                                        <a href="{% url 'signup_student' %}">Join Now</a>
+                                    {% else %}
+                                        <a href="{% url 'signup_user' %}">Join Now</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <input type="submit" value="Sign In">
+                        </form>
+
+                        <!-- Security badge -->
+                        {% comment %} <p class="security-badge">
+                            <i class="fas fa-lock"></i>
+                            Secured with 256-bit encryption
+                        </p> {% endcomment %}
+
                     </div>
                 </div>
+            </div>
 
-                <!-- Password Field -->
-                <div class="field">
-                    <span class="field-label-text">Password</span>
-                    <div class="input-area">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-key"></i>
-                        </div>
-                        <input type="password" name="password" placeholder="Enter your password" required />
-                        <div class="password-toggle" id="toggle-pw">
-                            <i class="fa-regular fa-eye-slash"></i>
-                        </div>
-                    </div>
-                </div>
+            <!-- Right Ad -->
+            <div class="col-lg-3 login-ad-col">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:200px;height:750px"
+                     data-ad-client="ca-pub-5227250042742723"
+                     data-ad-slot="9902546305">
+                </ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
 
-                <!-- Dynamic Links -->
-                <div class="form-actions-row">
-                    <div class="forgot-link">
-                        {% if request.resolver_match.url_name == 'login_student' %}
-                            <a href="{% url 'forgot_password_phone_or_email_student' %}">Forgot Password?</a>
-                        {% else %}
-                            <a href="{% url 'forgot_password_phone_or_email' %}">Forgot Password?</a>
-                        {% endif %}
-                    </div>
-                    <div class="signup-link">
-                        <span class="text-muted-custom">New here?</span>
-                        {% if request.resolver_match.url_name == 'login_student' %}
-                            <a href="{% url 'signup_student' %}">Join Now</a>
-                        {% else %}
-                            <a href="{% url 'signup_user' %}">Join Now</a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <input type="submit" value="Sign In →">
-            </form>
         </div>
     </div>
 </div>
@@ -388,8 +570,9 @@
             const isNumber = /^[0-9+]+$/.test(val.replace(/\s|-/g, ''));
 
             if (isNumber && val.length > 0) {
+                // Phone mode
                 $prefix.show();
-                $input.addClass('is-phone-input');
+                $input.addClass('is-phone-input').removeClass('is-email-input');
                 $icon.removeClass('fa-user-shield fa-envelope').addClass('fa-phone-alt');
 
                 let digits = val.replace(/\D/g, '');
@@ -400,8 +583,14 @@
                 if (digits.length > 5) formatted += '-' + digits.substring(5, 10);
                 $(this).val(formatted);
             } else {
+                // Email mode
                 $prefix.hide();
                 $input.removeClass('is-phone-input');
+                if (val.length > 0) {
+                    $input.addClass('is-email-input');
+                } else {
+                    $input.removeClass('is-email-input');
+                }
                 if (val.includes('@')) $icon.removeClass('fa-user-shield fa-phone-alt').addClass('fa-envelope');
                 else $icon.removeClass('fa-envelope fa-phone-alt').addClass('fa-user-shield');
             }
