@@ -182,17 +182,18 @@ class University(models.Model):
         db_table = "universities"
 
 
-class UniversityWise(models.Model):
-    uw_id = models.AutoField(primary_key=True)
-    uw_university_name = models.CharField(max_length=500)
-    uw_text = models.TextField()
-    uw_whocanapply = models.TextField(db_column="uw_whoCanApply", blank=True, null=True)
-    uw_status = models.IntegerField()
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
+# class UniversityWise(models.Model):
+#     uw_id = models.AutoField(primary_key=True)
+#     uw_university_name = models.CharField(max_length=500)
+#     uw_text = models.TextField()
+#     uw_whocanapply = models.TextField(db_column="uw_whoCanApply", blank=True, null=True)
+#     uw_status = models.IntegerField()
+#     created_at = models.DateTimeField(default=timezone.now)
+#     updated_at = models.DateTimeField(default=timezone.now)
 
-    class Meta:
-        db_table = "university_wises"
+#     class Meta:
+#         db_table = "university_wises"
+
 
 
 def image_upload_path(instance, filename):
@@ -1169,3 +1170,51 @@ class OTPRequest(models.Model):
 
     def __str__(self):
         return f"OTP request for {self.phone_number} at {self.timestamp}"
+    
+# class University(models.Model):
+#     name = models.CharField(max_length=255)
+#     country = models.ForeignKey(
+#         'Countries',
+#         on_delete=models.PROTECT,
+#         related_name='universities'
+#     )
+#     university_logo = models.ImageField(
+#         upload_to='university_logos/',
+#         null=True,
+#         blank=True
+#     )
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = 'University'
+        verbose_name_plural = 'Universities'
+
+    def __str__(self):
+        return f"{self.name} ({self.country})"
+
+
+class SelfFundedProgram(models.Model):
+    university = models.ForeignKey(
+        University,
+        on_delete=models.CASCADE,
+        related_name='self_funded_programs'
+    )
+    country = models.ForeignKey(
+        'Countries',
+        on_delete=models.PROTECT,
+        related_name='self_funded_programs'
+    )
+    semester_fee = models.CharField(max_length=100)
+    requirements = CKEditor5Field(config_name='extends')
+    foreign_student_policy = CKEditor5Field(config_name='extends')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Self Funded Program'
+        verbose_name_plural = 'Self Funded Programs'
+
+    def __str__(self):
+        return f"{self.university.name} — {self.country} (Fee: {self.semester_fee})"

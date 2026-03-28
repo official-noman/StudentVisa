@@ -1,0 +1,512 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Self Funded Programs{% endblock %}
+
+{% block content %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --primary:       #4f46e5;
+    --primary-light: #eef2ff;
+    --primary-glow:  rgba(79, 70, 229, 0.15);
+    --text-main:     #1e293b;
+    --text-muted:    #64748b;
+    --border:        #e2e8f0;
+    --card-shadow:   0 4px 24px rgba(0, 0, 0, 0.06);
+    --card-hover:    0 12px 40px rgba(79, 70, 229, 0.14);
+    --radius:        18px;
+    --bg:            #f8fafc;
+  }
+
+  body { background: var(--bg); font-family: 'Inter', sans-serif; }
+
+  /* ── Hero ── */
+  .sfp-hero {
+    background: linear-gradient(135deg, #f0f4ff 0%, #fafafe 60%, #f5f0ff 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 72px 0 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sfp-hero::before {
+    content: '';
+    position: absolute;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+    top: -120px; right: -80px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .sfp-hero::after {
+    content: '';
+    position: absolute;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%);
+    bottom: -100px; left: -60px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span {
+    background: linear-gradient(135deg, #4f46e5, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin: 0 auto 32px;
+  }
+
+  /* ── Search Bar ── */
+  .search-wrap {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .search-wrap .search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 14px 52px 14px 48px;
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    font-size: 0.92rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    background: #fff;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow), 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  .search-input::placeholder { color: #adb5bd; }
+
+  .search-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+  }
+
+  .search-btn:hover {
+    box-shadow: 0 6px 18px rgba(79,70,229,0.4);
+    transform: translateY(-50%) scale(1.03);
+  }
+
+  /* ── Section ── */
+  .sfp-section {
+    padding: 56px 0 72px;
+  }
+
+  .section-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .result-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .result-count strong {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* ── Country Card ── */
+  .country-card-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .country-card {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .country-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--card-hover);
+    border-color: rgba(99,102,241,0.25);
+  }
+
+  .country-card:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .country-card:hover .country-img {
+    transform: scale(1.05);
+  }
+
+  .card-img-wrap {
+    width: 100%;
+    height: 148px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    position: relative;
+  }
+
+  .country-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #eef2ff 0%, #f0fdf4 100%);
+    color: var(--primary);
+    gap: 6px;
+  }
+
+  .img-placeholder i { font-size: 2.2rem; opacity: 0.45; }
+
+  .card-body-inner {
+    padding: 16px 18px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .country-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+
+  .program-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .card-arrow {
+    width: 32px; height: 32px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    text-align: center;
+    padding: 72px 20px;
+  }
+
+  .empty-icon-wrap {
+    width: 80px; height: 80px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .empty-icon-wrap i { font-size: 2rem; color: var(--primary); opacity: 0.6; }
+
+  .empty-state h5 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+  }
+
+  .empty-state p { color: var(--text-muted); font-size: 0.9rem; }
+
+  .btn-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 16px;
+    transition: all 0.2s;
+  }
+
+  .btn-clear:hover { background: #4338ca; color: #fff; }
+
+  /* ── Pagination ── */
+  .pagination-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+    gap: 6px;
+  }
+
+  .page-btn {
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    color: var(--text-main);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .page-btn.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+  }
+
+  .page-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+</style>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="sfp-hero text-center">
+  <div class="container">
+    <div class="hero-badge">
+      <i class="bi bi-mortarboard-fill"></i> Study Abroad
+    </div>
+    <h1 class="hero-title">
+      Explore <span>Self-Funded</span><br>Programs Worldwide
+    </h1>
+    <p class="hero-subtitle">
+      Discover universities across the globe offering self-funded study programs.
+      Filter by country and find the perfect opportunity for you.
+    </p>
+
+    <!-- Search -->
+    <form method="GET" action="">
+      <div class="search-wrap">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          name="search"
+          class="search-input"
+          placeholder="Search by country name..."
+          value="{{ search_query }}"
+          autocomplete="off"
+        >
+        <button type="submit" class="search-btn">Search</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ══════════════ COUNTRY GRID ══════════════ -->
+<section class="sfp-section">
+  <div class="container">
+
+    <div class="section-meta">
+      <div class="result-count">
+        {% if search_query %}
+          Showing results for <strong>"{{ search_query }}"</strong> —
+        {% endif %}
+        <strong>{{ total_count }}</strong> countr{{ total_count|pluralize:"y,ies" }} available
+      </div>
+      {% if search_query %}
+        <a href="{% url 'self_funded_programs' %}" class="btn-clear">
+          <i class="bi bi-x-circle"></i> Clear Search
+        </a>
+      {% endif %}
+    </div>
+
+    {% if page_obj %}
+      <div class="row g-4">
+        {% for country in page_obj %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <a href="{% url 'self_funded_universities' country.id %}" class="country-card-link">
+            <div class="country-card">
+
+              <!-- Image -->
+              <div class="card-img-wrap">
+                {% if country.image %}
+                  <img src="{{ country.image.url }}"
+                       alt="{{ country.name }}"
+                       class="country-img">
+                {% else %}
+                  <div class="img-placeholder">
+                    <i class="bi bi-globe-europe-africa"></i>
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Body -->
+              <div class="card-body-inner">
+                <div>
+                  <p class="country-name">{{ country.name }}</p>
+                  <p class="program-count">
+                    {{ country.selffundedprogram_set.count }}
+                    program{{ country.selffundedprogram_set.count|pluralize }} available
+                  </p>
+                </div>
+                <div class="card-arrow">
+                  <i class="bi bi-arrow-right"></i>
+                </div>
+              </div>
+
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+      <div class="pagination-wrap">
+
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+             class="page-btn">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        {% else %}
+          <span class="page-btn disabled"><i class="bi bi-chevron-left"></i></span>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               class="page-btn">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+             class="page-btn">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        {% else %}
+          <span class="page-btn disabled"><i class="bi bi-chevron-right"></i></span>
+        {% endif %}
+
+      </div>
+      {% endif %}
+
+    {% else %}
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-icon-wrap">
+          <i class="bi bi-search"></i>
+        </div>
+        <h5>No Countries Found</h5>
+        <p>
+          {% if search_query %}
+            No results matched "<strong>{{ search_query }}</strong>". Try a different keyword.
+          {% else %}
+            No self-funded programs have been added yet.
+          {% endif %}
+        </p>
+        {% if search_query %}
+          <a href="{% url 'self_funded_programs' %}" class="btn-clear">
+            <i class="bi bi-arrow-left"></i> Back to All Countries
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

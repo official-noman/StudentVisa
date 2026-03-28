@@ -646,10 +646,18 @@ urlpatterns = [
         "delete_course/<int:course_id>/", rootviews.delete_course, name="delete_course"
     ),
     path('resend-otp/', views.resend_otp, name='resend_otp_url'),
+    path('self_funded_programs/', views.self_funded_programs, name='self_funded_programs'),
+    path('root/self-funded-programs/', rootviews.manage_self_funded_programs, name='manage_self_funded_programs'),
+    path('root/self-funded-programs/delete/<int:program_id>/', rootviews.delete_self_funded_program, name='delete_self_funded_program'),
+    path('root/manage-universities/', rootviews.manage_universities, name='manage_universities'),
+    path('root/manage-universities/delete/<int:uni_id>/', rootviews.delete_university, name='delete_university'),
+path('get_universities_by_country/', rootviews.get_universities_by_country, name='get_universities_by_country'),
+
     path(
         "update_verification_status/",
         rootviews.update_verification_status,
         name="update_verification_status",
+
     ),
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]

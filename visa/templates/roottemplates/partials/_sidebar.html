@@ -117,17 +117,6 @@
     transform: translateX(1px);
   }
 
-  {% comment %} .sidebar .nav-item > .nav-link:hover::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 22%;
-    bottom: 22%;
-    width: 3px;
-    border-radius: 0 6px 6px 0;
-    background: rgba(78, 115, 223, 0.55);
-  } {% endcomment %}
-
   .sidebar .nav-item > .nav-link[aria-expanded="true"] {
     color: var(--sb-active-text) !important;
     background: var(--sb-hover-bg);
@@ -140,18 +129,6 @@
     font-weight: 700;
     border-color: rgba(78, 115, 223, 0.10);
   }
-
-  {% comment %} .sidebar .nav-item > .nav-link.active-page::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 18%;
-    bottom: 18%;
-    width: 4px;
-    border-radius: 0 8px 8px 0;
-    background: var(--sb-active-bar);
-    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.10);
-  } {% endcomment %}
 
   .sidebar .menu-icon {
     font-size: 18px;
@@ -249,23 +226,6 @@
       transform var(--sb-transition);
   }
 
-  {% comment %} .sidebar .sub-menu .nav-item .nav-link::before {
-    content: '';
-    position: absolute;
-    left: 28px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: var(--sb-dot);
-    transition:
-      background var(--sb-transition),
-      box-shadow var(--sb-transition),
-      left var(--sb-transition),
-      transform var(--sb-transition);
-  } {% endcomment %}
-
   .sidebar .sub-menu .nav-item .nav-link:hover {
     background: var(--sb-hover-bg);
     color: var(--sb-sub-active) !important;
@@ -274,26 +234,12 @@
     transform: translateX(1px);
   }
 
-  {% comment %} .sidebar .sub-menu .nav-item .nav-link:hover::before {
-    background: var(--sb-dot-active);
-    left: 30px;
-    transform: translateY(-50%) scale(1.05);
-  } {% endcomment %}
-
   .sidebar .sub-menu .nav-item .nav-link.active-page {
     background: var(--sb-active-bg);
     color: var(--sb-sub-active) !important;
     font-weight: 700;
     border-color: rgba(78, 115, 223, 0.10);
   }
-
-  {% comment %} .sidebar .sub-menu .nav-item .nav-link.active-page::before {
-    background: var(--sb-dot-active);
-    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.12);
-    width: 6px;
-    height: 6px;
-    left: 27px;
-  } {% endcomment %}
 
   .sidebar .nav-item + .nav-item:not(.nav-category) {
     margin-top: 1px;
@@ -444,31 +390,6 @@
     </li>
     {% endif %}
 
-    {% comment %}
-    <!-- Appearance -->
-    <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
-         data-bs-toggle="collapse"
-         href="#sb-appearance"
-         role="button"
-         aria-expanded="{% if request.resolver_match.url_name == 'save_benefit' %}true{% else %}false{% endif %}"
-         aria-controls="sb-appearance">
-        <i class="mdi mdi-palette-outline menu-icon"></i>
-        <span class="menu-title">Appearance</span>
-        <i class="menu-arrow"></i>
-      </a>
-      <div class="collapse {% if request.resolver_match.url_name == 'save_benefit' %}show{% endif %}"
-           id="sb-appearance">
-        <ul class="nav flex-column sub-menu">
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'save_benefit' %}active-page{% endif %}"
-               href="{% url 'save_benefit' %}">Benefit</a>
-          </li>
-        </ul>
-      </div>
-    </li>
-    {% endcomment %}
-
     <!-- Courses -->
     <li class="nav-item">
       <a class="nav-link {% if request.resolver_match.url_name == 'course_list' or request.resolver_match.url_name == 'add_course' or request.resolver_match.url_name == 'edit_course' or request.resolver_match.url_name == 'delete_course' %}active-page{% endif %}"
@@ -551,6 +472,34 @@
       </div>
     </li>
     {% endif %}
+
+    <!-- 🎯 NEW SECTION: Self Funded Management -->
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'manage_universities' or request.resolver_match.url_name == 'manage_self_funded_programs' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-self-funded"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'manage_universities' or request.resolver_match.url_name == 'manage_self_funded_programs' %}true{% else %}false{% endif %}"
+         aria-controls="sb-self-funded">
+        <i class="mdi mdi-bank menu-icon"></i>
+        <span class="menu-title">Self Funded</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {% if request.resolver_match.url_name == 'manage_universities' or request.resolver_match.url_name == 'manage_self_funded_programs' %}show{% endif %}"
+           id="sb-self-funded">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'manage_universities' %}active-page{% endif %}"
+               href="{% url 'manage_universities' %}">Manage Universities</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'manage_self_funded_programs' %}active-page{% endif %}"
+               href="{% url 'manage_self_funded_programs' %}">Self Funded Details</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <!-- End Self Funded Management -->
 
     <li class="nav-divider"></li>
     <li class="nav-item nav-category">Page Design</li>

@@ -40,6 +40,9 @@ from functools import wraps
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import PermissionDenied
 from .decorators import root_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import University, Countries
 
 
 def role_and_permission_required(permission):
@@ -3377,3 +3380,122 @@ def add_visa_service(request):
 def manage_visa_services(request):
     services = VisaService.objects.all()
     return render(request, "roottemplates/manage_services.html", {"services": services})
+
+# from django.shortcuts import render, get_object_or_404, redirect
+# from django.contrib import messages
+# from .models import SelfFundedProgram, University, Countries
+
+
+def manage_self_funded_programs(request):
+    if request.method == 'POST':
+        try:
+            country_id = request.POST.get('country_id')
+            university_id = request.POST.get('university_id')
+            semester_fee = request.POST.get('semester_fee')
+            requirements = request.POST.get('requirements')
+            foreign_student_policy = request.POST.get('foreign_student_policy')
+
+            if not all([country_id, university_id, semester_fee, requirements, foreign_student_policy]):
+                messages.error(request, 'All fields are required.')
+                return redirect('manage_self_funded_programs')
+
+            country = get_object_or_404(Countries, country_id=country_id) # country_id
+            university = get_object_or_404(University, university_id=university_id) # university_id
+
+            SelfFundedProgram.objects.create(
+                country=country,
+                university=university,
+                semester_fee=semester_fee,
+                requirements=requirements,
+                foreign_student_policy=foreign_student_policy,
+            )
+            messages.success(request, 'Self Funded Program added successfully.')
+            return redirect('manage_self_funded_programs')
+
+        except Exception as e:
+            messages.error(request, f'Something went wrong: {str(e)}')
+            return redirect('manage_self_funded_programs')
+
+    programs = SelfFundedProgram.objects.select_related('university', 'country').all()
+    countries = Countries.objects.all().order_by('country_name')
+    universities = University.objects.select_related('countries').all()
+
+    context = {
+        'programs': programs,
+        'countries': countries,
+        'universities': universities,
+    }
+    
+    return render(request, 'roottemplates/manage_self_funded_programs.html', context)
+
+
+def delete_self_funded_program(request, program_id):
+    program = get_object_or_404(SelfFundedProgram, id=program_id)
+    try:
+        program.delete()
+        messages.success(request, 'Program deleted successfully.')
+    except Exception as e:
+        messages.error(request, f'Could not delete program: {str(e)}')
+    return redirect('manage_self_funded_programs')
+
+def get_universities_by_country(request):
+    country_id = request.GET.get('country_id')
+    if country_id:
+        universities = University.objects.filter(country_id=country_id).values('id', 'name')
+        return JsonResponse({'universities': list(universities)})
+    return JsonResponse({'universities': []})
+
+# from .models import University, Countries
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+
+# def manage_universities(request):
+#     if request.method == "POST":
+#         name = request.POST.get('name')
+#         country_id = request.POST.get('country')
+#         logo = request.FILES.get('logo')
+        
+#         if name and country_id:
+#             country = Countries.objects.get(country_id=country_id)
+#             University.objects.create(name=name, country=country, university_logo=logo)
+#             messages.success(request, "University added successfully!")
+#             return redirect('manage_universities')
+
+#     universities = University.objects.all().order_by('-created_at')
+#     countries = Countries.objects.all().order_by('country_name')
+    
+#     return render(request, 'roottemplates/manage_universities.html', {
+#         'universities': universities,
+#         'countries': countries
+#     }) 
+    
+# from .models import University, Countries
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+
+def manage_universities(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        country_id = request.POST.get('country_id') 
+        
+        if name and country_id:
+            
+            University.objects.create(name=name, countries_id=country_id)
+            messages.success(request, "University added successfully!")
+            return redirect('manage_universities')
+
+    universities = University.objects.all().order_by('-created_at')
+    countries = Countries.objects.all().order_by('country_name') 
+    
+    return render(request, 'roottemplates/manage_universities.html', {
+        'universities': universities,
+        'countries': countries
+    })
+@login_required
+@require_POST
+def delete_university(request, uni_id):
+    uni = get_object_or_404(University, id=uni_id)
+    uni.delete()
+    messages.success(request, "University deleted!")
+    return redirect('manage_universities')
+    

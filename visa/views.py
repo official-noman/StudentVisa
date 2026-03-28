@@ -35,6 +35,8 @@ from django.core.files.storage import default_storage
 from .models import CustomUser
 from django.db.models import Q
 from .models import OTPRequest 
+from .models import Countries, SelfFundedProgram
+from django.core.paginator import Paginator
 
 
 def home(request):
@@ -4595,3 +4597,49 @@ def resend_otp(request):
             return JsonResponse({'success': False, 'error': 'SMS Gateway error.'})
 
     return JsonResponse({'success': False, 'error': 'Invalid request.'})
+
+# def self_funded_programs(request):
+#     return render(request, "self_funded_list.html")
+
+# from django.shortcuts import render
+# from django.core.paginator import Paginator
+# from .models import Countries, SelfFundedProgram
+
+
+def self_funded_programs(request):
+    search_query = request.GET.get('search', '').strip()
+
+    country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
+    
+   
+    countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
+    # countries = Countries.objects.all().order_by('country_name')
+
+    if search_query:
+        countries = countries.filter(country_name__icontains=search_query)
+
+    paginator = Paginator(countries, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'page_name': 'Self Funded Programs',
+        'total_count': countries.count(),
+    }
+    return render(request, 'self_funded_list.html', context)
+
+# views.py তে এই লাইনগুলো ঠিক করুন
+# def self_funded_programs(request):
+#     search_query = request.GET.get('search', '').strip()
+    
+#     # country_id__in ব্যবহার করুন (id__in নয়)
+#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
+    
+#     # এখানেও country_id এবং country_name ব্যবহার করুন
+#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
+
+#     if search_query:
+#         countries = countries.filter(country_name__icontains=search_query)
+    # ... বাকি কোড ঠিক আছে

@@ -1,0 +1,488 @@
+{% extends 'root_base.html' %}
+{% load static %}
+
+{% block title %}Manage Self Funded Programs{% endblock %}
+
+{% block content %}
+
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-light: #eef2ff;
+    --danger: #ef4444;
+    --danger-light: #fef2f2;
+    --success: #10b981;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --radius: 16px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .page-header-icon {
+    width: 46px;
+    height: 46px;
+    background: var(--primary-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 20px;
+  }
+
+  .page-header h4 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+
+  .page-header p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .card-panel {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .form-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+
+  .form-control,
+  .form-select {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    color: var(--text-main);
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--primary);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+  }
+
+  .form-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .ck-editor-wrapper {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f8fafc;
+    transition: border-color 0.2s;
+  }
+
+  .ck-editor-wrapper:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+  }
+
+  .ck.ck-editor__main > .ck-editor__editable {
+    min-height: 160px;
+    background: #f8fafc !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 0.88rem;
+  }
+
+  .ck.ck-toolbar {
+    border: none !important;
+    border-bottom: 1px solid var(--border) !important;
+    background: #fff !important;
+  }
+
+  .btn-save {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 28px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  }
+
+  .btn-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+    color: #fff;
+  }
+
+  .btn-save:active {
+    transform: translateY(0);
+  }
+
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+  }
+
+  .data-table thead th {
+    background: #f1f5f9;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .data-table thead th:first-child { border-radius: 10px 0 0 0; }
+  .data-table thead th:last-child  { border-radius: 0 10px 0 0; }
+
+  .data-table tbody tr {
+    transition: background 0.15s;
+  }
+
+  .data-table tbody tr:hover {
+    background: #f8faff;
+  }
+
+  .data-table tbody td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--text-main);
+    vertical-align: middle;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .badge-country {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .badge-fee {
+    background: #f0fdf4;
+    color: #16a34a;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .btn-delete {
+    background: var(--danger-light);
+    color: var(--danger);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .btn-delete:hover {
+    background: var(--danger);
+    color: #fff;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  /* Alerts */
+  .alert-custom {
+    border: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .alert-success-custom { background: #f0fdf4; color: #15803d; }
+  .alert-danger-custom  { background: #fef2f2; color: #b91c1c; }
+
+  .university-loading {
+    font-size: 0.78rem;
+    color: var(--primary);
+    display: none;
+    margin-top: 5px;
+  }
+</style>
+
+<div class="container-fluid px-4 py-4">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-icon">
+      <i class="bi bi-mortarboard-fill"></i>
+    </div>
+    <div>
+      <h4>Manage Self Funded Programs</h4>
+      <p>Add and manage university self-funded program listings</p>
+    </div>
+  </div>
+
+  <!-- Django Messages -->
+  {% for message in messages %}
+    <div class="alert-custom {% if message.tags == 'success' %}alert-success-custom{% else %}alert-danger-custom{% endif %}">
+      <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-circle-fill{% endif %}"></i>
+      {{ message }}
+    </div>
+  {% endfor %}
+
+  <!-- ── ADD PROGRAM FORM ── -->
+  <div class="card-panel">
+    <div class="section-label"><i class="bi bi-plus-circle"></i> Add New Program</div>
+
+    <form method="POST" action="{% url 'manage_self_funded_programs' %}">
+      {% csrf_token %}
+
+      <!-- Row 1: Country / University / Fee -->
+      <div class="row g-3 mb-3">
+
+        <div class="col-md-4">
+          <label class="form-label">Country <span class="text-danger">*</span></label>
+          <select class="form-select" id="countryDropdown" name="country_id" required>
+  <option value="" disabled selected>— Select Country —</option>
+  {% for country in countries %}
+    <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+  {% endfor %}
+</select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">University <span class="text-danger">*</span></label>
+          <select class="form-select" id="universityDropdown" name="university_id" required disabled>
+            <option value="" disabled selected>— Select Country First —</option>
+          </select>
+          <div class="university-loading" id="uniLoading">
+            <i class="bi bi-arrow-repeat"></i> Loading universities...
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Semester Fee <span class="text-danger">*</span></label>
+          <input type="text"
+                 class="form-control"
+                 name="semester_fee"
+                 placeholder="e.g. 1500 USD or Varies"
+                 required>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Requirements -->
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <label class="form-label">Requirements <span class="text-danger">*</span></label>
+          <div class="ck-editor-wrapper">
+            <textarea name="requirements" id="id_requirements"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Foreign Student Policy -->
+      <div class="row g-3 mb-4">
+        <div class="col-12">
+          <label class="form-label">Foreign Student Policy <span class="text-danger">*</span></label>
+          <div class="ck-editor-wrapper">
+            <textarea name="foreign_student_policy" id="id_foreign_student_policy"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-save">
+          <i class="bi bi-floppy2-fill me-2"></i> Save Program
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ── PROGRAMS TABLE ── -->
+  <div class="card-panel">
+    <div class="section-label"><i class="bi bi-table"></i> Existing Programs</div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Country</th>
+            <th>University</th>
+            <th>Semester Fee</th>
+            <th>Added On</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for program in programs %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><span class="badge-country">{{ program.country.country_name }}</span></td>
+            <td>{{ program.university.name }}</td>
+            <td><span class="badge-fee">{{ program.semester_fee }}</span></td>
+            <td>{{ program.created_at|date:"M d, Y" }}</td>
+            <td>
+              <a href="{% url 'delete_self_funded_program' program.id %}"
+                 class="btn-delete"
+                 onclick="return confirm('Delete this program?')">
+                <i class="bi bi-trash3"></i> Delete
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>No programs added yet.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── CKEditor 5 CDN ── -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<script>
+  let requirementsEditor, policyEditor;
+
+  ClassicEditor.create(document.querySelector('#id_requirements'), {
+    toolbar: ['heading','|','bold','italic','underline','|',
+              'bulletedList','numberedList','|','blockQuote','link','|','undo','redo'],
+    placeholder: 'Enter admission requirements...',
+  }).then(editor => { requirementsEditor = editor; })
+    .catch(console.error);
+
+  ClassicEditor.create(document.querySelector('#id_foreign_student_policy'), {
+    toolbar: ['heading','|','bold','italic','underline','|',
+              'bulletedList','numberedList','|','blockQuote','link','|','undo','redo'],
+    placeholder: 'Enter foreign student policy details...',
+  }).then(editor => { policyEditor = editor; })
+    .catch(console.error);
+
+  // Sync CKEditor content into textarea before form submit
+  document.querySelector('form').addEventListener('submit', function () {
+    if (requirementsEditor) {
+      document.querySelector('#id_requirements').value = requirementsEditor.getData();
+    }
+    if (policyEditor) {
+      document.querySelector('#id_foreign_student_policy').value = policyEditor.getData();
+    }
+  });
+</script>
+
+<!-- ── AJAX: Load Universities by Country ── -->
+<script>
+  $('#countryDropdown').on('change', function () {
+    const countryId = $(this).val();
+    const $uniDrop  = $('#universityDropdown');
+    const $loader   = $('#uniLoading');
+
+    $uniDrop.prop('disabled', true)
+            .html('<option value="" disabled selected>— Loading... —</option>');
+    $loader.show();
+
+    $.ajax({
+      url: "{% url 'get_universities_by_country' %}",
+      type: 'GET',
+      data: { country_id: countryId },
+      success: function (data) {
+        $loader.hide();
+        $uniDrop.html('<option value="" disabled selected>— Select University —</option>');
+
+        if (data.universities && data.universities.length > 0) {
+          $.each(data.universities, function (_, uni) {
+            $uniDrop.append(`<option value="${uni.id}">${uni.name}</option>`);
+          });
+          $uniDrop.prop('disabled', false);
+        } else {
+          $uniDrop.html('<option value="" disabled selected>No universities found</option>');
+        }
+      },
+      error: function () {
+        $loader.hide();
+        $uniDrop.html('<option value="" disabled selected>— Error loading —</option>');
+      }
+    });
+  });
+</script>
+
+{% endblock %}
