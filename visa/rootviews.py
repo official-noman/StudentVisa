@@ -1591,18 +1591,17 @@ def grant_permission_consultant(request, user_id):
         # Check if permission is granted
         if some_condition_is_met():
             with transaction.atomic():
-                # Use the user_id explicitly as the ID for CustomUser
                 new_custom_user = CustomUser.objects.create(
-                    id=user_id,
                     email=user_instance.email,
                     password=user_instance.password,
                     user_type=1,
                     phone=user_instance.phone,
                     last_active=timezone.now(),
                 )
-                # Create a new ConsultantDetails instance and associate it with the CustomUser
-                consultant_details = ConsultantDetails.objects.create(
-                    consultant_id=user_id,
+                user_instance.consultant_user = new_custom_user
+                user_instance.save(update_fields=["consultant_user"])
+                ConsultantDetails.objects.create(
+                    consultant_id=new_custom_user.id,
                     # Add other fields as needed
                 )
             # Set the active_status to 1 when permission is granted

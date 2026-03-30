@@ -4740,141 +4740,13 @@ def resend_otp(request):
 
     return JsonResponse({'success': False, 'error': 'Invalid request.'})
 
-# def self_funded_programs(request):
-#     return render(request, "self_funded_list.html")
+from django.db.models import Count 
+from .models import Countries, University, SelfFundedProgram, ScholarshipStep
 
-# from django.shortcuts import render
-# from django.core.paginator import Paginator
-# from .models import Countries, SelfFundedProgram
+# ==========================================
+# 🎯 SELF FUNDED PROGRAMS (PUBLIC VIEWS)
+# ==========================================
 
-
-# def self_funded_programs(request):
-#     search_query = request.GET.get('search', '').strip()
-
-#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
-    
-   
-#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
-#     # countries = Countries.objects.all().order_by('country_name')
-
-#     if search_query:
-#         countries = countries.filter(country_name__icontains=search_query)
-
-#     paginator = Paginator(countries, 12)
-#     page_number = request.GET.get('page')
-#     page_obj = paginator.get_page(page_number)
-
-#     context = {
-#         'page_obj': page_obj,
-#         'search_query': search_query,
-#         'page_name': 'Self Funded Programs',
-#         'total_count': countries.count(),
-#     }
-#     return render(request, 'self_funded_list.html', context)
-
-# def self_funded_programs(request):
-#     search_query = request.GET.get('search', '').strip()
-    
-#     # 🎯 ফিক্স: প্রতিটি দেশের পাশে তার প্রোগ্রাম সংখ্যা যোগ করা হচ্ছে
-#     countries_with_programs = Countries.objects.annotate(
-#         program_count=Count('self_funded_programs')
-#     ).filter(program_count__gt=0).order_by('country_name') # শুধু যাদের প্রোগ্রাম আছে তাদেরকেই দেখাবে
-
-#     if search_query:
-#         countries_with_programs = countries_with_programs.filter(country_name__icontains=search_query)
-
-#     paginator = Paginator(countries_with_programs, 12)
-#     page_number = request.GET.get('page')
-#     page_obj = paginator.get_page(page_number)
-
-#     context = {
-#         'page_obj': page_obj,
-#         'search_query': search_query,
-#         'page_name': 'Self Funded Programs',
-#         'total_count': countries_with_programs.count(),
-#     }
-#     return render(request, 'self_funded_list.html', context)
-
-# def self_funded_programs(request):
-#     search_query = request.GET.get('search', '').strip()
-    
-#     # 🕵️‍♂️ DEBUG LOGS (টার্মিনালে চেক করার জন্য)
-#     print("--- DEBUG START ---")
-#     all_programs = SelfFundedProgram.objects.all()
-#     print(f"Total entries in SelfFundedProgram table: {all_programs.count()}")
-    
-#     for p in all_programs:
-#         print(f"Program ID: {p.id} | Country ID: {p.country_id} | University ID: {p.university_id}")
-    
-#     # কোয়েরি
-#     countries = Countries.objects.annotate(
-#         program_count=Count('self_funded_programs')
-#     ).filter(program_count__gt=0).order_by('country_name')
-    
-#     print(f"Total Countries with programs found: {countries.count()}")
-#     print("--- DEBUG END ---")
-
-#     if search_query:
-#         countries = countries.filter(country_name__icontains=search_query)
-
-#     paginator = Paginator(countries, 12)
-#     page_number = request.GET.get('page')
-#     page_obj = paginator.get_page(page_number)
-
-#     context = {
-#         'page_obj': page_obj,
-#         'search_query': search_query,
-#         'page_name': 'Self Funded Programs',
-#         'total_count': countries.count(),
-#     }
-#     return render(request, 'self_funded_list.html', context)
-
-
-
-def self_funded_universities(request, country_id):
-    country = get_object_or_404(Countries, country_id=country_id)
-    search_query = request.GET.get('search', '').strip()
-    
-    # ওই দেশের আন্ডারে যেসব ভার্সিটির Self Funded Program আছে
-    programs = SelfFundedProgram.objects.filter(country=country).select_related('university')
-    
-    if search_query:
-        programs = programs.filter(university__name__icontains=search_query)
-
-    context = {
-        'country': country,
-        'programs': programs,
-        'search_query': search_query,
-        'page_name': f'Universities in {country.country_name}',
-    }
-    return render(request, 'self_funded_universities.html', context)
-
-# def self_funded_program_details(request, program_id):
-#     program = get_object_or_404(SelfFundedProgram, id=program_id)
-    
-#     context = {
-#         'program': program,
-#         'page_name': f'{program.university.name} Details',
-#     }
-#     return render(request, 'self_funded_details.html', context)
-
-
-# def self_funded_programs(request):
-#     search_query = request.GET.get('search', '').strip()
-    
-#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
-    
-#   
-#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
-
-#     if search_query:
-#         countries = countries.filter(country_name__icontains=search_query)
- 
- 
- 
-from django.db.models import Count # নিশ্চিত করুন এই ইমপোর্ট উপরে আছে
-
-# ১. এই ফাংশনটা আপনার ফাইলে মিসিং ছিল, তাই এরর দিচ্ছিল
 def self_funded_programs(request):
     search_query = request.GET.get('search', '').strip()
     
@@ -4898,7 +4770,7 @@ def self_funded_programs(request):
     }
     return render(request, 'self_funded_list.html', context)
 
-# ২. ইউনিভার্সিটি লিস্ট দেখার ফাংশন
+
 def self_funded_universities(request, country_id):
     country = get_object_or_404(Countries, country_id=country_id)
     search_query = request.GET.get('search', '').strip()
@@ -4916,7 +4788,7 @@ def self_funded_universities(request, country_id):
     }
     return render(request, 'self_funded_universities.html', context)
 
-# ৩. ডিটেইলস দেখার ফাংশন
+
 def self_funded_program_details(request, program_id):
     program = get_object_or_404(SelfFundedProgram, id=program_id)
     
@@ -4927,7 +4799,9 @@ def self_funded_program_details(request, program_id):
     return render(request, 'self_funded_details.html', context)
 
 
-from .models import ScholarshipStep
+# ==========================================
+# 🎯 SCHOLARSHIP PROCEDURE (PUBLIC VIEWS)
+# ==========================================
 
 def scholarship_procedure_list(request):
     # Only show countries that have at least one procedure step
@@ -4938,6 +4812,7 @@ def scholarship_procedure_list(request):
         "countries": countries,
         "page_name": "Scholarship Procedure"
     })
+
 
 def procedure_detail(request, country_id):
     country = get_object_or_404(Countries, country_id=country_id)
