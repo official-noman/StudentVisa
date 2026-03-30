@@ -16,7 +16,16 @@ def user_data(request):
 def consultant_details(request):
     consultant_details = None
     if request.user.is_authenticated:
-        consultant_details = ConsultantDetails.objects.filter(consultant_id=request.user.id).first()
+        consultant_user = Users.objects.filter(consultant_user=request.user).first()
+        if consultant_user:
+            consultant_details = ConsultantDetails.objects.filter(consultant_id=consultant_user.id).first()
+            if consultant_details is None and consultant_user.consultant_user_id:
+                consultant_details = ConsultantDetails.objects.filter(
+                    consultant_id=consultant_user.consultant_user_id
+                ).first()
+                if consultant_details:
+                    consultant_details.consultant_id = consultant_user.id
+                    consultant_details.save(update_fields=["consultant_id"])
     return {'consultant_details': consultant_details}
 
 
@@ -24,7 +33,7 @@ def consultant_details(request):
 def consultant_user_details(request):
     consultant_user_details = None
     if request.user.is_authenticated:
-        consultant_user_details = Users.objects.filter(id=request.user.id).first()
+        consultant_user_details = Users.objects.filter(consultant_user=request.user).first()
     return {'consultant_user_details': consultant_user_details, 'request': request}
     
     

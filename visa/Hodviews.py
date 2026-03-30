@@ -31,12 +31,37 @@ def is_consultant(user):
     return user.is_authenticated and user.user_type == 1
 
 
+def get_logged_in_consultant(user):
+    return get_object_or_404(Users, consultant_user_id=user.id, user_role=5)
+
+
+def get_consultant_details_instance(consultant, create=False):
+    consultant_details = ConsultantDetails.objects.filter(
+        consultant_id=consultant.id
+    ).first()
+
+    if consultant_details is None and consultant.consultant_user_id:
+        consultant_details = ConsultantDetails.objects.filter(
+            consultant_id=consultant.consultant_user_id
+        ).first()
+        if consultant_details:
+            consultant_details.consultant_id = consultant.id
+            consultant_details.save(update_fields=["consultant_id"])
+
+    if consultant_details is None and create:
+        consultant_details = ConsultantDetails.objects.create(
+            consultant_id=consultant.id
+        )
+
+    return consultant_details
+
+
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_home(request):
     # Assuming consultant_id is related to the user
-    consultant_id = request.user.id
-    consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
+    consultant = get_logged_in_consultant(request.user)
+    consultant_id = consultant.id
 
   
 
@@ -113,7 +138,7 @@ def new_students_view(request):
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def monthly_balance_chart(request):
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
 
     # Get total credit and debit per month
     monthly_data = Balances.objects.filter(
@@ -140,7 +165,7 @@ def monthly_balance_chart(request):
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_ratings_json(request):
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
 
     ratings = Review.objects.filter(consultant=consultant_id).values_list('rating', flat=True)
     average_rating = sum(ratings) / len(ratings) if ratings else 0
@@ -162,11 +187,12 @@ def consultant_ratings_json(request):
 def consultant_gallery(request):
     error_message = None
     images = None
+    consultant = get_logged_in_consultant(request.user)
+    consultant_id = consultant.id
 
     if request.method == 'POST':
         image = request.FILES.get('image')
         caption = request.POST.get('caption')
-        consultant_id = request.user.id
         
         # Check if the consultant already has 12 images
         image_count = ConsultantImages.objects.filter(consultant_id=consultant_id).count()
@@ -189,7 +215,6 @@ def consultant_gallery(request):
             error_message = "Please provide all required information."
 
     # Fetch images regardless of whether there's an error or not
-    consultant_id = request.user.id
     images = ConsultantImages.objects.filter(consultant_id=consultant_id)
 
     return render(request, 'Hodviews/gallery.html', {'images': images, 'error_message': error_message})
@@ -198,7 +223,7 @@ def consultant_gallery(request):
         
 @login_required(login_url='login_user')
 def delete_gallery(request, image_id):
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
     image_to_delete = get_object_or_404(ConsultantImages, id=image_id, consultant_id=consultant_id)
 
     # Get the path of the image file
@@ -221,7 +246,7 @@ def consultant_profile(request):
     if request.user.is_authenticated:
         print('user: ', request.user.email)
         user_id = request.user.id
-        user = Users.objects.get(id=user_id)
+        user = Users.objects.get(consultant_user_id=user_id)
         print('est. date: ', user.est_date)
         context = {
             'user': user,
@@ -260,7 +285,7 @@ def save_consultant_profile(request, user_id):
             print('about: ', about)
             print('consultant_img: ', consultant_img)
             consultant_id = int(user_id)
-            consultant = Users.objects.get(id=consultant_id)
+            consultant = Users.objects.get(consultant_user_id=consultant_id)
             if company_name and full_name and phone and address:
                 
                 consultant.company_name = company_name
@@ -310,7 +335,7 @@ def save_consultant_profile(request, user_id):
                         return JsonResponse({'error': 'Passwords do not match'})
                 user.save()
                 consultant.save()
-                consultant_details = ConsultantDetails.objects.get(consultant_id=consultant_id)
+                consultant_details = get_consultant_details_instance(consultant, create=True)
 
                 if experience:
                     consultant_details.experience = experience
@@ -340,8 +365,8 @@ import io
 def consultant_logo(request):
     if request.user.is_authenticated:
         user = request.user
-        consultant = Users.objects.get(id=user.id)
-        consultant_details, created_at = ConsultantDetails.objects.get_or_create(consultant_id=consultant.id)
+        consultant = get_logged_in_consultant(user)
+        consultant_details = get_consultant_details_instance(consultant, create=True)
 
         if request.method == 'POST':
             logo = request.FILES.get('logo')
@@ -383,8 +408,8 @@ def save_logo(request):
         if request.user.is_authenticated:
             consultant_logo = request.FILES.get('logo')
             user = request.user
-            consultant = Users.objects.get(id=user.id)
-            consultant_details, created_at = ConsultantDetails.objects.get_or_create(consultant_id=consultant.id)
+            consultant = get_logged_in_consultant(user)
+            consultant_details = get_consultant_details_instance(consultant, create=True)
 
             # Check if there is an existing logo
             if consultant_details.consultant_logo:
@@ -407,8 +432,9 @@ def save_logo(request):
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_requirement(request):
-    user = request.user
-    consultant_details, created = ConsultantDetails.objects.get_or_create(consultant_id=user.id)
+    consultant = get_logged_in_consultant(request.user)
+    consultant_details = get_consultant_details_instance(consultant, create=True)
+    created = consultant_details.created_at is None
 
     if request.method == 'POST':
         consultant_requirement = request.POST.get('consultant_requirement')
@@ -418,13 +444,13 @@ def consultant_requirement(request):
             consultant_details.consultant_requirement = consultant_requirement
 
             # If consultant ID has changed, update the filenames accordingly
-            if consultant_details.consultant_id != user.id:
-                consultant_details.consultant_id = user.id
+            if consultant_details.consultant_id != consultant.id:
+                consultant_details.consultant_id = consultant.id
                 # Update consultant_requirement_image filename
                 if consultant_details.consultant_requirement_image:
                     old_filename = consultant_details.consultant_requirement_image.name
                     old_filename_parts = old_filename.split('-')
-                    new_filename = f"{user.id}-{slugify(user.consultant_name)}_req-{old_filename_parts[-1]}"
+                    new_filename = f"{consultant.id}-{slugify(consultant.company_name)}_req-{old_filename_parts[-1]}"
                     consultant_details.consultant_requirement_image.name = new_filename
 
             # Delete the old image if it exists
@@ -455,14 +481,13 @@ def consultant_requirement(request):
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_country(request):
-    consultant_id = request.user.id
+    consultant = get_logged_in_consultant(request.user)
+    consultant_id = consultant.id
+    consultant_details = get_consultant_details_instance(consultant, create=True)
 
     all_countries = Countries.objects.all()
 
-    saved_country_ids = ConsultantDetails.objects.filter(
-        consultant_id=consultant_id,
-        consultant_countries__isnull=False
-    ).values_list('consultant_countries__country_id', flat=True)
+    saved_country_ids = consultant_details.consultant_countries.values_list('country_id', flat=True)
 
     saved_countries = Countries.objects.filter(country_id__in=saved_country_ids)
 
@@ -474,8 +499,6 @@ def consultant_country(request):
             selected_country = Countries.objects.get(country_id=consultant_country_id)
             print('selected_country:', selected_country)
 
-            consultant_details, created = ConsultantDetails.objects.get_or_create(consultant_id=consultant_id)
-           
             consultant_details.consultant_countries.add(selected_country)
 
             return redirect('consultant_country')  
@@ -491,12 +514,13 @@ def delete_country(request):
     # Check if the request is a POST request and an Ajax request
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Get the current user's consultant ID
-        consultant_id = request.user.id
+        consultant = get_logged_in_consultant(request.user)
+        consultant_id = consultant.id
         # Get the country name from the POST data
         country_name = request.POST.get('country_name')
         try:
             # Get the ConsultantDetails instance for the current consultant
-            consultant_details = get_object_or_404(ConsultantDetails, consultant_id=consultant_id)
+            consultant_details = get_consultant_details_instance(consultant, create=True)
             # Get the corresponding country instance
             country = get_object_or_404(Countries, country_name=country_name)
             # Remove the selected country from the consultant_details
@@ -529,7 +553,7 @@ def consultant_scholarship(request):
         apply_process = request.POST.get('apply_process')
         
         # Assuming consultant_id should be set to the currently logged-in user's ID
-        consultant_id = request.user.id
+        consultant_id = get_logged_in_consultant(request.user).id
         country_id = request.POST.get('country_id')
         country_instance = Countries.objects.get(country_id=country_id)
 
@@ -569,7 +593,8 @@ def consultant_map(request):
 
     if request.method == 'POST':
         map_location = request.POST.get('map_location')
-        consultant_id = request.user.id
+        consultant = get_logged_in_consultant(request.user)
+        consultant_id = consultant.id
         now = timezone.now()
 
         try:
@@ -590,7 +615,7 @@ def consultant_map(request):
                 updated_at=now
             )
 
-            consultant_details = ConsultantDetails.objects.get(consultant_id=consultant_id)
+            consultant_details = get_consultant_details_instance(consultant, create=True)
             consultant_details.consultant_maplocation = map_instance.map_location
             consultant_details.save()
 
@@ -603,7 +628,7 @@ def consultant_map(request):
             error_message = f"Error: {str(e)}"
 
     else:
-        consultant_id = request.user.id
+        consultant_id = get_logged_in_consultant(request.user).id
         try:
             map_instance = Maps.objects.get(consultant_id=consultant_id)
             existing_map_location = map_instance.map_location
@@ -626,7 +651,7 @@ from .models import Colors
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_color(request):
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
 
     try:
         consultant_colors = Colors.objects.get(consultant_id=consultant_id)
@@ -692,15 +717,16 @@ def consultant_intro(request):
         consultant_description = request.POST.get('consultant_description')
 
         # Get the currently logged-in user
-        user = request.user
-        consultant_id = user.id
+        consultant_user = request.user
+        consultant_profile = get_logged_in_consultant(consultant_user)
+        consultant_id = consultant_profile.id
 
         # Current timestamp for created_at and updated_at
         now = timezone.now()
 
         try:
             # Attempt to retrieve the existing consultant details
-            consultant = ConsultantDetails.objects.get(consultant_id=consultant_id)
+            consultant = get_consultant_details_instance(consultant_profile, create=True)
             consultant.consultant_bio = consultant_bio
             consultant.consultant_intro = consultant_intro
             consultant.consultant_description = consultant_description
@@ -720,28 +746,12 @@ def consultant_intro(request):
             success_message = "Consultant details updated successfully."
 
         except ConsultantDetails.DoesNotExist:
-            # If consultant details do not exist, create a new instance
-            consultant = ConsultantDetails.objects.create(
-                consultant_id=consultant_id,
-                consultant_bio=consultant_bio,
-                consultant_intro=consultant_intro,
-                consultant_description=consultant_description,
-                created_at=now,
-                updated_at=now
-            )
-
-            # Create Customizes instance for the new consultant
-            customize = Customizes.objects.create(
-                consultant_id=consultant_id,
-                image=request.FILES.get('image'),  # Assuming the file input name is 'image'
-                status=1
-            )
-
-            success_message = "Consultant details added successfully."
+            pass
 
     # Retrieve the latest consultant details for display
-    consultant = ConsultantDetails.objects.filter(consultant_id=request.user.id).first()
-    customize = Customizes.objects.filter(consultant_id=request.user.id).first()
+    consultant_profile = get_logged_in_consultant(request.user)
+    consultant = get_consultant_details_instance(consultant_profile, create=True)
+    customize = Customizes.objects.filter(consultant_id=consultant_profile.id).first()
 
 
     # Render the template with relevant context
@@ -763,14 +773,15 @@ def student_list(request):
     # Retrieve "My Lead" data using the update_my_lead view
     my_lead_data = update_my_lead(request)
 
-    viewed_students = [level.student_id for level in Levels.objects.filter(consultant_id=request.user.id)]
+    consultant_id = get_logged_in_consultant(request.user).id
+    viewed_students = [level.student_id for level in Levels.objects.filter(consultant_id=consultant_id)]
 
     for student, student_detail in zip(students, student_details):
         # Check if the student has been viewed by the consultant
         if student.id in viewed_students:
             # If viewed, add to 'My Lead' section
             is_favorite = False
-            if student_detail.dets_favconsultantlist and str(request.user.id) in student_detail.dets_favconsultantlist.split(','):
+            if student_detail.dets_favconsultantlist and str(consultant_id) in student_detail.dets_favconsultantlist.split(','):
                 is_favorite = True
 
             student_levels.append({'student': student, 'level': None, 'is_favorite': is_favorite, 'student_detail': student_detail})
@@ -790,7 +801,7 @@ def student_list(request):
                 level = 5
 
             is_favorite = False
-            if student_detail.dets_favconsultantlist and str(request.user.id) in student_detail.dets_favconsultantlist.split(','):
+            if student_detail.dets_favconsultantlist and str(consultant_id) in student_detail.dets_favconsultantlist.split(','):
                 is_favorite = True
 
             student_levels.append({'student': student, 'level': level, 'is_favorite': is_favorite, 'student_detail': student_detail})
@@ -806,9 +817,8 @@ def student_list(request):
 @login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def update_my_lead(request):
-    user = request.user
-
-    student_levels = Levels.objects.filter(consultant_id=user.id)
+    consultant_id = get_logged_in_consultant(request.user).id
+    student_levels = Levels.objects.filter(consultant_id=consultant_id)
 
     data = []
     for student_level in student_levels:
@@ -911,7 +921,8 @@ def update_balance(request, lead, student_id):
         print('result_serialize: ', result)
 
     # Get the rates for the current consultant
-    rates_data = Rates.objects.filter(rate_added_to=request.user.id).first()
+    consultant_id = get_logged_in_consultant(request.user).id
+    rates_data = Rates.objects.filter(rate_added_to=consultant_id).first()
     if not rates_data:
         return JsonResponse({"error": "Please Contact With Administration."})
 
@@ -930,7 +941,7 @@ def update_balance(request, lead, student_id):
         rate = 0.0
 
     # Check if there is sufficient balance
-    current_balance = get_consultant_balance(request.user.id)
+    current_balance = get_consultant_balance(consultant_id)
 
     level_str = f"level_{lead}"
     student_level = Levels.objects.filter(student_id=student.id, **{level_str: student.id}).first()
@@ -944,7 +955,7 @@ def update_balance(request, lead, student_id):
     else:
         # Deduct the rate from the balance
         balance = Balances(
-            acc_paid_by=request.user.id,
+            acc_paid_by=consultant_id,
             acc_pay_to=student_id,
             acc_debit=rate,  # Deduct the rate
             created_at=timezone.now(),
@@ -956,7 +967,7 @@ def update_balance(request, lead, student_id):
         level_model = Levels(
             balance_id=balance.id,
             student_id=student.id,
-            consultant_id=request.user.id,
+            consultant_id=consultant_id,
             status=1,
             created_at=timezone.now(),
             updated_at=timezone.now(),
@@ -1165,7 +1176,7 @@ def update_balance(request, lead, student_id):
 login_required(login_url='login_user')
 @user_passes_test(is_consultant, login_url='login_user')
 def consultant_feedback_list(request):
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
     feedback_list = HomeFeedback.objects.filter(consultant=consultant_id)
     print('type of consultant id in feedback: ', )
     print('feedback_list: ', feedback_list)
@@ -1217,12 +1228,13 @@ def delete_feedback(request, feedback_id):
     
 
 def update_social_links(request):
-    consultant_id = request.user.id
+    consultant = get_logged_in_consultant(request.user)
+    consultant_id = consultant.id
     success_message = None
     error_message = None
 
     try:
-        consultant_details = ConsultantDetails.objects.get(consultant_id=consultant_id)
+        consultant_details = get_consultant_details_instance(consultant, create=True)
     except ConsultantDetails.DoesNotExist:
         consultant_details = None
 
@@ -1240,13 +1252,12 @@ def update_social_links(request):
                 consultant_details.consultant_googleplus = consultant_googleplus
                 consultant_details.save()
             else:
-                ConsultantDetails.objects.create(
-                    consultant_id=consultant_id,
-                    consultant_facebook=consultant_facebook,
-                    consultant_website=consultant_website,
-                    consultant_twitter=consultant_twitter,
-                    consultant_googleplus=consultant_googleplus
-                )
+                consultant_details = get_consultant_details_instance(consultant, create=True)
+                consultant_details.consultant_facebook = consultant_facebook
+                consultant_details.consultant_website = consultant_website
+                consultant_details.consultant_twitter = consultant_twitter
+                consultant_details.consultant_googleplus = consultant_googleplus
+                consultant_details.save()
 
             success_message = "Social links successfully updated."
         except Exception as e:
@@ -1263,14 +1274,14 @@ def compare_balance_with_lead(request, lead, student_id):
     if request.method == 'GET':
         print('lead type: ', type(lead))
         print('student_id type: ', type(student_id))
-        user = request.user
+        consultant_id = get_logged_in_consultant(request.user).id
 
         if lead and student_id:
-            rate = Rates.objects.filter(rate_added_to=user.id).first()
+            rate = Rates.objects.filter(rate_added_to=consultant_id).first()
             # balance = Balances.objects.filter(acc_pay_to=user.id).first()
             # Calculate total credit and debit for the consultant
-            total_credit = Balances.objects.filter(acc_pay_to=user.id).aggregate(Sum('acc_credit'))['acc_credit__sum'] or 0.0
-            total_debit = Balances.objects.filter(acc_paid_by=user.id).aggregate(Sum('acc_debit'))['acc_debit__sum'] or 0.0
+            total_credit = Balances.objects.filter(acc_pay_to=consultant_id).aggregate(Sum('acc_credit'))['acc_credit__sum'] or 0.0
+            total_debit = Balances.objects.filter(acc_paid_by=consultant_id).aggregate(Sum('acc_debit'))['acc_debit__sum'] or 0.0
             print('total_debit:', total_debit)
             
             # Calculate total balance
@@ -1310,7 +1321,7 @@ def compare_balance_with_lead(request, lead, student_id):
 @user_passes_test(is_consultant, login_url='login_user')
 def total_balance_view(request):
     # Assuming consultant_id is related to the user
-    consultant_id = request.user.id
+    consultant_id = get_logged_in_consultant(request.user).id
 
     # Calculate total credit and debit for the consultant
     total_credit = Balances.objects.filter(acc_pay_to=consultant_id).aggregate(Sum('acc_credit'))['acc_credit__sum'] or 0.0

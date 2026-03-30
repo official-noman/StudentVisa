@@ -540,7 +540,11 @@ iframe[Attributes Style] {
                               
                             <ul class="social-links clearfix">
                                 <li><a href="index.html"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="index.html"><i class="fab fa-facebook-f"></i></a></li>
+                                <li>
+                                    <a href="{{ consultant_details.consultant_facebook|default:'#' }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </li>
                                 <li><a href="index.html"><i class="fab fa-instagram"></i></a></li>
                                 <li><a href="index.html"><i class="fab fa-google-plus-g"></i></a></li>
                                 <li><a href="index.html"><i class="fab fa-linkedin-in"></i></a></li>
@@ -556,9 +560,9 @@ iframe[Attributes Style] {
                             </div>
                             <div class="widget-content" style="overflow: hidden;">
                                 
-                                    <div class="fb-page facebook-link-consultant" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="" data-width="300" data-height="130" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
+                                    <div id="consultantFacebookWidget" class="fb-page facebook-link-consultant" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="" data-width="300" data-height="130" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
                                         <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
-                                            <a href="{{ consultant_details.consultant_facebook }}">Facebook Page</a>
+                                            <a id="consultantFacebookWidgetLink" href="{{ consultant_details.consultant_facebook }}" target="_blank" rel="noopener noreferrer">Facebook Page</a>
                                         </blockquote>
                                     </div>                        
                             </div>
@@ -619,7 +623,7 @@ iframe[Attributes Style] {
 
 <div id="facebookPluginContainer" class="fb-page" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="messages" data-width="300" data-height="350" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false" data-show-posts="false">
     <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
-        <a href="{{ consultant_details.consultant_facebook }}" target="_blank" rel="noopener noreferrer">{{ consultant.company_name|default:"Facebook Page" }}</a>
+        <a id="consultantFacebookChatLink" href="{{ consultant_details.consultant_facebook }}" target="_blank" rel="noopener noreferrer">{{ consultant.company_name|default:"Facebook Page" }}</a>
     </blockquote>
 </div>
 
@@ -633,24 +637,85 @@ iframe[Attributes Style] {
 </button>
 
 <script>
-    document.getElementById('toggleFacebookPageBtn').addEventListener('click', function () {
-        var fbPluginContainer = document.getElementById('facebookPluginContainer');
-        var toggleButton = document.getElementById('toggleFacebookPageBtn');
-        var facebookUrl = "{{ consultant_details.consultant_facebook|default:''|escapejs }}";
+    function normalizeFacebookUrl(url) {
+        if (!url) {
+            return '';
+        }
+
+        url = url.trim();
+
+        if (!url) {
+            return '';
+        }
+
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url.replace(/^\/+/, '');
+        }
+
+        return url;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var facebookUrl = normalizeFacebookUrl("{{ consultant_details.consultant_facebook|default:''|escapejs }}");
+        var pluginContainer = document.getElementById('facebookPluginContainer');
+        var widget = document.getElementById('consultantFacebookWidget');
+        var widgetLink = document.getElementById('consultantFacebookWidgetLink');
+        var chatLink = document.getElementById('consultantFacebookChatLink');
+        var socialLinks = document.querySelectorAll('.social-links a');
+
+        if (socialLinks.length > 1) {
+            socialLinks[1].setAttribute('href', facebookUrl || '#');
+            socialLinks[1].setAttribute('target', '_blank');
+            socialLinks[1].setAttribute('rel', 'noopener noreferrer');
+        }
 
         if (!facebookUrl) {
             return;
         }
 
+        if (pluginContainer) {
+            pluginContainer.setAttribute('data-href', facebookUrl);
+            pluginContainer.querySelector('blockquote').setAttribute('cite', facebookUrl);
+        }
+
+        if (widget) {
+            widget.setAttribute('data-href', facebookUrl);
+            widget.querySelector('blockquote').setAttribute('cite', facebookUrl);
+        }
+
+        if (widgetLink) {
+            widgetLink.setAttribute('href', facebookUrl);
+        }
+
+        if (chatLink) {
+            chatLink.setAttribute('href', facebookUrl);
+        }
+
+        if (typeof FB !== 'undefined' && FB.XFBML) {
+            FB.XFBML.parse();
+        }
+    });
+
+    document.getElementById('toggleFacebookPageBtn').addEventListener('click', function () {
+        var fbPluginContainer = document.getElementById('facebookPluginContainer');
+        var toggleButton = document.getElementById('toggleFacebookPageBtn');
+        var facebookUrl = normalizeFacebookUrl("{{ consultant_details.consultant_facebook|default:''|escapejs }}");
+
+        if (!facebookUrl) {
+            return;
+        }
+
+        fbPluginContainer.setAttribute('data-href', facebookUrl);
+
         if (fbPluginContainer.style.display === 'none' || !fbPluginContainer.style.display) {
             // Show Facebook Chat
             fbPluginContainer.style.display = 'block';
-            toggleButton.innerText = 'Close Facebook Chat';
+            toggleButton.innerHTML = '<i class="fab fa-facebook-square"></i> Close Facebook Chat <i class="fas fa-times"></i>';
             toggleButton.classList.add('open');
         } else {
             // Hide Facebook Chat
             fbPluginContainer.style.display = 'none';
-            toggleButton.innerText = 'Open Chat';
+            toggleButton.innerHTML = '<i class="fab fa-facebook-square"></i> Facebook Chat <i class="fas fa-times"></i>';
             toggleButton.classList.remove('open');
         }
 

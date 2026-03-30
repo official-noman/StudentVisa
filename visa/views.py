@@ -43,6 +43,34 @@ from django.db.models import Q, Count
 from django.core.paginator import Paginator
 
 
+def get_consultant_details_instance(consultant, create=False):
+    consultant_details = ConsultantDetails.objects.filter(
+        consultant_id=consultant.id
+    ).first()
+
+    if consultant_details is None and consultant.consultant_user_id:
+        consultant_details = ConsultantDetails.objects.filter(
+            consultant_id=consultant.consultant_user_id
+        ).first()
+        if consultant_details:
+            consultant_details.consultant_id = consultant.id
+            consultant_details.save(update_fields=["consultant_id"])
+
+    if consultant_details is None and create:
+        consultant_details = ConsultantDetails.objects.create(
+            consultant_id=consultant.id
+        )
+
+    return consultant_details
+
+
+def get_consultant_details_or_404(consultant):
+    consultant_details = get_consultant_details_instance(consultant)
+    if consultant_details is None:
+        raise Http404("No ConsultantDetails matches the given query.")
+    return consultant_details
+
+
 def home(request):
     # if user.user_type == 0:
     # if Customizes.objects.exists():
@@ -66,7 +94,7 @@ def home(request):
 
     consultant_details = []
     for consultant in top_consultants:
-        details = ConsultantDetails.objects.filter(consultant_id=consultant.id).first()
+        details = get_consultant_details_instance(consultant)
         consultant_details.append(details)
 
     visa_services = VisaService.objects.filter(is_active=True)
@@ -1414,9 +1442,7 @@ def login_student(request):
             consultant_id = resolved.kwargs.get("consultant_id", None)
             if consultant_id is not None:
                 consultant = get_object_or_404(Users, id=consultant_id)
-                consultant_details = get_object_or_404(
-                    ConsultantDetails, consultant_id=consultant_id
-                )
+                consultant_details = get_consultant_details_or_404(consultant)
                 print("consultant details: ", consultant)
 
             print("View name:", view_name)
@@ -1599,7 +1625,7 @@ def consultant_list(request):
     # Retrieve consultants with user_role=5
     users = CustomUser.objects.filter(user_type=1)
     consultants = Users.objects.filter(
-        id__in=users.values("id"), active_status__in=[1, 3, 4, 5]
+        consultant_user_id__in=users.values("id"), active_status__in=[1, 3, 4, 5]
     ).order_by("id")
     fav_consultant_ids = []
 
@@ -1618,7 +1644,8 @@ def consultant_list(request):
 
     # Retrieve consultant details
     consultant_details = ConsultantDetails.objects.filter(
-        consultant_id__in=consultants
+        Q(consultant_id__in=consultants.values("id"))
+        | Q(consultant_id__in=consultants.values("consultant_user_id"))
     ).order_by("consultant_id")
     countries = Countries.objects.all()
     page_name = "Consultant List"
@@ -1629,10 +1656,16 @@ def consultant_list(request):
     page = request.GET.get("page")
 
     # Combine consultants and details into a list of dictionaries
-    consultants_with_details = [
-        {"consultant": consultant, "details": details}
-        for consultant, details in zip(consultants, consultant_details)
-    ]
+    consultants_with_details = []
+    for consultant in consultants:
+        details = consultant_details.filter(
+            Q(consultant_id=consultant.id)
+            | Q(consultant_id=consultant.consultant_user_id)
+        ).first()
+        if details:
+            consultants_with_details.append(
+                {"consultant": consultant, "details": details}
+            )
 
     if not page:
         # Shuffle the list of consultants only if pagination is not in use
@@ -1671,7 +1704,7 @@ def consultant_list(request):
 
         # queryset = Users.objects.filter(user_role=5)
         queryset = Users.objects.filter(
-            id__in=users.values("id"), active_status__in=[1, 3, 4, 5]
+            consultant_user_id__in=users.values("id"), active_status__in=[1, 3, 4, 5]
         )
         print("queryset in the begining: ", queryset)
         if search_input or rating_filter or country_filter or experience_filter:
@@ -1681,7 +1714,9 @@ def consultant_list(request):
             if rating_filter == "high":
                 # queryset_user = Users.objects.filter(company_name__icontains=search_input, user_role=5).order_by('-rating')
                 queryset_user = Users.objects.filter(
-                    company_name__icontains=search_input, active_status__in=[1, 3, 4, 5]
+                    company_name__icontains=search_input,
+                    consultant_user_id__in=users.values("id"),
+                    active_status__in=[1, 3, 4, 5],
                 ).order_by("-rating")
                 queryset = list(queryset_user.values_list("id", flat=True))
 
@@ -1698,7 +1733,9 @@ def consultant_list(request):
             elif rating_filter == "low":
                 # queryset_user = Users.objects.filter(company_name__icontains=search_input, user_role=5).order_by('rating')
                 queryset_user = Users.objects.filter(
-                    company_name__icontains=search_input, active_status__in=[1, 3, 4, 5]
+                    company_name__icontains=search_input,
+                    consultant_user_id__in=users.values("id"),
+                    active_status__in=[1, 3, 4, 5],
                 ).order_by("rating")
                 queryset = list(queryset_user.values_list("id", flat=True))
                 print("------rating is low------")
@@ -1828,8 +1865,8 @@ def consultant_list(request):
             consultants_with_details = [
                 {
                     "consultant": Users.objects.get(id=consultant),
-                    "details": ConsultantDetails.objects.filter(
-                        consultant_id=consultant
+                    "details": get_consultant_details_instance(
+                        Users.objects.get(id=consultant)
                     ),
                 }
                 for consultant in queryset
@@ -1932,9 +1969,7 @@ def singel_consultant_base(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
 
     # Retrieve additional details from the ConsultantDetails model
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     print("consultant_details:", consultant_details)
     # Pass the consultant and details to the template
     return render(
@@ -1946,9 +1981,7 @@ def singel_consultant_base(request, consultant_id):
 
 def singel_consultant_details(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     consultant_images = list(
         ConsultantImages.objects.filter(consultant_id=consultant_id)
     )
@@ -1985,9 +2018,7 @@ def singel_consultant_details(request, consultant_id):
 
 def singel_consultant_page(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
 
     # Retrieve the corresponding Customizes instance for the current consultant
     customize = Customizes.objects.filter(consultant_id=consultant_id).first()
@@ -2013,9 +2044,7 @@ def singel_consultant_page(request, consultant_id):
 def singel_consultant_gallery(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
     images = ConsultantImages.objects.filter(consultant_id=consultant_id)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     consultant_images = ConsultantImages.objects.filter(consultant_id=consultant_id)
     page_name = "Gallery"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -2038,9 +2067,7 @@ def singel_consultant_gallery(request, consultant_id):
 
 def single_consultant_requirement(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     page_name = "Requirement"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
     page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
@@ -2075,9 +2102,7 @@ def single_consultant_requirement(request, consultant_id):
 
 def singel_consultant_country(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     page_name = "Country"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
     page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
@@ -2118,9 +2143,7 @@ def singel_consultant_country(request, consultant_id):
 
 def singel_consultant_country_details(request, consultant_id, country_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     country = get_object_or_404(Countries, country_id=country_id)
     page_name = "Country Details"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -2144,9 +2167,7 @@ def singel_consultant_country_details(request, consultant_id, country_id):
 
 def singel_consultant_review(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
 
     reviews = Review.objects.filter(consultant=consultant_id).order_by("-created_at")[
         :10
@@ -2338,9 +2359,7 @@ def save_review(request):
 
 def single_consultant_all_reviews(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
 
     reviews = Review.objects.filter(consultant=consultant_id)
 
@@ -2405,9 +2424,7 @@ def singel_consultant_profile(request, consultant_id):
     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
 
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant_id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
     return render(
         request,
         "singel_consultant_profile.html",
@@ -2424,9 +2441,7 @@ def singel_consultant_profile(request, consultant_id):
 def feedback(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
 
-    consultant_details = get_object_or_404(
-        ConsultantDetails, consultant_id=consultant.id
-    )
+    consultant_details = get_consultant_details_or_404(consultant)
 
     countries = consultant_details.consultant_countries.all()
 
@@ -2530,9 +2545,7 @@ def singel_consultant_contact(request, consultant_id):
 
     try:
         consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
-        consultant_details = get_object_or_404(
-            ConsultantDetails, consultant_id=consultant_id
-        )
+        consultant_details = get_consultant_details_or_404(consultant)
     except Http404:
         # Handle 404 error here, render a custom 404 template
         return render(request, "error.html", status=404)

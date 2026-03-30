@@ -1599,9 +1599,9 @@ def grant_permission_consultant(request, user_id):
                     last_active=timezone.now(),
                 )
                 user_instance.consultant_user = new_custom_user
-                user_instance.save(update_fields=["consultant_user"])
+                user_instance.save()
                 ConsultantDetails.objects.create(
-                    consultant_id=new_custom_user.id,
+                    consultant_id=user_instance.id,
                     # Add other fields as needed
                 )
             # Set the active_status to 1 when permission is granted
