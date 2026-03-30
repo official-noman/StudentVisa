@@ -3,390 +3,148 @@
 
 {% block title %}Manage Universities{% endblock %}
 
-{% block content %}
+{% block custom_css %}
 <style>
   :root {
-    --primary:       #4f46e5;
-    --primary-light: #eef2ff;
-    --danger:        #ef4444;
-    --danger-light:  #fef2f2;
-    --text-main:     #1e293b;
-    --text-muted:    #64748b;
-    --border:        #e2e8f0;
-    --card-shadow:   0 10px 30px rgba(0,0,0,0.05);
-    --radius:        16px;
-    --bg:            #f8fafc;
+    --bg: #F4F7FE;
+    --surface: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-muted: #64748B;
+    --accent: #4e73df;
+    --border: rgba(15, 23, 42, 0.08);
+    --radius-lg: 22px;
+    --shadow-card: 0 12px 32px rgba(15,23,42,0.06);
   }
 
-  body { background: var(--bg); }
+  .content-wrapper { background: var(--bg) !important; color: var(--text-primary); padding: 28px !important; }
 
-  /* Header */
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-  .page-header-icon {
-    width: 48px; height: 48px;
-    background: var(--primary-light);
-    border-radius: 13px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--primary); font-size: 1.3rem;
-  }
-  .page-header h4 {
-    font-size: 1.35rem; font-weight: 700;
-    color: var(--text-main); margin: 0;
-  }
-  .page-header p {
-    font-size: 0.83rem; color: var(--text-muted); margin: 0;
-  }
+  .db-page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; }
+  .db-page-title { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; }
+  .db-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 7px; }
+  .db-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
-  /* Card Panel */
-  .card-panel {
-    background: #fff;
-    border-radius: var(--radius);
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border);
-    padding: 28px 32px;
-    margin-bottom: 28px;
-  }
+  .g-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 26px; margin-bottom: 24px; }
+  .g-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+  .g-card-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .g-card-sub { font-size: 13px; color: var(--text-muted); margin: 0; }
 
-  .section-label {
-    font-size: 0.71rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 20px;
-    display: flex; align-items: center; gap: 8px;
+  /* Forms */
+  .clean-input, .clean-select { 
+      width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; 
+      font-size: 14px; background: #F8FAFC; transition: 0.3s; outline: none;
   }
-  .section-label::after {
-    content: ''; flex: 1; height: 1px; background: var(--border);
-  }
+  .clean-input:focus, .clean-select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.1); background: #fff; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
 
-  /* Form */
-  .form-label {
-    font-size: 0.82rem; font-weight: 600;
-    color: var(--text-main); margin-bottom: 6px;
-  }
-  .form-control, .form-select {
-    border: 1.5px solid var(--border);
-    border-radius: 10px; font-size: 0.88rem;
-    padding: 10px 14px; color: var(--text-main);
-    background: #f8fafc; transition: all 0.2s;
-  }
-  .form-control:focus, .form-select:focus {
-    border-color: var(--primary); background: #fff;
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.08);
-  }
-
-  /* Logo Upload */
-  .logo-upload-wrap {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: #f8fafc;
-    position: relative;
-  }
-  .logo-upload-wrap:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-  }
-  .logo-upload-wrap input[type="file"] {
-    position: absolute; inset: 0;
-    opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
-  .logo-upload-wrap i { font-size: 1.8rem; color: var(--primary); opacity: 0.5; }
-  .logo-upload-wrap p {
-    font-size: 0.8rem; color: var(--text-muted);
-    margin: 6px 0 0;
-  }
-  .logo-preview {
-    width: 64px; height: 64px;
-    object-fit: contain;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    display: none; margin: 0 auto 8px;
-  }
-
-  /* Submit */
-  .btn-save {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #fff; border: none; border-radius: 10px;
-    padding: 11px 28px; font-size: 0.88rem; font-weight: 600;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(79,70,229,0.25);
-  }
-  .btn-save:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(79,70,229,0.35);
-    color: #fff;
-  }
-
-  /* Alerts */
-  .alert-custom {
-    border: none; border-radius: 10px;
-    font-size: 0.85rem; font-weight: 500;
-    padding: 12px 18px; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .alert-success-custom { background: #f0fdf4; color: #15803d; }
-  .alert-danger-custom  { background: #fef2f2; color: #b91c1c; }
+  .btn-submit { background: linear-gradient(135deg, #4e73df, #224abe); color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; transition: 0.3s; box-shadow: 0 8px 20px rgba(78, 115, 223, 0.2); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(78, 115, 223, 0.3); }
 
   /* Table */
-  .table-wrapper { overflow-x: auto; border-radius: 12px; }
+  .dash-table { width: 100%; border-spacing: 0 10px; border-collapse: separate; }
+  .dash-table thead th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding: 0 18px 10px; border: none; }
+  .dash-table tbody td { background: #F8FAFC; padding: 16px 18px; font-size: 14px; font-weight: 500; border: none; vertical-align: middle; }
+  .dash-table tbody tr:hover td { background: #F1F5F9; }
+  .dash-table tbody td:first-child { border-radius: 12px 0 0 12px; }
+  .dash-table tbody td:last-child { border-radius: 0 12px 12px 0; }
 
-  .data-table {
-    width: 100%; border-collapse: separate;
-    border-spacing: 0; font-size: 0.875rem;
-  }
-  .data-table thead th {
-    background: #f1f5f9; color: var(--text-muted);
-    font-size: 0.71rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.07em;
-    padding: 13px 18px; border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  .data-table thead th:first-child { border-radius: 10px 0 0 0; }
-  .data-table thead th:last-child  { border-radius: 0 10px 0 0; }
-
-  .data-table tbody tr { transition: background 0.15s; }
-  .data-table tbody tr:hover { background: #f8faff; }
-  .data-table tbody td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #f1f5f9;
-    color: var(--text-main); vertical-align: middle;
-  }
-  .data-table tbody tr:last-child td { border-bottom: none; }
-
-  /* University Logo in table */
-  .uni-logo {
-    width: 38px; height: 38px;
-    object-fit: contain; border-radius: 8px;
-    border: 1px solid var(--border); background: #f8fafc;
-    padding: 3px;
-  }
-  .uni-logo-placeholder {
-    width: 38px; height: 38px;
-    background: var(--primary-light); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--primary); font-size: 1rem;
-  }
-
-  .badge-country {
-    background: var(--primary-light); color: var(--primary);
-    font-size: 0.74rem; font-weight: 600;
-    padding: 4px 10px; border-radius: 20px;
-  }
-
-  .btn-delete {
-    background: var(--danger-light); color: var(--danger);
-    border: none; border-radius: 8px;
-    padding: 6px 14px; font-size: 0.78rem; font-weight: 600;
-    transition: all 0.2s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 5px;
-  }
-  .btn-delete:hover { background: var(--danger); color: #fff; }
-
-  .empty-state {
-    text-align: center; padding: 52px 20px; color: var(--text-muted);
-  }
-  .empty-state i {
-    font-size: 2.4rem; opacity: 0.28;
-    display: block; margin-bottom: 10px;
-  }
-
-  /* Stats bar */
-  .stat-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--primary-light); color: var(--primary);
-    font-size: 0.78rem; font-weight: 700;
-    padding: 5px 13px; border-radius: 20px;
-  }
+  /* Flag & Logo */
+  .flag-avatar {
+        width: 32px; height: 32px; border-radius: 50%; object-fit: cover; 
+        border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 </style>
+{% endblock custom_css %}
 
-<div class="container-fluid px-4 py-4">
+{% block content %}
+<div class="content-wrapper">
 
-  <!-- Page Header -->
-  <div class="page-header">
-    <div class="page-header-icon">
-      <i class="bi bi-building"></i>
-    </div>
-    <div>
-      <h4>Manage Universities</h4>
-      <p>Add and manage universities linked to countries</p>
+  <div class="db-page-header">
+    <div class="db-page-header-left">
+      <div class="db-eyebrow">Data Management</div>
+      <h1 class="db-page-title">Manage Universities</h1>
+      <p class="db-page-subtitle">Add new universities and link them to countries for the Self Funded programs.</p>
     </div>
   </div>
 
-  <!-- Messages -->
-  {% for message in messages %}
-    <div class="alert-custom
-      {% if message.tags == 'success' %}alert-success-custom
-      {% else %}alert-danger-custom{% endif %}">
-      <i class="bi
-        {% if message.tags == 'success' %}bi-check-circle-fill
-        {% else %}bi-exclamation-circle-fill{% endif %}">
-      </i>
-      {{ message }}
-    </div>
-  {% endfor %}
-
-  <!-- ── ADD UNIVERSITY FORM ── -->
-  <div class="card-panel">
-    <div class="section-label">
-      <i class="bi bi-plus-circle"></i> Add New University
-    </div>
-
-    <form method="POST"
-          action="{% url 'manage_universities' %}"
-          enctype="multipart/form-data">
-      {% csrf_token %}
-
-      <div class="row g-3 align-items-end">
-
-        <!-- Name -->
-        <div class="col-md-4">
-          <label class="form-label">
-            University Name <span class="text-danger">*</span>
-          </label>
-          <input type="text"
-                 name="name"
-                 class="form-control"
-                 placeholder="e.g. University of Warsaw"
-                 required>
-        </div>
-
-        <!-- Country -->
-        <div class="col-md-4">
-          <label class="form-label">
-            Country <span class="text-danger">*</span>
-          </label>
-          <select name="country_id" class="form-select" required>
-  <option value="" disabled selected>— Select Country —</option>
-  {% for country in countries %}
-    <option value="{{ country.country_id }}">{{ country.country_name }}</option>
-  {% endfor %}
-</select>
-        </div>
-
-        <!-- Logo Upload -->
-        <div class="col-md-4">
-          <label class="form-label">University Logo
-            <span class="text-muted fw-normal">(optional)</span>
-          </label>
-          <div class="logo-upload-wrap" id="logoUploadWrap">
-            <input type="file"
-                   name="university_logo"
-                   id="logoInput"
-                   accept="image/*">
-            <img src="" alt="Preview" class="logo-preview" id="logoPreview">
-            <i class="bi bi-cloud-arrow-up" id="uploadIcon"></i>
-            <p id="uploadText">Click to upload logo</p>
-          </div>
-        </div>
-
-        <!-- Submit -->
-        <div class="col-12 d-flex justify-content-end mt-2">
-          <button type="submit" class="btn-save">
-            <i class="bi bi-floppy2-fill me-2"></i> Save University
-          </button>
-        </div>
-
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" style="border-radius: 12px;">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    </form>
-  </div>
+    {% endfor %}
+  {% endif %}
 
-  <!-- ── UNIVERSITIES TABLE ── -->
-  <div class="card-panel">
-    <div class="section-label d-flex justify-content-between align-items-center"
-         style="margin-bottom:20px">
-      <span style="display:flex;align-items:center;gap:8px">
-        <i class="bi bi-table"></i> All Universities
-      </span>
-      <span class="stat-pill">
-        <i class="bi bi-building"></i>
-        {{ universities.count }} Total
-      </span>
+  <div class="row g-4">
+    <!-- ADD FORM -->
+    <div class="col-xl-4">
+      <div class="g-card">
+        <div class="g-card-header">
+          <div><h3 class="g-card-title">Add University</h3><p class="g-card-sub">Enter university details below</p></div>
+        </div>
+        
+        <form method="POST" action="{% url 'manage_universities' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">University Name <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="clean-input" placeholder="e.g. Harvard University" required>
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label">Select Country <span class="text-danger">*</span></label>
+            <select name="country_id" class="clean-select" required>
+              <option value="" disabled selected>— Select Country —</option>
+              {% for country in countries %}
+                <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <button type="submit" class="btn-submit w-100">Save University</button>
+        </form>
+      </div>
     </div>
 
-    <div class="table-wrapper">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Logo</th>
-            <th>University Name</th>
-            <th>Country</th>
-            <th>Added On</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for uni in universities %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-              {% if uni.university_logo %}
-                <img src="{{ uni.university_logo.url }}"
-                     alt="{{ uni.name }}"
-                     class="uni-logo">
-              {% else %}
-                <div class="uni-logo-placeholder">
-                  <i class="bi bi-building"></i>
-                </div>
-              {% endif %}
-            </td>
-            <td><strong>{{ uni.name }}</strong></td>
-            <td>
-              <span class="badge-country">{{ uni.country.name }}</span>
-            </td>
-            <td>{{ uni.created_at|date:"M d, Y" }}</td>
-            <td>
-              <a href="{% url 'delete_university' uni.university_id %}"
-                 class="btn-delete"
-                 onclick="return confirm('Delete {{ uni.name }}?')">
-                <i class="bi bi-trash3"></i> Delete
-              </a>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="6">
-              <div class="empty-state">
-                <i class="bi bi-building-slash"></i>
-                <p>No universities added yet.</p>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+    <!-- TABLE -->
+    <div class="col-xl-8">
+      <div class="g-card">
+        <div class="g-card-header">
+          <div><h3 class="g-card-title">University List</h3><p class="g-card-sub">All registered universities ({{ universities.count }})</p></div>
+        </div>
 
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>University</th>
+                <th>Country</th>
+                <th>Added On</th>
+                <th style="text-align:right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for uni in universities %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td style="color: var(--text-primary); font-weight: 700;">{{ uni.name }}</td>
+                <td style="display: flex; align-items: center;">
+                   {% if uni.countries.country_flag %}
+                  <img src="/static/assets/images/flags/{{ uni.countries.country_flag }}" class="flag-avatar" alt="flag">
+                {% endif %}
+                <span class="ms-2">{{ uni.countries.country_name }}</span>
+
+              </td>
+              <td>{{ uni.created_at|date:"M d, Y" }}</td>
+              <td style="text-align:right">
+                  <a href="{% url 'delete_university' uni.university_id %}" class="btn-delete" onclick="return confirm('Delete this?');">Delete</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- Logo Preview Script -->
-<script>
-  const logoInput   = document.getElementById('logoInput');
-  const logoPreview = document.getElementById('logoPreview');
-  const uploadIcon  = document.getElementById('uploadIcon');
-  const uploadText  = document.getElementById('uploadText');
-
-  logoInput.addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        logoPreview.src = e.target.result;
-        logoPreview.style.display = 'block';
-        uploadIcon.style.display  = 'none';
-        uploadText.textContent    = file.name;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-</script>
-
 {% endblock %}

@@ -190,11 +190,12 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "studentvisabd.com"
-EMAIL_PORT = 465  # SMTP port
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = "info@studentvisabd.com"  # Your email username
-EMAIL_HOST_PASSWORD = "studentvisabd"  # Your email password
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "official.aanoman@gmail.com"
+EMAIL_HOST_PASSWORD = "pwnv fmde belj abkd"
 
 # CKEditor 5 Configuration
 CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.default_storage"

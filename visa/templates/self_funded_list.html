@@ -414,15 +414,19 @@
       <div class="row g-4">
         {% for country in page_obj %}
         <div class="col-lg-3 col-md-4 col-sm-6">
-          <a href="{% url 'self_funded_universities' country.id %}" class="country-card-link">
+          <a href="{% url 'self_funded_universities' country.country_id %}" class="country-card-link">
             <div class="country-card">
 
-              <!-- Image -->
+              <!-- Image (Fixed: Using country_flag CharField) -->
               <div class="card-img-wrap">
-                {% if country.image %}
-                  <img src="{{ country.image.url }}"
-                       alt="{{ country.name }}"
-                       class="country-img">
+                {% if country.country_flag %}
+                  <img src="{% static 'assets/countries/flags/' %}{{ country.country_flag }}" 
+     alt="{{ country.country_name }}"
+     class="country-img"
+     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <div class="img-placeholder" style="display:none;">
+                    <i class="bi bi-globe-europe-africa"></i>
+                  </div>
                 {% else %}
                   <div class="img-placeholder">
                     <i class="bi bi-globe-europe-africa"></i>
@@ -430,13 +434,13 @@
                 {% endif %}
               </div>
 
-              <!-- Body -->
+              <!-- Body (Fixed: Using country_name and program_count) -->
               <div class="card-body-inner">
                 <div>
-                  <p class="country-name">{{ country.name }}</p>
+                  <p class="country-name">{{ country.country_name }}</p>
                   <p class="program-count">
-                    {{ country.selffundedprogram_set.count }}
-                    program{{ country.selffundedprogram_set.count|pluralize }} available
+                    {{ country.program_count }}
+                    program{{ country.program_count|pluralize }} available
                   </p>
                 </div>
                 <div class="card-arrow">

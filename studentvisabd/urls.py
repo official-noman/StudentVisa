@@ -25,6 +25,9 @@ from django.urls import re_path
 from django.views.static import serve
 
 urlpatterns = [
+    path('root/manage-procedure/', rootviews.manage_procedure, name='manage_procedure'),
+    path('scholarship-procedures/', views.scholarship_procedure_list, name='scholarship_procedure_list'),
+    path('scholarship-procedure/<int:country_id>/', views.procedure_detail, name='procedure_detail'),
     path("", views.home, name="home"),
     path("service/<slug:slug>/", views.service_detail, name="service_detail"),
     path("root/add-service/", rootviews.add_visa_service, name="add_visa_service"),
@@ -646,11 +649,26 @@ urlpatterns = [
         "delete_course/<int:course_id>/", rootviews.delete_course, name="delete_course"
     ),
     path('resend-otp/', views.resend_otp, name='resend_otp_url'),
-    path('self_funded_programs/', views.self_funded_programs, name='self_funded_programs'),
-    path('root/self-funded-programs/', rootviews.manage_self_funded_programs, name='manage_self_funded_programs'),
-    path('root/self-funded-programs/delete/<int:program_id>/', rootviews.delete_self_funded_program, name='delete_self_funded_program'),
+    # path('self_funded_programs/', views.self_funded_programs, name='self_funded_programs'),
+    # path('root/self-funded-programs/', rootviews.manage_self_funded_programs, name='manage_self_funded_programs'),
+    # path('root/self-funded-programs/delete/<int:program_id>/', rootviews.delete_self_funded_program, name='delete_self_funded_program'),
+    # path('root/manage-universities/', rootviews.manage_universities, name='manage_universities'),
+    # path('root/manage-universities/delete/<int:uni_id>/', rootviews.delete_university, name='delete_university'),
     path('root/manage-universities/', rootviews.manage_universities, name='manage_universities'),
     path('root/manage-universities/delete/<int:uni_id>/', rootviews.delete_university, name='delete_university'),
+    # path('get_universities_by_country/', rootviews.get_universities_by_country, name='get_universities_by_country'),
+    path('root/self-funded-programs/', rootviews.manage_self_funded_programs, name='manage_self_funded_programs'),
+    path('root/self-funded-programs/delete/<int:program_id>/', rootviews.delete_self_funded_program, name='delete_self_funded_program'),
+
+    # ==========================================
+    # 🎯 SELF FUNDED PROGRAMS (PUBLIC / STUDENT)
+    # ==========================================
+    # 1. Country List Page
+    path('self-funded/', views.self_funded_programs, name='self_funded_programs'),
+    # 2. University List Page (By Country)
+    path('self-funded/country/<int:country_id>/', views.self_funded_universities, name='self_funded_universities'),
+    # 3. Final Details Page (Fee, Requirements, Policy)
+    path('self-funded/program/<int:program_id>/', views.self_funded_program_details, name='self_funded_program_details'),
 path('get_universities_by_country/', rootviews.get_universities_by_country, name='get_universities_by_country'),
 
     path(

@@ -1,4 +1,4 @@
-{% load perm_tags %}
+﻿{% load perm_tags %}
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -75,6 +75,11 @@
   
   /* === UPDATED SUB-MENU SECTION === */
   .sidebar .sub-menu { list-style: none; padding: 5px 0 5px 0px; }
+  .sidebar .sub-menu .nav-item {
+    list-style: none !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
   .sidebar .sub-menu .nav-item .nav-link {
     display: flex; align-items: center;
     padding: 9px 15px 9px 48px;
@@ -85,13 +90,7 @@
     transition: all 0.25s ease;
   }
   .sidebar .sub-menu .nav-item .nav-link::before {
-    content: '';
-    position: absolute;
-    left: 28px;
-    width: 5px; height: 5px;
-    background-color: #cbd5e1;
-    border-radius: 50%;
-    transition: 0.25s ease;
+    display: none !important;
   }
   .sidebar .sub-menu .nav-item .nav-link:hover,
   .sidebar .sub-menu .nav-item .nav-link.active {
@@ -99,11 +98,6 @@
     color: var(--sb-active-text) !important;
     font-weight: 600;
   }
-  .sidebar .sub-menu .nav-item .nav-link:hover::before,
-  .sidebar .sub-menu .nav-item .nav-link.active::before {
-    background-color: var(--sb-active-text);
-  }
-
   .badge-notif { font-size: 10px; padding: 2px 6px; border-radius: 6px; margin-left: 5px; }
 </style>
 

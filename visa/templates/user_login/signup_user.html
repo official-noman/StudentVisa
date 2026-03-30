@@ -443,30 +443,10 @@
                     </div>
                 </div>
 
-                <div class="field-row full">
-                    <div class="field-wrap">
-                        <label for="office-address" class="field-label">Office Address <span class="req">*</span></label>
-                        <input type="text" id="office-address" name="office_address" placeholder="House, Road, Area" />
-                    </div>
-                </div>
             </div>
 
             <!-- ── Contact Details ── -->
-            <div class="form-section">
-                <div class="section-label">Contact Details</div>
-
-                <div class="field-row">
-                    <div class="field-wrap">
-                        <label for="email" class="field-label">Email Address <span class="req">*</span></label>
-                        <input type="email" id="email" name="email" placeholder="company@example.com" />
-                        <span id="email-error" class="field-error"></span>
-                    </div>
-                    <div class="field-wrap">
-                        <label for="phone" class="field-label">Mobile Number <span class="req">*</span></label>
-                        <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11" />
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- ── Location ── -->
             <div class="form-section">
@@ -490,6 +470,29 @@
                                 <option value="{{ thana.id }}">{{ thana.name }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+
+                <div class="field-row full">
+                    <div class="field-wrap">
+                        <label for="office-address" class="field-label">Office Address <span class="req">*</span></label>
+                        <input type="text" id="office-address" name="office_address" placeholder="House, Road, Area" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-label">Contact Details</div>
+
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <label for="email" class="field-label">Email Address <span class="req">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="company@example.com" />
+                        <span id="email-error" class="field-error"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="phone" class="field-label">Mobile Number <span class="req">*</span></label>
+                        <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11" />
                     </div>
                 </div>
             </div>
@@ -525,6 +528,22 @@
             <!-- reCAPTCHA -->
             <div class="recaptcha-wrap">
                 <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-label">Receive OTP Via:</div>
+                <div class="field-row">
+                    <div class="field-wrap">
+                        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                            <label class="btn btn-outline-primary active flex-fill">
+                                <input type="radio" name="otp_preference" value="phone" autocomplete="off" checked> Phone
+                            </label>
+                            <label class="btn btn-outline-primary flex-fill">
+                                <input type="radio" name="otp_preference" value="email" autocomplete="off"> Email
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Submit -->
@@ -721,7 +740,9 @@
             event.preventDefault();
             var formData = new FormData(this);
             var signupType = $(this).find('.signup-submit-btn').data('signup-type');
+            var otpPreference = $('input[name="otp_preference"]:checked').val() || 'phone';
             formData.append('signup_type', signupType);
+            formData.append('otp_preference', otpPreference);
             fetch('/redirect_to_otp/', {
                 method: 'POST',
                 body: formData,

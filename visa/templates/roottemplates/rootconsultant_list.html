@@ -376,7 +376,6 @@
                       </td>
                     </tr>
                   {% empty %}
-                    <tr><td colspan="6" class="cap-empty">No pending consultants found.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -747,6 +746,38 @@
     return $(selector).DataTable(options);
   }
 
+  const planTableColumns = ['#', 'Company Name', 'Full Name', 'Email', 'Phone', 'Action'];
+
+  function syncPlanTableHeaders() {
+    ['free', 'basic', 'premium'].forEach(plan => {
+      const headerRow = document.querySelector(`#${plan}-consultant-table thead tr`);
+      if (!headerRow) return;
+
+      headerRow.innerHTML = planTableColumns
+        .map(column => `<th>${column}</th>`)
+        .join('');
+    });
+  }
+
+  function renderPlanConsultantRows(consultants, detailsButtonClass) {
+    let rowNumber = 1;
+
+    return consultants.map(consultant => `
+      <tr>
+        <td>${rowNumber++}</td>
+        <td>${consultant.company_name || ''}</td>
+        <td>${consultant.full_name || ''}</td>
+        <td>${consultant.email || ''}</td>
+        <td>${consultant.phone || ''}</td>
+        <td>
+          <button class="btn btn-info ${detailsButtonClass}" data-user-id="${consultant.id}">
+            View Details
+          </button>
+        </td>
+      </tr>
+    `);
+  }
+
   function renderConsultantDetailsTable(consultant) {
     return `
       <table class="table cap-detail-table">
@@ -772,16 +803,32 @@
   }
 
   function populateTableRows(tableBody, rowsHtml) {
-    tableBody.innerHTML = rowsHtml.join('');
+    if (tableBody) {
+      if (rowsHtml && rowsHtml.length > 0) {
+        tableBody.innerHTML = rowsHtml.join('');
+      } else {
+        tableBody.innerHTML = '';
+      }
+    }
+  }
+
+  function buildTableOptions(options = {}) {
+    return {
+      pageLength: 10,
+      language: {
+        emptyTable: 'No records found.',
+        zeroRecords: 'No matching records found.'
+      },
+      ...options
+    };
   }
 
   function initPendingTable() {
-    dataTables.pending = safeInitDataTable('#pending-consultant-table', {
+    dataTables.pending = safeInitDataTable('#pending-consultant-table', buildTableOptions({
       dom: 'Bfrtip',
       buttons: ['csv', 'excel', 'print'],
-      pageLength: 10,
       order: [[0, 'asc']]
-    });
+    }));
   }
 
   function initActiveTable() {
@@ -798,7 +845,7 @@
             <td>${consultant.full_name || ''}</td>
             <td>${consultant.email || ''}</td>
             <td>${consultant.phone || ''}</td>
-            <td>${consultant.created_at || ''}</td>
+            <td>${consultant.registration || ''}</td>
             <td>
               <button class="btn btn-info active-details-btn" data-user-id="${consultant.id}">
                 View Details
@@ -809,11 +856,10 @@
 
         populateTableRows(tbody, rows);
 
-        dataTables.active = safeInitDataTable('#active-consultant-table', {
+        dataTables.active = safeInitDataTable('#active-consultant-table', buildTableOptions({
           dom: 'Bfrtip',
-          buttons: ['csv', 'excel', 'print'],
-          pageLength: 10
-        });
+          buttons: ['csv', 'excel', 'print']
+        }));
       })
       .catch(error => console.error('Error fetching active consultants:', error));
   }
@@ -843,11 +889,10 @@
 
         populateTableRows(tbody, rows);
 
-        dataTables.suspend = safeInitDataTable('#suspend-consultant-table', {
+        dataTables.suspend = safeInitDataTable('#suspend-consultant-table', buildTableOptions({
           dom: 'Bfrtip',
-          buttons: ['csv', 'excel', 'print'],
-          pageLength: 10
-        });
+          buttons: ['csv', 'excel', 'print']
+        }));
       })
       .catch(error => console.error('Error fetching suspended consultants:', error));
   }
@@ -857,30 +902,14 @@
       .then(data => {
         const consultants = data.free_users || [];
         const tbody = document.querySelector('#free-consultant-table tbody');
-        let rowNumber = 1;
-
-        const rows = consultants.map(consultant => `
-          <tr>
-            <td>${rowNumber++}</td>
-            <td>${consultant.company_name || ''}</td>
-            <td>${consultant.full_name || ''}</td>
-            <td>${consultant.email || ''}</td>
-            <td>${consultant.phone || ''}</td>
-            <td>
-              <button class="btn btn-info free-details-btn" data-user-id="${consultant.id}">
-                View Details
-              </button>
-            </td>
-          </tr>
-        `);
+        const rows = renderPlanConsultantRows(consultants, 'free-details-btn');
 
         populateTableRows(tbody, rows);
 
-        dataTables.free = safeInitDataTable('#free-consultant-table', {
+        dataTables.free = safeInitDataTable('#free-consultant-table', buildTableOptions({
           dom: 'Bfrtip',
-          buttons: ['csv', 'excel', 'print'],
-          pageLength: 10
-        });
+          buttons: ['csv', 'excel', 'print']
+        }));
       })
       .catch(error => console.error('Error fetching free consultants:', error));
   }
@@ -890,30 +919,14 @@
       .then(data => {
         const consultants = data.basic_users || [];
         const tbody = document.querySelector('#basic-consultant-table tbody');
-        let rowNumber = 1;
-
-        const rows = consultants.map(consultant => `
-          <tr>
-            <td>${rowNumber++}</td>
-            <td>${consultant.company_name || ''}</td>
-            <td>${consultant.full_name || ''}</td>
-            <td>${consultant.email || ''}</td>
-            <td>${consultant.phone || ''}</td>
-            <td>
-              <button class="btn btn-info basic-details-btn" data-user-id="${consultant.id}">
-                View Details
-              </button>
-            </td>
-          </tr>
-        `);
+        const rows = renderPlanConsultantRows(consultants, 'basic-details-btn');
 
         populateTableRows(tbody, rows);
 
-        dataTables.basic = safeInitDataTable('#basic-consultant-table', {
+        dataTables.basic = safeInitDataTable('#basic-consultant-table', buildTableOptions({
           dom: 'Bfrtip',
-          buttons: ['csv', 'excel', 'print'],
-          pageLength: 10
-        });
+          buttons: ['csv', 'excel', 'print']
+        }));
       })
       .catch(error => console.error('Error fetching basic consultants:', error));
   }
@@ -923,30 +936,14 @@
       .then(data => {
         const consultants = data.premium_users || [];
         const tbody = document.querySelector('#premium-consultant-table tbody');
-        let rowNumber = 1;
-
-        const rows = consultants.map(consultant => `
-          <tr>
-            <td>${rowNumber++}</td>
-            <td>${consultant.company_name || ''}</td>
-            <td>${consultant.full_name || ''}</td>
-            <td>${consultant.email || ''}</td>
-            <td>${consultant.phone || ''}</td>
-            <td>
-              <button class="btn btn-info premium-details-btn" data-user-id="${consultant.id}">
-                View Details
-              </button>
-            </td>
-          </tr>
-        `);
+        const rows = renderPlanConsultantRows(consultants, 'premium-details-btn');
 
         populateTableRows(tbody, rows);
 
-        dataTables.premium = safeInitDataTable('#premium-consultant-table', {
+        dataTables.premium = safeInitDataTable('#premium-consultant-table', buildTableOptions({
           dom: 'Bfrtip',
-          buttons: ['csv', 'excel', 'print'],
-          pageLength: 10
-        });
+          buttons: ['csv', 'excel', 'print']
+        }));
       })
       .catch(error => console.error('Error fetching premium consultants:', error));
   }
@@ -972,9 +969,7 @@
 
         populateTableRows(tbody, rows);
 
-        dataTables.all = safeInitDataTable('#all-consultant-table', {
-          pageLength: 10
-        });
+        dataTables.all = safeInitDataTable('#all-consultant-table', buildTableOptions());
       })
       .catch(error => console.error('Error fetching consultants:', error));
   }
@@ -996,13 +991,25 @@
   }
 
   $(document).ready(function () {
-    initPendingTable();
-    initActiveTable();
-    initSuspendTable();
-    initFreeTable();
-    initBasicTable();
-    initPremiumTable();
-    initAllConsultantsTable();
+    syncPlanTableHeaders();
+
+    const initTasks = [
+      { name: 'Pending', func: initPendingTable },
+      { name: 'Active', func: initActiveTable },
+      { name: 'Suspend', func: initSuspendTable },
+      { name: 'Free', func: initFreeTable },
+      { name: 'Basic', func: initBasicTable },
+      { name: 'Premium', func: initPremiumTable },
+      { name: 'All', func: initAllConsultantsTable }
+    ];
+
+    initTasks.forEach(task => {
+      try {
+        task.func();
+      } catch (err) {
+        console.error(`Initialization failed for ${task.name} table:`, err);
+      }
+    });
 
     $(document).on('click', '.reject-pending-btn', function () {
       const userId = $(this).data('user-id');
@@ -1026,10 +1033,19 @@
             csrfmiddlewaretoken: '{{ csrf_token }}'
           },
           success: function(response) {
-            if (response.success) {
-              location.reload();
+            // Check for success property which we now return from the backend
+            if (response.success || (typeof response === 'string' && response.includes('rejected successfully'))) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Rejected',
+                text: response.message || 'Consultant rejected successfully.',
+                timer: 1500,
+                showConfirmButton: false
+              }).then(() => {
+                location.reload();
+              });
             } else {
-              showSwalMessage('Error', response.message, 'error');
+              showSwalMessage('Error', response.message || 'Failed to reject consultant.', 'error');
             }
           },
           error: function() {

@@ -37,6 +37,10 @@ from django.db.models import Q
 from .models import OTPRequest 
 from .models import Countries, SelfFundedProgram
 from django.core.paginator import Paginator
+from django.db.models import Count
+from .models import Countries, University, SelfFundedProgram, OTPRequest
+from django.db.models import Q, Count
+from django.core.paginator import Paginator
 
 
 def home(request):
@@ -148,6 +152,7 @@ def redirect_to_otp(request):
             address = request.POST.get("office_address")
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
+            otp_preference = request.POST.get("otp_preference", "phone")
 
             if (
                 company_name
@@ -186,6 +191,7 @@ def redirect_to_otp(request):
                                     "address": address,
                                     "password": password,
                                     "signup_type": signup_type,
+                                    "otp_preference": otp_preference,
                                 }
 
                                 otp = "".join(
@@ -196,22 +202,15 @@ def redirect_to_otp(request):
                                 temp_user_data["otp"] = otp
                                 request.session["temp_user_data"] = temp_user_data
 
-                                url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-
-                                retry_strategy = Retry(
-                                    total=4,
-                                    status_forcelist=[429, 500, 502, 503, 504],
-                                )
-                                adapter = HTTPAdapter(max_retries=retry_strategy)
-
-                                session = requests.Session()
-                                session.mount("http://", adapter)
-                                session.mount("https://", adapter)
-
-                                try:
-                                    response = session.get(url)
-                                    print("SMS API Response:", response.text)
-                                    if response.status_code == 200:
+                                if otp_preference == "email":
+                                    try:
+                                        send_mail(
+                                            "Your Verification Code",
+                                            f"Your activation code is {otp}. This code will expire in 5 minutes.",
+                                            settings.EMAIL_HOST_USER,
+                                            [email],
+                                            fail_silently=False,
+                                        )
                                         return JsonResponse(
                                             {
                                                 "success": True,
@@ -219,26 +218,56 @@ def redirect_to_otp(request):
                                                 "expiration_time": expiration_time,
                                             }
                                         )
-                                    else:
+                                    except Exception:
                                         return JsonResponse(
                                             {
-                                                "errors": f"Server returned status code {response.status_code}. Please try again later."
+                                                "errors": "Failed to send OTP email. Please try again later."
+                                            }
+                                        )
+                                else:
+                                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+
+                                    retry_strategy = Retry(
+                                        total=4,
+                                        status_forcelist=[429, 500, 502, 503, 504],
+                                    )
+                                    adapter = HTTPAdapter(max_retries=retry_strategy)
+
+                                    session = requests.Session()
+                                    session.mount("http://", adapter)
+                                    session.mount("https://", adapter)
+
+                                    try:
+                                        response = session.get(url)
+                                        print("SMS API Response:", response.text)
+                                        if response.status_code == 200:
+                                            return JsonResponse(
+                                                {
+                                                    "success": True,
+                                                    "redirect_url": "/otp_verification_signup/",
+                                                    "expiration_time": expiration_time,
+                                                }
+                                            )
+                                        else:
+                                            return JsonResponse(
+                                                {
+                                                    "errors": f"Server returned status code {response.status_code}. Please try again later."
+                                                }
+                                            )
+
+                                    except Timeout:
+                                        return JsonResponse(
+                                            {
+                                                "errors": "Request timed out. Please try again later."
                                             }
                                         )
 
-                                except Timeout:
-                                    return JsonResponse(
-                                        {
-                                            "errors": "Request timed out. Please try again later."
-                                        }
-                                    )
-
-                                except ConnectionError:
-                                    return JsonResponse(
-                                        {
-                                            "errors": "Failed to establish connection to the server. Please check your internet connection and try again later."
-                                        }
-                                    )
+                                    except ConnectionError:
+                                        return JsonResponse(
+                                            {
+                                                "errors": "Failed to establish connection to the server. Please check your internet connection and try again later."
+                                            }
+                                        )
 
                                 # except requests.exceptions.RequestException as e:
                                 #     return JsonResponse({'errors': f'An error occurred: {str(e)}'})
@@ -596,6 +625,7 @@ def change_number(request):
 def forgot_password_phone_or_email(request):
     if request.method == "POST":
         phone = request.POST.get("phone")
+        email = request.POST.get("email")
 
         if phone:
             consultant = Users.objects.filter(phone=phone).first()
@@ -606,6 +636,7 @@ def forgot_password_phone_or_email(request):
 
                 if valid_phone_number:
                     # 🎯 ১. সেশনে ফোন নাম্বার এবং ওটিপি ডাটা আলাদাভাবে রাখা
+                    request.session['otp_method'] = 'phone'
                     request.session['otp_phone'] = phone 
                     request.session['temp_user_data'] = {
                         "phone": phone, 
@@ -630,6 +661,38 @@ def forgot_password_phone_or_email(request):
                     return JsonResponse({"error": "Invalid Phone Number Provided"})
             else:
                 return JsonResponse({"error": "Phone Number is not registered"})
+        elif email:
+            consultant = Users.objects.filter(email=email).first()
+
+            if consultant is not None:
+                otp = str(random.randint(100000, 999999)) # ৬ ডিজিট ওটিপি
+                
+                request.session['otp_method'] = 'email'
+                request.session['otp_email'] = email 
+                request.session['temp_user_data'] = {
+                    "email": email, 
+                    "otp": otp, 
+                    "expiration_time": int(time()) + 300
+                }
+                
+                try:
+                    send_mail(
+                        'Student Visa BD - Password Reset OTP',
+                        f'Your verification code is {otp}. It expires in 5 minutes.',
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
+                    
+                    return JsonResponse({
+                        "success": True,
+                        "redirect_url": "/forgot_password_otp_verification/",
+                        "expiration_time": int(time()) + 300
+                    })
+                except Exception as e:
+                    return JsonResponse({"error": "Failed to send email. Please try again later."})
+            else:
+                return JsonResponse({"error": "Email is not registered"})
 
     return render(request, "user_login/forgot_password_phone_or_email.html")
 
@@ -664,11 +727,23 @@ def forgot_password_otp_verification(request):
                     del request.session["temp_user_data"]["otp"]
                     del request.session["temp_user_data"]["expiration_time"]
 
-                    phone = request.session["temp_user_data"]["phone"]
-                    valid_phone_number = request.session["temp_user_data"]["phone"]
-                    otp = str(random.randint(1000, 9999))
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-                    response = requests.get(url)
+                    method = request.session.get('otp_method', 'phone')
+                    if method == 'email':
+                        email = request.session["temp_user_data"]["email"]
+                        otp = str(random.randint(100000, 999999))
+                        send_mail(
+                            'Student Visa BD - Password Reset OTP',
+                            f'Your verification code is {otp}. It expires in 5 minutes.',
+                            settings.EMAIL_HOST_USER,
+                            [email],
+                            fail_silently=False,
+                        )
+                    else:
+                        phone = request.session["temp_user_data"]["phone"]
+                        valid_phone_number = request.session["temp_user_data"]["phone"]
+                        otp = str(random.randint(1000, 9999))
+                        url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                        response = requests.get(url)
                     expiration_time_resend = int(time()) + 300
                     request.session["temp_user_data"]["otp"] = otp
                     request.session["temp_user_data"]["expiration_time"] = (
@@ -699,7 +774,7 @@ def forgot_password_otp_verification(request):
             )
 
         else:
-            return JsonResponse({"errors": "Invalid OTP"})
+            return JsonResponse({"error": "Invalid OTP"})
 
     return render(
         request,
@@ -721,13 +796,19 @@ def change_forgotten_password(request):
     page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
 
     if request.method == "POST":
-        phone = temp_data["phone"]
+        method = request.session.get('otp_method', 'phone')
         new_password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                consultant = Users.objects.filter(phone=phone).first()
+                if method == 'email':
+                    email = temp_data.get("email")
+                    consultant = Users.objects.filter(email=email).first()
+                else:
+                    phone = temp_data.get("phone")
+                    consultant = Users.objects.filter(phone=phone).first()
+
                 if consultant:
                     user = CustomUser.objects.filter(id=consultant.id).first()
 
@@ -771,6 +852,7 @@ def forgot_password_phone_or_email_student(request):
     page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
     if request.method == "POST":
         phone = request.POST.get("phone")
+        email = request.POST.get("email")
 
         if phone:
             student = Students.objects.filter(phone=phone).first()
@@ -795,6 +877,7 @@ def forgot_password_phone_or_email_student(request):
                         )
                         expiration_time = int(time()) + 300
                         temp_user_data["expiration_time"] = expiration_time
+                        request.session['otp_method'] = 'phone'
                         request.session["temp_user_data"] = temp_user_data
 
                         response_data = {
@@ -811,6 +894,38 @@ def forgot_password_phone_or_email_student(request):
 
             else:
                 return JsonResponse({"error": "Phone Number is not registered"})
+        elif email:
+            student = Students.objects.filter(email=email).first()
+
+            if student is not None:
+                otp = str(random.randint(100000, 999999))
+                temp_user_data = {"email": email, "otp": otp}
+                
+                try:
+                    send_mail(
+                        'Student Visa BD - Password Reset OTP',
+                        f'Your verification code is {otp}. It expires in 5 minutes.',
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
+                    
+                    expiration_time = int(time()) + 300
+                    temp_user_data["expiration_time"] = expiration_time
+                    request.session['otp_method'] = 'email'
+                    request.session["temp_user_data"] = temp_user_data
+
+                    response_data = {
+                        "success": True,
+                        "redirect_url": "/forgot_password_otp_verification_student/",
+                        "expiration_time": expiration_time,
+                    }
+
+                    return JsonResponse(response_data)
+                except Exception as e:
+                    return JsonResponse({"error": "Failed to send email. Please try again later."})
+            else:
+                return JsonResponse({"error": "Email is not registered"})
 
     return render(
         request,
@@ -853,11 +968,23 @@ def forgot_password_otp_verification_student(request):
                     del request.session["temp_user_data"]["otp"]
                     del request.session["temp_user_data"]["expiration_time"]
 
-                    phone = request.session["temp_user_data"]["phone"]
-                    valid_phone_number = request.session["temp_user_data"]["phone"]
-                    otp = str(random.randint(1000, 9999))
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa BD.This code will expire in 2 Hours.For help,call:01958666999"
-                    response = requests.get(url)
+                    method = request.session.get('otp_method', 'phone')
+                    if method == 'email':
+                        email = request.session["temp_user_data"]["email"]
+                        otp = str(random.randint(100000, 999999))
+                        send_mail(
+                            'Student Visa BD - Password Reset OTP',
+                            f'Your verification code is {otp}. It expires in 5 minutes.',
+                            settings.EMAIL_HOST_USER,
+                            [email],
+                            fail_silently=False,
+                        )
+                    else:
+                        phone = request.session["temp_user_data"]["phone"]
+                        valid_phone_number = request.session["temp_user_data"]["phone"]
+                        otp = str(random.randint(1000, 9999))
+                        url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa BD.This code will expire in 2 Hours.For help,call:01958666999"
+                        response = requests.get(url)
                     expiration_time_resend = int(time()) + 300
                     request.session["temp_user_data"]["otp"] = otp
                     request.session["temp_user_data"]["expiration_time"] = (
@@ -888,7 +1015,7 @@ def forgot_password_otp_verification_student(request):
             )
 
         else:
-            return JsonResponse({"errors": "Invalid OTP"})
+            return JsonResponse({"error": "Invalid OTP"})
 
     return render(
         request,
@@ -908,13 +1035,19 @@ def change_forgotten_password_student(request):
     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
     if request.method == "POST":
-        phone = temp_data["phone"]
+        method = request.session.get('otp_method', 'phone')
         new_password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                student = Students.objects.filter(phone=phone).first()
+                if method == 'email':
+                    email = temp_data.get("email")
+                    student = Students.objects.filter(email=email).first()
+                else:
+                    phone = temp_data.get("phone")
+                    student = Students.objects.filter(phone=phone).first()
+
                 if student:
                     user = CustomUser.objects.filter(id=student.id).first()
 
@@ -1147,30 +1280,38 @@ def login_user(request):
             if "@" in identifier:
                 user = CustomUser.objects.filter(
                     Q(email__iexact=identifier) | Q(username__iexact=identifier)
+                ).filter(user_type__in=[0, 1]).first()
+                pending_user = Users.objects.filter(
+                    email__iexact=identifier, user_role=5
                 ).first()
             else:
-                user = CustomUser.objects.filter(phone=identifier).first()
+                user = CustomUser.objects.filter(
+                    phone=identifier, user_type__in=[0, 1]
+                ).first()
+                pending_user = Users.objects.filter(
+                    phone=identifier, user_role=5
+                ).first()
 
             if user is not None:
                 # মেইন টেবিলে ইউজার আছে, এবার পাসওয়ার্ড চেক
                 if user.check_password(password):
                     if str(user.user_type) == '1': # কনসালট্যান্ট
-                        is_verified = getattr(user, 'active_status', getattr(user, 'is_active', True))
-                        if is_verified: 
+                        is_verified = (
+                            pending_user is None
+                            or pending_user.active_status in [1, 3, 4, 5]
+                        )
+                        if is_verified:
                             login(request, user)
                             return redirect("consultant_home")
-                        else:
-                            messages.warning(request, "Verification Pending: Your account is currently under review by the Admin.")
-                            return redirect("login_user")
+
+                        messages.warning(request, "Verification Pending: Your account is under review. Please contact the administration for details.")
+                        return redirect("login_user")
 
                     elif str(user.user_type) == '0': # রুট এডমিন
                         login(request, user)
                         return redirect("root_home")
-                    else:
-                        messages.error(request, "Access Denied. You do not have permission.")
-                        return redirect("login_user")
-                else:
-                    messages.error(request, "Invalid Password. Please try again.")
+                messages.error(request, "Invalid credentials")
+                return redirect("login_user")
             
             else:
                 # ২. মেইন টেবিলে নেই! এবার পেন্ডিং (Users) টেবিলে খুঁজবে
@@ -1179,13 +1320,14 @@ def login_user(request):
                 else:
                     pending_user = Users.objects.filter(phone=identifier, user_role=5).first()
 
-                if pending_user:
+                if pending_user and check_password(password, pending_user.password):
                     # ইউজার পেন্ডিং টেবিলে পাওয়া গেছে! 
-                    messages.warning(request, "Verification Pending: Your account is currently under review by the Admin.")
+                    messages.warning(request, "Verification Pending: Your account is under review. Please contact the administration for details.")
                     return redirect("login_user")
                 else:
                     # কোনো টেবিলেই নেই
-                    messages.error(request, "No account found. Please check your spelling.")
+                    messages.error(request, "Invalid credentials")
+                    return redirect("login_user")
                 
         else:
             messages.error(request, "Please provide both identifier and password.")
@@ -4606,14 +4748,140 @@ def resend_otp(request):
 # from .models import Countries, SelfFundedProgram
 
 
-def self_funded_programs(request):
-    search_query = request.GET.get('search', '').strip()
+# def self_funded_programs(request):
+#     search_query = request.GET.get('search', '').strip()
 
-    country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
+#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
     
    
-    countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
-    # countries = Countries.objects.all().order_by('country_name')
+#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
+#     # countries = Countries.objects.all().order_by('country_name')
+
+#     if search_query:
+#         countries = countries.filter(country_name__icontains=search_query)
+
+#     paginator = Paginator(countries, 12)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     context = {
+#         'page_obj': page_obj,
+#         'search_query': search_query,
+#         'page_name': 'Self Funded Programs',
+#         'total_count': countries.count(),
+#     }
+#     return render(request, 'self_funded_list.html', context)
+
+# def self_funded_programs(request):
+#     search_query = request.GET.get('search', '').strip()
+    
+#     # 🎯 ফিক্স: প্রতিটি দেশের পাশে তার প্রোগ্রাম সংখ্যা যোগ করা হচ্ছে
+#     countries_with_programs = Countries.objects.annotate(
+#         program_count=Count('self_funded_programs')
+#     ).filter(program_count__gt=0).order_by('country_name') # শুধু যাদের প্রোগ্রাম আছে তাদেরকেই দেখাবে
+
+#     if search_query:
+#         countries_with_programs = countries_with_programs.filter(country_name__icontains=search_query)
+
+#     paginator = Paginator(countries_with_programs, 12)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     context = {
+#         'page_obj': page_obj,
+#         'search_query': search_query,
+#         'page_name': 'Self Funded Programs',
+#         'total_count': countries_with_programs.count(),
+#     }
+#     return render(request, 'self_funded_list.html', context)
+
+# def self_funded_programs(request):
+#     search_query = request.GET.get('search', '').strip()
+    
+#     # 🕵️‍♂️ DEBUG LOGS (টার্মিনালে চেক করার জন্য)
+#     print("--- DEBUG START ---")
+#     all_programs = SelfFundedProgram.objects.all()
+#     print(f"Total entries in SelfFundedProgram table: {all_programs.count()}")
+    
+#     for p in all_programs:
+#         print(f"Program ID: {p.id} | Country ID: {p.country_id} | University ID: {p.university_id}")
+    
+#     # কোয়েরি
+#     countries = Countries.objects.annotate(
+#         program_count=Count('self_funded_programs')
+#     ).filter(program_count__gt=0).order_by('country_name')
+    
+#     print(f"Total Countries with programs found: {countries.count()}")
+#     print("--- DEBUG END ---")
+
+#     if search_query:
+#         countries = countries.filter(country_name__icontains=search_query)
+
+#     paginator = Paginator(countries, 12)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     context = {
+#         'page_obj': page_obj,
+#         'search_query': search_query,
+#         'page_name': 'Self Funded Programs',
+#         'total_count': countries.count(),
+#     }
+#     return render(request, 'self_funded_list.html', context)
+
+
+
+def self_funded_universities(request, country_id):
+    country = get_object_or_404(Countries, country_id=country_id)
+    search_query = request.GET.get('search', '').strip()
+    
+    # ওই দেশের আন্ডারে যেসব ভার্সিটির Self Funded Program আছে
+    programs = SelfFundedProgram.objects.filter(country=country).select_related('university')
+    
+    if search_query:
+        programs = programs.filter(university__name__icontains=search_query)
+
+    context = {
+        'country': country,
+        'programs': programs,
+        'search_query': search_query,
+        'page_name': f'Universities in {country.country_name}',
+    }
+    return render(request, 'self_funded_universities.html', context)
+
+# def self_funded_program_details(request, program_id):
+#     program = get_object_or_404(SelfFundedProgram, id=program_id)
+    
+#     context = {
+#         'program': program,
+#         'page_name': f'{program.university.name} Details',
+#     }
+#     return render(request, 'self_funded_details.html', context)
+
+
+# def self_funded_programs(request):
+#     search_query = request.GET.get('search', '').strip()
+    
+#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
+    
+#   
+#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
+
+#     if search_query:
+#         countries = countries.filter(country_name__icontains=search_query)
+ 
+ 
+ 
+from django.db.models import Count # নিশ্চিত করুন এই ইমপোর্ট উপরে আছে
+
+# ১. এই ফাংশনটা আপনার ফাইলে মিসিং ছিল, তাই এরর দিচ্ছিল
+def self_funded_programs(request):
+    search_query = request.GET.get('search', '').strip()
+    
+    # যেসব দেশের অন্তত একটা Self Funded Program আছে শুধু তাদের দেখাবে
+    countries = Countries.objects.annotate(
+        program_count=Count('self_funded_programs')
+    ).filter(program_count__gt=0).order_by('country_name')
 
     if search_query:
         countries = countries.filter(country_name__icontains=search_query)
@@ -4630,16 +4898,53 @@ def self_funded_programs(request):
     }
     return render(request, 'self_funded_list.html', context)
 
-# views.py তে এই লাইনগুলো ঠিক করুন
-# def self_funded_programs(request):
-#     search_query = request.GET.get('search', '').strip()
+# ২. ইউনিভার্সিটি লিস্ট দেখার ফাংশন
+def self_funded_universities(request, country_id):
+    country = get_object_or_404(Countries, country_id=country_id)
+    search_query = request.GET.get('search', '').strip()
     
-#     # country_id__in ব্যবহার করুন (id__in নয়)
-#     country_ids = SelfFundedProgram.objects.values_list('country_id', flat=True).distinct()
+    programs = SelfFundedProgram.objects.filter(country=country).select_related('university')
     
-#     # এখানেও country_id এবং country_name ব্যবহার করুন
-#     countries = Countries.objects.filter(country_id__in=country_ids).order_by('country_name')
+    if search_query:
+        programs = programs.filter(university__name__icontains=search_query)
 
-#     if search_query:
-#         countries = countries.filter(country_name__icontains=search_query)
-    # ... বাকি কোড ঠিক আছে
+    context = {
+        'country': country,
+        'programs': programs,
+        'search_query': search_query,
+        'page_name': f'Universities in {country.country_name}',
+    }
+    return render(request, 'self_funded_universities.html', context)
+
+# ৩. ডিটেইলস দেখার ফাংশন
+def self_funded_program_details(request, program_id):
+    program = get_object_or_404(SelfFundedProgram, id=program_id)
+    
+    context = {
+        'program': program,
+        'page_name': f'{program.university.name} Details',
+    }
+    return render(request, 'self_funded_details.html', context)
+
+
+from .models import ScholarshipStep
+
+def scholarship_procedure_list(request):
+    # Only show countries that have at least one procedure step
+    country_ids_with_steps = ScholarshipStep.objects.values_list('country_id', flat=True).distinct()
+    countries = Countries.objects.filter(country_id__in=country_ids_with_steps).order_by('country_name')
+    
+    return render(request, "scholarship_procedure_list.html", {
+        "countries": countries,
+        "page_name": "Scholarship Procedure"
+    })
+
+def procedure_detail(request, country_id):
+    country = get_object_or_404(Countries, country_id=country_id)
+    steps = ScholarshipStep.objects.filter(country=country).order_by('step_number')
+    
+    return render(request, "procedure_detail.html", {
+        "country": country,
+        "steps": steps,
+        "page_name": f"{country.country_name} Procedure"
+    })

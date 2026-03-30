@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ program.university.name }} Details{% endblock %}
+
+{% block custom_css %}
+<style>
+  .details-header {
+    background: white;
+    padding: 50px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .details-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  }
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .fee-box {
+    background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+    border: 1px solid #dbeafe;
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+  }
+  .fee-amount {
+    font-family: 'Sora', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #1d4ed8;
+  }
+  /* CKEditor Content Styling */
+  .rich-content h3 { font-family: 'Sora', sans-serif; font-size: 18px; margin-top: 20px; color: #1e293b; }
+  .rich-content ul { padding-left: 20px; color: #475569; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="details-header">
+  <div class="container text-center">
+    <h1 class="fw-bold" style="font-family: 'Sora', sans-serif;">{{ program.university.name }}</h1>
+    <p class="text-muted fs-5">Self-Funded Program Details for {{ program.country.country_name }}</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+      
+      <!-- Semester Fee Card -->
+      <div class="details-card mb-4">
+        <h2 class="section-title">Tuition Fee</h2>
+        <div class="fee-box">
+          <p class="text-muted mb-2">SEMESTER FEE</p>
+          <div class="fee-amount">{{ program.semester_fee }}</div>
+        </div>
+      </div>
+
+      <!-- Requirements Card -->
+      <div class="details-card mb-4">
+        <h2 class="section-title">Admission Requirements</h2>
+        <div class="rich-content">
+          {{ program.requirements|safe }}
+        </div>
+      </div>
+
+      <!-- Policy Card -->
+      <div class="details-card">
+        <h2 class="section-title">Foreign Student Policy</h2>
+        <div class="rich-content">
+          {{ program.foreign_student_policy|safe }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

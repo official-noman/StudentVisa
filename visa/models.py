@@ -170,7 +170,7 @@ class University(models.Model):
     )  # You may adjust the default value based on your requirements
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    countries = models.ForeignKey(
+    country = models.ForeignKey(
         Countries,
         on_delete=models.SET_NULL,
         null=True,
@@ -180,6 +180,24 @@ class University(models.Model):
 
     class Meta:
         db_table = "universities"
+
+class ScholarshipStep(models.Model):
+    country = models.ForeignKey(
+        Countries, 
+        on_delete=models.CASCADE, 
+        related_name="scholarship_steps"
+    )
+    step_number = models.IntegerField()
+    title = models.CharField(max_length=255)
+    description = CKEditor5Field('Text', config_name='extends')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "scholarship_steps"
+        ordering = ['step_number']
+
+    def __str__(self):
+        return f"{self.country.country_name} - Step {self.step_number}: {self.title}"
 
 
 # class UniversityWise(models.Model):

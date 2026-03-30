@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="auto-container py-5" style="max-width: 1150px !important; margin: auto;">
+    <div class="text-center mb-5">
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; color: #1E293B;">Select Country</h2>
+        <p style="color: #64748B;">Choose a country to view its scholarship procedure timeline</p>
+    </div>
+    <div class="row">
+        {% for country in countries %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <a href="{% url 'procedure_detail' country.country_id %}" 
+               class="card text-center text-decoration-none shadow-sm h-100" 
+               style="border-radius: 12px; border: 1px solid rgba(15,23,42,0.08); transition: 0.3s; padding: 20px;">
+                <div class="card-body">
+                    {% if country.country_flag %}
+                    <img src="/static/assets/countries/flags/{{ country.country_flag }}" 
+                         alt="flag" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #f1f5f9;">
+                    {% endif %}
+                    <h5 style="color: #1E293B; font-weight: 600; margin: 0;">{{ country.country_name }}</h5>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No procedures have been added yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

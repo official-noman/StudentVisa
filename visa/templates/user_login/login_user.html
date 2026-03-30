@@ -164,19 +164,29 @@
     .msg-container {
         width: 100%;
         margin-bottom: 20px;
-        border-radius: 10px;
-        padding: 12px 15px;
+        border-radius: 12px;
+        padding: 14px 16px;
         display: flex;
-        align-items: center;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 12px;
         animation: slideDown 0.32s ease-out;
         font-family: var(--font);
     }
     .msg-error   { background: #FEF2F2; border: 1.5px solid #FECACA; color: #DC2626; }
-    .msg-error i { color: #EF4444; font-size: 15px; }
+    .msg-error i { color: #EF4444; font-size: 17px; margin-top: 2px; }
     .msg-warning { background: #FFFBEB; border: 1.5px solid #FDE68A; color: #B45309; }
-    .msg-warning i { color: #F59E0B; font-size: 15px; }
-    .msg-text { font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .msg-warning i { color: #F59E0B; font-size: 17px; margin-top: 2px; }
+    .msg-text {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.55;
+        text-align: left;
+        word-spacing: normal;
+        letter-spacing: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
 
     @keyframes slideDown {
         from { opacity: 0; transform: translateY(-7px); }
@@ -209,7 +219,7 @@
     }
 
     form .field .input-area {
-        height: 56px;
+        height: 62px;
         display: flex;
         align-items: center;
         background: var(--input-bg);
@@ -286,14 +296,18 @@
         font-size: 14px;
     }
 
-    /* ── PHONE: 40px, weight 600, #334155 ── */
+    /* ── PHONE: large size, but contained inside the box ── */
     .is-phone-input {
-        font-size: 40px !important;
-        font-weight: 600 !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
         color: #334155 !important;
-        letter-spacing: 3px !important;
+        letter-spacing: 2px !important;
         line-height: 1 !important;
-        padding-left: 4px !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        width: 0 !important;       /* let flex-grow handle width */
+        flex: 1 !important;
+        min-width: 0 !important;   /* critical: allows shrink inside flex */
     }
 
     /* ── EMAIL: compact, fits in box ── */
@@ -431,7 +445,7 @@
     @media (max-width: 576px) {
         .login-page-wrapper { padding: 40px 0 48px; align-items: flex-start; }
         .wrapper { padding: 36px 24px 42px; }
-        .is-phone-input { font-size: 30px !important; letter-spacing: 2px !important; }
+        .is-phone-input { font-size: 22px !important; letter-spacing: 1px !important; }
         .form-actions-row { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
 </style>

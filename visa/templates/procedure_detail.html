@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block custom_css %}
+<style>
+  .timeline-wrapper {
+      position: relative;
+      margin: 40px auto;
+  }
+  .timeline-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #e2e8f0;
+      left: 38px;
+      margin: 0;
+      border-radius: 2px;
+  }
+  .timeline-step {
+      position: relative;
+      margin-bottom: 40px;
+      padding-left: 100px;
+  }
+  .step-circle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #4e73df, #224abe);
+      color: #fff;
+      border-radius: 50%;
+      left: 15px;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+  }
+  .step-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      border: 1px solid rgba(15,23,42,0.08);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.04);
+  }
+  .step-card h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1E293B;
+      margin-bottom: 15px;
+  }
+  .step-card .step-desc p {
+      color: #64748B;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auto-container py-5" style="max-width: 1150px !important; margin: auto;">
+    <div class="text-center mb-5">
+        {% if country.country_flag %}
+        <img src="/static/assets/countries/flags/{{ country.country_flag }}" 
+             alt="flag" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        {% endif %}
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 800; color: #1E293B;">{{ country.country_name }} Scholarship Procedure</h2>
+    </div>
+
+    <div class="timeline-wrapper">
+        {% for step in steps %}
+        <div class="timeline-step">
+            <div class="step-circle">{{ step.step_number }}</div>
+            <div class="step-card">
+                <h3>{{ step.title }}</h3>
+                <div class="step-desc">
+                    <!-- Ensure safe rendering of CKEditor output -->
+                    {{ step.description|safe }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted col-12 py-5">
+            <h5>No procedures have been added yet for {{ country.country_name }}.</h5>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

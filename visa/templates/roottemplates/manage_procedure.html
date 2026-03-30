@@ -1,0 +1,161 @@
+{% extends 'roottemplates/base.html' %}
+{% load static %}
+
+{% block title %}Manage Scholarship Procedures{% endblock %}
+
+{% block custom_css %}
+<style>
+  :root {
+    --bg: #F4F7FE;
+    --surface: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-muted: #64748B;
+    --accent: #4e73df;
+    --border: rgba(15, 23, 42, 0.08);
+    --radius-lg: 22px;
+    --shadow-card: 0 12px 32px rgba(15,23,42,0.06);
+  }
+
+  .content-wrapper { background: var(--bg) !important; color: var(--text-primary); padding: 28px !important; }
+
+  .db-page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+  .db-page-title { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; }
+  .db-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 7px; }
+  .db-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  .g-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 26px; margin-bottom: 24px; }
+  .g-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+  .g-card-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .g-card-sub { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+  .clean-input, .clean-select { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; font-size: 14px; background: #F8FAFC; transition: 0.3s; outline: none; }
+  .clean-input:focus, .clean-select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.1); background: #fff; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+
+  .btn-submit { background: linear-gradient(135deg, #4e73df, #224abe); color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; transition: 0.3s; box-shadow: 0 8px 20px rgba(78, 115, 223, 0.2); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(78, 115, 223, 0.3); }
+
+  .btn-delete { background: #fee2e2; color: #ef4444; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; transition: 0.3s; text-decoration: none; display: inline-block; cursor: pointer; }
+  .btn-delete:hover { background: #fecaca; color: #dc2626; }
+
+  .dash-table { width: 100%; border-spacing: 0 10px; border-collapse: separate; }
+  .dash-table thead th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding: 0 18px 10px; border: none; }
+  .dash-table tbody td { background: #F8FAFC; padding: 16px 18px; font-size: 14px; font-weight: 500; border: none; vertical-align: middle; }
+  .dash-table tbody tr:hover td { background: #F1F5F9; }
+  .dash-table tbody td:first-child { border-radius: 12px 0 0 12px; }
+  .dash-table tbody td:last-child { border-radius: 0 12px 12px 0; }
+  .flag-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+</style>
+{{ form.media }}
+{% endblock custom_css %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="db-page-header">
+    <div class="db-page-header-left">
+      <div class="db-eyebrow">Data Management</div>
+      <h1 class="db-page-title">Manage Scholarship Procedures</h1>
+      <p class="db-page-subtitle">Add step-by-step scholarship instructions by country.</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" style="border-radius: 12px;">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="row g-4">
+    <!-- ADD FORM -->
+    <div class="col-xl-4">
+      <div class="g-card">
+        <div class="g-card-header">
+          <div><h3 class="g-card-title">Add Procedure Step</h3></div>
+        </div>
+        
+        <form method="POST" action="{% url 'manage_procedure' %}">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add">
+          
+          <div class="mb-3">
+            <label class="form-label">Select Country <span class="text-danger">*</span></label>
+            <select name="country_id" class="clean-select" required>
+              <option value="" disabled selected>— Select Country —</option>
+              {% for country in countries %}
+                <option value="{{ country.country_id }}">{{ country.country_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Step Number (1, 2, 3...) <span class="text-danger">*</span></label>
+            <input type="number" name="step_number" class="clean-input" min="1" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Step Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="clean-input" placeholder="e.g. Gather Documents" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Description (optional)</label>
+            <textarea name="description" class="clean-input" rows="4"></textarea>
+            <!-- CKEditor should be initialized on this textarea if needed via javascript -->
+          </div>
+
+          <button type="submit" class="btn-submit w-100">Save Procedure Step</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- LIST TABLE -->
+    <div class="col-xl-8">
+      <div class="g-card">
+        <div class="g-card-header">
+          <div><h3 class="g-card-title">Procedure Steps List</h3><p class="g-card-sub">All active steps ({{ procedures.count }})</p></div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Country / Step</th>
+                <th>Title</th>
+                <th>Added On</th>
+                <th style="text-align:right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for step in procedures %}
+              <tr>
+                <td style="display: flex; align-items: center; font-weight: 700;">
+                  {% if step.country.country_flag %}
+                    <img src="/static/assets/countries/flags/{{ step.country.country_flag }}" class="flag-avatar me-2" alt="flag">
+                  {% endif %}
+                  {{ step.country.country_name }} <span class="ms-2 badge bg-primary" style="font-size: 12px; border-radius: 20px;">Step {{ step.step_number }}</span>
+                </td>
+                <td style="color: var(--text-primary); font-weight: 600;">{{ step.title }}</td>
+                <td>{{ step.created_at|date:"M d, Y" }}</td>
+                <td style="text-align:right">
+                    <form method="POST" action="{% url 'manage_procedure' %}" class="d-inline" onsubmit="return confirm('Delete this step?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="step_id" value="{{ step.id }}">
+                        <button type="submit" class="btn-delete">Delete</button>
+                    </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center py-4">No procedure steps added yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

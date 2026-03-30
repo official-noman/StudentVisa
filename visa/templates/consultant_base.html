@@ -127,52 +127,69 @@
 }
 
 #facebookPluginContainer {
-    position: absolute;
-    bottom: 0;
-    right: 10px;
+    position: fixed;
+    right: 20px;
+    bottom: 76px;
+    width: 300px;
+    height: 350px;
     display: none;
-    z-index: 9999; /* Ensure the plugin appears on top of other elements */
+    z-index: 9999;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.20);
+}
+
+#facebookPluginContainer iframe,
+#facebookPluginContainer span,
+#facebookPluginContainer > div {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
 }
 
 .fb-page.facebook-link-consultant{
     width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
 }
 
 #toggleFacebookPageBtn i.fas.fa-times {
     position: absolute;
-    right: 10px; /* Adjust this value as needed */
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
 }
 
 #toggleFacebookPageBtn.open {
-bottom: 270px;
-right: 18px;
+bottom: 20px;
 }
 #toggleFacebookPageBtn {
-    position: absolute;
-    bottom: 0px;
-    padding: 1px 85px;
-    padding-left: 6px;
-    width: 251px;
-    color: #fff;
-    height: 38px;
-    line-height: 38px;
-    background-color: #3a5897;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    height: 48px;
+    min-width: 220px;
+    padding: 0 20px;
     border: 0;
-    z-index: 9999999;
-    margin-right: -8px;
-    cursor: pointer;
-    font-family: Arial, sans-serif;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1877f2 0%, #0f5fd7 100%);
+    color: #fff;
     font-size: 14px;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
-    background-repeat: repeat-x;
-    background-size: auto;
-    background-position: 0 0;
+    font-weight: 600;
+    line-height: 48px;
+    cursor: pointer;
+    z-index: 9999999;
+    font-family: Arial, sans-serif;
     text-decoration: none;
-    right: 10px;
-    border-radius: 3px;
-    transition: bottom 0.3s ease;
+    box-shadow: 0 12px 24px rgba(24, 119, 242, 0.28);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+#toggleFacebookPageBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 30px rgba(24, 119, 242, 0.32);
 }
 #openChatBtn {
     position: absolute;
@@ -537,9 +554,9 @@ iframe[Attributes Style] {
                             <div class="widget-title">
                                 <h3>Facebook</h3>
                             </div>
-                            <div class="widget-content">
+                            <div class="widget-content" style="overflow: hidden;">
                                 
-                                    <div class="fb-page facebook-link-consultant" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="timeline" data-width="300" data-height="200" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                    <div class="fb-page facebook-link-consultant" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="" data-width="300" data-height="130" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
                                         <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
                                             <a href="{{ consultant_details.consultant_facebook }}">Facebook Page</a>
                                         </blockquote>
@@ -600,9 +617,9 @@ iframe[Attributes Style] {
 </button>
 
 
-<div id="facebookPluginContainer" class="fb-page" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="messages" data-width="250" data-height="310" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false" data-show-posts="true">
+<div id="facebookPluginContainer" class="fb-page" data-href="{{ consultant_details.consultant_facebook }}" data-tabs="messages" data-width="300" data-height="350" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false" data-show-posts="false">
     <blockquote cite="{{ consultant_details.consultant_facebook }}" class="fb-xfbml-parse-ignore">
-        <a href="{{ consultant_details.consultant_facebook }}">StudentVisaBD</a>
+        <a href="{{ consultant_details.consultant_facebook }}" target="_blank" rel="noopener noreferrer">{{ consultant.company_name|default:"Facebook Page" }}</a>
     </blockquote>
 </div>
 
@@ -619,6 +636,11 @@ iframe[Attributes Style] {
     document.getElementById('toggleFacebookPageBtn').addEventListener('click', function () {
         var fbPluginContainer = document.getElementById('facebookPluginContainer');
         var toggleButton = document.getElementById('toggleFacebookPageBtn');
+        var facebookUrl = "{{ consultant_details.consultant_facebook|default:''|escapejs }}";
+
+        if (!facebookUrl) {
+            return;
+        }
 
         if (fbPluginContainer.style.display === 'none' || !fbPluginContainer.style.display) {
             // Show Facebook Chat
@@ -633,7 +655,9 @@ iframe[Attributes Style] {
         }
 
         // Trigger reparse after toggling the display
-        FB.XFBML.parse();
+        if (typeof FB !== 'undefined' && FB.XFBML) {
+            FB.XFBML.parse();
+        }
     });
 
     // Add confirmation when closing the page

@@ -43,6 +43,15 @@ from .decorators import root_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import University, Countries
+# from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+# from django.http import JsonResponse
+# from django.contrib import messages
+
+# ---------------------------------------------------------------------------
+# Import your models — adjust the import path to match your project structure
+# ---------------------------------------------------------------------------
+from .models import Countries, University, SelfFundedProgram
 
 
 def role_and_permission_required(permission):
@@ -379,8 +388,26 @@ def type_of_balance(request):
 
 
 def root_consultant_list_json(request):
-    # Filter users based on the condition that active_status is null or 0
-    root_consultants = Users.objects.filter(user_role=5, active_status__in=[None, 0])
+    approved_consultant_accounts = CustomUser.objects.filter(user_type=1)
+
+    # Pending consultants are stored in Users. We should not exclude by raw id,
+    # because Users.id and CustomUser.id are different auto-increment sequences
+    # until an approval flow explicitly links them.
+    root_consultants = (
+        Users.objects.filter(user_role=5)
+        .filter(Q(active_status__isnull=True) | Q(active_status=0))
+        .exclude(
+            email__in=approved_consultant_accounts.exclude(email__isnull=True).values(
+                "email"
+            )
+        )
+        .exclude(
+            phone__in=approved_consultant_accounts.exclude(phone__isnull=True).values(
+                "phone"
+            )
+        )
+        .order_by("company_name")
+    )
 
     # Extract specific fields from the queryset including 'phone' and 'id'
     root_consultants_data = root_consultants.values(
@@ -1527,16 +1554,31 @@ def get_existing_permissions(request, user_id):
 @root_required
 @permission_required("visa.add_users", "visa.change_users", raise_exception=True)
 def root_consultant_list(request):
-    # Filter users based on the conditions and order by company_name
+    # Filter users based on those who are consultants (role 5) 
+    # and have a status indicating they are pending (null or 0).
+    # We exclude approved consultant accounts by their actual consultant identity
+    # fields, not by raw cross-table ids.
+    approved_consultant_accounts = CustomUser.objects.filter(user_type=1)
     rootconsultant = (
-        Users.objects.filter(
-            Q(user_role=5) & (Q(active_status__isnull=True) | Q(active_status=0))
+        Users.objects.filter(user_role=5)
+        .filter(Q(active_status__isnull=True) | Q(active_status=0))
+        .exclude(
+            email__in=approved_consultant_accounts.exclude(email__isnull=True).values(
+                "email"
+            )
         )
-        .exclude(id__in=CustomUser.objects.values("id"))
+        .exclude(
+            phone__in=approved_consultant_accounts.exclude(phone__isnull=True).values(
+                "phone"
+            )
+        )
         .order_by("company_name")
     )
 
-    context = {"rootconsultant": rootconsultant}
+    context = {
+        "rootconsultant": rootconsultant,
+        "pending_count": rootconsultant.count(),
+    }
     return render(request, "roottemplates/rootconsultant_list.html", context)
 
 
@@ -1587,12 +1629,17 @@ def reject_consultant(request, user_id):
         # Get the Users instance using user_id
         user_instance = Users.objects.get(pk=user_id)
 
-        # Set the active_status to 0 when rejecting the consultant
-        user_instance.active_status = 0
+        # Set the active_status to a specific rejected status (e.g. 10)
+        # to ensure they don't reappear in the pending list (which looks for 0 or null).
+        user_instance.active_status = 10
         user_instance.save()
 
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({"success": True, "message": "Consultant rejected successfully."})
         messages.success(request, "Consultant rejected successfully.")
     except Users.DoesNotExist:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({"success": False, "message": "Consultant not found."})
         messages.error(request, "Consultant not found.")
 
     return redirect("root_consultant_list")
@@ -3386,47 +3433,47 @@ def manage_visa_services(request):
 # from .models import SelfFundedProgram, University, Countries
 
 
-def manage_self_funded_programs(request):
-    if request.method == 'POST':
-        try:
-            country_id = request.POST.get('country_id')
-            university_id = request.POST.get('university_id')
-            semester_fee = request.POST.get('semester_fee')
-            requirements = request.POST.get('requirements')
-            foreign_student_policy = request.POST.get('foreign_student_policy')
+# def manage_self_funded_programs(request):
+#     if request.method == 'POST':
+#         try:
+#             country_id = request.POST.get('country_id')
+#             university_id = request.POST.get('university_id')
+#             semester_fee = request.POST.get('semester_fee')
+#             requirements = request.POST.get('requirements')
+#             foreign_student_policy = request.POST.get('foreign_student_policy')
 
-            if not all([country_id, university_id, semester_fee, requirements, foreign_student_policy]):
-                messages.error(request, 'All fields are required.')
-                return redirect('manage_self_funded_programs')
+#             if not all([country_id, university_id, semester_fee, requirements, foreign_student_policy]):
+#                 messages.error(request, 'All fields are required.')
+#                 return redirect('manage_self_funded_programs')
 
-            country = get_object_or_404(Countries, country_id=country_id) # country_id
-            university = get_object_or_404(University, university_id=university_id) # university_id
+#             country = get_object_or_404(Countries, country_id=country_id) # country_id
+#             university = get_object_or_404(University, university_id=university_id) # university_id
 
-            SelfFundedProgram.objects.create(
-                country=country,
-                university=university,
-                semester_fee=semester_fee,
-                requirements=requirements,
-                foreign_student_policy=foreign_student_policy,
-            )
-            messages.success(request, 'Self Funded Program added successfully.')
-            return redirect('manage_self_funded_programs')
+#             SelfFundedProgram.objects.create(
+#                 country=country,
+#                 university=university,
+#                 semester_fee=semester_fee,
+#                 requirements=requirements,
+#                 foreign_student_policy=foreign_student_policy,
+#             )
+#             messages.success(request, 'Self Funded Program added successfully.')
+#             return redirect('manage_self_funded_programs')
 
-        except Exception as e:
-            messages.error(request, f'Something went wrong: {str(e)}')
-            return redirect('manage_self_funded_programs')
+#         except Exception as e:
+#             messages.error(request, f'Something went wrong: {str(e)}')
+#             return redirect('manage_self_funded_programs')
 
-    programs = SelfFundedProgram.objects.select_related('university', 'country').all()
-    countries = Countries.objects.all().order_by('country_name')
-    universities = University.objects.select_related('countries').all()
+#     programs = SelfFundedProgram.objects.select_related('university', 'country').all()
+#     countries = Countries.objects.all().order_by('country_name')
+#     universities = University.objects.select_related('countries').all()
 
-    context = {
-        'programs': programs,
-        'countries': countries,
-        'universities': universities,
-    }
+#     context = {
+#         'programs': programs,
+#         'countries': countries,
+#         'universities': universities,
+#     }
     
-    return render(request, 'roottemplates/manage_self_funded_programs.html', context)
+#     return render(request, 'roottemplates/manage_self_funded.html', context)
 
 
 def delete_self_funded_program(request, program_id):
@@ -3436,14 +3483,14 @@ def delete_self_funded_program(request, program_id):
         messages.success(request, 'Program deleted successfully.')
     except Exception as e:
         messages.error(request, f'Could not delete program: {str(e)}')
-    return redirect('manage_self_funded_programs')
+    return redirect('roottemplates/manage_self_funded_programs')
 
-def get_universities_by_country(request):
-    country_id = request.GET.get('country_id')
-    if country_id:
-        universities = University.objects.filter(country_id=country_id).values('id', 'name')
-        return JsonResponse({'universities': list(universities)})
-    return JsonResponse({'universities': []})
+# def get_universities_by_country(request):
+#     country_id = request.GET.get('country_id')
+#     if country_id:
+#         universities = University.objects.filter(country_id=country_id).values('id', 'name')
+#         return JsonResponse({'universities': list(universities)})
+#     return JsonResponse({'universities': []})
 
 # from .models import University, Countries
 # from django.shortcuts import render, redirect
@@ -3473,29 +3520,327 @@ def get_universities_by_country(request):
 # from django.shortcuts import render, redirect
 # from django.contrib import messages
 
+# def manage_universities(request):
+#     if request.method == "POST":
+#         name = request.POST.get('name')
+#         country_id = request.POST.get('country_id') 
+        
+#         if name and country_id:
+            
+#             University.objects.create(name=name, countries_id=country_id)
+#             messages.success(request, "University added successfully!")
+#             return redirect('manage_universities')
+
+#     universities = University.objects.all().order_by('-created_at')
+#     countries = Countries.objects.all().order_by('country_name') 
+    
+#     return render(request, 'roottemplates/manage_universities.html', {
+#         'universities': universities,
+#         'countries': countries
+#     })
+@login_required
+@require_POST
+# def delete_university(request, uni_id):
+#     uni = get_object_or_404(University, id=uni_id)
+#     uni.delete()
+#     messages.success(request, "University deleted!")
+#     return redirect('manage_universities')
+def delete_university(request, uni_id):
+    uni = get_object_or_404(University, university_id=uni_id) # মডেলের প্রাইমারি কি 'university_id'
+    uni.delete()
+    messages.success(request, f"'{uni.name}' has been deleted!")
+    return redirect('manage_universities')
+    
+
+
+
+
+# ---------------------------------------------------------------------------
+# HELPER — build the absolute flag URL safely
+# ---------------------------------------------------------------------------
+def _flag_url(request, country):
+    """
+    Returns the public URL for a country's flag, or None.
+    Works whether country_flag is a Django ImageField/FileField or a plain
+    CharField storing a relative path.
+    """
+    flag = country.country_flag
+    if not flag:
+        return None
+    # ImageField / FileField — has a .url property
+    if hasattr(flag, 'url'):
+        try:
+            return request.build_absolute_uri(flag.url)
+        except Exception:
+            return None
+    # Plain CharField storing e.g. "flags/us.png"
+    from django.conf import settings
+    return request.build_absolute_uri(
+        settings.MEDIA_URL + str(flag).lstrip('/')
+    )
+
+
+# ---------------------------------------------------------------------------
+# Manage Universities
+# ---------------------------------------------------------------------------
+@login_required
+# def manage_universities(request):
+#     """
+#     Add / delete universities.
+#     University.countries is the FK field name pointing to the Countries model.
+#     """
+#     countries    = Countries.objects.all().order_by('country_name')
+#     universities = University.objects.select_related('countries').order_by('name')
+
+#     if request.method == 'POST':
+#         action = request.POST.get('action')
+
+#         if action == 'add':
+#             name       = request.POST.get('name', '').strip()
+#             country_id = request.POST.get('country_id')
+#             if name and country_id:
+#                 country = get_object_or_404(Countries, country_id=country_id)
+#                 University.objects.create(name=name, countries=country)
+#                 messages.success(request, f'University "{name}" added successfully.')
+#             else:
+#                 messages.error(request, 'Please provide both a university name and a country.')
+
+#         elif action == 'delete':
+#             university_id = request.POST.get('university_id')
+#             uni = get_object_or_404(University, university_id=university_id)
+#             uni_name = uni.name
+#             uni.delete()
+#             messages.success(request, f'University "{uni_name}" deleted.')
+
+#         return redirect('manage_universities')
+
+#     context = {
+#         'countries':    countries,
+#         'universities': universities,
+#     }
+#     return render(request, 'roottemplates/manage_universities.html', context)
 def manage_universities(request):
     if request.method == "POST":
         name = request.POST.get('name')
-        country_id = request.POST.get('country_id') 
+        country_id = request.POST.get('country_id')
         
         if name and country_id:
-            
-            University.objects.create(name=name, countries_id=country_id)
-            messages.success(request, "University added successfully!")
+            try:
+               
+                University.objects.create(name=name, country_id=country_id)
+                messages.success(request, f"'{name}' has been added successfully!")
+            except Exception as e:
+                messages.error(request, f"Could not save university. Error: {e}")
             return redirect('manage_universities')
 
-    universities = University.objects.all().order_by('-created_at')
+    universities = University.objects.select_related('country').all().order_by('-created_at')
     countries = Countries.objects.all().order_by('country_name') 
     
     return render(request, 'roottemplates/manage_universities.html', {
         'universities': universities,
         'countries': countries
     })
+
+
+# ---------------------------------------------------------------------------
+# AJAX — get universities filtered by country
+# ---------------------------------------------------------------------------
+# def get_universities_by_country(request):
+#     """
+#     GET /ajax/universities/?country_id=<id>
+#     Returns JSON list: [{"id": 1, "name": "..."}, ...]
+#     University FK to Countries uses field name `countries`.
+#     """
+#     country_id = request.GET.get('country_id', '').strip()
+
+#     if not country_id:
+#         return JsonResponse({'error': 'country_id is required.'}, status=400)
+
+#     try:
+#         universities = (
+#             University.objects
+#             .filter(countries__country_id=country_id)
+#             .order_by('name')
+#             .values('university_id', 'name')
+#         )
+#         data = [
+#             {'id': u['university_id'], 'name': u['name']}
+#             for u in universities
+#         ]
+#         return JsonResponse(data, safe=False)
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
+
+# def get_universities_by_country(request):
+#     country_id = request.GET.get('country_id')
+#     if country_id:
+       
+#        universities = University.objects.filter(countries__country_id=country_id).values('university_id', 'name')
+#     return JsonResponse({'universities': list(universities)})
+#     return JsonResponse({'universities': []})
+
+def get_universities_by_country(request):
+    country_id = request.GET.get('country_id')
+    if country_id:
+        # 🎯 P0 Fix: 'countries__country_id' এর বদলে সরাসরি 'country_id' (কারণ মডেলে FK-র নাম country)
+        universities = University.objects.filter(country_id=country_id).values('university_id', 'name')
+        return JsonResponse({'universities': list(universities)})
+    return JsonResponse({'universities':[]})
+
+# ---------------------------------------------------------------------------
+# Manage Self-Funded Programs
+# ---------------------------------------------------------------------------
 @login_required
-@require_POST
-def delete_university(request, uni_id):
-    uni = get_object_or_404(University, id=uni_id)
-    uni.delete()
-    messages.success(request, "University deleted!")
-    return redirect('manage_universities')
-    
+# def manage_self_funded_programs(request):
+#     """
+#     Add / delete self-funded programs.
+#     SelfFundedProgram has:
+#       - country    → FK to Countries  (field name: country)
+#       - university → FK to University (field name: university)
+#     """
+#     countries = Countries.objects.all().order_by('country_name')
+#     programs  = (
+#         SelfFundedProgram.objects
+#         .select_related('country', 'university')
+#         .order_by('country__country_name', 'university__name')
+#     )
+
+#     if request.method == 'POST':
+#         action = request.POST.get('action')
+
+#         if action == 'add':
+#             country_id    = request.POST.get('country_id')
+#             university_id = request.POST.get('university_id')
+#             semester_fee  = request.POST.get('semester_fee', '').strip()
+#             requirements  = request.POST.get('requirements', '').strip()
+#             foreign_policy = request.POST.get('foreign_student_policy', '').strip()
+
+#             if country_id and university_id:
+#                 country    = get_object_or_404(Countries,  country_id=country_id)
+#                 university = get_object_or_404(University, university_id=university_id)
+#                 SelfFundedProgram.objects.create(
+#                     country=country,
+#                     university=university,
+#                     semester_fee=semester_fee,
+#                     requirements=requirements,
+#                     foreign_student_policy=foreign_policy,
+#                 )
+#                 messages.success(
+#                     request,
+#                     f'Self-Funded program for "{university.name}" added successfully.'
+#                 )
+#             else:
+#                 messages.error(request, 'Please select both a country and a university.')
+
+#         elif action == 'delete':
+#             program_id = request.POST.get('program_id')
+#             program = get_object_or_404(SelfFundedProgram, id=program_id)
+#             uni_name = program.university.name
+#             program.delete()
+#             messages.success(request, f'Program for "{uni_name}" deleted.')
+
+#         return redirect('manage_self_funded_programs')
+
+#     context = {
+#         'countries': countries,
+#         'programs':  programs,
+#     }
+#     return render(request, 'roottemplates/manage_self_funded.html', context)
+
+
+def manage_self_funded_programs(request):
+    if request.method == 'POST':
+        # 🎯 P0 Fix: ডিফল্টভাবে 'add' ধরে নিবে, যাতে hidden action না থাকলেও সেভ হয়
+        action = request.POST.get('action', 'add')
+
+        if action == 'add':
+            country_id = request.POST.get('country_id')
+            university_id = request.POST.get('university_id')
+            semester_fee = request.POST.get('semester_fee')
+            requirements = request.POST.get('requirements')
+            foreign_student_policy = request.POST.get('foreign_student_policy')
+
+            if not all([country_id, university_id, semester_fee, requirements, foreign_student_policy]):
+                messages.error(request, 'All fields are required.')
+                return redirect('manage_self_funded_programs')
+
+            country = get_object_or_404(Countries, country_id=country_id)
+            university = get_object_or_404(University, university_id=university_id)
+
+            # 🎯 P2 Fix: Cross-validation (যাতে হ্যাক করে অন্য দেশের ভার্সিটি সেভ করতে না পারে)
+            if university.country_id != country.country_id:
+                messages.error(request, 'Security Error: University does not belong to the selected country.')
+                return redirect('manage_self_funded_programs')
+
+            SelfFundedProgram.objects.create(
+                country=country,
+                university=university,
+                semester_fee=semester_fee,
+                requirements=requirements,
+                foreign_student_policy=foreign_student_policy,
+            )
+            messages.success(request, f'Self Funded Program for {university.name} added successfully.')
+            return redirect('manage_self_funded_programs')
+
+        elif action == 'delete':
+            program_id = request.POST.get('program_id')
+            program = get_object_or_404(SelfFundedProgram, id=program_id)
+            program.delete()
+            messages.success(request, 'Program deleted successfully.')
+            return redirect('manage_self_funded_programs')
+
+    # GET Request
+    programs = SelfFundedProgram.objects.select_related('university', 'country').all()
+    countries = Countries.objects.all().order_by('country_name')
+
+    context = {
+        'programs': programs,
+        'countries': countries,
+    }
+    return render(request, 'roottemplates/manage_self_funded.html', context)
+
+
+from .models import ScholarshipStep
+
+@login_required
+def manage_procedure(request):
+    if request.method == "POST":
+        action = request.POST.get('action')
+        
+        if action == "add":
+            country_id = request.POST.get('country_id')
+            step_number = request.POST.get('step_number')
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            
+            if country_id and step_number and title:
+                try:
+                    country = get_object_or_404(Countries, country_id=country_id)
+                    ScholarshipStep.objects.create(
+                        country=country,
+                        step_number=int(step_number),
+                        title=title,
+                        description=description
+                    )
+                    messages.success(request, f"Step '{title}' added successfully!")
+                except Exception as e:
+                    messages.error(request, f"Error saving step: {e}")
+            else:
+                messages.error(request, "Please fill in all required fields.")
+            return redirect('manage_procedure')
+
+        elif action == "delete":
+            step_id = request.POST.get('step_id')
+            step = get_object_or_404(ScholarshipStep, id=step_id)
+            step.delete()
+            messages.success(request, "Step deleted successfully.")
+            return redirect('manage_procedure')
+
+    countries = Countries.objects.all().order_by('country_name')
+    # Use select_related to prevent N+1 DB queries
+    procedures = ScholarshipStep.objects.select_related('country').all().order_by('country__country_name', 'step_number')
+
+    return render(request, 'roottemplates/manage_procedure.html', {
+        'countries': countries,
+        'procedures': procedures
+    })
