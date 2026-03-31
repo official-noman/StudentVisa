@@ -96,6 +96,460 @@ def get_otp_request_count(phone_number):
     ).count()
 
 
+def normalize_bangladesh_phone(phone_value):
+    raw_value = (phone_value or "").strip()
+    digits = re.sub(r"\D", "", raw_value)
+
+    if not digits:
+        return ""
+
+    if digits.startswith("880"):
+        digits = digits[3:]
+
+    if len(digits) == 10 and digits.startswith(
+        ("13", "14", "15", "16", "17", "18", "19")
+    ):
+        digits = f"0{digits}"
+
+    return digits[:11] if digits.startswith("0") else digits
+
+
+def build_phone_lookup_q(phone_value, field_name="phone"):
+    normalized_phone = normalize_bangladesh_phone(phone_value)
+    raw_value = (phone_value or "").strip()
+    variants = {raw_value}
+
+    if normalized_phone:
+        variants.add(normalized_phone)
+        core_phone = (
+            normalized_phone[1:] if normalized_phone.startswith("0") else normalized_phone
+        )
+        variants.add(core_phone)
+        variants.add(f"+880{core_phone}")
+        variants.add(f"880{core_phone}")
+
+    variants = [variant for variant in variants if variant]
+    if not variants:
+        return Q(pk__isnull=True)
+
+    lookup_q = Q()
+    for variant in variants:
+        lookup_q |= Q(**{f"{field_name}__iexact": variant})
+
+    return lookup_q
+
+
+def get_consultant_auth_and_profile(email=None, phone=None):
+    consultant_user = None
+    consultant = None
+    normalized_email = (email or "").strip()
+    normalized_phone = normalize_bangladesh_phone(phone)
+
+    if normalized_email:
+        consultant_user = CustomUser.objects.filter(
+            Q(email__iexact=normalized_email) | Q(username__iexact=normalized_email),
+            user_type=1,
+        ).first()
+        consultant = Users.objects.filter(
+            email__iexact=normalized_email,
+            user_role=5,
+        ).first()
+    elif normalized_phone:
+        phone_lookup_q = build_phone_lookup_q(normalized_phone)
+        consultant_user = CustomUser.objects.filter(
+            phone_lookup_q,
+            user_type=1,
+        ).first()
+        consultant = Users.objects.filter(phone_lookup_q, user_role=5).first()
+
+    if consultant is None and consultant_user is not None:
+        consultant = Users.objects.filter(
+            consultant_user_id=consultant_user.id,
+            user_role=5,
+        ).first()
+        if consultant is None:
+            consultant_lookup = Q()
+            if consultant_user.email:
+                consultant_lookup |= Q(email__iexact=consultant_user.email)
+            if consultant_user.phone:
+                consultant_lookup |= build_phone_lookup_q(
+                    consultant_user.phone,
+                    field_name="phone",
+                )
+            if consultant_lookup:
+                consultant = Users.objects.filter(
+                    consultant_lookup,
+                    user_role=5,
+                ).first()
+
+    if consultant_user is None and consultant is not None and consultant.consultant_user_id:
+        consultant_user = consultant.consultant_user
+    if consultant_user is None and consultant is not None:
+        consultant_lookup = Q()
+        if consultant.email:
+            consultant_lookup |= Q(email__iexact=consultant.email) | Q(
+                username__iexact=consultant.email
+            )
+        if consultant.phone:
+            consultant_lookup |= build_phone_lookup_q(
+                consultant.phone,
+                field_name="phone",
+            )
+        if consultant_lookup:
+            consultant_user = CustomUser.objects.filter(
+                consultant_lookup,
+                user_type=1,
+            ).first()
+
+    lookup_phone = normalize_bangladesh_phone(
+        normalized_phone
+        or (consultant.phone if consultant and consultant.phone else "")
+        or (consultant_user.phone if consultant_user and consultant_user.phone else "")
+    )
+
+    return consultant_user, consultant, lookup_phone
+
+
+def get_student_auth_and_profile(email=None, phone=None):
+    student_user = None
+    student = None
+    normalized_email = (email or "").strip()
+    normalized_phone = normalize_bangladesh_phone(phone)
+
+    if normalized_email:
+        student_user = CustomUser.objects.filter(
+            Q(email__iexact=normalized_email) | Q(username__iexact=normalized_email),
+            user_type=2,
+        ).first()
+        student = Students.objects.filter(email__iexact=normalized_email).first()
+    elif normalized_phone:
+        phone_lookup_q = build_phone_lookup_q(normalized_phone)
+        student_user = CustomUser.objects.filter(
+            phone_lookup_q,
+            user_type=2,
+        ).first()
+        student = Students.objects.filter(phone_lookup_q).first()
+
+    if student is None and student_user is not None:
+        student = Students.objects.filter(
+            Q(student_user_id=student_user.id) | Q(id=student_user.id)
+        ).first()
+        if student is None:
+            student_lookup = Q()
+            if student_user.email:
+                student_lookup |= Q(email__iexact=student_user.email)
+            if student_user.phone:
+                student_lookup |= build_phone_lookup_q(
+                    student_user.phone,
+                    field_name="phone",
+                )
+            if student_lookup:
+                student = Students.objects.filter(student_lookup).first()
+
+    if student_user is None and student is not None:
+        if student.student_user_id:
+            student_user = student.student_user
+        else:
+            student_user = CustomUser.objects.filter(id=student.id, user_type=2).first()
+        if student_user is None:
+            user_lookup = Q()
+            if student.email:
+                user_lookup |= Q(email__iexact=student.email) | Q(
+                    username__iexact=student.email
+                )
+            if student.phone:
+                user_lookup |= build_phone_lookup_q(
+                    student.phone,
+                    field_name="phone",
+                )
+            if user_lookup:
+                student_user = CustomUser.objects.filter(
+                    user_lookup,
+                    user_type=2,
+                ).first()
+
+    lookup_phone = normalize_bangladesh_phone(
+        normalized_phone
+        or (student.phone if student and student.phone else "")
+        or (student_user.phone if student_user and student_user.phone else "")
+    )
+    lookup_email = (
+        normalized_email
+        or (student.email if student and student.email else "")
+        or (student_user.email if student_user and student_user.email else "")
+    ).strip()
+
+    return student_user, student, lookup_phone, lookup_email
+
+
+def get_password_reset_contacts(request):
+    temp_data = request.session.get("temp_user_data") or {}
+    phone = normalize_bangladesh_phone(
+        temp_data.get("phone") or request.session.get("otp_phone") or ""
+    )
+    email = (temp_data.get("email") or request.session.get("otp_email") or "").strip()
+    return {"phone": phone, "email": email}
+
+
+def set_password_reset_session(request, *, method, otp, expiration_time, phone="", email=""):
+    temp_user_data = dict(request.session.get("temp_user_data") or {})
+    normalized_phone = normalize_bangladesh_phone(phone or temp_user_data.get("phone"))
+    normalized_email = (email or temp_user_data.get("email") or "").strip()
+
+    temp_user_data["otp"] = otp
+    temp_user_data["expiration_time"] = expiration_time
+
+    if normalized_phone:
+        temp_user_data["phone"] = normalized_phone
+    if normalized_email:
+        temp_user_data["email"] = normalized_email
+
+    request.session["otp_method"] = method
+    request.session["otp_phone"] = normalized_phone
+    request.session["otp_email"] = normalized_email
+    request.session["temp_user_data"] = temp_user_data
+    request.session.modified = True
+
+
+def resolve_consultant_password_reset_identity(request):
+    contacts = get_password_reset_contacts(request)
+    method = request.session.get("otp_method", "phone")
+    lookup_order = []
+
+    if method == "email":
+        if contacts["email"]:
+            lookup_order.append(("email", contacts["email"]))
+        if contacts["phone"]:
+            lookup_order.append(("phone", contacts["phone"]))
+    else:
+        if contacts["phone"]:
+            lookup_order.append(("phone", contacts["phone"]))
+        if contacts["email"]:
+            lookup_order.append(("email", contacts["email"]))
+
+    for lookup_type, lookup_value in lookup_order:
+        if lookup_type == "email":
+            consultant_user, consultant, lookup_phone = get_consultant_auth_and_profile(
+                email=lookup_value
+            )
+        else:
+            consultant_user, consultant, lookup_phone = get_consultant_auth_and_profile(
+                phone=lookup_value
+            )
+
+        if consultant is not None or consultant_user is not None:
+            lookup_email = (
+                contacts["email"]
+                or (consultant.email if consultant and consultant.email else "")
+                or (
+                    consultant_user.email
+                    if consultant_user and consultant_user.email
+                    else ""
+                )
+            ).strip()
+            return consultant_user, consultant, lookup_phone, lookup_email
+
+    return None, None, contacts["phone"], contacts["email"]
+
+
+def resolve_student_password_reset_identity(request):
+    contacts = get_password_reset_contacts(request)
+    method = request.session.get("otp_method", "phone")
+    lookup_order = []
+
+    if method == "email":
+        if contacts["email"]:
+            lookup_order.append(("email", contacts["email"]))
+        if contacts["phone"]:
+            lookup_order.append(("phone", contacts["phone"]))
+    else:
+        if contacts["phone"]:
+            lookup_order.append(("phone", contacts["phone"]))
+        if contacts["email"]:
+            lookup_order.append(("email", contacts["email"]))
+
+    for lookup_type, lookup_value in lookup_order:
+        if lookup_type == "email":
+            student_user, student, lookup_phone, lookup_email = (
+                get_student_auth_and_profile(email=lookup_value)
+            )
+        else:
+            student_user, student, lookup_phone, lookup_email = (
+                get_student_auth_and_profile(phone=lookup_value)
+            )
+
+        if student is not None or student_user is not None:
+            return student_user, student, lookup_phone, lookup_email
+
+    return None, None, contacts["phone"], contacts["email"]
+
+
+def update_password_reset_identity_session(
+    request, *, role, auth_user=None, profile=None, phone="", email=""
+):
+    temp_user_data = dict(request.session.get("temp_user_data") or {})
+
+    resolved_phone = normalize_bangladesh_phone(
+        phone
+        or (profile.phone if profile and getattr(profile, "phone", "") else "")
+        or (auth_user.phone if auth_user and getattr(auth_user, "phone", "") else "")
+        or temp_user_data.get("phone")
+    )
+    resolved_email = (
+        email
+        or (profile.email if profile and getattr(profile, "email", "") else "")
+        or (auth_user.email if auth_user and getattr(auth_user, "email", "") else "")
+        or temp_user_data.get("email")
+        or ""
+    ).strip()
+
+    if resolved_phone:
+        temp_user_data["phone"] = resolved_phone
+        request.session["otp_phone"] = resolved_phone
+    if resolved_email:
+        temp_user_data["email"] = resolved_email
+        request.session["otp_email"] = resolved_email
+
+    if role == "student":
+        if profile is not None:
+            temp_user_data["student_id"] = profile.id
+        if auth_user is not None:
+            temp_user_data["student_user_id"] = auth_user.id
+    elif role == "consultant":
+        if profile is not None:
+            temp_user_data["consultant_id"] = profile.id
+        if auth_user is not None:
+            temp_user_data["consultant_user_id"] = auth_user.id
+
+    request.session["temp_user_data"] = temp_user_data
+    request.session.modified = True
+
+
+def get_consultant_password_reset_identity(request):
+    temp_user_data = request.session.get("temp_user_data") or {}
+    consultant = None
+    consultant_user = None
+
+    consultant_id = temp_user_data.get("consultant_id")
+    consultant_user_id = temp_user_data.get("consultant_user_id")
+
+    if consultant_id:
+        consultant = Users.objects.filter(id=consultant_id, user_role=5).first()
+
+    if consultant_user_id:
+        consultant_user = CustomUser.objects.filter(
+            id=consultant_user_id,
+            user_type=1,
+        ).first()
+
+    if consultant is None and consultant_user is not None:
+        consultant = Users.objects.filter(
+            consultant_user_id=consultant_user.id,
+            user_role=5,
+        ).first()
+
+    if consultant_user is None and consultant is not None and consultant.consultant_user_id:
+        consultant_user = consultant.consultant_user
+
+    if consultant is None and consultant_user is None:
+        consultant_user, consultant, lookup_phone, lookup_email = (
+            resolve_consultant_password_reset_identity(request)
+        )
+    else:
+        lookup_phone = normalize_bangladesh_phone(
+            temp_user_data.get("phone")
+            or (consultant.phone if consultant and consultant.phone else "")
+            or (
+                consultant_user.phone
+                if consultant_user and consultant_user.phone
+                else ""
+            )
+        )
+        lookup_email = (
+            temp_user_data.get("email")
+            or (consultant.email if consultant and consultant.email else "")
+            or (
+                consultant_user.email
+                if consultant_user and consultant_user.email
+                else ""
+            )
+            or ""
+        ).strip()
+
+    if consultant is not None or consultant_user is not None:
+        update_password_reset_identity_session(
+            request,
+            role="consultant",
+            auth_user=consultant_user,
+            profile=consultant,
+            phone=lookup_phone,
+            email=lookup_email,
+        )
+
+    return consultant_user, consultant, lookup_phone, lookup_email
+
+
+def get_student_password_reset_identity(request):
+    temp_user_data = request.session.get("temp_user_data") or {}
+    student = None
+    student_user = None
+
+    student_id = temp_user_data.get("student_id")
+    student_user_id = temp_user_data.get("student_user_id")
+
+    if student_id:
+        student = Students.objects.filter(id=student_id).first()
+
+    if student_user_id:
+        student_user = CustomUser.objects.filter(
+            id=student_user_id,
+            user_type=2,
+        ).first()
+
+    if student is None and student_user is not None:
+        student = Students.objects.filter(
+            Q(student_user_id=student_user.id) | Q(id=student_user.id)
+        ).first()
+
+    if student_user is None and student is not None:
+        if student.student_user_id:
+            student_user = student.student_user
+        else:
+            student_user = CustomUser.objects.filter(
+                id=student.id,
+                user_type=2,
+            ).first()
+
+    if student is None and student_user is None:
+        student_user, student, lookup_phone, lookup_email = (
+            resolve_student_password_reset_identity(request)
+        )
+    else:
+        lookup_phone = normalize_bangladesh_phone(
+            temp_user_data.get("phone")
+            or (student.phone if student and student.phone else "")
+            or (student_user.phone if student_user and student_user.phone else "")
+        )
+        lookup_email = (
+            temp_user_data.get("email")
+            or (student.email if student and student.email else "")
+            or (student_user.email if student_user and student_user.email else "")
+            or ""
+        ).strip()
+
+    if student is not None or student_user is not None:
+        update_password_reset_identity_session(
+            request,
+            role="student",
+            auth_user=student_user,
+            profile=student,
+            phone=lookup_phone,
+            email=lookup_email,
+        )
+
+    return student_user, student, lookup_phone, lookup_email
+
+
 def send_signup_otp_sms(phone, otp):
     url = (
         "http://sms.iglweb.com/api/v1/send"
@@ -883,53 +1337,20 @@ def forgot_password_phone_or_email(request):
         email = (request.POST.get("email") or "").strip()
 
         if phone:
-            consultant = Users.objects.filter(phone=phone).first()
+            normalized_phone = normalize_bangladesh_phone(phone)
+            valid_phone_number = re.match(
+                r"^(013|014|015|016|017|018|019)\d{8}$",
+                normalized_phone,
+            )
 
-            if consultant is not None:
-                if get_otp_request_count(phone) >= 2:
-                    return JsonResponse(
-                        {
-                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
-                        }
-                    )
+            if not valid_phone_number:
+                return JsonResponse({"error": "Invalid Phone Number Provided"})
 
-                otp = str(random.randint(100000, 999999))
-                valid_phone_number = re.match(
-                    r"^(013|019|018|014|015|016|017)\d{8}$", str(phone)
-                )
+            consultant_user, consultant, limit_phone = get_consultant_auth_and_profile(
+                phone=phone
+            )
 
-                if valid_phone_number:
-                    request.session["otp_method"] = "phone"
-                    request.session["otp_phone"] = phone
-                    request.session["otp_email"] = ""
-                    request.session["temp_user_data"] = {
-                        "phone": phone,
-                        "otp": otp,
-                        "expiration_time": int(time()) + 300,
-                    }
-
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your verification code. Expire in 5 mins."
-                    response = requests.get(url)
-
-                    if response.status_code == 200:
-                        OTPRequest.objects.create(phone_number=phone)
-                        return JsonResponse({
-                            "success": True,
-                            "redirect_url": "/forgot_password_otp_verification/",
-                            "expiration_time": int(time()) + 300
-                        })
-                    return JsonResponse(
-                        {"error": "Failed to send OTP. Please try again later."}
-                    )
-                else:
-                    return JsonResponse({"error": "Invalid Phone Number Provided"})
-            else:
-                return JsonResponse({"error": "Phone Number is not registered"})
-        elif email:
-            consultant = Users.objects.filter(email=email).first()
-
-            if consultant is not None:
-                limit_phone = consultant.phone
+            if consultant is not None or consultant_user is not None:
                 if get_otp_request_count(limit_phone) >= 2:
                     return JsonResponse(
                         {
@@ -938,17 +1359,90 @@ def forgot_password_phone_or_email(request):
                     )
 
                 otp = str(random.randint(100000, 999999))
+                expiration_time = int(time()) + 300
+                lookup_email = (
+                    consultant.email
+                    if consultant and consultant.email
+                    else (
+                        consultant_user.email
+                        if consultant_user and consultant_user.email
+                        else ""
+                    )
+                ).strip()
+                set_password_reset_session(
+                    request,
+                    method="phone",
+                    otp=otp,
+                    expiration_time=expiration_time,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
+                update_password_reset_identity_session(
+                    request,
+                    role="consultant",
+                    auth_user=consultant_user,
+                    profile=consultant,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
 
-                request.session["otp_method"] = "email"
-                request.session["otp_email"] = email
-                request.session["otp_phone"] = limit_phone
-                request.session["temp_user_data"] = {
-                    "email": email,
-                    "otp": otp,
-                    "expiration_time": int(time()) + 300,
-                }
+                url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{limit_phone}&senderid=01844532638&msg={otp} is your verification code. Expire in 5 mins."
+                response = requests.get(url)
 
-                send_error = send_password_reset_otp_email(email, otp)
+                if response.status_code == 200:
+                    OTPRequest.objects.create(phone_number=limit_phone)
+                    return JsonResponse({
+                        "success": True,
+                        "redirect_url": "/forgot_password_otp_verification/",
+                        "expiration_time": expiration_time
+                    })
+                return JsonResponse(
+                    {"error": "Failed to send OTP. Please try again later."}
+                )
+            else:
+                return JsonResponse({"error": "Phone Number is not registered"})
+        elif email:
+            consultant_user, consultant, limit_phone = get_consultant_auth_and_profile(
+                email=email
+            )
+
+            if consultant is not None or consultant_user is not None:
+                if get_otp_request_count(limit_phone) >= 2:
+                    return JsonResponse(
+                        {
+                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                        }
+                    )
+
+                otp = str(random.randint(100000, 999999))
+                expiration_time = int(time()) + 300
+                lookup_email = (
+                    consultant.email
+                    if consultant and consultant.email
+                    else (
+                        consultant_user.email
+                        if consultant_user and consultant_user.email
+                        else email
+                    )
+                ).strip()
+                set_password_reset_session(
+                    request,
+                    method="email",
+                    otp=otp,
+                    expiration_time=expiration_time,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
+                update_password_reset_identity_session(
+                    request,
+                    role="consultant",
+                    auth_user=consultant_user,
+                    profile=consultant,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
+
+                send_error = send_password_reset_otp_email(lookup_email, otp)
                 if send_error:
                     return JsonResponse({"error": send_error})
 
@@ -956,7 +1450,7 @@ def forgot_password_phone_or_email(request):
                 return JsonResponse({
                     "success": True,
                     "redirect_url": "/forgot_password_otp_verification/",
-                    "expiration_time": int(time()) + 300
+                    "expiration_time": expiration_time
                 })
             else:
                 return JsonResponse({"error": "Email is not registered"})
@@ -965,7 +1459,12 @@ def forgot_password_phone_or_email(request):
 
 
 def forgot_password_otp_verification(request):
-    temp_data = request.session["temp_user_data"]
+    temp_data = request.session.get("temp_user_data")
+    if not temp_data:
+        return redirect("forgot_password_phone_or_email")
+
+    get_consultant_password_reset_identity(request)
+
     time_remaining = temp_data["expiration_time"]
     page_name = "Forgot Password Otp Verification"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -975,11 +1474,10 @@ def forgot_password_otp_verification(request):
         resend_otp = request.GET.get("resend", "")
 
         if resend_otp and resend_otp == "true":
-            if request.session["temp_user_data"]:
-                previous_expiration_time = request.session["temp_user_data"][
+            if request.session.get("temp_user_data"):
+                previous_expiration_time = request.session["temp_user_data"].get(
                     "expiration_time"
-                ]
-                previous_otp = request.session["temp_user_data"]["otp"]
+                )
 
                 previous_expiration_datetime = timezone.make_aware(
                     datetime.utcfromtimestamp(previous_expiration_time),
@@ -994,34 +1492,47 @@ def forgot_password_otp_verification(request):
                     del request.session["temp_user_data"]["otp"]
                     del request.session["temp_user_data"]["expiration_time"]
 
-                    method = request.session.get('otp_method', 'phone')
-                    if method == 'email':
-                        email = request.session["temp_user_data"]["email"]
-                        otp = str(random.randint(100000, 999999))
-                        send_mail(
-                            'Student Visa BD - Password Reset OTP',
-                            f'Your verification code is {otp}. It expires in 5 minutes.',
-                            settings.EMAIL_HOST_USER,
-                            [email],
-                            fail_silently=False,
+                    method = request.session.get("otp_method", "phone")
+                    contacts = get_password_reset_contacts(request)
+                    phone = contacts["phone"]
+                    email = contacts["email"]
+
+                    if get_otp_request_count(phone) >= 2:
+                        return JsonResponse(
+                            {
+                                "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                            }
                         )
+
+                    if method == "email":
+                        otp = str(random.randint(100000, 999999))
+                        send_error = send_password_reset_otp_email(email, otp)
+                        if send_error:
+                            return JsonResponse({"error": send_error})
                     else:
-                        phone = request.session["temp_user_data"]["phone"]
-                        valid_phone_number = request.session["temp_user_data"]["phone"]
-                        otp = str(random.randint(1000, 9999))
-                        url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                        otp = str(random.randint(100000, 999999))
+                        url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your verification code. Expire in 5 mins."
                         response = requests.get(url)
+                        if response.status_code != 200:
+                            return JsonResponse(
+                                {"error": "Failed to send OTP. Please try again later."}
+                            )
+
                     expiration_time_resend = int(time()) + 300
-                    request.session["temp_user_data"]["otp"] = otp
-                    request.session["temp_user_data"]["expiration_time"] = (
-                        expiration_time_resend
+                    set_password_reset_session(
+                        request,
+                        method=method,
+                        otp=otp,
+                        expiration_time=expiration_time_resend,
+                        phone=phone,
+                        email=email,
                     )
-                    request.session.modified = True  # Mark session as modified
+                    get_consultant_password_reset_identity(request)
+                    OTPRequest.objects.create(phone_number=phone)
 
                     response_data = {
                         "success": True,
                         "redirect_url": "/forgot_password_otp_verification/",
-                        "otp": otp,
                         "expiration_time": expiration_time_resend,  # Send expiration time to client
                     }
 
@@ -1067,29 +1578,32 @@ def change_forgotten_password(request):
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                if method == "email":
-                    email = temp_data.get("email")
-                    consultant = Users.objects.filter(email=email).first()
-                else:
-                    phone = temp_data.get("phone")
-                    consultant = Users.objects.filter(phone=phone).first()
+                consultant_user, consultant, lookup_phone, lookup_email = (
+                    get_consultant_password_reset_identity(request)
+                )
 
-                if consultant:
-                    user = consultant.consultant_user
+                if consultant or consultant_user:
+                    user = consultant_user or CustomUser()
+                    user.set_password(new_password)
 
-                    if user:
-                        user.set_password(new_password)
+                    if consultant_user:
                         user.save()
 
+                    if consultant:
                         consultant.raw_password = new_password
                         consultant.password = user.password
                         consultant.save()
 
-                        return JsonResponse({"success": True})
-                    else:
-                        return JsonResponse(
-                            {"errors": "Auth User not found for this account."}
-                        )
+                    set_password_reset_session(
+                        request,
+                        method=method,
+                        otp=temp_data.get("otp", ""),
+                        expiration_time=temp_data.get("expiration_time", int(time())),
+                        phone=lookup_phone,
+                        email=lookup_email,
+                    )
+
+                    return JsonResponse({"success": True})
                 else:
                     return JsonResponse({"errors": "Account not found."})
             else:
@@ -1109,10 +1623,13 @@ def forgot_password_phone_or_email_student(request):
         email = (request.POST.get("email") or "").strip()
 
         if phone:
-            student = Students.objects.filter(phone=phone).first()
+            normalized_phone = normalize_bangladesh_phone(phone)
+            student_user, student, limit_phone, limit_email = get_student_auth_and_profile(
+                phone=normalized_phone
+            )
 
-            if student is not None:
-                if get_otp_request_count(phone) >= 2:
+            if student is not None or student_user is not None:
+                if get_otp_request_count(limit_phone) >= 2:
                     return JsonResponse(
                         {
                             "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
@@ -1122,27 +1639,31 @@ def forgot_password_phone_or_email_student(request):
                 otp = str(random.randint(1000, 9999))
 
                 valid_phone_number = re.match(
-                    r"^(013|019|018|014|015|016|017)\d{8}$", str(phone)
+                    r"^(013|019|018|014|015|016|017)\d{8}$", str(limit_phone)
                 )
-                temp_user_data = {"phone": phone, "otp": otp}
 
                 if valid_phone_number:
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{limit_phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
                     response = requests.get(url)
                     if response.status_code == 200:
-                        response = JsonResponse(
-                            {
-                                "success": True,
-                                "redirect_url": "/forgot_password_otp_verification_student/",
-                            }
-                        )
                         expiration_time = int(time()) + 300
-                        temp_user_data["expiration_time"] = expiration_time
-                        request.session["otp_method"] = "phone"
-                        request.session["otp_phone"] = phone
-                        request.session["otp_email"] = ""
-                        request.session["temp_user_data"] = temp_user_data
-                        OTPRequest.objects.create(phone_number=phone)
+                        set_password_reset_session(
+                            request,
+                            method="phone",
+                            otp=otp,
+                            expiration_time=expiration_time,
+                            phone=limit_phone,
+                            email=limit_email,
+                        )
+                        update_password_reset_identity_session(
+                            request,
+                            role="student",
+                            auth_user=student_user,
+                            profile=student,
+                            phone=limit_phone,
+                            email=limit_email,
+                        )
+                        OTPRequest.objects.create(phone_number=limit_phone)
 
                         response_data = {
                             "success": True,
@@ -1159,10 +1680,11 @@ def forgot_password_phone_or_email_student(request):
             else:
                 return JsonResponse({"error": "Phone Number is not registered"})
         elif email:
-            student = Students.objects.filter(email=email).first()
+            student_user, student, limit_phone, lookup_email = get_student_auth_and_profile(
+                email=email
+            )
 
-            if student is not None:
-                limit_phone = student.phone
+            if student is not None or student_user is not None:
                 if get_otp_request_count(limit_phone) >= 2:
                     return JsonResponse(
                         {
@@ -1171,18 +1693,28 @@ def forgot_password_phone_or_email_student(request):
                     )
 
                 otp = str(random.randint(100000, 999999))
-                temp_user_data = {"email": email, "otp": otp}
 
-                send_error = send_password_reset_otp_email(email, otp)
+                send_error = send_password_reset_otp_email(lookup_email, otp)
                 if send_error:
                     return JsonResponse({"error": send_error})
 
                 expiration_time = int(time()) + 300
-                temp_user_data["expiration_time"] = expiration_time
-                request.session["otp_method"] = "email"
-                request.session["otp_email"] = email
-                request.session["otp_phone"] = limit_phone
-                request.session["temp_user_data"] = temp_user_data
+                set_password_reset_session(
+                    request,
+                    method="email",
+                    otp=otp,
+                    expiration_time=expiration_time,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
+                update_password_reset_identity_session(
+                    request,
+                    role="student",
+                    auth_user=student_user,
+                    profile=student,
+                    phone=limit_phone,
+                    email=lookup_email,
+                )
                 OTPRequest.objects.create(phone_number=limit_phone)
 
                 response_data = {
@@ -1207,7 +1739,12 @@ def forgot_password_phone_or_email_student(request):
 
 
 def forgot_password_otp_verification_student(request):
-    temp_data = request.session["temp_user_data"]
+    temp_data = request.session.get("temp_user_data")
+    if not temp_data:
+        return redirect("forgot_password_phone_or_email_student")
+
+    get_student_password_reset_identity(request)
+
     time_remaining = temp_data["expiration_time"]
     page_name = "Forgot password otp verification student"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -1217,11 +1754,10 @@ def forgot_password_otp_verification_student(request):
         resend_otp = request.GET.get("resend", "")
 
         if resend_otp and resend_otp == "true":
-            if request.session["temp_user_data"]:
-                previous_expiration_time = request.session["temp_user_data"][
+            if request.session.get("temp_user_data"):
+                previous_expiration_time = request.session["temp_user_data"].get(
                     "expiration_time"
-                ]
-                previous_otp = request.session["temp_user_data"]["otp"]
+                )
 
                 previous_expiration_datetime = timezone.make_aware(
                     datetime.utcfromtimestamp(previous_expiration_time),
@@ -1236,34 +1772,46 @@ def forgot_password_otp_verification_student(request):
                     del request.session["temp_user_data"]["otp"]
                     del request.session["temp_user_data"]["expiration_time"]
 
-                    method = request.session.get('otp_method', 'phone')
-                    if method == 'email':
-                        email = request.session["temp_user_data"]["email"]
-                        otp = str(random.randint(100000, 999999))
-                        send_mail(
-                            'Student Visa BD - Password Reset OTP',
-                            f'Your verification code is {otp}. It expires in 5 minutes.',
-                            settings.EMAIL_HOST_USER,
-                            [email],
-                            fail_silently=False,
+                    method = request.session.get("otp_method", "phone")
+                    contacts = get_password_reset_contacts(request)
+                    phone = contacts["phone"]
+                    email = contacts["email"]
+
+                    if get_otp_request_count(phone) >= 2:
+                        return JsonResponse(
+                            {
+                                "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                            }
                         )
+
+                    if method == "email":
+                        otp = str(random.randint(100000, 999999))
+                        send_error = send_password_reset_otp_email(email, otp)
+                        if send_error:
+                            return JsonResponse({"error": send_error})
                     else:
-                        phone = request.session["temp_user_data"]["phone"]
-                        valid_phone_number = request.session["temp_user_data"]["phone"]
                         otp = str(random.randint(1000, 9999))
                         url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa BD.This code will expire in 2 Hours.For help,call:01958666999"
                         response = requests.get(url)
+                        if response.status_code != 200:
+                            return JsonResponse(
+                                {"error": "Failed to send OTP. Please try again later."}
+                            )
                     expiration_time_resend = int(time()) + 300
-                    request.session["temp_user_data"]["otp"] = otp
-                    request.session["temp_user_data"]["expiration_time"] = (
-                        expiration_time_resend
+                    set_password_reset_session(
+                        request,
+                        method=method,
+                        otp=otp,
+                        expiration_time=expiration_time_resend,
+                        phone=phone,
+                        email=email,
                     )
-                    request.session.modified = True
+                    get_student_password_reset_identity(request)
+                    OTPRequest.objects.create(phone_number=phone)
 
                     response_data = {
                         "success": True,
                         "redirect_url": "/forgot_password_otp_verification_student/",
-                        "otp": otp,
                         "expiration_time": expiration_time_resend,  # Send expiration time to client
                     }
 
@@ -1309,23 +1857,36 @@ def change_forgotten_password_student(request):
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                if method == "email":
-                    email = temp_data.get("email")
-                    student = Students.objects.filter(email=email).first()
-                else:
-                    phone = temp_data.get("phone")
-                    student = Students.objects.filter(phone=phone).first()
+                student_user, student, lookup_phone, lookup_email = (
+                    get_student_password_reset_identity(request)
+                )
 
-                if student:
-                    user = CustomUser.objects.filter(id=student.id).first()
+                if student or student_user:
+                    user = student_user
+                    if user is None and student is not None:
+                        user = (
+                            student.student_user
+                            if student.student_user_id
+                            else CustomUser.objects.filter(id=student.id, user_type=2).first()
+                        )
 
                     if user:
                         user.set_password(new_password)
                         user.save()
 
-                        student.raw_password = new_password
-                        student.password = user.password
-                        student.save()
+                        if student:
+                            student.raw_password = new_password
+                            student.password = user.password
+                            student.save()
+
+                        set_password_reset_session(
+                            request,
+                            method=method,
+                            otp=temp_data.get("otp", ""),
+                            expiration_time=temp_data.get("expiration_time", int(time())),
+                            phone=lookup_phone,
+                            email=lookup_email,
+                        )
 
                         return JsonResponse({"success": True})
                     else:
@@ -1535,26 +2096,36 @@ def login_user(request):
             return redirect("login_user")
 
         if identifier and password:
-            # ১. প্রথমে মেইন (Approved) CustomUser টেবিলে খুঁজবে
             if "@" in identifier:
+                auth_lookup_q = Q(email__iexact=identifier) | Q(username__iexact=identifier)
+                consultant_lookup_q = Q(email__iexact=identifier)
                 user = CustomUser.objects.filter(
-                    Q(email__iexact=identifier) | Q(username__iexact=identifier)
+                    auth_lookup_q
                 ).filter(user_type__in=[0, 1]).first()
                 pending_user = Users.objects.filter(
-                    email__iexact=identifier, user_role=5
+                    consultant_lookup_q,
+                    user_role=5,
                 ).first()
             else:
+                consultant_lookup_q = build_phone_lookup_q(identifier)
                 user = CustomUser.objects.filter(
-                    phone=identifier, user_type__in=[0, 1]
+                    consultant_lookup_q,
+                    user_type__in=[0, 1],
                 ).first()
                 pending_user = Users.objects.filter(
-                    phone=identifier, user_role=5
+                    consultant_lookup_q,
+                    user_role=5,
                 ).first()
 
             if user is not None:
-                # মেইন টেবিলে ইউজার আছে, এবার পাসওয়ার্ড চেক
+                if str(user.user_type) == "1":
+                    pending_user = Users.objects.filter(
+                        Q(consultant_user_id=user.id) | consultant_lookup_q,
+                        user_role=5,
+                    ).first()
+
                 if user.check_password(password):
-                    if str(user.user_type) == '1': # কনসালট্যান্ট
+                    if str(user.user_type) == '1':
                         is_verified = (
                             pending_user is None
                             or pending_user.active_status in [1, 3, 4, 5]
@@ -1563,28 +2134,26 @@ def login_user(request):
                             login(request, user)
                             return redirect("consultant_home")
 
-                        messages.warning(request, "Verification Pending: Your account is under review. Please contact the administration for details.")
+                        messages.warning(
+                            request,
+                            "Verification Pending: Your account is under review by the Admin.",
+                        )
                         return redirect("login_user")
 
-                    elif str(user.user_type) == '0': # রুট এডমিন
+                    elif str(user.user_type) == '0':
                         login(request, user)
                         return redirect("root_home")
                 messages.error(request, "Invalid credentials")
                 return redirect("login_user")
             
             else:
-                # ২. মেইন টেবিলে নেই! এবার পেন্ডিং (Users) টেবিলে খুঁজবে
-                if "@" in identifier:
-                    pending_user = Users.objects.filter(email__iexact=identifier, user_role=5).first()
-                else:
-                    pending_user = Users.objects.filter(phone=identifier, user_role=5).first()
-
                 if pending_user and check_password(password, pending_user.password):
-                    # ইউজার পেন্ডিং টেবিলে পাওয়া গেছে! 
-                    messages.warning(request, "Verification Pending: Your account is under review. Please contact the administration for details.")
+                    messages.warning(
+                        request,
+                        "Verification Pending: Your account is under review by the Admin.",
+                    )
                     return redirect("login_user")
                 else:
-                    # কোনো টেবিলেই নেই
                     messages.error(request, "Invalid credentials")
                     return redirect("login_user")
                 
