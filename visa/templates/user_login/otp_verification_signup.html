@@ -48,6 +48,7 @@
         display: flex;
         align-items: center;
         padding: 56px 0 64px;
+        overflow-x: hidden;
         background:
             linear-gradient(
                 160deg,
@@ -57,6 +58,19 @@
             ),
             url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1800&auto=format&fit=crop&q=80')
             center / cover no-repeat fixed;
+    }
+
+    .otp-page-wrapper .container {
+        width: 100%;
+        max-width: 1150px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .otp-page-wrapper .row {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -69,6 +83,17 @@
         padding-top: 4px;
     }
     @media (max-width: 992px) { .otp-ad-col { display: none !important; } }
+
+    .otp-ad-placeholder {
+        width: 200px;
+        min-height: 750px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 20px 40px rgba(2, 6, 23, 0.18);
+    }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        CARD — strong contrast on dark bg
@@ -146,6 +171,7 @@
     .otp-subtitle strong {
         color: var(--brand);
         font-weight: 700;
+        word-break: break-word;
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -277,6 +303,11 @@
         margin-bottom: 4px;
     }
 
+    .otp-action-links {
+        display: flex;
+        align-items: center;
+    }
+
     /* Timer */
     .countdown-timer {
         display: flex;
@@ -397,11 +428,83 @@
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        RESPONSIVE
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    @media (max-width: 576px) {
-        .otp-page-wrapper { padding: 40px 0 48px; align-items: flex-start; }
-        .otp-card { padding: 36px 24px 42px; }
-        .otp-input-field { height: 76px; font-size: 34px; letter-spacing: 14px; }
+    @media (max-width: 991.98px) {
+        .otp-page-wrapper { padding: 44px 0 52px; align-items: flex-start; }
+        .otp-card {
+            max-width: 100%;
+            padding: 40px 32px 44px;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .otp-card { padding: 36px 24px 40px; }
+        .otp-input-field {
+            height: 80px;
+            font-size: 32px;
+            letter-spacing: 10px;
+            padding-left: 10px;
+        }
+        .otp-input-field::placeholder {
+            font-size: 30px;
+            letter-spacing: 10px;
+        }
+        .actions-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+        .countdown-timer {
+            width: 100%;
+            justify-content: center;
+        }
+        .otp-action-links {
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+            row-gap: 8px;
+        }
+        .panel-btn-group {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .otp-action-links {
+            gap: 8px 12px;
+        }
+        .otp-action-links .action-btn {
+            white-space: normal;
+            text-align: center;
+        }
+        .btn-divider { display: none; }
+    }
+
+    @media (max-width: 420px) {
+        .otp-page-wrapper { padding: 36px 0 44px; }
+        .otp-page-wrapper .container { padding-left: 12px; padding-right: 12px; }
+        .otp-card {
+            padding: 30px 18px 34px;
+            border-radius: 18px;
+        }
+        .otp-input-field {
+            height: 72px;
+            font-size: 28px;
+            letter-spacing: 8px;
+            padding-left: 8px;
+        }
+        .otp-input-field::placeholder {
+            font-size: 26px;
+            letter-spacing: 8px;
+        }
         .otp-card h1 { font-size: 21px; }
+    }
+
+    @media (max-width: 399.98px) {
+        .otp-input-field {
+            font-size: 28px;
+            letter-spacing: 8px;
+        }
     }
 </style>
 {% endblock custom_css %}
@@ -413,15 +516,7 @@
 
             <!-- Left Ad -->
             <div class="col-lg-3 otp-ad-col">
-                <div>
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                    <ins class="adsbygoogle"
-                         style="display:inline-block;width:200px;height:750px"
-                         data-ad-client="ca-pub-5227250042742723"
-                         data-ad-slot="9902546305">
-                    </ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                </div>
+                <div class="otp-ad-placeholder" aria-hidden="true"></div>
             </div>
 
             <!-- OTP Card -->
@@ -435,14 +530,14 @@
 
                     <h1>Account Verification</h1>
                     <p class="otp-subtitle">
-                        Enter the 6-digit code we sent to:<br>
-                        <strong id="display-phone">+880-{{ phone }}</strong>
+                        Enter the 6-digit code we sent to your {{ contact_label|lower }}:<br>
+                        <strong id="display-phone">{{ display_contact }}</strong>
                     </p>
 
                     <!-- Change Number Panel -->
                     <div id="number-change-panel">
-                        <p>Update Phone Number</p>
-                        <input type="text" id="new-phone-input" class="mini-input" value="{{ phone }}" maxlength="11" placeholder="01XXXXXXXXX">
+                        <p>{{ change_panel_label }}</p>
+                        <input type="{{ contact_input_type }}" id="new-phone-input" class="mini-input" value="{{ contact_value }}" placeholder="{{ contact_placeholder }}" {% if otp_preference != 'email' %}maxlength="11"{% endif %}>
                         <div class="panel-btn-group">
                             <button type="button" class="action-btn muted-btn" onclick="$('#number-change-panel').slideUp()">Cancel</button>
                             <button type="button" id="confirm-change-btn" class="action-btn">Update &amp; Resend</button>
@@ -480,8 +575,8 @@
                                 </svg>
                                 <span id="countdown-text">05:00</span>
                             </div>
-                            <div style="display:flex; align-items:center;">
-                                <button type="button" class="action-btn" id="show-change-num">Change Number</button>
+                            <div class="otp-action-links">
+                                <button type="button" class="action-btn" id="show-change-num">{{ change_action_label }} ({{ contact_value }})</button>
                                 <span class="btn-divider">|</span>
                                 <button type="button" id="resend-otp-btn" class="action-btn" disabled>Resend OTP</button>
                             </div>
@@ -504,15 +599,7 @@
 
             <!-- Right Ad -->
             <div class="col-lg-3 otp-ad-col">
-                <div>
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                    <ins class="adsbygoogle"
-                         style="display:inline-block;width:200px;height:750px"
-                         data-ad-client="ca-pub-5227250042742723"
-                         data-ad-slot="9902546305">
-                    </ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                </div>
+                <div class="otp-ad-placeholder" aria-hidden="true"></div>
             </div>
 
         </div>
@@ -524,30 +611,42 @@
 <script>
 $(document).ready(function() {
     let expirationTime = {{ expiration_time }};
+    const otpPreference = '{{ otp_preference|default:"phone"|escapejs }}';
+    const changeActionLabel = '{{ change_action_label|escapejs }}';
     const $timerText = $('#countdown-text');
     const $resendBtn = $('#resend-otp-btn');
     const progressCircle = document.querySelector('#timer-circle .progress');
     const circumference = 63;
+    let countdownInterval = null;
 
     function updateTimer() {
-        const now = Math.floor(Date.now() / 1000);
-        const timeLeft = expirationTime - now;
-
-        if (timeLeft <= 0) {
-            $timerText.text("Expired");
-            $resendBtn.prop('disabled', false);
-            progressCircle.style.strokeDashoffset = circumference;
-            return;
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
         }
 
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        $timerText.text(`${mins}:${secs < 10 ? '0' + secs : secs}`);
+        function tick() {
+            const now = Math.floor(Date.now() / 1000);
+            const timeLeft = Math.max(expirationTime - now, 0);
 
-        const offset = circumference - (timeLeft / 300) * circumference;
-        progressCircle.style.strokeDashoffset = offset;
+            if (timeLeft <= 0) {
+                $timerText.text("Expired");
+                $resendBtn.prop('disabled', false);
+                progressCircle.style.strokeDashoffset = circumference;
+                clearInterval(countdownInterval);
+                return;
+            }
 
-        setTimeout(updateTimer, 1000);
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            $timerText.text(`${mins}:${secs < 10 ? '0' + secs : secs}`);
+
+            const offset = circumference - (timeLeft / 300) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+            $resendBtn.prop('disabled', true);
+        }
+
+        tick();
+        countdownInterval = setInterval(tick, 1000);
     }
     updateTimer();
 
@@ -556,13 +655,24 @@ $(document).ready(function() {
 
     // Confirm Change Number Logic
     $('#confirm-change-btn').click(function() {
-        const newPhone = $('#new-phone-input').val();
-        fetch('/change_number/?phone=' + newPhone)
+        let contactValue = $('#new-phone-input').val().trim();
+        if (otpPreference !== 'email') {
+            contactValue = contactValue.replace(/\D/g, '');
+            $('#new-phone-input').val(contactValue);
+        }
+        const requestUrl = otpPreference === 'email'
+            ? '/change_number/?email=' + encodeURIComponent(contactValue)
+            : '/change_number/?phone=' + encodeURIComponent(contactValue);
+
+        fetch(requestUrl)
         .then(res => res.json())
         .then(data => {
             if (data.success) {
                 expirationTime = data.expiration_time;
-                $('#display-phone').text('+880-' + data.changed_phone);
+                const changedContact = data.changed_contact || data.changed_phone || contactValue;
+                $('#display-phone').text(data.display_contact || changedContact);
+                $('#show-change-num').html(changeActionLabel + ' (' + changedContact + ')');
+                $('#new-phone-input').val(changedContact);
                 $('#number-change-panel').slideUp();
                 $('#alert-box').hide();
                 updateTimer();

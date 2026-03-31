@@ -50,13 +50,45 @@
         .otp-page-wrapper {
             min-height: calc(100vh - 120px);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 48px 16px 64px;
+            padding: 56px 16px 64px;
+            overflow-x: hidden;
             background:
                 radial-gradient(ellipse 80% 50% at 10% 0%, rgba(37,99,235,0.05) 0%, transparent 60%),
                 radial-gradient(ellipse 60% 40% at 90% 100%, rgba(16,185,129,0.05) 0%, transparent 60%),
                 var(--bg);
+        }
+
+        .otp-shell {
+            width: 100%;
+            max-width: 1150px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr) 220px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .otp-side-space {
+            min-height: 760px;
+            border-radius: 22px;
+            border: 1px dashed rgba(37,99,235,0.18);
+            background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(241,245,249,0.98) 100%);
+            box-shadow:
+                0 0 0 1px rgba(203,213,225,0.28),
+                0 8px 22px rgba(15,23,42,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .otp-side-space::before {
+            content: '';
+            position: absolute;
+            inset: 18px;
+            border-radius: 16px;
+            border: 1px dashed rgba(37,99,235,0.10);
+            background: rgba(255,255,255,0.18);
         }
 
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -65,6 +97,7 @@
         .otp-card {
             width: 100%;
             max-width: 460px;
+            margin: 0 auto;
             padding: 44px 40px 48px;
             background: var(--card);
             border-radius: var(--radius-card);
@@ -128,6 +161,7 @@
         .otp-subtitle strong {
             color: var(--brand);
             font-weight: 700;
+            word-break: break-word;
         }
 
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -456,10 +490,86 @@
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
            RESPONSIVE
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        @media (max-width: 480px) {
-            .otp-card { padding: 36px 24px 42px; }
-            .otp-input-field { height: 76px; font-size: 34px; letter-spacing: 14px; }
+        @media (max-width: 991px) {
+            .otp-page-wrapper {
+                padding: 44px 16px 52px;
+                align-items: flex-start;
+            }
+            .otp-shell {
+                max-width: 100%;
+                grid-template-columns: 1fr;
+            }
+            .otp-side-space {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .otp-card { padding: 36px 24px 40px; }
+            .change-number-link {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                row-gap: 6px;
+                text-align: center;
+            }
+            .countdown-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .countdown-display {
+                width: 100%;
+                justify-content: center;
+            }
+            .resend-otp {
+                text-align: center;
+            }
+            .change-panel-actions {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .otp-input-field {
+                height: 80px;
+                font-size: 32px;
+                letter-spacing: 10px;
+                padding-left: 10px;
+            }
+            .otp-input-field::placeholder {
+                font-size: 30px;
+                letter-spacing: 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .otp-page-wrapper {
+                padding: 36px 12px 44px;
+            }
+            .otp-card {
+                padding: 30px 18px 34px;
+                border-radius: 18px;
+            }
+            .change-panel-actions {
+                justify-content: flex-start;
+            }
+            .otp-input-field {
+                height: 72px;
+                font-size: 28px;
+                letter-spacing: 8px;
+                padding-left: 8px;
+            }
+            .otp-input-field::placeholder {
+                font-size: 26px;
+                letter-spacing: 8px;
+            }
             .otp-title { font-size: 21px; }
+        }
+
+        @media (max-width: 399.98px) {
+            .otp-input-field {
+                font-size: 28px;
+                letter-spacing: 8px;
+            }
         }
     </style>
 {% endblock custom_css %}
@@ -467,7 +577,9 @@
 {% block content %}
 
 <div class="otp-page-wrapper">
-    <div class="otp-card">
+    <div class="otp-shell">
+        <div class="otp-side-space" aria-hidden="true"></div>
+        <div class="otp-card">
 
         <!-- Icon mark -->
         <div class="otp-icon-mark">
@@ -476,14 +588,14 @@
 
         <h1 class="otp-title">Account Verification</h1>
         <p class="otp-subtitle">
-            Enter the 6-digit code we sent to:<br>
-            <strong id="display-phone">+880-{{ phone }}</strong>
+            Enter the 6-digit code we sent to your {{ contact_label|lower }}:<br>
+            <strong id="display-phone">{{ display_contact }}</strong>
         </p>
 
         <!-- Change Number Panel -->
         <div id="number-change-div" class="change-number-outer-div">
-            <p>Update Phone Number</p>
-            <input type="text" id="change-number-input" class="change-num-input" value="{{ phone }}" maxlength="11" placeholder="01XXXXXXXXX">
+            <p>{{ change_panel_label }}</p>
+            <input type="{{ contact_input_type }}" id="change-number-input" class="change-num-input" value="{{ contact_value }}" placeholder="{{ contact_placeholder }}" {% if otp_preference != 'email' %}maxlength="11"{% endif %}>
             <div class="change-panel-actions">
                 <button type="button" class="action-btn muted" id="cancel-change-btn">Cancel</button>
                 <button type="button" id="send-change-number" class="action-btn">Update &amp; Resend</button>
@@ -492,12 +604,11 @@
 
         <!-- Change number trigger -->
         <button type="button" class="change-number-link" id="change-number">
-            <i class="fas fa-pen"></i> Change Number ({{ phone }})
+            <i class="fas fa-pen"></i> {{ change_action_label }} ({{ contact_value }})
         </button>
 
         <!-- Error banner -->
         <div id="error-message-div" class="error-message-div">
-            <i class="fas fa-exclamation-circle" style="color:#EF4444;font-size:15px;flex-shrink:0;"></i>
             <span id="message-text" class="message-text"></span>
         </div>
 
@@ -523,7 +634,7 @@
                 <div class="countdown-row">
                     <div class="countdown-display">
                         <i class="fas fa-clock"></i>
-                        <span id="countdown">05:00</span>
+                        <span id="countdown">10:00</span>
                     </div>
                     <div class="resend-otp d-none">
                         <a id="resend-otp" href="#">Resend OTP</a>
@@ -541,6 +652,8 @@
             Your data is encrypted and secure
         </p>
 
+        </div>
+        <div class="otp-side-space" aria-hidden="true"></div>
     </div>
 </div>
 
@@ -565,56 +678,91 @@
 
 <script>
     $(document).ready(function() {
-        var expirationTime = {{ expiration_time }};
+        var expirationTime = Number('{{ expiration_time|default:0 }}');
+        var otpPreference = '{{ otp_preference|default:"phone"|escapejs }}';
+        var changeActionLabel = '{{ change_action_label|escapejs }}';
         var countdownElement = $('#countdown');
         var resendOtpDiv = $('.resend-otp');
-        var countdownInterval;
+        var countdownInterval = null;
 
-        updateCountdown(expirationTime);
-        countdownInterval = setInterval(updateCountdown, 1000, expirationTime);
+        function formatTime(timeLeft) {
+            var minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            var seconds = String(timeLeft % 60).padStart(2, '0');
+            return minutes + ':' + seconds;
+        }
 
-        function updateCountdown(expirationTimeOTP) {
-            var now = Math.floor(Date.now() / 1000);
-            var timeLeft = expirationTimeOTP - now;
+        function showError(message) {
+            $('#message-text').text(message || 'Something went wrong.');
+            $('#error-message-div').addClass('error-message-show');
+        }
 
-            console.log('timeLeft: ', timeLeft);
+        function clearError() {
+            $('#message-text').text('');
+            $('#error-message-div').removeClass('error-message-show');
+        }
 
-            if (timeLeft <= -1) {
+        function startCountdown(expiresAt) {
+            expirationTime = Number(expiresAt) || 0;
+            if (countdownInterval) {
                 clearInterval(countdownInterval);
-                resendOtpDiv.removeClass('d-none');
-                return;
-            } else {
-                resendOtpDiv.addClass('d-none');
             }
 
-            var minutes = Math.floor(timeLeft / 60);
-            var seconds = timeLeft % 60;
-            if (seconds < 10) { seconds = '0' + seconds; }
-            countdownElement.html(minutes + ':' + (seconds < 0 ? '00' : seconds));
+            function tick() {
+                var now = Math.floor(Date.now() / 1000);
+                var timeLeft = Math.max(expirationTime - now, 0);
+                countdownElement.text(formatTime(timeLeft));
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    resendOtpDiv.removeClass('d-none');
+                } else {
+                    resendOtpDiv.addClass('d-none');
+                }
+            }
+
+            tick();
+            countdownInterval = setInterval(tick, 1000);
         }
+
+        startCountdown(expirationTime);
 
         $('form#otp-form-student fieldset').on('keydown', function(event) {
             if (event.key === 'Enter') { event.preventDefault(); }
+        });
+
+        $('#phone-number-input').on('input', function() {
+            clearError();
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
         });
 
         // Show change number panel
         $('#change-number').on('click', function() {
             $('#change-number').addClass('d-none');
             $('#number-change-div').addClass('change-number-show');
+            clearError();
         });
 
         // Cancel change number
         $('#cancel-change-btn').on('click', function() {
             $('#number-change-div').removeClass('change-number-show');
             $('#change-number').removeClass('d-none');
+            clearError();
         });
 
         // Send change number
         $('#send-change-number').click(function(event) {
             event.preventDefault();
-            var phoneNumber = $('#change-number-input').val();
+            var contactValue = $('#change-number-input').val().trim();
+            if (otpPreference !== 'email') {
+                contactValue = contactValue.replace(/\D/g, '');
+                $('#change-number-input').val(contactValue);
+            }
 
-            fetch('/change_number/?phone=' + phoneNumber, {
+            var requestUrl = otpPreference === 'email'
+                ? '/change_number/?email=' + encodeURIComponent(contactValue)
+                : '/change_number/?phone=' + encodeURIComponent(contactValue);
+
+            fetch(requestUrl, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             })
@@ -624,30 +772,27 @@
             })
             .then(data => {
                 if (data.success) {
-                    var expirationTime = data.expiration_time;
-                    var changedPhone = data.changed_phone;
-
-                    $('#display-phone').text('+880-' + changedPhone);
-                    $('#change-number').text('Change Number (' + changedPhone + ')').removeClass('d-none');
+                    var changedContact = data.changed_contact || data.changed_phone || contactValue;
+                    $('#display-phone').text(data.display_contact || changedContact);
+                    $('#change-number').html('<i class="fas fa-pen"></i> ' + changeActionLabel + ' (' + changedContact + ')').removeClass('d-none');
+                    $('#change-number-input').val(changedContact);
                     $('#number-change-div').removeClass('change-number-show');
-                    $('#error-message-div').removeClass('error-message-show');
-
-                    updateCountdown(expirationTime);
-                    clearInterval(countdownInterval);
-                    countdownInterval = setInterval(updateCountdown, 1000, expirationTime);
-                } else if (data.error) {
-                    $('#message-text').text(data.error);
-                    $('#error-message-div').addClass('error-message-show');
+                    clearError();
+                    startCountdown(data.expiration_time);
                 } else {
-                    console.error('Failed to change number');
+                    showError(data.error || data.errors);
                 }
             })
-            .catch(error => { console.error('Fetch request failed:', error); });
+            .catch(error => {
+                console.error('Fetch request failed:', error);
+                showError('Unable to update contact right now.');
+            });
         });
 
         // Form submit
         $('#otp-form-student').on('submit', function(event) {
             event.preventDefault();
+            clearError();
             var formData = new FormData(this);
 
             fetch('/save_student_signup/', {
@@ -657,18 +802,19 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log('data: ', data);
                 if (data.success) {
                     $('#popup-container').addClass('show');
                     setTimeout(function() {
                         window.location.href = '/login_student/';
                     }, 1000);
-                } else if (data.error) {
-                    $('#message-text').text(data.error);
-                    $('#error-message-div').addClass('error-message-show');
+                } else {
+                    showError(data.error || data.errors);
                 }
             })
-            .catch(error => { console.error('Error:', error); });
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Verification failed. Please try again.');
+            });
         });
 
         // Resend OTP
@@ -685,16 +831,16 @@
             })
             .then(data => {
                 if (data.success) {
-                    var expirationTime = data.expiration_time;
-                    updateCountdown(expirationTime);
-                    clearInterval(countdownInterval);
-                    countdownInterval = setInterval(updateCountdown, 1000, expirationTime);
-                    $('#error-message-div').removeClass('error-message-show');
+                    clearError();
+                    startCountdown(data.expiration_time);
                 } else {
-                    console.error('Failed to resend OTP');
+                    showError(data.error || data.errors);
                 }
             })
-            .catch(error => { console.error('Fetch request failed:', error); });
+            .catch(error => {
+                console.error('Fetch request failed:', error);
+                showError('Unable to resend OTP right now.');
+            })
         });
 
         // Popup close button

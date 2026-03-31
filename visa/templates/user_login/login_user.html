@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block custom_css %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -59,6 +60,19 @@
             ),
             url('https://images.unsplash.com/photo-1562774053-701939374585?w=1800&auto=format&fit=crop&q=80')
             center / cover no-repeat fixed;
+    }
+
+    .login-page-wrapper .container {
+        width: 100%;
+        max-width: 1150px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .login-page-wrapper .row {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -206,6 +220,60 @@
         display: block;
         letter-spacing: 0.055em;
         text-transform: uppercase;
+    }
+
+    .login-method-group {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .login-method-option {
+        position: relative;
+    }
+
+    .login-method-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .login-method-option label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 48px;
+        padding: 0 14px;
+        border-radius: 14px;
+        border: 1.5px solid var(--border-light);
+        background: linear-gradient(180deg, #FFFFFF 0%, var(--input-bg) 100%);
+        color: var(--text-label);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+        transition: all var(--transition);
+        box-shadow: 0 10px 22px rgba(15,23,42,0.04);
+    }
+
+    .login-method-option label i {
+        font-size: 14px;
+    }
+
+    .login-method-option input[type="radio"]:checked + label {
+        border-color: var(--brand);
+        background: linear-gradient(180deg, #FFFFFF 0%, rgba(37,99,235,0.10) 100%);
+        color: var(--brand);
+        box-shadow:
+            0 0 0 4px rgba(37,99,235,0.12),
+            0 16px 34px rgba(37,99,235,0.14);
+    }
+
+    .login-method-option label:hover {
+        border-color: rgba(37,99,235,0.45);
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -378,6 +446,14 @@
     }
     .signup-link a:hover { color: var(--brand-dark); text-decoration: underline; }
 
+    .recaptcha-wrap {
+        margin-top: 4px;
+        margin-bottom: 18px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        SUBMIT BUTTON
        54px height, pill, glossy gradient
@@ -442,11 +518,51 @@
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        RESPONSIVE
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    @media (max-width: 576px) {
-        .login-page-wrapper { padding: 40px 0 48px; align-items: flex-start; }
-        .wrapper { padding: 36px 24px 42px; }
-        .is-phone-input { font-size: 22px !important; letter-spacing: 1px !important; }
-        .form-actions-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+    @media (max-width: 991.98px) {
+        .login-page-wrapper { padding: 44px 0 52px; align-items: flex-start; }
+        .login-page-wrapper .container { max-width: 100%; }
+        .form-div-container { max-width: 100%; }
+        .wrapper { padding: 40px 32px 44px; }
+    }
+
+    @media (max-width: 767.98px) {
+        .wrapper { padding: 34px 22px 38px; }
+        .form-actions-row { flex-direction: column; align-items: stretch; gap: 10px; }
+        .forgot-link,
+        .signup-link { width: 100%; text-align: center; }
+        .login-method-group { grid-template-columns: 1fr; }
+        form .field .input-area { height: 58px; }
+    }
+
+    @media (max-width: 575.98px) {
+        .wrapper header { font-size: 22px; }
+        .login-subtitle { margin-bottom: 22px; }
+        .field-label-text { margin-bottom: 6px; }
+        .login-method-option label { min-height: 52px; }
+        .recaptcha-wrap > div {
+            transform: scale(0.92);
+            transform-origin: center top;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .login-page-wrapper { padding: 36px 0 44px; }
+        .login-page-wrapper .container { padding-left: 12px; padding-right: 12px; }
+        .wrapper { padding: 30px 18px 34px; border-radius: 18px; }
+        .is-phone-input { font-size: 20px !important; letter-spacing: 1px !important; }
+        .recaptcha-wrap > div {
+            transform: scale(0.86);
+            transform-origin: center top;
+        }
+    }
+
+    @media (max-width: 360px) {
+        form .field .input-area { height: 56px; }
+        .is-phone-input { font-size: 18px !important; letter-spacing: 0.5px !important; }
+        .recaptcha-wrap > div {
+            transform: scale(0.78);
+            transform-origin: center top;
+        }
     }
 </style>
 {% endblock custom_css %}
@@ -497,6 +613,20 @@
                                 {% endfor %}
                             {% endif %}
 
+                            <div class="field">
+                                <span class="field-label-text">Sign In Via</span>
+                                <div class="login-method-group">
+                                    <div class="login-method-option">
+                                        <input type="radio" name="login_method" id="login-phone" value="phone" checked>
+                                        <label for="login-phone"><i class="fas fa-phone-alt"></i> Phone</label>
+                                    </div>
+                                    <div class="login-method-option">
+                                        <input type="radio" name="login_method" id="login-email" value="email">
+                                        <label for="login-email"><i class="fas fa-envelope"></i> Email</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Identifier Field -->
                             <div class="field">
                                 <span class="field-label-text">Email or Phone Number</span>
@@ -521,6 +651,10 @@
                                         <i class="fa-regular fa-eye-slash"></i>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="recaptcha-wrap">
+                                <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
                             </div>
 
                             <!-- Dynamic Links -->
@@ -577,18 +711,30 @@
         const $input = $('#identifier');
         const $prefix = $('#code-prefix');
         const $icon = $('#main-icon');
+        const $phoneMode = $('#login-phone');
+        const $emailMode = $('#login-email');
 
-        // Phone vs Email Formatting Logic
+        function applyLoginMode(mode) {
+            if (mode === 'phone') {
+                $prefix.show();
+                $input
+                    .attr('placeholder', '01XXX-XXXXX')
+                    .addClass('is-phone-input')
+                    .removeClass('is-email-input');
+                $icon.removeClass('fa-user-shield fa-envelope').addClass('fa-phone-alt');
+            } else {
+                $prefix.hide();
+                $input
+                    .attr('placeholder', 'you@example.com')
+                    .removeClass('is-phone-input')
+                    .addClass('is-email-input');
+                $icon.removeClass('fa-user-shield fa-phone-alt').addClass('fa-envelope');
+            }
+        }
+
         $input.on('input', function() {
             let val = $(this).val();
-            const isNumber = /^[0-9+]+$/.test(val.replace(/\s|-/g, ''));
-
-            if (isNumber && val.length > 0) {
-                // Phone mode
-                $prefix.show();
-                $input.addClass('is-phone-input').removeClass('is-email-input');
-                $icon.removeClass('fa-user-shield fa-envelope').addClass('fa-phone-alt');
-
+            if ($phoneMode.is(':checked')) {
                 let digits = val.replace(/\D/g, '');
                 if (digits.startsWith('880')) digits = digits.substring(3);
                 else if (digits.startsWith('0')) digits = digits.substring(1);
@@ -597,22 +743,20 @@
                 if (digits.length > 5) formatted += '-' + digits.substring(5, 10);
                 $(this).val(formatted);
             } else {
-                // Email mode
-                $prefix.hide();
-                $input.removeClass('is-phone-input');
-                if (val.length > 0) {
-                    $input.addClass('is-email-input');
-                } else {
-                    $input.removeClass('is-email-input');
-                }
-                if (val.includes('@')) $icon.removeClass('fa-user-shield fa-phone-alt').addClass('fa-envelope');
-                else $icon.removeClass('fa-envelope fa-phone-alt').addClass('fa-user-shield');
+                $input.toggleClass('is-email-input', val.length > 0);
             }
         });
 
+        $('input[name="login_method"]').on('change', function() {
+            $input.val('');
+            applyLoginMode($(this).val());
+        });
+
+        applyLoginMode($('input[name="login_method"]:checked').val());
+
         // Unmask Phone Number Before Submit
         $('#login-form').on('submit', function() {
-            if ($input.hasClass('is-phone-input')) {
+            if ($phoneMode.is(':checked')) {
                 let cleanNum = '0' + $input.val().replace(/\D/g, '');
                 $input.val(cleanNum);
             }

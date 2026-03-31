@@ -12,6 +12,7 @@ from django.core.serializers import serialize
 from django.urls import reverse, resolve
 from .serializers import ThanaSerializer
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
 import json
 from django.contrib.auth.decorators import login_required
@@ -69,6 +70,109 @@ def get_consultant_details_or_404(consultant):
     if consultant_details is None:
         raise Http404("No ConsultantDetails matches the given query.")
     return consultant_details
+
+
+def mask_email_address(email):
+    if not email or "@" not in email:
+        return email
+
+    local_part, domain_part = email.split("@", 1)
+
+    if len(local_part) <= 2:
+        masked_local = local_part[:1] + ("*" * max(len(local_part) - 1, 0))
+    else:
+        masked_local = local_part[0] + ("*" * (len(local_part) - 2)) + local_part[-1]
+
+    return f"{masked_local}@{domain_part}"
+
+
+def get_otp_request_count(phone_number):
+    if not phone_number:
+        return 0
+
+    day_ago = timezone.now() - timedelta(hours=24)
+    return OTPRequest.objects.filter(
+        phone_number=phone_number, timestamp__gte=day_ago
+    ).count()
+
+
+def send_signup_otp_sms(phone, otp):
+    url = (
+        "http://sms.iglweb.com/api/v1/send"
+        f"?api_key=44517101314545131710131454&contacts=88{phone}"
+        f"&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd."
+        " This code will expire in 10 minutes.For help,call:01958666999"
+    )
+
+    retry_strategy = Retry(total=4, status_forcelist=[429, 500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+
+    sms_session = requests.Session()
+    sms_session.mount("http://", adapter)
+    sms_session.mount("https://", adapter)
+
+    try:
+        response = sms_session.get(url)
+        print("SMS API Response:", response.text)
+        if response.status_code == 200:
+            return None
+        return (
+            f"Server returned status code {response.status_code}. "
+            "Please try again later."
+        )
+    except Timeout:
+        return "Request timed out. Please try again later."
+    except ConnectionError:
+        return (
+            "Failed to establish connection to the server. "
+            "Please check your internet connection and try again later."
+        )
+    except requests.exceptions.RequestException as exc:
+        return f"An error occurred: {str(exc)}"
+
+
+def send_signup_otp_email(email, otp):
+    try:
+        send_mail(
+            "Your Verification Code",
+            f"Your activation code is {otp}. This code will expire in 10 minutes.",
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+        return None
+    except Exception:
+        return "Failed to send OTP email. Please try again later."
+
+
+def send_password_reset_otp_email(email, otp):
+    try:
+        send_mail(
+            "Student Visa BD - Password Reset OTP",
+            f"Your verification code is {otp}. It expires in 5 minutes.",
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+        return None
+    except Exception:
+        return "Failed to send email. Please try again later."
+
+
+def verify_recaptcha_token(captcha_token):
+    if not captcha_token:
+        return False
+
+    cap_url = "https://www.google.com/recaptcha/api/siteverify"
+    cap_secret = "6LcxvG8pAAAAAIaMvcT9M_ys9A7ytKR1UCIZFvKW"
+    cap_data = {"secret": cap_secret, "response": captcha_token}
+
+    try:
+        cap_server_response = requests.post(url=cap_url, data=cap_data, timeout=10)
+        cap_json = json.loads(cap_server_response.text)
+        return cap_json.get("success", False)
+    except requests.exceptions.RequestException:
+        return False
 
 
 def home(request):
@@ -229,6 +333,11 @@ def redirect_to_otp(request):
                                 temp_user_data["expiration_time"] = expiration_time
                                 temp_user_data["otp"] = otp
                                 request.session["temp_user_data"] = temp_user_data
+                                request.session["otp_preference"] = otp_preference
+                                request.session["otp_phone"] = phone
+                                request.session["otp_email"] = (
+                                    email if otp_preference == "email" else ""
+                                )
 
                                 if otp_preference == "email":
                                     try:
@@ -330,6 +439,7 @@ def redirect_to_otp(request):
             countries = request.POST.get("countries")
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm_password")
+            otp_preference = request.POST.get("otp_preference", "phone")
             countries_json = json.loads(request.POST["countries"])
 
             if (
@@ -355,6 +465,15 @@ def redirect_to_otp(request):
                     if consultant_phone is None:
                         if consultant_email is None:
                             if valid_phone_number:
+                                if get_otp_request_count(phone) >= 2:
+                                    return JsonResponse(
+                                        {
+                                            "errors": (
+                                                "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                                            )
+                                        }
+                                    )
+
                                 temp_user_data = {
                                     "full_name": full_name,
                                     "email": email,
@@ -367,64 +486,38 @@ def redirect_to_otp(request):
                                     "countries": countries_json,
                                     "password": password,
                                     "signup_type": signup_type,
+                                    "otp_preference": otp_preference,
                                 }
 
                                 otp = "".join(
                                     random.choice("0123456789") for _ in range(6)
                                 )
-                                expiration_time = int(time()) + 300
+                                expiration_time = int(time()) + 600
                                 temp_user_data["expiration_time"] = expiration_time
                                 temp_user_data["otp"] = otp
                                 request.session["temp_user_data"] = temp_user_data
-                                url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-
-                                retry_strategy = Retry(
-                                    total=4,
-                                    status_forcelist=[429, 500, 502, 503, 504],
+                                request.session["otp_preference"] = otp_preference
+                                request.session["otp_phone"] = phone
+                                request.session["otp_email"] = (
+                                    email if otp_preference == "email" else ""
                                 )
-                                adapter = HTTPAdapter(max_retries=retry_strategy)
 
-                                session = requests.Session()
-                                session.mount("http://", adapter)
-                                session.mount("https://", adapter)
+                                if otp_preference == "email":
+                                    send_error = send_signup_otp_email(email, otp)
+                                else:
+                                    send_error = send_signup_otp_sms(phone, otp)
 
-                                try:
-                                    response = session.get(url)
-                                    print("SMS API Response:", response.text)
-                                    # response = requests.get(url)
-                                    if response.status_code == 200:
-                                        return JsonResponse(
-                                            {
-                                                "success": True,
-                                                "redirect_url": "/otp_verification_signup_student/",
-                                                "expiration_time": expiration_time,
-                                            }
-                                        )
-                                    else:
-                                        return JsonResponse(
-                                            {
-                                                "errors": f"Server returned status code {response.status_code}. Please try again later."
-                                            }
-                                        )
+                                if send_error:
+                                    return JsonResponse({"errors": send_error})
 
-                                except Timeout:
-                                    return JsonResponse(
-                                        {
-                                            "errors": "Request timed out. Please try again later."
-                                        }
-                                    )
-
-                                except ConnectionError:
-                                    return JsonResponse(
-                                        {
-                                            "errors": "Failed to establish connection to the server. Please check your internet connection and try again later."
-                                        }
-                                    )
-
-                                except requests.exceptions.RequestException as e:
-                                    return JsonResponse(
-                                        {"errors": f"An error occurred: {str(e)}"}
-                                    )
+                                OTPRequest.objects.create(phone_number=phone)
+                                return JsonResponse(
+                                    {
+                                        "success": True,
+                                        "redirect_url": "/otp_verification_signup_student/",
+                                        "expiration_time": expiration_time,
+                                    }
+                                )
 
                             else:
                                 return JsonResponse({"errors": "Invalid phone number"})
@@ -450,7 +543,24 @@ def redirect_to_otp(request):
 
 def otp_verification_signup(request):
     temp_user_data = request.session.get("temp_user_data")
+    if not temp_user_data:
+        return redirect("signup_user")
+
     time_remaining = temp_user_data["expiration_time"]
+    otp_preference = temp_user_data.get("otp_preference", "phone")
+    contact_value = (
+        temp_user_data.get("email")
+        if otp_preference == "email"
+        else temp_user_data.get("phone")
+    )
+    display_contact = (
+        contact_value if otp_preference == "email" else f"+880-{contact_value}"
+    )
+    contact_label = "Email Address" if otp_preference == "email" else "Phone Number"
+    change_action_label = "Change Email" if otp_preference == "email" else "Change Number"
+    change_panel_label = "Update Email Address" if otp_preference == "email" else "Update Phone Number"
+    contact_placeholder = "you@example.com" if otp_preference == "email" else "01XXXXXXXXX"
+    contact_input_type = "email" if otp_preference == "email" else "text"
 
     page_name = "OTP Verification Consultant"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -460,58 +570,68 @@ def otp_verification_signup(request):
         resend_otp = request.GET.get("resend", "")
 
         if resend_otp and resend_otp == "true":
-            if request.session["temp_user_data"]:
-                previous_expiration_time = request.session["temp_user_data"][
-                    "expiration_time"
-                ]
-                previous_otp = request.session["temp_user_data"]["otp"]
-
-                previous_expiration_datetime = timezone.make_aware(
-                    datetime.utcfromtimestamp(previous_expiration_time),
-                    timezone=timezone.utc,
+            if not request.session.get("temp_user_data"):
+                return JsonResponse({"error": "Please Retry"})
+            previous_expiration_time = request.session["temp_user_data"].get(
+                "expiration_time"
+            )
+            if previous_expiration_time and int(time()) < previous_expiration_time:
+                return JsonResponse(
+                    {"error": "Please wait until the current OTP expires."}
                 )
 
-                if (
-                    previous_expiration_time
-                    and timezone.now() > previous_expiration_datetime
-                ):
-                    # Clear session data if expiration time has passed
-                    del request.session["temp_user_data"]["otp"]
-                    del request.session["temp_user_data"]["expiration_time"]
+            otp = "".join(random.choice("0123456789") for _ in range(6))
+            expiration_time_resend = int(time()) + 300
+            otp_preference = request.session["temp_user_data"].get(
+                "otp_preference", "phone"
+            )
 
-                    phone = request.session["temp_user_data"]["phone"]
-                    valid_phone_number = request.session["temp_user_data"]["phone"]
-                    otp = str(random.randint(1000, 9999))
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-                    response = requests.get(url)
-                    expiration_time_resend = int(time()) + 300
-                    request.session["temp_user_data"]["otp"] = otp
-                    request.session["temp_user_data"]["expiration_time"] = (
-                        expiration_time_resend
-                    )
-                    request.session.modified = True  # Mark session as modified
-
-                    response_data = {
-                        "success": True,
-                        "redirect_url": "/forgot_password_otp_verification/",
-                        "otp": otp,
-                        "expiration_time": expiration_time_resend,  # Send expiration time to client
-                    }
-
-                    response = JsonResponse(response_data)
-
-                    return response
+            if otp_preference == "email":
+                email = request.session["temp_user_data"].get("email")
+                send_error = send_signup_otp_email(email, otp)
             else:
-                return JsonResponse({"error": "Please Retry"})
+                phone = request.session["temp_user_data"].get("phone")
+                url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                try:
+                    response = requests.get(url)
+                    send_error = (
+                        None
+                        if response.status_code == 200
+                        else "Failed to resend OTP. Please try again."
+                    )
+                except requests.exceptions.RequestException:
+                    send_error = "Failed to resend OTP. Please try again."
 
-    phone_number = request.session["temp_user_data"]["phone"]
+            if send_error:
+                return JsonResponse({"error": send_error})
+
+            request.session["temp_user_data"]["otp"] = otp
+            request.session["temp_user_data"]["expiration_time"] = (
+                expiration_time_resend
+            )
+            request.session.modified = True
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "expiration_time": expiration_time_resend,
+                }
+            )
 
     return render(
         request,
         "user_login/otp_verification_signup.html",
         {
             "expiration_time": time_remaining,
-            "phone": phone_number,
+            "phone": temp_user_data.get("phone"),
+            "otp_preference": otp_preference,
+            "contact_value": contact_value,
+            "display_contact": display_contact,
+            "contact_label": contact_label,
+            "change_action_label": change_action_label,
+            "change_panel_label": change_panel_label,
+            "contact_placeholder": contact_placeholder,
+            "contact_input_type": contact_input_type,
             "page_name": page_name,
             "page_description": page_description,
             "page_keywords": page_keywords,
@@ -521,10 +641,24 @@ def otp_verification_signup(request):
 
 def otp_verification_signup_student(request):
     temp_user_data = request.session.get("temp_user_data")
-    time_remaining = temp_user_data["expiration_time"]
+    if not temp_user_data:
+        return redirect("signup_student")
 
-    countries = temp_user_data["countries"]
-    countries_str = ", ".join(countries)
+    time_remaining = temp_user_data["expiration_time"]
+    otp_preference = temp_user_data.get("otp_preference", "phone")
+    contact_value = (
+        temp_user_data.get("email")
+        if otp_preference == "email"
+        else temp_user_data.get("phone")
+    )
+    display_contact = (
+        contact_value if otp_preference == "email" else f"+880-{contact_value}"
+    )
+    contact_label = "Email Address" if otp_preference == "email" else "Mobile Number"
+    change_action_label = "Change Email" if otp_preference == "email" else "Change Number"
+    change_panel_label = "Update Email Address" if otp_preference == "email" else "Update Phone Number"
+    contact_placeholder = "you@example.com" if otp_preference == "email" else "01XXXXXXXXX"
+    contact_input_type = "email" if otp_preference == "email" else "text"
 
     page_name = "OTP Verification Student"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
@@ -534,58 +668,68 @@ def otp_verification_signup_student(request):
         resend_otp = request.GET.get("resend", "")
 
         if resend_otp and resend_otp == "true":
-            if request.session["temp_user_data"]:
-                previous_expiration_time = request.session["temp_user_data"][
-                    "expiration_time"
-                ]
-                previous_otp = request.session["temp_user_data"]["otp"]
-
-                previous_expiration_datetime = timezone.make_aware(
-                    datetime.utcfromtimestamp(previous_expiration_time),
-                    timezone=timezone.utc,
-                )
-
-                if (
-                    previous_expiration_time
-                    and timezone.now() > previous_expiration_datetime
-                ):
-                    # Clear session data if expiration time has passed
-                    del request.session["temp_user_data"]["otp"]
-                    del request.session["temp_user_data"]["expiration_time"]
-
-                    phone = request.session["temp_user_data"]["phone"]
-                    valid_phone_number = request.session["temp_user_data"]["phone"]
-                    otp = str(random.randint(1000, 9999))
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-                    response = requests.get(url)
-                    expiration_time_resend = int(time()) + 300
-                    request.session["temp_user_data"]["otp"] = otp
-                    request.session["temp_user_data"]["expiration_time"] = (
-                        expiration_time_resend
-                    )
-                    request.session.modified = True  # Mark session as modified
-
-                    response_data = {
-                        "success": True,
-                        "redirect_url": "/forgot_password_otp_verification/",
-                        "otp": otp,
-                        "expiration_time": expiration_time_resend,  # Send expiration time to client
-                    }
-
-                    response = JsonResponse(response_data)
-
-                    return response
-            else:
+            if not request.session.get("temp_user_data"):
                 return JsonResponse({"error": "Please Retry"})
 
-    phone_number = request.session["temp_user_data"]["phone"]
+            previous_expiration_time = request.session["temp_user_data"].get(
+                "expiration_time"
+            )
+            if previous_expiration_time and int(time()) < previous_expiration_time:
+                return JsonResponse(
+                    {"error": "Please wait until the current OTP expires."}
+                )
+
+            phone = request.session["temp_user_data"].get("phone")
+            if get_otp_request_count(phone) >= 2:
+                return JsonResponse(
+                    {
+                        "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                    }
+                )
+
+            otp = "".join(random.choice("0123456789") for _ in range(6))
+            expiration_time_resend = int(time()) + 600
+            otp_preference = request.session["temp_user_data"].get(
+                "otp_preference", "phone"
+            )
+
+            if otp_preference == "email":
+                email = request.session["temp_user_data"].get("email")
+                send_error = send_signup_otp_email(email, otp)
+            else:
+                send_error = send_signup_otp_sms(phone, otp)
+
+            if send_error:
+                return JsonResponse({"error": send_error})
+
+            request.session["temp_user_data"]["otp"] = otp
+            request.session["temp_user_data"]["expiration_time"] = (
+                expiration_time_resend
+            )
+            request.session.modified = True
+            OTPRequest.objects.create(phone_number=phone)
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "expiration_time": expiration_time_resend,
+                }
+            )
 
     return render(
         request,
         "user_login/otp_verification_signup_student.html",
         {
             "expiration_time": time_remaining,
-            "phone": phone_number,
+            "phone": temp_user_data.get("phone"),
+            "otp_preference": otp_preference,
+            "contact_value": contact_value,
+            "display_contact": display_contact,
+            "contact_label": contact_label,
+            "change_action_label": change_action_label,
+            "change_panel_label": change_panel_label,
+            "contact_placeholder": contact_placeholder,
+            "contact_input_type": contact_input_type,
             "page_name": page_name,
             "page_description": page_description,
             "page_keywords": page_keywords,
@@ -595,7 +739,68 @@ def otp_verification_signup_student(request):
 
 def change_number(request):
     if request.method == "GET":
-        phone = request.GET["phone"]
+        temp_user_data = request.session.get("temp_user_data", {})
+        signup_type = temp_user_data.get("signup_type")
+        otp_preference = temp_user_data.get("otp_preference", "phone")
+
+        if otp_preference == "email" and signup_type in ["student", "consultant"]:
+            email = request.GET.get("email", "").strip()
+            print("email sent: ", email)
+
+            if email:
+                if signup_type == "student":
+                    existing_profile = Students.objects.filter(email=email).first()
+                    existing_user = CustomUser.objects.filter(
+                        email=email, user_type=2
+                    ).first()
+                    redirect_url = "/otp_verification_signup_student/"
+                else:
+                    existing_profile = Users.objects.filter(email=email).first()
+                    existing_user = CustomUser.objects.filter(
+                        email=email, user_type=1
+                    ).first()
+                    redirect_url = "/otp_verification_signup/"
+
+                if existing_profile is None and existing_user is None:
+                    phone_for_limit = temp_user_data.get("phone")
+                    if signup_type == "student" and get_otp_request_count(phone_for_limit) >= 2:
+                        return JsonResponse(
+                            {
+                                "error": (
+                                    "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                                )
+                            }
+                        )
+
+                    otp = "".join(random.choice("0123456789") for _ in range(6))
+                    expiration_time = int(time()) + 600
+                    send_error = send_signup_otp_email(email, otp)
+                    if send_error:
+                        return JsonResponse({"error": send_error})
+
+                    request.session["temp_user_data"]["otp"] = otp
+                    request.session["temp_user_data"]["expiration_time"] = (
+                        expiration_time
+                    )
+                    request.session["temp_user_data"]["email"] = email
+                    request.session["otp_email"] = email
+                    request.session.modified = True
+                    if signup_type == "student":
+                        OTPRequest.objects.create(phone_number=phone_for_limit)
+
+                    return JsonResponse(
+                        {
+                            "success": True,
+                            "redirect_url": redirect_url,
+                            "expiration_time": expiration_time,
+                            "changed_contact": email,
+                            "display_contact": email,
+                        }
+                    )
+
+                return JsonResponse({"error": "Email address already exists"})
+
+        phone = request.GET.get("phone", "").strip()
 
         print("phone number sent: ", phone)
 
@@ -604,7 +809,6 @@ def change_number(request):
                 r"^(013|019|018|014|015|016|017)\d{8}$", phone
             )
 
-            signup_type = request.session["temp_user_data"]["signup_type"]
             consultant_user = CustomUser.objects.filter(
                 phone=phone, user_type=1
             ).first()
@@ -612,79 +816,111 @@ def change_number(request):
 
             if signup_type == "student" and student_user is None:
                 user = Students.objects.filter(phone=phone).first()
-
             elif signup_type == "student" and student_user:
                 user = student_user
-
-            if signup_type == "consultant" and consultant_user is None:
+            elif signup_type == "consultant" and consultant_user is None:
                 user = Users.objects.filter(phone=phone).first()
-
             elif signup_type == "consultant" and consultant_user:
                 user = consultant_user
+            else:
+                user = None
 
             if user is None:
                 if valid_phone_number:
-                    expiration_time = int(time()) + 300
+                    if signup_type == "student" and get_otp_request_count(phone) >= 2:
+                        return JsonResponse(
+                            {
+                                "error": (
+                                    "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                                )
+                            }
+                        )
+
+                    expiration_time = int(time()) + (
+                        600 if signup_type == "student" else 300
+                    )
                     otp = str(random.randint(100000, 999999))
                     request.session["temp_user_data"]["otp"] = otp
                     request.session["temp_user_data"]["expiration_time"] = (
                         expiration_time
                     )
                     request.session["temp_user_data"]["phone"] = phone
+                    request.session["otp_phone"] = phone
                     request.session.modified = True
                     changed_phone = request.session["temp_user_data"]["phone"]
-                    url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
-                    response = requests.get(url)
-                    print("SMS API Response:", response.text)
 
-                    if response.status_code == 200:
-                        return JsonResponse(
-                            {
-                                "success": True,
-                                "redirect_url": "/otp_verification_signup_student/",
-                                "expiration_time": expiration_time,
-                                "changed_phone": changed_phone,
-                            }
-                        )
+                    if signup_type == "student":
+                        send_error = send_signup_otp_sms(phone, otp)
+                        if send_error:
+                            return JsonResponse({"error": send_error})
+                        OTPRequest.objects.create(phone_number=phone)
+                    else:
+                        url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your activation code in Student Visa Bd.This code will expire in 2 Hours.For help,call:01958666999"
+                        response = requests.get(url)
+                        print("SMS API Response:", response.text)
+
+                        if response.status_code != 200:
+                            return JsonResponse({"error": "Failed to resend OTP"})
+
+                    return JsonResponse(
+                        {
+                            "success": True,
+                            "redirect_url": "/otp_verification_signup_student/",
+                            "expiration_time": expiration_time,
+                            "changed_phone": changed_phone,
+                            "changed_contact": changed_phone,
+                            "display_contact": f"+880-{changed_phone}",
+                        }
+                    )
+
             else:
                 return JsonResponse({"error": "Phone number already exists"})
 
 
 def forgot_password_phone_or_email(request):
     if request.method == "POST":
-        phone = request.POST.get("phone")
-        email = request.POST.get("email")
+        phone = (request.POST.get("phone") or "").strip()
+        email = (request.POST.get("email") or "").strip()
 
         if phone:
             consultant = Users.objects.filter(phone=phone).first()
 
             if consultant is not None:
-                otp = str(random.randint(100000, 999999)) # ৬ ডিজিট ওটিপি
-                valid_phone_number = re.match(r"^(013|019|018|014|015|016|017)\d{8}$", str(phone))
+                if get_otp_request_count(phone) >= 2:
+                    return JsonResponse(
+                        {
+                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                        }
+                    )
+
+                otp = str(random.randint(100000, 999999))
+                valid_phone_number = re.match(
+                    r"^(013|019|018|014|015|016|017)\d{8}$", str(phone)
+                )
 
                 if valid_phone_number:
-                    # 🎯 ১. সেশনে ফোন নাম্বার এবং ওটিপি ডাটা আলাদাভাবে রাখা
-                    request.session['otp_method'] = 'phone'
-                    request.session['otp_phone'] = phone 
-                    request.session['temp_user_data'] = {
-                        "phone": phone, 
-                        "otp": otp, 
-                        "expiration_time": int(time()) + 300
+                    request.session["otp_method"] = "phone"
+                    request.session["otp_phone"] = phone
+                    request.session["otp_email"] = ""
+                    request.session["temp_user_data"] = {
+                        "phone": phone,
+                        "otp": otp,
+                        "expiration_time": int(time()) + 300,
                     }
-                    
-                    # আপনার SMS API কল
+
                     url = f"http://sms.iglweb.com/api/v1/send?api_key=44517101314545131710131454&contacts=88{phone}&senderid=01844532638&msg={otp} is your verification code. Expire in 5 mins."
                     response = requests.get(url)
 
                     if response.status_code == 200:
-                        # ২. ওটিপি রিকোয়েস্ট ট্র্যাকিং (Security)
                         OTPRequest.objects.create(phone_number=phone)
-                        
                         return JsonResponse({
                             "success": True,
                             "redirect_url": "/forgot_password_otp_verification/",
                             "expiration_time": int(time()) + 300
                         })
+                    return JsonResponse(
+                        {"error": "Failed to send OTP. Please try again later."}
+                    )
                 else:
                     return JsonResponse({"error": "Invalid Phone Number Provided"})
             else:
@@ -693,32 +929,35 @@ def forgot_password_phone_or_email(request):
             consultant = Users.objects.filter(email=email).first()
 
             if consultant is not None:
-                otp = str(random.randint(100000, 999999)) # ৬ ডিজিট ওটিপি
-                
-                request.session['otp_method'] = 'email'
-                request.session['otp_email'] = email 
-                request.session['temp_user_data'] = {
-                    "email": email, 
-                    "otp": otp, 
-                    "expiration_time": int(time()) + 300
-                }
-                
-                try:
-                    send_mail(
-                        'Student Visa BD - Password Reset OTP',
-                        f'Your verification code is {otp}. It expires in 5 minutes.',
-                        settings.EMAIL_HOST_USER,
-                        [email],
-                        fail_silently=False,
+                limit_phone = consultant.phone
+                if get_otp_request_count(limit_phone) >= 2:
+                    return JsonResponse(
+                        {
+                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                        }
                     )
-                    
-                    return JsonResponse({
-                        "success": True,
-                        "redirect_url": "/forgot_password_otp_verification/",
-                        "expiration_time": int(time()) + 300
-                    })
-                except Exception as e:
-                    return JsonResponse({"error": "Failed to send email. Please try again later."})
+
+                otp = str(random.randint(100000, 999999))
+
+                request.session["otp_method"] = "email"
+                request.session["otp_email"] = email
+                request.session["otp_phone"] = limit_phone
+                request.session["temp_user_data"] = {
+                    "email": email,
+                    "otp": otp,
+                    "expiration_time": int(time()) + 300,
+                }
+
+                send_error = send_password_reset_otp_email(email, otp)
+                if send_error:
+                    return JsonResponse({"error": send_error})
+
+                OTPRequest.objects.create(phone_number=limit_phone)
+                return JsonResponse({
+                    "success": True,
+                    "redirect_url": "/forgot_password_otp_verification/",
+                    "expiration_time": int(time()) + 300
+                })
             else:
                 return JsonResponse({"error": "Email is not registered"})
 
@@ -818,19 +1057,17 @@ def forgot_password_otp_verification(request):
 
 def change_forgotten_password(request):
     temp_data = request.session.get("temp_user_data")
-
-    page_name = "change forgotten password"
-    page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
-    page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
+    if not temp_data:
+        return redirect("forgot_password_phone_or_email")
 
     if request.method == "POST":
-        method = request.session.get('otp_method', 'phone')
+        method = request.session.get("otp_method", "phone")
         new_password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                if method == 'email':
+                if method == "email":
                     email = temp_data.get("email")
                     consultant = Users.objects.filter(email=email).first()
                 else:
@@ -838,40 +1075,29 @@ def change_forgotten_password(request):
                     consultant = Users.objects.filter(phone=phone).first()
 
                 if consultant:
-                    user = CustomUser.objects.filter(id=consultant.id).first()
+                    user = consultant.consultant_user
 
                     if user:
                         user.set_password(new_password)
-                        consultant.raw_password = new_password
-                        consultant.password = make_password(new_password)
                         user.save()
+
+                        consultant.raw_password = new_password
+                        consultant.password = user.password
                         consultant.save()
 
                         return JsonResponse({"success": True})
-
                     else:
                         return JsonResponse(
-                            {"errors": "Your account hasn't been approved yet"}
+                            {"errors": "Auth User not found for this account."}
                         )
-
                 else:
-                    return JsonResponse({"errors": "Phone Number is not Registered"})
-
+                    return JsonResponse({"errors": "Account not found."})
             else:
-                return JsonResponse({"errors": "Passwords do not match"})
-
+                return JsonResponse({"errors": "Passwords do not match."})
         else:
-            return JsonResponse({"errors": "Please fill up all the requuired fields"})
+            return JsonResponse({"errors": "Please fill up all fields."})
 
-    return render(
-        request,
-        "user_login/change_forgotten_password.html",
-        {
-            "page_name": page_name,
-            "page_description": page_description,
-            "page_keywords": page_keywords,
-        },
-    )
+    return render(request, "user_login/change_forgotten_password.html")
 
 
 def forgot_password_phone_or_email_student(request):
@@ -879,13 +1105,20 @@ def forgot_password_phone_or_email_student(request):
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"
     page_keywords = "'education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,'"
     if request.method == "POST":
-        phone = request.POST.get("phone")
-        email = request.POST.get("email")
+        phone = (request.POST.get("phone") or "").strip()
+        email = (request.POST.get("email") or "").strip()
 
         if phone:
             student = Students.objects.filter(phone=phone).first()
 
             if student is not None:
+                if get_otp_request_count(phone) >= 2:
+                    return JsonResponse(
+                        {
+                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                        }
+                    )
+
                 otp = str(random.randint(1000, 9999))
 
                 valid_phone_number = re.match(
@@ -905,8 +1138,11 @@ def forgot_password_phone_or_email_student(request):
                         )
                         expiration_time = int(time()) + 300
                         temp_user_data["expiration_time"] = expiration_time
-                        request.session['otp_method'] = 'phone'
+                        request.session["otp_method"] = "phone"
+                        request.session["otp_phone"] = phone
+                        request.session["otp_email"] = ""
                         request.session["temp_user_data"] = temp_user_data
+                        OTPRequest.objects.create(phone_number=phone)
 
                         response_data = {
                             "success": True,
@@ -926,32 +1162,36 @@ def forgot_password_phone_or_email_student(request):
             student = Students.objects.filter(email=email).first()
 
             if student is not None:
+                limit_phone = student.phone
+                if get_otp_request_count(limit_phone) >= 2:
+                    return JsonResponse(
+                        {
+                            "error": "Security Alert: Maximum 2 OTPs allowed in 24 hours."
+                        }
+                    )
+
                 otp = str(random.randint(100000, 999999))
                 temp_user_data = {"email": email, "otp": otp}
-                
-                try:
-                    send_mail(
-                        'Student Visa BD - Password Reset OTP',
-                        f'Your verification code is {otp}. It expires in 5 minutes.',
-                        settings.EMAIL_HOST_USER,
-                        [email],
-                        fail_silently=False,
-                    )
-                    
-                    expiration_time = int(time()) + 300
-                    temp_user_data["expiration_time"] = expiration_time
-                    request.session['otp_method'] = 'email'
-                    request.session["temp_user_data"] = temp_user_data
 
-                    response_data = {
-                        "success": True,
-                        "redirect_url": "/forgot_password_otp_verification_student/",
-                        "expiration_time": expiration_time,
-                    }
+                send_error = send_password_reset_otp_email(email, otp)
+                if send_error:
+                    return JsonResponse({"error": send_error})
 
-                    return JsonResponse(response_data)
-                except Exception as e:
-                    return JsonResponse({"error": "Failed to send email. Please try again later."})
+                expiration_time = int(time()) + 300
+                temp_user_data["expiration_time"] = expiration_time
+                request.session["otp_method"] = "email"
+                request.session["otp_email"] = email
+                request.session["otp_phone"] = limit_phone
+                request.session["temp_user_data"] = temp_user_data
+                OTPRequest.objects.create(phone_number=limit_phone)
+
+                response_data = {
+                    "success": True,
+                    "redirect_url": "/forgot_password_otp_verification_student/",
+                    "expiration_time": expiration_time,
+                }
+
+                return JsonResponse(response_data)
             else:
                 return JsonResponse({"error": "Email is not registered"})
 
@@ -1059,17 +1299,17 @@ def forgot_password_otp_verification_student(request):
 
 def change_forgotten_password_student(request):
     temp_data = request.session.get("temp_user_data")
-    page_name = "Change forgotten password student"
-    page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
-    page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
+    if not temp_data:
+        return redirect("forgot_password_phone_or_email_student")
+
     if request.method == "POST":
-        method = request.session.get('otp_method', 'phone')
+        method = request.session.get("otp_method", "phone")
         new_password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
 
         if new_password and confirm_password:
             if new_password == confirm_password:
-                if method == 'email':
+                if method == "email":
                     email = temp_data.get("email")
                     student = Students.objects.filter(email=email).first()
                 else:
@@ -1081,37 +1321,23 @@ def change_forgotten_password_student(request):
 
                     if user:
                         user.set_password(new_password)
-                        student.raw_password = new_password
-                        student.password = make_password(new_password)
                         user.save()
+
+                        student.raw_password = new_password
+                        student.password = user.password
                         student.save()
 
                         return JsonResponse({"success": True})
-
                     else:
-                        return JsonResponse(
-                            {"errors": "Your account hasn't been approved yet"}
-                        )
-
+                        return JsonResponse({"errors": "Login account not found."})
                 else:
-                    return JsonResponse({"errors": "Phone Number is not Registered"})
-
+                    return JsonResponse({"errors": "Student record not found."})
             else:
-                return JsonResponse({"errors": "Passwords do not match"})
-
+                return JsonResponse({"errors": "Passwords do not match."})
         else:
-            return JsonResponse({"errors": "Please fill up all the requuired fields"})
+            return JsonResponse({"errors": "Please fill up all fields."})
 
-    # else:
-    return render(
-        request,
-        "user_login/change_forgotten_password_student.html",
-        {
-            "page_name": page_name,
-            "page_description": page_description,
-            "page_keywords": page_keywords,
-        },
-    )
+    return render(request, "user_login/change_forgotten_password_student.html")
 
 
 def save_user_signup(request):
@@ -1300,8 +1526,13 @@ def login_user(request):
     page_keywords = "education visa consultant agent..."
     
     if request.method == "POST":
+        captcha_token = request.POST.get("g-recaptcha-response")
         identifier = request.POST.get("identifier", "").strip()
         password = request.POST.get("password", "")
+
+        if not verify_recaptcha_token(captcha_token):
+            messages.error(request, "Please complete the reCAPTCHA verification.")
+            return redirect("login_user")
 
         if identifier and password:
             # ১. প্রথমে মেইন (Approved) CustomUser টেবিলে খুঁজবে
@@ -1379,18 +1610,11 @@ def login_student(request):
     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka"
 
     if request.method == "POST":
-        # captcha_token = request.POST.get("g-recaptcha-response")
-        # cap_url = "https://www.google.com/recaptcha/api/siteverify"
-        # cap_secret = "6LcxvG8pAAAAAIaMvcT9M_ys9A7ytKR1UCIZFvKW"
-        # cap_data = {"secret": cap_secret, "response": captcha_token}
-        # cap_server_response = requests.post(url=cap_url, data=cap_data)
-        # cap_json = json.loads(cap_server_response.text)
+        captcha_token = request.POST.get("g-recaptcha-response")
 
-        # if cap_json['success'] == False:
-        #     messages.error(request, "Invalid Captcha. Try Again.")
-        #     return redirect("login_student")
-
-        cap_json = {"success": True}
+        if not verify_recaptcha_token(captcha_token):
+            messages.error(request, "Please complete the reCAPTCHA verification.")
+            return redirect("login_student")
 
         identifier = request.POST.get(
             "identifier"

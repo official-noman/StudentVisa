@@ -141,18 +141,18 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 10.5px;
-            font-weight: 700;
+            font-size: 12.5px;
+            font-weight: 800;
             letter-spacing: 0.09em;
             text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 16px;
+            color: #1E293B;
+            margin-bottom: 18px;
         }
         .section-label::after {
             content: '';
             flex: 1;
             height: 1px;
-            background: var(--border-light);
+            background: rgba(148, 163, 184, 0.35);
         }
 
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -165,6 +165,7 @@
             margin-bottom: 16px;
         }
         .field-row.full { grid-template-columns: 1fr; }
+        .field-wrap { min-width: 0; }
 
         @media (max-width: 600px) {
             .field-row { grid-template-columns: 1fr; }
@@ -178,9 +179,9 @@
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         .field-wrap { display: flex; flex-direction: column; gap: 5px; }
         .field-label {
-            font-size: 11.5px;
-            font-weight: 600;
-            color: var(--text-label);
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #1E293B;
             letter-spacing: 0.04em;
             text-transform: uppercase;
         }
@@ -195,11 +196,11 @@
         .field-wrap input[type="password"],
         .field-wrap input[type="tel"] {
             width: 100%;
-            height: 46px;
-            background: var(--input-bg);
-            border: 1.5px solid var(--border-light);
+            height: 48px;
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--input-bg) 100%);
+            border: 1.5px solid rgba(148, 163, 184, 0.42);
             border-radius: var(--radius-input);
-            padding: 0 14px;
+            padding: 0 16px;
             font-family: var(--font);
             font-size: 14px;
             font-weight: 500;
@@ -226,6 +227,31 @@
             box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
         }
 
+        .input-area {
+            position: relative;
+        }
+        .icon-wrapper {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--placeholder);
+            font-size: 14px;
+            line-height: 1;
+            pointer-events: none;
+            transition: color var(--transition);
+            z-index: 1;
+        }
+        .input-area:focus-within .icon-wrapper {
+            color: var(--brand);
+        }
+        .input-area input {
+            padding-left: 42px !important;
+        }
+        .input-area .phone_error {
+            margin-top: 6px;
+        }
+
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
            PASSWORD EYE TOGGLE
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -246,16 +272,92 @@
         .password-field .password-toggle:hover,
         .password-field .confirm_password-toggle:hover { color: var(--brand); }
 
+        .otp-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .otp-choice {
+            position: relative;
+        }
+        .otp-choice input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .otp-choice label {
+            min-height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1.5px solid var(--border-light);
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--input-bg) 100%);
+            box-shadow: 0 10px 24px rgba(15,23,42,0.05);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .otp-choice-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .otp-choice-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .otp-choice-meta {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+        .otp-choice-badge {
+            min-width: 46px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(37,99,235,0.10);
+            color: var(--brand);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            text-align: center;
+        }
+        .otp-choice input[type="radio"]:checked + label {
+            border-color: var(--brand);
+            background: linear-gradient(180deg, #FFFFFF 0%, rgba(37,99,235,0.10) 100%);
+            box-shadow:
+                0 0 0 4px rgba(37,99,235,0.12),
+                0 16px 34px rgba(37,99,235,0.14);
+        }
+        .otp-choice input[type="radio"]:checked + label .otp-choice-title,
+        .otp-choice input[type="radio"]:checked + label .otp-choice-meta {
+            color: var(--brand);
+        }
+        .otp-choice label:hover {
+            border-color: rgba(37,99,235,0.45);
+            transform: translateY(-1px);
+        }
+        @media (max-width: 600px) {
+            .otp-choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
            SELECT2 OVERRIDES
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
         .select2-container .select2-selection--single,
         .select2-container .select2-selection--multiple {
-            background: var(--input-bg) !important;
-            border: 1.5px solid var(--border-light) !important;
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--input-bg) 100%) !important;
+            border: 1.5px solid rgba(148, 163, 184, 0.42) !important;
             border-radius: var(--radius-input) !important;
-            min-height: 46px !important;
-            padding: 4px 6px !important;
+            min-height: 48px !important;
+            padding: 5px 8px !important;
             font-family: var(--font);
             font-size: 14px;
             transition: border-color var(--transition), box-shadow var(--transition);
@@ -270,7 +372,7 @@
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             color: var(--text-primary) !important;
             line-height: 36px !important;
-            font-weight: 500;
+            font-weight: 600;
         }
         .select2-container--default .select2-selection--single .select2-selection__placeholder {
             color: var(--placeholder) !important;
@@ -318,6 +420,11 @@
             box-shadow: 0 0 0 3px rgba(37,99,235,0.12) !important;
         }
         .select2-container { width: 100% !important; }
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
 
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
            INLINE HELPERS
@@ -349,7 +456,8 @@
         .recaptcha-wrap {
             display: flex;
             justify-content: center;
-            margin: 24px 0;
+            margin: 22px 0 26px;
+            width: 100%;
         }
 
         /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -406,6 +514,54 @@
             transition: color var(--transition);
         }
         .signin-nudge a:hover { color: var(--brand-dark); text-decoration: underline; }
+
+        @media (max-width: 991.98px) {
+            .signup-page-wrapper { padding: 44px 16px 52px; }
+            .signup-card {
+                max-width: 100%;
+                padding: 40px 32px 44px;
+            }
+            .field-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 767.98px) {
+            .signup-card { padding: 34px 22px 38px; }
+            .otp-choice-grid { grid-template-columns: 1fr; }
+            .recaptcha-wrap { margin: 20px 0 22px; }
+        }
+
+        @media (max-width: 575.98px) {
+            .signup-header p br { display: none; }
+            .signup-header p { margin-bottom: 24px; }
+            .otp-choice-grid { gap: 10px; }
+            .recaptcha-wrap > div {
+                transform: scale(0.92);
+                transform-origin: center top;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .signup-page-wrapper { padding: 36px 12px 44px; }
+            .signup-card {
+                padding: 30px 18px 34px;
+                border-radius: 18px;
+            }
+            .field-wrap input[type="text"],
+            .field-wrap input[type="email"],
+            .field-wrap input[type="password"],
+            .field-wrap input[type="tel"] {
+                height: 46px;
+                font-size: 13.5px;
+            }
+            .select2-container .select2-selection--single,
+            .select2-container .select2-selection--multiple {
+                min-height: 46px !important;
+            }
+            .recaptcha-wrap > div {
+                transform: scale(0.86);
+                transform-origin: center top;
+            }
+        }
     </style>
 {% endblock custom_css %}
 
@@ -487,12 +643,18 @@
                 <div class="field-row">
                     <div class="field-wrap">
                         <label for="email" class="field-label">Email Address <span class="req">*</span></label>
-                        <input type="email" id="email" name="email" placeholder="company@example.com" />
+                        <div class="input-area">
+                            <span class="icon-wrapper"><i class="fa-regular fa-envelope"></i></span>
+                            <input type="email" id="email" name="email" placeholder="company@example.com" />
+                        </div>
                         <span id="email-error" class="field-error"></span>
                     </div>
                     <div class="field-wrap">
                         <label for="phone" class="field-label">Mobile Number <span class="req">*</span></label>
-                        <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11" />
+                        <div class="input-area">
+                            <span class="icon-wrapper"><i class="fas fa-phone-alt"></i></span>
+                            <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX" maxlength="11" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -525,25 +687,35 @@
                 <p><span id="message-text" class="message-text"></span></p>
             </div>
 
+            <div class="form-section">
+                <div class="section-label">Receive OTP Via:</div>
+                <div class="otp-choice-grid">
+                    <div class="otp-choice">
+                        <input type="radio" name="otp_preference" id="consultant-otp-pref-phone" value="phone" autocomplete="off" required>
+                        <label for="consultant-otp-pref-phone">
+                            <div class="otp-choice-copy">
+                                <span class="otp-choice-title">Phone</span>
+                                <span class="otp-choice-meta">Instant SMS delivery to your mobile number</span>
+                            </div>
+                            <span class="otp-choice-badge">SMS</span>
+                        </label>
+                    </div>
+                    <div class="otp-choice">
+                        <input type="radio" name="otp_preference" id="consultant-otp-pref-email" value="email" autocomplete="off" required>
+                        <label for="consultant-otp-pref-email">
+                            <div class="otp-choice-copy">
+                                <span class="otp-choice-title">Email</span>
+                                <span class="otp-choice-meta">Receive the 6-digit code in your inbox</span>
+                            </div>
+                            <span class="otp-choice-badge">Mail</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <!-- reCAPTCHA -->
             <div class="recaptcha-wrap">
                 <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-label">Receive OTP Via:</div>
-                <div class="field-row">
-                    <div class="field-wrap">
-                        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
-                            <label class="btn btn-outline-primary active flex-fill">
-                                <input type="radio" name="otp_preference" value="phone" autocomplete="off" checked> Phone
-                            </label>
-                            <label class="btn btn-outline-primary flex-fill">
-                                <input type="radio" name="otp_preference" value="email" autocomplete="off"> Email
-                            </label>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Submit -->
@@ -740,7 +912,14 @@
             event.preventDefault();
             var formData = new FormData(this);
             var signupType = $(this).find('.signup-submit-btn').data('signup-type');
-            var otpPreference = $('input[name="otp_preference"]:checked').val() || 'phone';
+            var otpPreference = $('input[name="otp_preference"]:checked').val();
+
+            if (!otpPreference) {
+                $('#message-text').text('Please select how you want to receive your OTP.');
+                $('#error-message-div').addClass('error-message-show');
+                return;
+            }
+
             formData.append('signup_type', signupType);
             formData.append('otp_preference', otpPreference);
             fetch('/redirect_to_otp/', {
@@ -760,6 +939,11 @@
                 }
             })
             .catch(error => console.error('Error:', error));
+        });
+
+        $('input[name="otp_preference"]').on('change', function() {
+            $('#error-message-div').removeClass('error-message-show');
+            $('#message-text').text('');
         });
     });
 </script>

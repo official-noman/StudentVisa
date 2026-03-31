@@ -123,6 +123,44 @@
         border-radius: 8px !important;
         padding: 10px 0 !important;
     }
+
+    .auth-shell-layout {
+        width: 100%;
+        flex-wrap: wrap !important;
+        overflow-x: hidden;
+    }
+
+    .auth-content-div {
+        width: calc(100% - 200px) !important;
+        max-width: 950px;
+        flex: 0 0 calc(100% - 200px);
+        box-sizing: border-box;
+        min-width: 0;
+    }
+
+    .auth-sidebar-widget {
+        width: 200px !important;
+        flex: 0 0 200px;
+    }
+
+    @media (max-width: 991.98px) {
+        .auth-content-div {
+            width: 100% !important;
+            max-width: 100%;
+            flex-basis: 100%;
+            padding-right: 0 !important;
+        }
+
+        .auth-sidebar-widget {
+            width: 100% !important;
+            flex-basis: 100%;
+            margin-top: 24px;
+        }
+
+        .auth-sidebar-widget .justify-content-end {
+            justify-content: center !important;
+        }
+    }
 </style>
 
     <!-- Stylesheets -->
@@ -391,14 +429,14 @@
 
         
         <div class="container" style="max-width: 1150px !important; width: 100%; padding: 0;">
-            <div class="d-flex" style="flex-wrap: nowrap;">
-                <div class="content-div" style="width: 950px; flex-shrink: 0; padding-right: 15px;">
+            <div class="d-flex auth-shell-layout">
+                <div class="content-div auth-content-div" style="width: 950px; flex-shrink: 0; padding-right: 15px;">
                     {% block content %}
         
         
                     {% endblock content %}
                 </div>
-           <div class="sidebar-widget sidebar-assessment" style="width: 200px; flex-shrink: 0;">
+           <div class="sidebar-widget sidebar-assessment auth-sidebar-widget" style="width: 200px; flex-shrink: 0;">
 <div class="signin-right-ad-div">
                     <div class="d-flex justify-content-end">
                      <div class="row">
