@@ -1,6 +1,6 @@
 # visa/context_processors.py
 
-from .models import Users,ConsultantDetails
+from .models import Users, ConsultantDetails, SEOSettings
 from visa.models import StudentDetails,MastersDegree, OtherCertification, Results
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
@@ -80,3 +80,8 @@ def verification_statuses(request):
             verification_status = 'verified'
 
     return {'verification_status': verification_status}
+
+
+def seo_context(request):
+    seo_obj = SEOSettings.objects.first()
+    return {"global_seo": seo_obj}

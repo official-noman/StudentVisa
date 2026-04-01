@@ -1236,3 +1236,56 @@ class SelfFundedProgram(models.Model):
 
     def __str__(self):
         return f"{self.university.name} — {self.country} (Fee: {self.semester_fee})"
+class MetaKeywordPool(models.Model):
+    word = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.word
+
+
+class SEOSettings(models.Model):
+    site_name = models.CharField(max_length=100, default="Student Visa BD")
+    meta_title = models.CharField(
+        max_length=60,
+        help_text="Default browser tab title",
+    )
+    meta_description = models.TextField(
+        max_length=150,
+        help_text="SEO description for search engines",
+    )
+    meta_keywords = models.TextField(
+        help_text="Comma separated keywords",
+    )
+    og_image = models.ImageField(
+        upload_to="seo/og/",
+        null=True,
+        blank=True,
+        help_text="Social media sharing image 1200x630",
+    )
+    google_verification_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Google Search Console ID",
+    )
+    analytics_code = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Google Analytics or Facebook Pixel script",
+    )
+    asset_version = models.CharField(
+        max_length=10,
+        default="1.0",
+        help_text="Version for CSS/JS cache busting (e.g. ?v=1.0)",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.meta_keywords:
+            normalized_keywords = [
+                keyword.strip().lower()
+                for keyword in self.meta_keywords.split(",")
+                if keyword.strip()
+            ]
+            self.meta_keywords = ", ".join(dict.fromkeys(normalized_keywords))
+        super().save(*args, **kwargs)

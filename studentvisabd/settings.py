@@ -51,6 +51,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "studentvisabd.com",
     "www.studentvisabd.com",
+    "imploratory-banefully-paislee.ngrok-free.dev",
 ]  # add localhost
 
 
@@ -105,6 +106,7 @@ TEMPLATES = [
                 "visa.context_processors.consultant_user_details",
                 "visa.context_processors.fav_consultant_ids",
                 "visa.context_processors.verification_statuses",
+                "visa.context_processors.seo_context",
                 #   'whitenoise.middleware.WhiteNoiseMiddleware',
             ],
         },

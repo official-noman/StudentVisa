@@ -1625,21 +1625,54 @@ def grant_permission_consultant(request, user_id):
 @require_POST
 def reject_consultant(request, user_id):
     try:
-        # Get the Users instance using user_id
         user_instance = Users.objects.get(pk=user_id)
+        consultant_details_ids = {user_instance.id}
+        linked_custom_users = []
 
-        # Set the active_status to a specific rejected status (e.g. 10)
-        # to ensure they don't reappear in the pending list (which looks for 0 or null).
-        user_instance.active_status = 10
-        user_instance.save()
+        if user_instance.consultant_user_id:
+            linked_custom_users.append(user_instance.consultant_user)
+            consultant_details_ids.add(user_instance.consultant_user_id)
+
+        additional_custom_users = CustomUser.objects.filter(
+            user_type=1
+        ).filter(
+            Q(email=user_instance.email) | Q(phone=user_instance.phone)
+        )
+
+        for custom_user in additional_custom_users:
+            consultant_details_ids.add(custom_user.id)
+            if all(existing.id != custom_user.id for existing in linked_custom_users):
+                linked_custom_users.append(custom_user)
+
+        with transaction.atomic():
+            ConsultantDetails.objects.filter(
+                consultant_id__in=list(consultant_details_ids)
+            ).delete()
+
+            user_instance.delete()
+
+            for custom_user in linked_custom_users:
+                custom_user.delete()
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({"success": True, "message": "Consultant rejected successfully."})
-        messages.success(request, "Consultant rejected successfully.")
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": "Consultant rejected and removed successfully.",
+                }
+            )
+        messages.success(request, "Consultant rejected and removed successfully.")
     except Users.DoesNotExist:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({"success": False, "message": "Consultant not found."})
+            return JsonResponse({"success": False, "message": "Consultant not found."}, status=404)
         messages.error(request, "Consultant not found.")
+    except Exception as exc:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(
+                {"success": False, "message": str(exc)},
+                status=500,
+            )
+        messages.error(request, "An error occurred while rejecting the consultant.")
 
     return redirect("root_consultant_list")
 
@@ -3843,3 +3876,94 @@ def manage_procedure(request):
         'countries': countries,
         'procedures': procedures
     })
+
+
+@login_required
+@root_required
+def manage_seo_settings(request):
+    fixed_site_name = "Student Visa BD"
+    seo_settings, _ = SEOSettings.objects.get_or_create(
+        id=1,
+        defaults={
+            "site_name": fixed_site_name,
+            "meta_title": "",
+            "meta_description": "",
+            "meta_keywords": "",
+            "asset_version": "1.0",
+        },
+    )
+
+    if seo_settings.site_name != fixed_site_name:
+        seo_settings.site_name = fixed_site_name
+        seo_settings.save()
+
+    keyword_pool = MetaKeywordPool.objects.order_by("word")
+
+    def normalize_keywords(raw_keywords):
+        normalized = []
+        seen = set()
+
+        for keyword in raw_keywords:
+            clean_keyword = keyword.strip().lower()
+            if clean_keyword and clean_keyword not in seen:
+                seen.add(clean_keyword)
+                normalized.append(clean_keyword)
+
+        return normalized
+
+    if request.method == "POST":
+        seo_settings.site_name = fixed_site_name
+        seo_settings.meta_title = request.POST.get("meta_title", "")
+        seo_settings.meta_description = request.POST.get("meta_description", "")
+        seo_settings.google_verification_id = request.POST.get(
+            "google_verification_id", ""
+        )
+        seo_settings.analytics_code = request.POST.get("analytics_code", "")
+        seo_settings.asset_version = request.POST.get(
+            "asset_version", seo_settings.asset_version
+        )
+
+        submitted_keywords = request.POST.getlist("meta_keywords")
+        if not submitted_keywords:
+            submitted_keywords = request.POST.get("meta_keywords", "").split(",")
+
+        new_keywords = request.POST.get("new_keywords", "").split(",")
+
+        normalized_keywords = normalize_keywords(submitted_keywords + new_keywords)
+        seo_settings.meta_keywords = ", ".join(normalized_keywords)
+
+        for keyword in normalized_keywords:
+            MetaKeywordPool.objects.get_or_create(word=keyword)
+
+        og_image = request.FILES.get("og_image")
+        if og_image:
+            seo_settings.og_image = og_image
+
+        seo_settings.save()
+        messages.success(request, "SEO Settings updated successfully.")
+        return redirect("manage_seo_settings")
+
+    return render(
+        request,
+        "roottemplates/manage_seo.html",
+        {
+            "seo_settings": seo_settings,
+            "keyword_pool": keyword_pool,
+            "selected_keywords": [
+                keyword.strip()
+                for keyword in seo_settings.meta_keywords.split(",")
+                if keyword.strip()
+            ],
+            "keyword_options": sorted(
+                {
+                    keyword.word for keyword in keyword_pool
+                }.union(
+                    {
+                        keyword.strip()
+                        for keyword in seo_settings.meta_keywords.split(",")
+                        if keyword.strip()
+                    }
+                )
+            ),
+        },
+    )

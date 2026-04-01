@@ -832,7 +832,7 @@
   }
 
   function initActiveTable() {
-    fetchJson('/activeconsultant/')
+    fetchJson("{% url 'activeconsultant' %}")
       .then(data => {
         const consultants = data.consultants || [];
         const tbody = document.querySelector('#active-consultant-table tbody');
@@ -865,7 +865,7 @@
   }
 
   function initSuspendTable() {
-    fetchJson('/suspend_list/')
+    fetchJson("{% url 'suspend_list' %}")
       .then(data => {
         const consultants = data.suspended_users || [];
         const tbody = document.querySelector('#suspend-consultant-table tbody');
@@ -898,7 +898,7 @@
   }
 
   function initFreeTable() {
-    fetchJson('/free_list/')
+    fetchJson("{% url 'free_list' %}")
       .then(data => {
         const consultants = data.free_users || [];
         const tbody = document.querySelector('#free-consultant-table tbody');
@@ -915,7 +915,7 @@
   }
 
   function initBasicTable() {
-    fetchJson('/basic_list/')
+    fetchJson("{% url 'basic_list' %}")
       .then(data => {
         const consultants = data.basic_users || [];
         const tbody = document.querySelector('#basic-consultant-table tbody');
@@ -932,7 +932,7 @@
   }
 
   function initPremiumTable() {
-    fetchJson('/premium_list/')
+    fetchJson("{% url 'premium_list' %}")
       .then(data => {
         const consultants = data.premium_users || [];
         const tbody = document.querySelector('#premium-consultant-table tbody');
@@ -949,7 +949,7 @@
   }
 
   function initAllConsultantsTable() {
-    fetchJson('/get_all_consultants/')
+    fetchJson("{% url 'get_all_consultants' %}")
       .then(response => {
         const consultants = response.consultants || [];
         const tbody = document.querySelector('#all-consultant-table tbody');
@@ -1027,7 +1027,7 @@
         if (!result.isConfirmed) return;
 
         $.ajax({
-          url: '/reject_consultant/' + userId + '/',
+          url: "{% url 'reject_consultant' 0 %}".replace('/0/', '/' + userId + '/'),
           type: 'POST',
           data: {
             csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1048,8 +1048,11 @@
               showSwalMessage('Error', response.message || 'Failed to reject consultant.', 'error');
             }
           },
-          error: function() {
-            showSwalMessage('Error', 'An error occurred during the rejection process.', 'error');
+          error: function(xhr) {
+            const errorMessage = xhr.responseJSON && xhr.responseJSON.message
+              ? xhr.responseJSON.message
+              : 'An error occurred during the rejection process.';
+            showSwalMessage('Error', errorMessage, 'error');
           }
         });
       });
@@ -1059,7 +1062,7 @@
       const userId = $(this).data('user-id');
       if (!userId) return;
 
-      fetchJson('/activeconsultant/details/' + userId + '/')
+      fetchJson("{% url 'active_consultant_details' 0 %}".replace('/0/', '/' + userId + '/'))
         .then(data => {
           const consultant = data.consultant;
           activeConsultantId = consultant.id;
@@ -1079,7 +1082,7 @@
       $('#addRatesForm').get(0).reset();
       $('#rate-form-submit').attr('data-consultant-id', consultantId);
 
-      fetchJson('/get_existing_rates/' + consultantId + '/')
+      fetchJson("{% url 'get_existing_rates' 0 %}".replace('/0/', '/' + consultantId + '/'))
         .then(data => {
           if (data.success && data.existing_rates) {
             $.each(data.existing_rates, function(key, value) {
@@ -1096,7 +1099,7 @@
       const form = $(this);
 
       $.ajax({
-        url: '/add_or_update_rates/' + consultantId + '/',
+        url: "{% url 'add_or_update_rates' 0 %}".replace('/0/', '/' + consultantId + '/'),
         type: 'POST',
         data: form.serialize(),
         dataType: 'json',
@@ -1125,7 +1128,7 @@
         .then((result) => {
           if (!result.isConfirmed) return;
 
-          fetchJson('/activeconsultant/suspend/' + activeConsultantId + '/')
+          fetchJson("{% url 'suspend_account' 0 %}".replace('/0/', '/' + activeConsultantId + '/'))
             .then(() => {
               $('#detailsModal').modal('hide');
               window.location.reload();
@@ -1141,7 +1144,7 @@
         .then((result) => {
           if (!result.isConfirmed) return;
 
-          fetchJson('/free_account/' + activeConsultantId + '/')
+          fetchJson("{% url 'free_account' 0 %}".replace('/0/', '/' + activeConsultantId + '/'))
             .then(() => {
               $('#detailsModal').modal('hide');
               window.location.reload();
@@ -1157,7 +1160,7 @@
         .then((result) => {
           if (!result.isConfirmed) return;
 
-          fetchJson('/activate_basic_account/' + activeConsultantId + '/')
+          fetchJson("{% url 'activate_basic_account' 0 %}".replace('/0/', '/' + activeConsultantId + '/'))
             .then(() => {
               $('#detailsModal').modal('hide');
               window.location.reload();
@@ -1173,7 +1176,7 @@
         .then((result) => {
           if (!result.isConfirmed) return;
 
-          fetchJson('/activate_premium_account/' + activeConsultantId + '/')
+          fetchJson("{% url 'activate_premium_account' 0 %}".replace('/0/', '/' + activeConsultantId + '/'))
             .then(() => {
               $('#detailsModal').modal('hide');
               window.location.reload();
@@ -1186,7 +1189,7 @@
       const userId = $(this).data('user-id');
       if (!userId) return;
 
-      fetchJson('/suspendedconsultant/details/' + userId + '/')
+      fetchJson("{% url 'suspended_consultant_details' 0 %}".replace('/0/', '/' + userId + '/'))
         .then(data => {
           suspendedConsultantId = userId;
           $('#detailssuspandModalBody').html(renderConsultantDetailsTable(data.consultant));
@@ -1202,7 +1205,7 @@
         .then((result) => {
           if (!result.isConfirmed) return;
 
-          fetchJson('/suspendedconsultant/activate/' + suspendedConsultantId + '/')
+          fetchJson("{% url 'activate_account' 0 %}".replace('/0/', '/' + suspendedConsultantId + '/'))
             .then(() => {
               $('#detailssuspandModal').modal('hide');
               window.location.reload();
@@ -1215,7 +1218,7 @@
       const userId = $(this).data('user-id');
       if (!userId) return;
 
-      fetchJson('/free_consultant_details/' + userId + '/')
+      fetchJson("{% url 'free_consultant_details' 0 %}".replace('/0/', '/' + userId + '/'))
         .then(data => {
           $('#detailsfreeModalBody').html(renderConsultantDetailsTable(data.consultant));
           $('#detailsfreeModal').modal('show');
@@ -1227,7 +1230,7 @@
       const userId = $(this).data('user-id');
       if (!userId) return;
 
-      fetchJson('/basic_user_details/' + userId + '/')
+      fetchJson("{% url 'basic_user_details' 0 %}".replace('/0/', '/' + userId + '/'))
         .then(data => {
           $('#detailsbasicModalBody').html(renderConsultantDetailsTable(data.consultant));
           $('#detailsbasicModal').modal('show');
@@ -1239,7 +1242,7 @@
       const userId = $(this).data('user-id');
       if (!userId) return;
 
-      fetchJson('/premium_user_details/' + userId + '/')
+      fetchJson("{% url 'preimum_user_details' 0 %}".replace('/0/', '/' + userId + '/'))
         .then(data => {
           $('#detailspremiumModalBody').html(renderConsultantDetailsTable(data.consultant));
           $('#detailspremiumModal').modal('show');

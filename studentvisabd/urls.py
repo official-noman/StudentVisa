@@ -574,6 +574,11 @@ urlpatterns =[
     ),
     path("root-profile/", rootviews.root_profile, name="root_profile"),
     path(
+        "root/seo-settings/",
+        rootviews.manage_seo_settings,
+        name="manage_seo_settings",
+    ),
+    path(
         "save-root-profile/<int:user_id>/",
         rootviews.save_root_profile,
         name="save_root_profile",

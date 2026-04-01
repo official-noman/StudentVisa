@@ -1063,7 +1063,7 @@
               <h3 class="g-card-title">Pending Requests</h3>
               <p class="g-card-sub"><strong id="total-count" style="color:var(--text-primary)">0</strong> consultant request(s) awaiting review</p>
             </div>
-            <a href="/root_consultant_list/" class="view-all-btn">
+            <a href="{% url 'root_consultant_list' %}" class="view-all-btn">
               View All
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="m9 18 6-6-6-6"></path>
@@ -1234,7 +1234,7 @@
     }
 
     $.ajax({
-      url: '/root_consultant_list_json/',
+      url: "{% url 'root_consultant_list_json' %}",
       method: 'GET',
       success: buildTable,
       error: () => $('#consultant-table tbody').html('<tr><td colspan="5" class="table-empty">Failed to load requests.</td></tr>')
@@ -1245,7 +1245,7 @@
       const csrf = getCookie('csrftoken');
 
       $.ajax({
-        url: `/grant_permission_consultant/${id}/`,
+        url: "{% url 'grant_permission_consultant' 0 %}".replace('/0/', `/${id}/`),
         method: 'POST',
         headers: {'X-CSRFToken': csrf},
         success: () => Swal.fire({
@@ -1270,7 +1270,7 @@
       const csrf = getCookie('csrftoken');
 
       $.ajax({
-        url: `/reject_consultant/${id}/`,
+        url: "{% url 'reject_consultant' 0 %}".replace('/0/', `/${id}/`),
         method: 'POST',
         headers: {'X-CSRFToken': csrf},
         success: () => Swal.fire({
@@ -1293,7 +1293,7 @@
 
   $(function () {
     $.ajax({
-      url: '/count_consultant_perform/',
+      url: "{% url 'count_consultant_perform' %}",
       type: 'GET',
       dataType: 'json',
       success: function (data) {
@@ -1354,7 +1354,7 @@
 
   document.getElementById('exportBtn')?.addEventListener('click', function () {
     $.ajax({
-      url: '/export_dashboard_data/',
+      url: "{% url 'export_dashboard_data' %}",
       type: 'POST',
       dataType: 'json',
       headers: { 'X-CSRFToken': getCookie('csrftoken') },

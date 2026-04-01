@@ -6,15 +6,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    
-    
-    <meta name="og:description" content="{{ page_description }}">
-    <meta name="og:keywords" content="{{ page_keywords }}">
 
-    <title>Student Visa Bd | {{page_name}}</title>
+    {% firstof global_seo.asset_version "1.0" as asset_version %}
+    {% firstof meta_title page_name global_seo.meta_title global_seo.site_name "Student Visa BD" as resolved_title %}
+    {% firstof meta_description page_description global_seo.meta_description "" as resolved_description %}
+    {% firstof meta_keywords page_keywords global_seo.meta_keywords "" as resolved_keywords %}
+
+    <title>{{ resolved_title }}</title>
+    <meta name="description" content="{{ resolved_description }}">
+    <meta name="keywords" content="{{ resolved_keywords }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ resolved_title }}">
+    <meta property="og:description" content="{{ resolved_description }}">
+    {% if global_seo and global_seo.og_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ global_seo.og_image.url }}">
+    {% endif %}
+    {% if global_seo and global_seo.google_verification_id %}
+    <meta name="google-site-verification" content="{{ global_seo.google_verification_id }}">
+    {% endif %}
   
     <!-- Fav Icon -->
- <link rel="icon" href={% static "assets/images/icon.png" %} type="image/x-icon">
+ <link rel="icon" href="{% static 'assets/images/icon.png' %}?v={{ asset_version }}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link
@@ -124,59 +136,68 @@
         padding: 10px 0 !important;
     }
 
-    .auth-shell-layout {
+    .main-container-box {
+        max-width: 1150px !important;
+        margin: 0 auto;
         width: 100%;
-        flex-wrap: wrap !important;
-        overflow-x: hidden;
+        padding: 0 15px;
+    }
+
+    .auth-shell-layout {
+        display: flex;
+        width: 100%;
+        flex-wrap: nowrap;
+        gap: 20px;
     }
 
     .auth-content-div {
-        width: calc(100% - 200px) !important;
+        flex: 1;
         max-width: 950px;
-        flex: 0 0 calc(100% - 200px);
-        box-sizing: border-box;
+        width: 100% !important;
+        padding-right: 20px;
         min-width: 0;
     }
 
     .auth-sidebar-widget {
         width: 200px !important;
         flex: 0 0 200px;
+        display: block;
     }
 
     @media (max-width: 991.98px) {
+        .auth-shell-layout {
+            flex-wrap: wrap !important;
+        }
+
         .auth-content-div {
-            width: 100% !important;
-            max-width: 100%;
-            flex-basis: 100%;
             padding-right: 0 !important;
+            max-width: 100%;
+            flex: 0 0 100%;
         }
 
         .auth-sidebar-widget {
-            width: 100% !important;
-            flex-basis: 100%;
-            margin-top: 24px;
-        }
-
-        .auth-sidebar-widget .justify-content-end {
-            justify-content: center !important;
+            display: none;
         }
     }
 </style>
 
     <!-- Stylesheets -->
     
-    <link href={% static 'assets/css/font-awesome-all.css'%} rel="stylesheet">
-    <link href={% static "assets/css/flaticon.css"%} rel="stylesheet">
-    <link href={% static "assets/css/owl.css"%} rel="stylesheet">
-    <link href={% static "assets/css/bootstrap.css" %} rel="stylesheet">
-    <link href={% static "assets/css/jquery.fancybox.min.css" %} rel="stylesheet">
-    <link href={% static "assets/css/animate.css"%} rel="stylesheet">
+    <link href="{% static 'assets/css/font-awesome-all.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/flaticon.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/owl.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/bootstrap.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/jquery.fancybox.min.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/animate.css' %}?v={{ asset_version }}" rel="stylesheet">
     <!-- <link href="assets/css/color/theme-color.css" id="jssDefault" rel="stylesheet"> -->
-    <link href={% static "assets/css/switcher-style.css" %} rel="stylesheet">
-    <link href={% static "assets/css/style.css"%} rel="stylesheet">
-    <link href={% static "assets/css/responsive.css" %} rel="stylesheet">
-    <link href={% static "assets/css/ad_columns.css"%} rel="stylesheet">
+    <link href="{% static 'assets/css/switcher-style.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/responsive.css' %}?v={{ asset_version }}" rel="stylesheet">
+    <link href="{% static 'assets/css/ad_columns.css' %}?v={{ asset_version }}" rel="stylesheet">
     {% block custom_css %}{% endblock custom_css %}
+    {% if global_seo and global_seo.analytics_code %}
+      {{ global_seo.analytics_code|safe }}
+    {% endif %}
 </head>
 
 
@@ -227,7 +248,7 @@
                 </div>
             </div>
             <div class="header-upper">
-             <div class="container" style="max-width: 1150px !important;">
+             <div class="container main-container-box">
                     <div class="outer-box clearfix">
                         <div class="logo-box base-logo-box custom-pull pull-left">
                             <figure class="logo">
@@ -428,15 +449,15 @@
         </div>
 
         
-        <div class="container" style="max-width: 1150px !important; width: 100%; padding: 0;">
+        <div class="container main-container-box">
             <div class="d-flex auth-shell-layout">
-                <div class="content-div auth-content-div" style="width: 950px; flex-shrink: 0; padding-right: 15px;">
+                <div class="content-div auth-content-div">
                     {% block content %}
         
         
                     {% endblock content %}
                 </div>
-           <div class="sidebar-widget sidebar-assessment auth-sidebar-widget" style="width: 200px; flex-shrink: 0;">
+           <div class="sidebar-widget sidebar-assessment auth-sidebar-widget">
 <div class="signin-right-ad-div">
                     <div class="d-flex justify-content-end">
                      <div class="row">
@@ -634,21 +655,21 @@ Tawk_API.onLoad = function() {
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0"></script>
 
 <!-- jequery plugins -->
-<script src={% static "assets/js/jquery.js" %}></script>
-<script src={% static "assets/js/popper.min.js" %}></script>
-<script src={% static "assets/js/bootstrap.min.js" %}></script>
-<script src={% static "assets/js/owl.js" %}></script>
-<script src={% static "assets/js/wow.js" %}></script>
-<script src={% static "assets/js/validation.js" %}></script>
-<script src={% static "assets/js/jquery.fancybox.js"%}></script>
-<script src={% static "assets/js/TweenMax.min.js" %}></script>
-<script src={% static "assets/js/appear.js" %}></script>
-<script src={% static "assets/js/scrollbar.js" %}></script>
-<script src={% static "assets/js/jquery.nice-select.min.js" %}></script>
-<script src={% static "assets/js/jQuery.style.switcher.min.js" %}></script>
+<script src="{% static 'assets/js/jquery.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/popper.min.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/owl.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/wow.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/validation.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/jquery.fancybox.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/TweenMax.min.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/appear.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/scrollbar.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/jquery.nice-select.min.js' %}?v={{ asset_version }}"></script>
+<script src="{% static 'assets/js/jQuery.style.switcher.min.js' %}?v={{ asset_version }}"></script>
 
 <!-- main-js -->
-<script src={% static "assets/js/script.js" %}></script>
+<script src="{% static 'assets/js/script.js' %}?v={{ asset_version }}"></script>
 {% block js %}{% endblock js %}
 </body><!-- End of .page_wrapper -->
 

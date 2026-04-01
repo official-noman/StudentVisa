@@ -361,6 +361,14 @@
       </div>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' %}active-page{% endif %}"
+         href="{% url 'manage_seo_settings' %}">
+        <i class="mdi mdi-google-analytics menu-icon"></i>
+        <span class="menu-title">SEO Settings</span>
+      </a>
+    </li>
+
     <!-- How to Apply -->
     {% if request.user|has_perm:'visa.view_offerletters' %}
     <li class="nav-item">
