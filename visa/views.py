@@ -614,6 +614,9 @@ def send_password_reset_otp_email(email, otp):
 
 
 def verify_recaptcha_token(captcha_token):
+    if settings.DEBUG:
+        return True
+
     if not captcha_token:
         return False
 
@@ -687,6 +690,7 @@ def signup_user(request):
         "page_name": page_name,
         "page_description": page_description,
         "page_keywords": page_keywords,
+        "captcha_enabled": not settings.DEBUG,
     }
 
     return render(request, "user_login/signup_user.html", context)
@@ -707,6 +711,7 @@ def signup_student(request):
         "page_name": page_name,
         "page_description": page_description,
         "page_keywords": page_keywords,
+        "captcha_enabled": not settings.DEBUG,
     }
     return render(request, "user_login/signup_student.html", context)
 
@@ -2167,6 +2172,7 @@ def login_user(request):
             "page_name": page_name,
             "page_description": page_description,
             "page_keywords": page_keywords,
+            "captcha_enabled": not settings.DEBUG,
         }
     )
 
@@ -2269,6 +2275,7 @@ def login_student(request):
             "consultant_details": consultant_details,
             "page_description": page_description,
             "page_keywords": page_keywords,
+            "captcha_enabled": not settings.DEBUG,
         }
         messages.info(request, "You need to log in first.")
 
@@ -2277,6 +2284,7 @@ def login_student(request):
 
         context = {
             "base_template": base_template,
+            "captcha_enabled": not settings.DEBUG,
         }
 
     return render(request, "user_login/login_user.html", context)

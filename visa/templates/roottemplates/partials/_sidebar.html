@@ -362,8 +362,9 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' %}active-page{% endif %}"
-         href="{% url 'manage_seo_settings' %}">
+      {% url 'manage_seo_settings' as manage_seo_settings_url %}
+      <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' or request.path == '/root/seo-settings/' %}active-page{% endif %}"
+         href="{% if manage_seo_settings_url %}{{ manage_seo_settings_url }}{% else %}/root/seo-settings/{% endif %}">
         <i class="mdi mdi-google-analytics menu-icon"></i>
         <span class="menu-title">SEO Settings</span>
       </a>
