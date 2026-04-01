@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block custom_css %}
+{% if captcha_enabled %}
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endif %}
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -653,9 +655,11 @@
                                 </div>
                             </div>
 
+                            {% if captcha_enabled %}
                             <div class="recaptcha-wrap">
                                 <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
                             </div>
+                            {% endif %}
 
                             <!-- Dynamic Links -->
                             <div class="form-actions-row">

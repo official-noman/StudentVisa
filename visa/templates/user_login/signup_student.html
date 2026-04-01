@@ -2,7 +2,9 @@
 {% load static %}
 {% block custom_css %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {% if captcha_enabled %}
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endif %}
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -809,9 +811,11 @@
             </div>
 
             <!-- reCAPTCHA -->
+            {% if captcha_enabled %}
             <div class="recaptcha-wrap">
                 <div class="g-recaptcha" data-sitekey="6LcxvG8pAAAAAOXJl8-qCxU8AuwrbQXXqGxU8Cln"></div>
             </div>
+            {% endif %}
 
             <!-- Submit -->
             <button type="submit" class="signup-submit-btn" data-signup-type={{ signup_type }}>
