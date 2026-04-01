@@ -1,6 +1,6 @@
 # visa/context_processors.py
 
-from .models import Users, ConsultantDetails, SEOSettings
+from .models import Users, ConsultantDetails, SEOSettings, PageSEOSettings
 from visa.models import StudentDetails,MastersDegree, OtherCertification, Results
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
@@ -84,4 +84,15 @@ def verification_statuses(request):
 
 def seo_context(request):
     seo_obj = SEOSettings.objects.first()
-    return {"global_seo": seo_obj}
+    page_seo = None
+    resolver_match = getattr(request, "resolver_match", None)
+
+    if resolver_match and resolver_match.url_name:
+        page_seo = PageSEOSettings.objects.filter(
+            page_key=resolver_match.url_name
+        ).first()
+
+    return {
+        "global_seo": seo_obj,
+        "page_seo": page_seo,
+    }

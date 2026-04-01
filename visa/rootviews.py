@@ -33,6 +33,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import permission_required
@@ -3882,7 +3883,7 @@ def manage_procedure(request):
 @root_required
 def manage_seo_settings(request):
     fixed_site_name = "Student Visa BD"
-    seo_settings, _ = SEOSettings.objects.get_or_create(
+    global_seo, _ = SEOSettings.objects.get_or_create(
         id=1,
         defaults={
             "site_name": fixed_site_name,
@@ -3893,9 +3894,32 @@ def manage_seo_settings(request):
         },
     )
 
-    if seo_settings.site_name != fixed_site_name:
-        seo_settings.site_name = fixed_site_name
-        seo_settings.save()
+    if global_seo.site_name != fixed_site_name:
+        global_seo.site_name = fixed_site_name
+        global_seo.save()
+
+    selected_page_key = request.GET.get("page_key", "global")
+    page_choices = [
+        {"value": "global", "label": "Global Defaults"}
+    ] + [
+        {"value": value, "label": label}
+        for value, label in PageSEOSettings.PAGE_CHOICES
+    ]
+
+    page_seo = None
+    seo_settings = global_seo
+
+    if selected_page_key != "global":
+        page_seo, _ = PageSEOSettings.objects.get_or_create(
+            page_key=selected_page_key,
+            defaults={
+                "site_name": fixed_site_name,
+            },
+        )
+        if page_seo.site_name != fixed_site_name:
+            page_seo.site_name = fixed_site_name
+            page_seo.save()
+        seo_settings = page_seo
 
     keyword_pool = MetaKeywordPool.objects.order_by("word")
 
@@ -3912,6 +3936,15 @@ def manage_seo_settings(request):
         return normalized
 
     if request.method == "POST":
+        selected_page_key = request.POST.get("page_key", "global")
+        seo_settings = global_seo
+
+        if selected_page_key != "global":
+            seo_settings, _ = PageSEOSettings.objects.get_or_create(
+                page_key=selected_page_key,
+                defaults={"site_name": fixed_site_name},
+            )
+
         seo_settings.site_name = fixed_site_name
         seo_settings.meta_title = request.POST.get("meta_title", "")
         seo_settings.meta_description = request.POST.get("meta_description", "")
@@ -3940,14 +3973,35 @@ def manage_seo_settings(request):
             seo_settings.og_image = og_image
 
         seo_settings.save()
-        messages.success(request, "SEO Settings updated successfully.")
-        return redirect("manage_seo_settings")
+        selected_page_label = dict(PageSEOSettings.PAGE_CHOICES).get(
+            selected_page_key,
+            "Global Defaults",
+        )
+        if selected_page_key == "global":
+            selected_page_label = "Global Defaults"
+
+        messages.success(
+            request,
+            f"SEO Settings updated successfully for {selected_page_label}.",
+        )
+        return redirect(f"{reverse('manage_seo_settings')}?page_key={selected_page_key}")
 
     return render(
         request,
         "roottemplates/manage_seo.html",
         {
+            "global_seo": global_seo,
             "seo_settings": seo_settings,
+            "selected_page_key": selected_page_key,
+            "selected_page_label": (
+                "Global Defaults"
+                if selected_page_key == "global"
+                else dict(PageSEOSettings.PAGE_CHOICES).get(
+                    selected_page_key,
+                    "Selected Page",
+                )
+            ),
+            "page_choices": page_choices,
             "keyword_pool": keyword_pool,
             "selected_keywords": [
                 keyword.strip()
@@ -3965,5 +4019,22 @@ def manage_seo_settings(request):
                     }
                 )
             ),
+        },
+    )
+
+
+@login_required
+@root_required
+def view_seo_settings(request):
+    global_seo = SEOSettings.objects.first()
+    page_seo_settings = PageSEOSettings.objects.order_by("page_key")
+
+    return render(
+        request,
+        "roottemplates/view_seo.html",
+        {
+            "global_seo": global_seo,
+            "page_seo_settings": page_seo_settings,
+            "page_choice_map": dict(PageSEOSettings.PAGE_CHOICES),
         },
     )

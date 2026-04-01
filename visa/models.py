@@ -1289,3 +1289,77 @@ class SEOSettings(models.Model):
             ]
             self.meta_keywords = ", ".join(dict.fromkeys(normalized_keywords))
         super().save(*args, **kwargs)
+
+
+class PageSEOSettings(models.Model):
+    PAGE_CHOICES = (
+        ("home", "Home"),
+        ("consultant_list", "Consultant List"),
+        ("consaltant_wise_scholarship", "Scholarship - Consultant Wise"),
+        ("country_wise_scholarship", "Scholarship - Country Wise"),
+        ("self_funded_programs", "Scholarship - Self Funded"),
+        ("scholarship_procedure_list", "Scholarship Procedure"),
+        ("offer_letter", "How To Apply - Offer Letter"),
+        ("by_country", "How To Apply - By Country"),
+        ("addresses", "Contact - Address"),
+        ("feedback-home", "Contact - Feedback"),
+        ("maps", "Contact - Location Map"),
+    )
+
+    site_name = models.CharField(max_length=100, default="Student Visa BD")
+    page_key = models.CharField(max_length=100, choices=PAGE_CHOICES, unique=True)
+    meta_title = models.CharField(
+        max_length=60,
+        blank=True,
+        help_text="Page-specific browser tab title",
+    )
+    meta_description = models.TextField(
+        max_length=150,
+        blank=True,
+        help_text="Page-specific SEO description",
+    )
+    meta_keywords = models.TextField(
+        blank=True,
+        help_text="Comma separated keywords",
+    )
+    og_image = models.ImageField(
+        upload_to="seo/og/pages/",
+        null=True,
+        blank=True,
+        help_text="Page-specific social sharing image 1200x630",
+    )
+    google_verification_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Optional page-specific verification ID",
+    )
+    analytics_code = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Optional page-specific analytics override",
+    )
+    asset_version = models.CharField(
+        max_length=10,
+        blank=True,
+        default="",
+        help_text="Optional page-specific asset version",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Page SEO Setting"
+        verbose_name_plural = "Page SEO Settings"
+
+    def __str__(self):
+        return self.get_page_key_display()
+
+    def save(self, *args, **kwargs):
+        if self.meta_keywords:
+            normalized_keywords = [
+                keyword.strip().lower()
+                for keyword in self.meta_keywords.split(",")
+                if keyword.strip()
+            ]
+            self.meta_keywords = ", ".join(dict.fromkeys(normalized_keywords))
+        super().save(*args, **kwargs)

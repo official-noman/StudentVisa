@@ -94,6 +94,7 @@
     }
 
     .seo-admin-page .seo-input,
+    .seo-admin-page .seo-select,
     .seo-admin-page .seo-textarea,
     .seo-admin-page .seo-file {
       width: 100%;
@@ -108,6 +109,7 @@
     }
 
     .seo-admin-page .seo-input:focus,
+    .seo-admin-page .seo-select:focus,
     .seo-admin-page .seo-textarea:focus,
     .seo-admin-page .seo-file:focus {
       border-color: rgba(37, 99, 235, 0.35);
@@ -151,6 +153,24 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
+    }
+
+    .seo-admin-page .seo-page-card {
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .seo-admin-page .seo-page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .seo-admin-page .seo-meta-chip {
@@ -375,7 +395,7 @@
       <div class="seo-eyebrow">Search Optimization</div>
       <h1 class="seo-title">SEO Settings</h1>
       <p class="seo-subtitle">
-        Manage your site-wide meta content, keyword pool, verification codes, social sharing image, and asset versioning from one clean dashboard.
+        Select a page, then manage its SEO title, description, keywords, social image, verification, and tracking behavior without changing the rest of the site.
       </p>
     </div>
 
@@ -388,8 +408,31 @@
       {% endfor %}
     {% endif %}
 
+    <div class="seo-card seo-page-card">
+      <div class="seo-card-body">
+        <div class="row g-4 align-items-end">
+          <div class="col-lg-6">
+            <label class="form-label" for="page_key">Page Name</label>
+            <select id="page_key" class="seo-select">
+              {% for page in page_choices %}
+                <option value="{{ page.value }}" {% if page.value == selected_page_key %}selected{% endif %}>{{ page.label }}</option>
+              {% endfor %}
+            </select>
+            <div class="seo-help">Choose a page from the dropdown to configure page-wise SEO. Unfilled values will automatically use the global defaults.</div>
+          </div>
+          <div class="col-lg-6">
+            <div class="seo-page-badge">
+              <i class="mdi mdi-file-document-outline"></i>
+              Currently Editing: {{ selected_page_label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
+      <input type="hidden" name="page_key" value="{{ selected_page_key }}">
 
       <div class="row g-4">
         <div class="col-xl-8">
@@ -397,20 +440,30 @@
             <div class="seo-card-body">
               <h3 class="seo-card-title">Core SEO Details</h3>
               <p class="seo-card-note">
-                These settings act as your global defaults for browser titles, search previews, keyword targeting, and technical verification.
+                {% if selected_page_key == 'global' %}
+                  These are your global SEO defaults. Any page without its own SEO settings will automatically use these values.
+                {% else %}
+                  These values apply to <strong>{{ selected_page_label }}</strong>. Any field you leave blank will automatically use the global defaults.
+                {% endif %}
               </p>
 
               <div class="row g-4">
                 <div class="col-md-6">
                   <label class="form-label" for="site_name">Site Name</label>
                   <input type="text" id="site_name" name="site_name" class="seo-input" value="Student Visa BD" placeholder="Student Visa BD" readonly>
-                  <div class="seo-help">This value is fixed for the site brand.</div>
+                  <div class="seo-help">This value remains fixed for the site brand.</div>
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label" for="asset_version">Asset Version</label>
-                  <input type="text" id="asset_version" name="asset_version" class="seo-input" value="{{ seo_settings.asset_version|default:'1.0' }}" placeholder="1.0">
-                  <div class="seo-help">Used for cache busting like <strong>?v=1.0</strong>.</div>
+                  <input type="text" id="asset_version" name="asset_version" class="seo-input" value="{{ seo_settings.asset_version|default:'' }}" placeholder="{% if selected_page_key == 'global' %}1.0{% else %}Leave blank to inherit global version{% endif %}">
+                  <div class="seo-help">
+                    {% if selected_page_key == 'global' %}
+                      Used for cache busting like <strong>?v=1.0</strong>.
+                    {% else %}
+                      Optional page override. Leave empty to use the global asset version.
+                    {% endif %}
+                  </div>
                 </div>
 
                 <div class="col-12">
@@ -475,7 +528,7 @@
               <div>
                 <h3 class="seo-card-title">OG Image</h3>
                 <p class="seo-card-note">
-                  This image appears when your pages are shared on Facebook, LinkedIn, and other social platforms.
+                  This image appears when your selected page is shared on Facebook, LinkedIn, and other social platforms.
                 </p>
               </div>
 
@@ -487,6 +540,9 @@
               <div class="og-frame">
                 {% if seo_settings.og_image %}
                   <img id="ogPreviewImage" src="{{ seo_settings.og_image.url }}" alt="OG Image Preview">
+                  <div id="ogEmptyState" class="og-empty" style="display:none;"></div>
+                {% elif global_seo and global_seo.og_image and selected_page_key != 'global' %}
+                  <img id="ogPreviewImage" src="{{ global_seo.og_image.url }}" alt="Inherited OG Image Preview">
                   <div id="ogEmptyState" class="og-empty" style="display:none;"></div>
                 {% else %}
                   <div class="og-empty" id="ogEmptyState">
@@ -521,6 +577,18 @@
 
 {% block custom_js %}
 <script>
+  (function () {
+    const pageSelector = document.getElementById("page_key");
+    if (!pageSelector) return;
+
+    pageSelector.addEventListener("change", function () {
+      const selectedValue = pageSelector.value || "global";
+      const targetUrl = new URL(window.location.href);
+      targetUrl.searchParams.set("page_key", selectedValue);
+      window.location.href = targetUrl.toString();
+    });
+  })();
+
   (function () {
     const fileInput = document.getElementById("og_image");
     const previewImage = document.getElementById("ogPreviewImage");

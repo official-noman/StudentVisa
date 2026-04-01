@@ -363,11 +363,30 @@
 
     <li class="nav-item">
       {% url 'manage_seo_settings' as manage_seo_settings_url %}
-      <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' or request.path == '/root/seo-settings/' %}active-page{% endif %}"
-         href="{% if manage_seo_settings_url %}{{ manage_seo_settings_url }}{% else %}/root/seo-settings/{% endif %}">
+      {% url 'view_seo_settings' as view_seo_settings_url %}
+      <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' or request.resolver_match.url_name == 'view_seo_settings' or request.path == '/root/seo-settings/' or request.path == '/root/view-seo/' %}active-page{% endif %}"
+         data-bs-toggle="collapse"
+         href="#sb-seo-settings"
+         role="button"
+         aria-expanded="{% if request.resolver_match.url_name == 'manage_seo_settings' or request.resolver_match.url_name == 'view_seo_settings' or request.path == '/root/seo-settings/' or request.path == '/root/view-seo/' %}true{% else %}false{% endif %}"
+         aria-controls="sb-seo-settings">
         <i class="mdi mdi-google-analytics menu-icon"></i>
         <span class="menu-title">SEO Settings</span>
+        <i class="menu-arrow"></i>
       </a>
+      <div class="collapse {% if request.resolver_match.url_name == 'manage_seo_settings' or request.resolver_match.url_name == 'view_seo_settings' or request.path == '/root/seo-settings/' or request.path == '/root/view-seo/' %}show{% endif %}"
+           id="sb-seo-settings">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'manage_seo_settings' or request.path == '/root/seo-settings/' %}active-page{% endif %}"
+               href="{% if manage_seo_settings_url %}{{ manage_seo_settings_url }}{% else %}/root/seo-settings/{% endif %}">Manage SEO</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'view_seo_settings' or request.path == '/root/view-seo/' %}active-page{% endif %}"
+               href="{% if view_seo_settings_url %}{{ view_seo_settings_url }}{% else %}/root/view-seo/{% endif %}">View SEO</a>
+          </li>
+        </ul>
+      </div>
     </li>
 
     <!-- How to Apply -->

@@ -1,0 +1,204 @@
+{% extends "roottemplates/base.html" %}
+
+{% block title %}View SEO{% endblock %}
+
+{% block custom_css %}
+  {% include "roottemplates/partials/_page_theme.html" %}
+  <style>
+    .seo-view-page {
+      width: 100%;
+      padding: 24px 20px 40px;
+      box-sizing: border-box;
+    }
+    .seo-view-shell {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+    .seo-view-hero {
+      margin-bottom: 24px;
+    }
+    .seo-view-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+    }
+    .seo-view-eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #2563eb;
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.10);
+    }
+    .seo-view-title {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.15;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+    }
+    .seo-view-subtitle {
+      margin: 0;
+      max-width: 880px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+    .seo-view-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 22px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+    .seo-view-card-body {
+      padding: 24px;
+    }
+    .seo-view-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .seo-record {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding: 18px;
+    }
+    .seo-record-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .seo-record-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .seo-record-list {
+      display: grid;
+      gap: 12px;
+    }
+    .seo-record-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .seo-record-item span {
+      display: block;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+    .seo-record-item a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .seo-record-empty {
+      color: #94a3b8;
+      font-style: italic;
+    }
+  </style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="content-wrapper seo-view-page">
+  <div class="seo-view-shell">
+    <div class="seo-view-hero">
+      <div class="seo-view-eyebrow">Search Overview</div>
+      <h1 class="seo-view-title">View SEO</h1>
+      <p class="seo-view-subtitle">
+        Review the active global defaults and all page-wise SEO entries from one screen before updating or handing the project over.
+      </p>
+    </div>
+
+    <div class="seo-view-card">
+      <div class="seo-view-card-body">
+        <div class="seo-view-grid">
+          <div class="seo-record">
+            <div class="seo-record-badge">Global Defaults</div>
+            <h3 class="seo-record-title">Student Visa BD</h3>
+            <div class="seo-record-list">
+              <div class="seo-record-item">
+                <strong>Meta Title</strong>
+                <span>{{ global_seo.meta_title|default:"Not set" }}</span>
+              </div>
+              <div class="seo-record-item">
+                <strong>Meta Description</strong>
+                <span>{{ global_seo.meta_description|default:"Not set" }}</span>
+              </div>
+              <div class="seo-record-item">
+                <strong>Meta Keywords</strong>
+                <span>{{ global_seo.meta_keywords|default:"Not set" }}</span>
+              </div>
+              <div class="seo-record-item">
+                <strong>Asset Version</strong>
+                <span>{{ global_seo.asset_version|default:"1.0" }}</span>
+              </div>
+            </div>
+          </div>
+
+          {% for page_seo in page_seo_settings %}
+            <div class="seo-record">
+              <div class="seo-record-badge">Page SEO</div>
+              <h3 class="seo-record-title">{{ page_seo.get_page_key_display }}</h3>
+              <div class="seo-record-list">
+                <div class="seo-record-item">
+                  <strong>Meta Title</strong>
+                  <span>{% if page_seo.meta_title %}{{ page_seo.meta_title }}{% else %}<span class="seo-record-empty">Inheriting global default</span>{% endif %}</span>
+                </div>
+                <div class="seo-record-item">
+                  <strong>Meta Description</strong>
+                  <span>{% if page_seo.meta_description %}{{ page_seo.meta_description }}{% else %}<span class="seo-record-empty">Inheriting global default</span>{% endif %}</span>
+                </div>
+                <div class="seo-record-item">
+                  <strong>Meta Keywords</strong>
+                  <span>{% if page_seo.meta_keywords %}{{ page_seo.meta_keywords }}{% else %}<span class="seo-record-empty">Inheriting global default</span>{% endif %}</span>
+                </div>
+                <div class="seo-record-item">
+                  <strong>OG Image</strong>
+                  <span>
+                    {% if page_seo.og_image %}
+                      <a href="{{ page_seo.og_image.url }}" target="_blank" rel="noopener noreferrer">View uploaded image</a>
+                    {% else %}
+                      <span class="seo-record-empty">Inheriting global default</span>
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="seo-record">
+              <div class="seo-record-badge">Page SEO</div>
+              <h3 class="seo-record-title">No page-wise SEO added yet</h3>
+              <div class="seo-record-item">
+                <span class="seo-record-empty">Use SEO Settings to create page-wise SEO entries from the page selector.</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

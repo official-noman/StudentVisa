@@ -7,10 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
-    {% firstof global_seo.asset_version "1.0" as asset_version %}
-    {% firstof meta_title page_name global_seo.meta_title global_seo.site_name "Student Visa BD" as resolved_title %}
-    {% firstof meta_description page_description global_seo.meta_description "" as resolved_description %}
-    {% firstof meta_keywords page_keywords global_seo.meta_keywords "" as resolved_keywords %}
+    {% firstof page_seo.asset_version global_seo.asset_version "1.0" as asset_version %}
+    {% firstof meta_title page_name page_seo.meta_title global_seo.meta_title global_seo.site_name "Student Visa BD" as resolved_title %}
+    {% firstof meta_description page_description page_seo.meta_description global_seo.meta_description "" as resolved_description %}
+    {% firstof meta_keywords page_keywords page_seo.meta_keywords global_seo.meta_keywords "" as resolved_keywords %}
 
     <title>{{ resolved_title }}</title>
     <meta name="description" content="{{ resolved_description }}">
@@ -18,10 +18,14 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ resolved_title }}">
     <meta property="og:description" content="{{ resolved_description }}">
-    {% if global_seo and global_seo.og_image %}
+    {% if page_seo and page_seo.og_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ page_seo.og_image.url }}">
+    {% elif global_seo and global_seo.og_image %}
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ global_seo.og_image.url }}">
     {% endif %}
-    {% if global_seo and global_seo.google_verification_id %}
+    {% if page_seo and page_seo.google_verification_id %}
+    <meta name="google-site-verification" content="{{ page_seo.google_verification_id }}">
+    {% elif global_seo and global_seo.google_verification_id %}
     <meta name="google-site-verification" content="{{ global_seo.google_verification_id }}">
     {% endif %}
   
@@ -125,7 +129,17 @@
     .main-header .navigation li.dropdown {
         position: relative !important;
     }
+    .main-header .header-upper,
+    .main-header .header-upper .container,
+    .main-header .header-upper .outer-box,
+    .main-header .menu-area,
+    .main-header .main-menu,
+    .main-header .navbar-collapse,
+    .main-header .navigation {
+        overflow: visible !important;
+    }
     .main-header .navigation li.dropdown > ul {
+        top: 100% !important;
         right: 0 !important;
         left: auto !important;
         min-width: 200px;
@@ -134,6 +148,7 @@
         border: 1px solid rgba(15, 23, 42, 0.05) !important;
         border-radius: 8px !important;
         padding: 10px 0 !important;
+        z-index: 9999 !important;
     }
 
     .main-container-box {
@@ -195,7 +210,9 @@
     <link href="{% static 'assets/css/responsive.css' %}?v={{ asset_version }}" rel="stylesheet">
     <link href="{% static 'assets/css/ad_columns.css' %}?v={{ asset_version }}" rel="stylesheet">
     {% block custom_css %}{% endblock custom_css %}
-    {% if global_seo and global_seo.analytics_code %}
+    {% if page_seo and page_seo.analytics_code %}
+      {{ page_seo.analytics_code|safe }}
+    {% elif global_seo and global_seo.analytics_code %}
       {{ global_seo.analytics_code|safe }}
     {% endif %}
 </head>
