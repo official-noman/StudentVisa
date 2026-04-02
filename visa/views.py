@@ -810,7 +810,9 @@ def redirect_to_otp(request):
                                         return JsonResponse(
                                             {
                                                 "success": True,
-                                                "redirect_url": "/otp_verification_signup/",
+                                                "redirect_url": reverse(
+                                                    "otp_verification_signup"
+                                                ),
                                                 "expiration_time": expiration_time,
                                             }
                                         )
@@ -840,7 +842,9 @@ def redirect_to_otp(request):
                                             return JsonResponse(
                                                 {
                                                     "success": True,
-                                                    "redirect_url": "/otp_verification_signup/",
+                                                    "redirect_url": reverse(
+                                                        "otp_verification_signup"
+                                                    ),
                                                     "expiration_time": expiration_time,
                                                 }
                                             )
@@ -973,7 +977,9 @@ def redirect_to_otp(request):
                                 return JsonResponse(
                                     {
                                         "success": True,
-                                        "redirect_url": "/otp_verification_signup_student/",
+                                        "redirect_url": reverse(
+                                            "otp_verification_signup_student"
+                                        ),
                                         "expiration_time": expiration_time,
                                     }
                                 )
@@ -1212,13 +1218,13 @@ def change_number(request):
                     existing_user = CustomUser.objects.filter(
                         email=email, user_type=2
                     ).first()
-                    redirect_url = "/otp_verification_signup_student/"
+                    redirect_url = reverse("otp_verification_signup_student")
                 else:
                     existing_profile = Users.objects.filter(email=email).first()
                     existing_user = CustomUser.objects.filter(
                         email=email, user_type=1
                     ).first()
-                    redirect_url = "/otp_verification_signup/"
+                    redirect_url = reverse("otp_verification_signup")
 
                 if existing_profile is None and existing_user is None:
                     phone_for_limit = temp_user_data.get("phone")
@@ -1324,7 +1330,9 @@ def change_number(request):
                     return JsonResponse(
                         {
                             "success": True,
-                            "redirect_url": "/otp_verification_signup_student/",
+                            "redirect_url": reverse(
+                                "otp_verification_signup_student"
+                            ),
                             "expiration_time": expiration_time,
                             "changed_phone": changed_phone,
                             "changed_contact": changed_phone,
@@ -1398,7 +1406,7 @@ def forgot_password_phone_or_email(request):
                     OTPRequest.objects.create(phone_number=limit_phone)
                     return JsonResponse({
                         "success": True,
-                        "redirect_url": "/forgot_password_otp_verification/",
+                        "redirect_url": reverse("forgot_password_otp_verification"),
                         "expiration_time": expiration_time
                     })
                 return JsonResponse(
@@ -1454,7 +1462,7 @@ def forgot_password_phone_or_email(request):
                 OTPRequest.objects.create(phone_number=limit_phone)
                 return JsonResponse({
                     "success": True,
-                    "redirect_url": "/forgot_password_otp_verification/",
+                    "redirect_url": reverse("forgot_password_otp_verification"),
                     "expiration_time": expiration_time
                 })
             else:
@@ -1537,7 +1545,7 @@ def forgot_password_otp_verification(request):
 
                     response_data = {
                         "success": True,
-                        "redirect_url": "/forgot_password_otp_verification/",
+                        "redirect_url": reverse("forgot_password_otp_verification"),
                         "expiration_time": expiration_time_resend,  # Send expiration time to client
                     }
 
@@ -1553,7 +1561,10 @@ def forgot_password_otp_verification(request):
 
         if entered_otp == stored_otp:
             return JsonResponse(
-                {"success": True, "redirect_url": "/change_forgotten_password/"}
+                {
+                    "success": True,
+                    "redirect_url": reverse("change_forgotten_password"),
+                }
             )
 
         else:
@@ -1672,7 +1683,9 @@ def forgot_password_phone_or_email_student(request):
 
                         response_data = {
                             "success": True,
-                            "redirect_url": "/forgot_password_otp_verification_student/",
+                            "redirect_url": reverse(
+                                "forgot_password_otp_verification_student"
+                            ),
                             "expiration_time": expiration_time,  # Send expiration time to client
                         }
 
@@ -1724,7 +1737,9 @@ def forgot_password_phone_or_email_student(request):
 
                 response_data = {
                     "success": True,
-                    "redirect_url": "/forgot_password_otp_verification_student/",
+                    "redirect_url": reverse(
+                        "forgot_password_otp_verification_student"
+                    ),
                     "expiration_time": expiration_time,
                 }
 
@@ -1816,7 +1831,9 @@ def forgot_password_otp_verification_student(request):
 
                     response_data = {
                         "success": True,
-                        "redirect_url": "/forgot_password_otp_verification_student/",
+                        "redirect_url": reverse(
+                            "forgot_password_otp_verification_student"
+                        ),
                         "expiration_time": expiration_time_resend,  # Send expiration time to client
                     }
 
@@ -1832,7 +1849,10 @@ def forgot_password_otp_verification_student(request):
 
         if entered_otp == stored_otp:
             return JsonResponse(
-                {"success": True, "redirect_url": "/change_forgotten_password_student/"}
+                {
+                    "success": True,
+                    "redirect_url": reverse("change_forgotten_password_student"),
+                }
             )
 
         else:

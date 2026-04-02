@@ -684,7 +684,7 @@ $(document).ready(function() {
 
     // Resend OTP Logic
     $resendBtn.click(function() {
-        fetch('/otp_verification_signup/?resend=true')
+        fetch("{% url 'otp_verification_signup' %}?resend=true")
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -701,7 +701,7 @@ $(document).ready(function() {
     // Form Submit AJAX
     $('#otp-form').on('submit', function(e) {
         e.preventDefault();
-        fetch('/save_user_signup/', {
+        fetch("{% url 'save_user_signup' %}", {
             method: 'POST',
             body: new FormData(this),
             headers: { 'x-CSRFToken': '{{csrf_token}}' }
@@ -709,7 +709,7 @@ $(document).ready(function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '/login_user/?reg=success';
+                window.location.href = "{% url 'login_user' %}?reg=success";
             } else {
                 $('#alert-box').text(data.error || "Verification Failed").fadeIn();
             }

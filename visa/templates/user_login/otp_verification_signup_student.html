@@ -795,7 +795,7 @@
             clearError();
             var formData = new FormData(this);
 
-            fetch('/save_student_signup/', {
+            fetch("{% url 'save_student_signup' %}", {
                 method: 'POST',
                 body: formData,
                 headers: { 'x-CSRFToken': '{{csrf_token}}' },
@@ -805,7 +805,7 @@
                 if (data.success) {
                     $('#popup-container').addClass('show');
                     setTimeout(function() {
-                        window.location.href = '/login_student/';
+                        window.location.href = "{% url 'login_student' %}";
                     }, 1000);
                 } else {
                     showError(data.error || data.errors);
@@ -821,7 +821,7 @@
         $('#resend-otp').click(function(event) {
             event.preventDefault();
 
-            fetch('/otp_verification_signup_student/?resend=true', {
+            fetch("{% url 'otp_verification_signup_student' %}?resend=true", {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             })

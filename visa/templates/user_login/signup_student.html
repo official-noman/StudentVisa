@@ -936,7 +936,7 @@
             // ── District → Thana ──
             $('#district-name').on('change', function(){
                 var selectedDistrictId = $(this).val();
-                fetch('/get_thana/?district_id=' + selectedDistrictId, { method: 'GET' })
+                fetch("{% url 'get_thana' %}?district_id=" + selectedDistrictId, { method: 'GET' })
                 .then(response => { if (response.ok) return response.json(); throw new Error('Response not OK'); })
                 .then(data => {
                     var thanaDropdown = $('#thana-name');
@@ -966,7 +966,7 @@
                 formData.append('otp_preference', otpPreference);
                 formData.append('countries', JSON.stringify(selectedCountries));
 
-                fetch('/redirect_to_otp/', {
+                fetch("{% url 'redirect_to_otp' %}", {
                     method: 'POST',
                     body: formData,
                     headers: { 'x-CSRFToken': '{{csrf_token}}' },

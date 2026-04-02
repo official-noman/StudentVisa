@@ -899,7 +899,7 @@
         // ── District → Thana ──
         $('#district-name').on('change', function(){
             var selectedDistrictName = $(this).val();
-            fetch('/get-thana/?district_id=' + selectedDistrictName, { method: 'GET' })
+            fetch("{% url 'get_thana' %}?district_id=" + selectedDistrictName, { method: 'GET' })
             .then(response => {
                 if (response.ok) return response.json();
                 throw new Error('Response not OK');
@@ -929,7 +929,8 @@
 
             formData.append('signup_type', signupType);
             formData.append('otp_preference', otpPreference);
-            fetch('/redirect_to_otp/', {
+            // Original endpoint kept for reference after URL hyphenation changes.
+            fetch("{% url 'redirect_to_otp' %}", {
                 method: 'POST',
                 body: formData,
                 headers: { 'x-CSRFToken': '{{csrf_token}}' },
