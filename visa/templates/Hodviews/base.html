@@ -29,6 +29,61 @@
     {% endif %}
 
     <style>
+      :root {
+        --layout-bg: #F4F7FE;
+        --layout-navbar-height: 92px;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body.with-welcome-text {
+        min-height: 100vh;
+        background: var(--layout-bg);
+        overflow-x: hidden;
+      }
+
+      .container-scroller {
+        min-height: 100vh;
+        background: var(--layout-bg);
+      }
+
+      .page-body-wrapper {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        min-height: 100vh;
+        padding-top: var(--layout-navbar-height);
+        background: var(--layout-bg);
+      }
+
+      .main-panel {
+        min-width: 0;
+        width: 100%;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--layout-bg);
+      }
+
+      .content-wrapper {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+      }
+
+      @media (max-width: 991.98px) {
+        .page-body-wrapper {
+          padding-top: var(--layout-navbar-height);
+        }
+
+        .main-panel {
+          width: 100%;
+        }
+      }
+
       .navbar .navbar-brand-wrapper .navbar-brand img {
         max-width: 100%;
         height: 96px;
@@ -41,25 +96,22 @@
 </head>
 
 <body class="with-welcome-text">
-
-    {% include "Hodviews/partials/_navbar.html" %}
-
+    <div class="container-scroller">
+        {% include "Hodviews/partials/_navbar.html" %}
 
         {% include "Hodviews/partials/_settings-panel.html" %}
 
         {% include "Hodviews/partials/_sidebar.html" %}
 
+        <div class="main-panel">
+            {% block content %}
 
+            {% endblock content %}
 
-
-    {% block content %}
-
-    {% endblock content %}
-
-
-
-    <!-- container-scroller -->
-{% include "Hodviews/partials/_footer.html" %}
+            {% include "Hodviews/partials/_footer.html" %}
+        </div>
+    </div>
+</div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var greetingText = document.getElementById("greeting-text");

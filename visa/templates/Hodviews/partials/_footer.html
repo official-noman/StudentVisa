@@ -1,7 +1,54 @@
+<style>
+  .footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 1rem 1.75rem;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    background: #ffffff;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    flex-wrap: wrap;
+  }
+
+  .footer-meta,
+  .footer-copy {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .footer-meta a {
+    color: #4e73df;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .footer-meta a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 767.98px) {
+    .footer {
+      padding: 0.9rem 1rem;
+    }
+
+    .footer-inner {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>
+
 <footer class="footer">
-  <div class="d-sm-flex justify-content-center justify-content-sm-between">
-    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block"> <a
-        href="https://iglweb.com/web//" target="_blank">IGL WEB LTd.</a></span>
-    <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">Copyright © 2024. All rights reserved.</span>
+  <div class="footer-inner">
+    <span class="footer-meta">
+      <a href="https://iglweb.com/web//" target="_blank" rel="noopener noreferrer">IGL WEB Ltd.</a>
+    </span>
+    <span class="footer-copy">Copyright &copy; {% now "Y" %}. All rights reserved.</span>
   </div>
 </footer>
