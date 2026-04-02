@@ -182,6 +182,8 @@
                                             <figure class="image">
                                                 {% if random_image %}
                                                     <img src="{{ random_image.image.url }}" alt="Consultant Image">
+                                                {% elif customize and customize.image %}
+                                                    <img src="{{ customize.image.url }}" alt="{{ consultant.company_name }}">
                                                 {% else %}
                                                     <!-- Fallback image -->
                                                     <img src="{% static 'assets/images/resource/about-1.jpg' %}" alt="Fallback Image">
@@ -193,7 +195,7 @@
                                                         {% if consultant_details.consultant_logo %}
                                                             <img src="{{ consultant_details.consultant_logo.url }}" class="consultant-logo-img" alt="">
                                                         {% else %}
-                                                            <img src="{% static 'assets/images/default-logo.png' %}" class="consultant-logo-img" alt="">
+                                                            <img src="{% static 'assets/images/icon.png' %}" class="consultant-logo-img" alt="">
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -216,6 +218,11 @@
                                             {% comment %} <div class="bold-text">
                                                 <p>{{ consultant_details.consultant_description|safe }}</p>
                                             </div> {% endcomment %}
+                                            {% if consultant_details.consultant_bio %}
+                                            <div class="text">
+                                                <p>{{ consultant_details.consultant_bio|safe }}</p>
+                                            </div>
+                                            {% endif %}
                                             <div class="text">
                                                 <p>{{ consultant_details.consultant_description|truncatewords:40|safe }}
                                                     {% if consultant_details.consultant_description|wordcount > 40 %}...{% endif %}

@@ -219,13 +219,16 @@ def image_upload_path(instance, filename):
     folder = "customizes_images"  # Example folder name
     original_name, ext = os.path.splitext(filename)
     try:
-        # Fetch the consultant
-        consultant = Users.objects.get(id=instance.consultant_id)
+        consultant = Users.objects.filter(
+            consultant_user_id=instance.consultant_id
+        ).first()
+        if consultant is None:
+            consultant = Users.objects.get(id=instance.consultant_id)
         company_name = consultant.company_name
     except Users.DoesNotExist:
         # Handle case where consultant doesn't exist
         company_name = "unknown_company"
-    new_filename = f"{instance.consultant_id}-{slugify(company_name)}-home-{ext}"
+    new_filename = f"{instance.consultant_id}-{slugify(company_name)}-home{ext}"
     return os.path.join(folder, new_filename)
 
 

@@ -1,76 +1,555 @@
 {% extends "Hodviews/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap');
+
+  :root {
+    --ci-bg: #F4F7FE;
+    --ci-surface: #FFFFFF;
+    --ci-surface-soft: #F8FAFC;
+    --ci-border: rgba(15, 23, 42, 0.08);
+    --ci-accent: #4E73DF;
+    --ci-accent-soft: rgba(78, 115, 223, 0.10);
+    --ci-text: #1E293B;
+    --ci-text-soft: #64748B;
+    --ci-success-bg: #ECFDF3;
+    --ci-success-text: #047857;
+    --ci-danger-bg: #FEF2F2;
+    --ci-danger-text: #B91C1C;
+    --ci-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --ci-radius: 24px;
+  }
+
+  .consultant-intro-page {
+    background: var(--ci-bg) !important;
+    color: var(--ci-text);
+    font-family: 'DM Sans', sans-serif;
+    padding: 28px !important;
+  }
+
+  .ci-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.9fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .ci-card,
+  .ci-side-card {
+    background: var(--ci-surface);
+    border: 1px solid var(--ci-border);
+    border-radius: var(--ci-radius);
+    box-shadow: var(--ci-shadow);
+  }
+
+  .ci-card {
+    overflow: hidden;
+  }
+
+  .ci-card-head {
+    padding: 26px 28px 18px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+    background: linear-gradient(180deg, rgba(78, 115, 223, 0.05) 0%, rgba(78, 115, 223, 0) 100%);
+  }
+
+  .ci-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--ci-accent-soft);
+    color: var(--ci-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .ci-title {
+    margin: 16px 0 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    color: var(--ci-text);
+  }
+
+  .ci-subtitle {
+    margin: 0;
+    max-width: 720px;
+    color: var(--ci-text-soft);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .ci-card-body {
+    padding: 28px;
+  }
+
+  .ci-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 18px;
+    padding: 15px 18px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .ci-alert i {
+    font-size: 16px;
+    margin-top: 2px;
+  }
+
+  .ci-alert-success {
+    background: var(--ci-success-bg);
+    color: var(--ci-success-text);
+  }
+
+  .ci-alert-danger {
+    background: var(--ci-danger-bg);
+    color: var(--ci-danger-text);
+  }
+
+  .ci-form-grid {
+    display: grid;
+    gap: 22px;
+  }
+
+  .ci-field {
+    display: grid;
+    gap: 10px;
+  }
+
+  .ci-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .ci-label {
+    margin: 0;
+    color: var(--ci-text);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .ci-meta {
+    color: var(--ci-text-soft);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ci-input,
+  .ci-file {
+    width: 100%;
+    min-height: 54px;
+    border: 1px solid var(--ci-border);
+    border-radius: 16px;
+    background: var(--ci-surface-soft);
+    padding: 0 16px;
+    color: var(--ci-text);
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .ci-input:focus,
+  .ci-file:focus {
+    border-color: rgba(78, 115, 223, 0.55);
+    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.10);
+    background: #fff;
+  }
+
+  .ci-upload-box {
+    border: 1px dashed rgba(78, 115, 223, 0.28);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(78, 115, 223, 0.05) 0%, rgba(255,255,255,0.94) 100%);
+    padding: 18px;
+  }
+
+  .ci-upload-copy {
+    margin-bottom: 12px;
+  }
+
+  .ci-upload-copy h4 {
+    margin: 0 0 4px;
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ci-text);
+  }
+
+  .ci-upload-copy p {
+    margin: 0;
+    color: var(--ci-text-soft);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .ci-preview {
+    margin-top: 16px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .ci-preview-label {
+    color: var(--ci-text-soft);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ci-preview img {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 18px;
+    border: 1px solid var(--ci-border);
+    object-fit: cover;
+    background: #fff;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .ci-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 6px;
+  }
+
+  .ci-actions-copy {
+    color: var(--ci-text-soft);
+    font-size: 13px;
+    line-height: 1.65;
+    max-width: 540px;
+  }
+
+  .ci-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 170px;
+    height: 52px;
+    border: none;
+    border-radius: 16px;
+    padding: 0 24px;
+    background: linear-gradient(135deg, #5B7CFA 0%, #365FD8 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 14px 30px rgba(54, 95, 216, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+
+  .ci-submit:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+    box-shadow: 0 18px 36px rgba(54, 95, 216, 0.28);
+  }
+
+  .ci-side-card {
+    padding: 24px;
+    position: sticky;
+    top: 118px;
+  }
+
+  .ci-side-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ci-accent-soft);
+    color: var(--ci-accent);
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .ci-side-title {
+    margin: 0 0 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--ci-text);
+  }
+
+  .ci-side-copy {
+    margin: 0 0 18px;
+    color: var(--ci-text-soft);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .ci-points {
+    display: grid;
+    gap: 12px;
+  }
+
+  .ci-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--ci-surface-soft);
+    border: 1px solid rgba(15, 23, 42, 0.05);
+  }
+
+  .ci-point-dot {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.10);
+    color: #10B981;
+    font-size: 14px;
+  }
+
+  .ci-point strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ci-text);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .ci-point span {
+    color: var(--ci-text-soft);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .cke_chrome {
+    border: 1px solid var(--ci-border) !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+
+  .cke_top {
+    background: #fff !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  .cke_bottom {
+    background: #fff !important;
+    border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  .cke_contents {
+    background: #fff !important;
+  }
+
+  @media (max-width: 1199.98px) {
+    .ci-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .ci-side-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .consultant-intro-page {
+      padding: 20px 16px !important;
+    }
+
+    .ci-card-head,
+    .ci-card-body,
+    .ci-side-card {
+      padding: 20px;
+    }
+
+    .ci-title {
+      font-size: 24px;
+    }
+
+    .ci-actions {
+      align-items: stretch;
+    }
+
+    .ci-submit {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock custom_css %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">Add Consultant Intro</h4>
+<div class="content-wrapper consultant-intro-page">
+  <div class="ci-shell">
+    <div class="ci-card">
+      <div class="ci-card-head">
+        <span class="ci-eyebrow">
+          <i class="mdi mdi-palette-outline"></i>
+          Home Design
+        </span>
+        <h1 class="ci-title">Shape Your Consultant Introduction</h1>
+        <p class="ci-subtitle">
+          Keep your agency profile polished with a strong headline, a clear consultant bio,
+          and a homepage description that builds instant trust with students.
+        </p>
+      </div>
 
-            {% if success_message %}
-            <div class="alert alert-success" role="alert">
-              {{ success_message }}
+      <div class="ci-card-body">
+        {% if success_message %}
+          <div class="ci-alert ci-alert-success" role="alert">
+            <i class="mdi mdi-check-circle-outline"></i>
+            <span>{{ success_message }}</span>
+          </div>
+        {% endif %}
+
+        {% if error_message %}
+          <div class="ci-alert ci-alert-danger" role="alert">
+            <i class="mdi mdi-alert-circle-outline"></i>
+            <span>{{ error_message }}</span>
+          </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'consultant_intro' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="ci-form-grid">
+            <div class="ci-field">
+              <div class="ci-label-row">
+                <label for="consultant_intro" class="ci-label">Consultant Intro</label>
+                <span class="ci-meta">Short headline for key information</span>
+              </div>
+              <input
+                type="text"
+                id="consultant_intro"
+                class="ci-input"
+                name="consultant_intro"
+                required
+                placeholder="Example: Trusted UK, Canada & Australia student visa consultant"
+                value="{{ consultant.consultant_intro|default:'' }}"
+              >
             </div>
-            {% endif %}
 
-            {% if error_message %}
-            <div class="alert alert-danger" role="alert">
-              {{ error_message }}
+            <div class="ci-field">
+              <div class="ci-label-row">
+                <label for="consultant_bio" class="ci-label">Consultant Info</label>
+                <span class="ci-meta">Overview about you or your agency</span>
+              </div>
+              <textarea id="consultant_bio" name="consultant_bio" required>{{ consultant.consultant_bio|default:'' }}</textarea>
             </div>
-            {% endif %}
 
-            <form method="post" action="{% url 'consultant_intro' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-
-              <div class="form-group">
-                
-               
-                <label for="consultant_intro">Consultant Intro (Information):</label>
-                <input type="text" id="consultant_intro" class="form-control"  name="consultant_intro" required value="{{ consultant.consultant_intro|default:'' }}">
+            <div class="ci-field">
+              <div class="ci-label-row">
+                <label for="consultant_description" class="ci-label">Consultant Description</label>
+                <span class="ci-meta">Homepage content that visitors will read first</span>
               </div>
-              <div class="form-group">
-                <label for="consultant_bio">Consultant Info(Information):</label>
-                <!-- Add CKEditor textarea -->
-                <textarea id="consultant_bio" name="consultant_bio" required>{{ consultant.consultant_bio|default:'' }}</textarea>
+              <textarea id="consultant_description" name="consultant_description" required>{{ consultant.consultant_description|default:'' }}</textarea>
+            </div>
+
+            <div class="ci-field">
+              <div class="ci-label-row">
+                <label for="image" class="ci-label">Homepage Image</label>
+                <span class="ci-meta">Upload a clean, high-quality visual</span>
               </div>
 
-   
+              <div class="ci-upload-box">
+                <div class="ci-upload-copy">
+                  <h4>Update visual identity</h4>
+                  <p>Choose a strong cover image that matches your brand and makes your homepage feel more premium.</p>
+                </div>
 
-              <div class="form-group">
-                <label for="consultant_description">Consultant Description(Home):</label>
-                <!-- Add CKEditor textarea -->
-                <textarea id="consultant_description" name="consultant_description" required>{{ consultant.consultant_description|default:'' }}</textarea>
-              </div>
+                <input type="file" id="image" name="image" class="ci-file">
 
-              <div class="form-group">
-                <label for="image">Upload Image:</label>
-                <input type="file" id="image" name="image">
-            
                 {% if customize and customize.image %}
-                    <img src="{{ customize.image.url }}" alt="Uploaded Image" style="max-width: 200px; margin-top: 10px;">
-            
+                  <div class="ci-preview">
+                    <span class="ci-preview-label">Current image</span>
+                    <img src="{{ customize.image.url }}" alt="Current consultant homepage visual">
+                  </div>
                 {% endif %}
+              </div>
             </div>
 
-              <button type="submit" class="btn btn-primary">Update</button>
-            </form>
+            <div class="ci-actions">
+              <p class="ci-actions-copy">
+                Save changes after reviewing your content. These details help students understand your agency faster and improve homepage trust.
+              </p>
+              <button type="submit" class="ci-submit">
+                <i class="mdi mdi-content-save-outline"></i>
+                Update Intro
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
-            <!-- Include CKEditor library -->
-            <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-            <script>
-              {% comment %} CKEDITOR.replace('consultant_bio'); {% endcomment %}
-              <script>CKEDITOR.replace('consultant_bio', { versionCheck: false });</script>
-         
-              {% comment %} CKEDITOR.replace('consultant_description'); {% endcomment %}
-              <script>CKEDITOR.replace('consultant_description', { versionCheck: false });</script>
-            </script>
+    <aside class="ci-side-card">
+      <div class="ci-side-icon">
+        <i class="mdi mdi-star-four-points-outline"></i>
+      </div>
+      <h2 class="ci-side-title">Make It Feel Premium</h2>
+      <p class="ci-side-copy">
+        A refined intro section improves first impressions and helps your public consultant profile look more credible and conversion-ready.
+      </p>
+
+      <div class="ci-points">
+        <div class="ci-point">
+          <span class="ci-point-dot"><i class="mdi mdi-check"></i></span>
+          <div>
+            <strong>Clear headline</strong>
+            <span>Use a short, benefit-driven intro so visitors understand your focus instantly.</span>
+          </div>
+        </div>
+        <div class="ci-point">
+          <span class="ci-point-dot"><i class="mdi mdi-check"></i></span>
+          <div>
+            <strong>Trust-building description</strong>
+            <span>Highlight service strengths, destination expertise, and the support experience you offer.</span>
+          </div>
+        </div>
+        <div class="ci-point">
+          <span class="ci-point-dot"><i class="mdi mdi-check"></i></span>
+          <div>
+            <strong>Strong visual</strong>
+            <span>Keep the image clean, relevant, and aligned with your agency brand style.</span>
           </div>
         </div>
       </div>
-    </div>
-  
-    </div>
+    </aside>
   </div>
+</div>
 {% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+  if (typeof CKEDITOR !== 'undefined') {
+    CKEDITOR.replace('consultant_bio', {
+      versionCheck: false,
+      height: 190
+    });
+
+    CKEDITOR.replace('consultant_description', {
+      versionCheck: false,
+      height: 260
+    });
+  }
+</script>
+{% endblock custom_js %}

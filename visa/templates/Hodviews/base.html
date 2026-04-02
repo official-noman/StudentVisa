@@ -133,12 +133,13 @@
         // Function to fetch total balance via AJAX
         function fetchTotalBalance() {
             $.ajax({
-                url: "/total_balance/", // URL of your Django view that returns total balance
-               success: function(data) {
-    $("#total_balance_display").text(data + " TK");
-},
+                url: "{% url 'total_balance_view' %}",
+                success: function(data) {
+                    $("#total_balance_display").text("Tk " + data);
+                },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    $("#total_balance_display").text("Unavailable");
                 }
             });
         }

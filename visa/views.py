@@ -72,6 +72,24 @@ def get_consultant_details_or_404(consultant):
     return consultant_details
 
 
+def get_consultant_customize_instance(consultant):
+    consultant_customize = None
+    consultant_lookup_ids = []
+
+    if consultant.consultant_user_id:
+        consultant_lookup_ids.append(consultant.consultant_user_id)
+    consultant_lookup_ids.append(consultant.id)
+
+    for consultant_lookup_id in dict.fromkeys(consultant_lookup_ids):
+        consultant_customize = Customizes.objects.filter(
+            consultant_id=consultant_lookup_id
+        ).first()
+        if consultant_customize is not None:
+            break
+
+    return consultant_customize
+
+
 def mask_email_address(email):
     if not email or "@" not in email:
         return email
@@ -2803,6 +2821,7 @@ def singel_consultant_base(request, consultant_id):
 def singel_consultant_details(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
     consultant_details = get_consultant_details_or_404(consultant)
+    customize = get_consultant_customize_instance(consultant)
     consultant_images = list(
         ConsultantImages.objects.filter(consultant_id=consultant_id)
     )
@@ -2831,6 +2850,7 @@ def singel_consultant_details(request, consultant_id):
         {
             "consultant": consultant,
             "consultant_details": consultant_details,
+            "customize": customize,
             "random_image": random_image,
             "fav_consultant_ids": fav_consultant_ids,
         },
@@ -2841,8 +2861,7 @@ def singel_consultant_page(request, consultant_id):
     consultant = get_object_or_404(Users, id=consultant_id, user_role=5)
     consultant_details = get_consultant_details_or_404(consultant)
 
-    # Retrieve the corresponding Customizes instance for the current consultant
-    customize = Customizes.objects.filter(consultant_id=consultant_id).first()
+    customize = get_consultant_customize_instance(consultant)
 
     page_name = "Home"
     page_description = "'This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here.'"

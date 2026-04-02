@@ -145,8 +145,13 @@
                     <div id="content_block_1">
                         <div class="content-box">
                             <div class="sec-title">
-                                
-                                <h4>Welcome to {{consultant.company_name}}</h4>
+                                <h4>
+                                    {% if consultant_details.consultant_intro %}
+                                        {{ consultant_details.consultant_intro|safe }}
+                                    {% else %}
+                                        Welcome to {{ consultant.company_name }}
+                                    {% endif %}
+                                </h4>
                                 <div class="dotted-box">
                                     <span class="dotted"></span>
                                     <span class="dotted"></span>
@@ -154,6 +159,12 @@
                                 </div>
                             </div>
                 
+                            {% if consultant_details.consultant_bio %}
+                            <div class="text process-explanation-div">
+                                <p>{{ consultant_details.consultant_bio|safe }}</p>
+                            </div>
+                            {% endif %}
+
                             <div class="text process-explanation-div">
                             {% if consultant_details.consultant_description %}
                                 <p>{{consultant_details.consultant_description|safe}}</p>

@@ -719,7 +719,7 @@ def consultant_intro(request):
         # Get the currently logged-in user
         consultant_user = request.user
         consultant_profile = get_logged_in_consultant(consultant_user)
-        consultant_id = consultant_profile.id
+        consultant_auth_user = consultant_profile.consultant_user or consultant_user
 
         # Current timestamp for created_at and updated_at
         now = timezone.now()
@@ -733,14 +733,19 @@ def consultant_intro(request):
             consultant.updated_at = now
             consultant.save()
 
-            # Update or create Customizes instance based on consultant_id
+            customize_defaults = {
+                'description': consultant_description,
+                'status': 1,
+                'updated_at': now,
+            }
+
+            uploaded_image = request.FILES.get('image')
+            if uploaded_image:
+                customize_defaults['image'] = uploaded_image
+
             customize, created = Customizes.objects.update_or_create(
-                consultant_id=consultant_id,
-                defaults={
-                    'description': consultant_description,
-                    'image': request.FILES.get('image'),  # Assuming the file input name is 'image'
-                    'status': 1
-                }
+                consultant=consultant_auth_user,
+                defaults=customize_defaults,
             )
 
             success_message = "Consultant details updated successfully."
@@ -751,7 +756,8 @@ def consultant_intro(request):
     # Retrieve the latest consultant details for display
     consultant_profile = get_logged_in_consultant(request.user)
     consultant = get_consultant_details_instance(consultant_profile, create=True)
-    customize = Customizes.objects.filter(consultant_id=consultant_profile.id).first()
+    consultant_auth_user = consultant_profile.consultant_user or request.user
+    customize = Customizes.objects.filter(consultant=consultant_auth_user).first()
 
 
     # Render the template with relevant context
