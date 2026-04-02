@@ -848,7 +848,10 @@
             var csrftoken = getCookie('csrftoken');
             $.ajax({
                 type: "POST",
-                url: "/check_phone_exist_user/",
+                // Original endpoint kept for reference after URL hyphenation changes.
+                // url: "/check_phone_exist_user/",
+                // Use the live route that matches studentvisabd/urls.py.
+                url: "/check-phone-exist-user/",
                 data: { phone: numericPhone },
                 headers: { "X-CSRFToken": csrftoken },
                 dataType: "json",
