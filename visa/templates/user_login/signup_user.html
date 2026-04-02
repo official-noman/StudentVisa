@@ -896,7 +896,7 @@
         // ── District → Thana ──
         $('#district-name').on('change', function(){
             var selectedDistrictName = $(this).val();
-            fetch('/get_thana/?district_id=' + selectedDistrictName, { method: 'GET' })
+            fetch('/get-thana/?district_id=' + selectedDistrictName, { method: 'GET' })
             .then(response => {
                 if (response.ok) return response.json();
                 throw new Error('Response not OK');

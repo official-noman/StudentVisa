@@ -508,7 +508,10 @@
                     <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
                         <div class="footer-widget logo-widget">
                             <figure class="footer-logo"><a href="{% url 'home' %}"><img
-                                        src={% static "assets/images/footer.png" %} alt=""></a></figure>
+                                        {# Original footer image path kept for reference because the file is missing in static assets. #}
+                                        {# src={% static "assets/images/footer.png" %} #}
+                                        {# Use the existing footer logo asset to prevent 404 errors in production. #}
+                                        src={% static "assets/images/footer-logo.png" %} alt=""></a></figure>
                             <div class="text">
                                 <p>Student Visa Bd is a sister concern of IGL Group of Company, IGL Web Ltd is an exclusive Web Design, Web Hosting, Web Application, Mobile Apps and Desktop Based Application Provider of Bangladesh in working all over the world since 2007.
                                 </p>
