@@ -86,13 +86,45 @@ def seo_context(request):
     seo_obj = SEOSettings.objects.first()
     page_seo = None
     resolver_match = getattr(request, "resolver_match", None)
+    page_key_aliases = {
+        "procedure_detail": "scholarship_procedure_list",
+    }
+
+    forwarded_proto = request.META.get("HTTP_X_FORWARDED_PROTO", "")
+    site_scheme = (
+        forwarded_proto.split(",")[0].strip()
+        if forwarded_proto
+        else request.scheme
+    )
+
+    forwarded_host = request.META.get("HTTP_X_FORWARDED_HOST", "")
+    site_host = (
+        forwarded_host.split(",")[0].strip()
+        if forwarded_host
+        else request.get_host()
+    )
 
     if resolver_match and resolver_match.url_name:
+        page_key = page_key_aliases.get(
+            resolver_match.url_name,
+            resolver_match.url_name,
+        )
         page_seo = PageSEOSettings.objects.filter(
-            page_key=resolver_match.url_name
+            page_key=page_key
         ).first()
+
+    page_og_image_url = None
+    global_og_image_url = None
+
+    if page_seo and page_seo.og_image:
+        page_og_image_url = f"{site_scheme}://{site_host}{page_seo.og_image.url}"
+
+    if seo_obj and seo_obj.og_image:
+        global_og_image_url = f"{site_scheme}://{site_host}{seo_obj.og_image.url}"
 
     return {
         "global_seo": seo_obj,
         "page_seo": page_seo,
+        "page_og_image_url": page_og_image_url,
+        "global_og_image_url": global_og_image_url,
     }

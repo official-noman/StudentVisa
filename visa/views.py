@@ -3514,6 +3514,7 @@ def by_country(request):
 
     paginator = Paginator(countries_list, 12)
     page_name = "Offer Letter | By Country "
+    page_seo = PageSEOSettings.objects.filter(page_key="by_country").first()
 
     page = request.GET.get("page")
     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
@@ -3543,6 +3544,7 @@ def by_country(request):
         "page_name": page_name,
         "page_description": page_description,
         "page_keywords": page_keywords,
+        "page_seo": page_seo,
     }
     return render(request, "by_country.html", context)
 
@@ -3562,6 +3564,7 @@ def by_country_autosearch(request):
 
 def country_details(request, country_id):
     page_name = "Offer Letter | By Country | Country Details "
+    page_seo = PageSEOSettings.objects.filter(page_key="by_country").first()
 
     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
@@ -3572,6 +3575,7 @@ def country_details(request, country_id):
         "page_name": page_name,
         "page_description": page_description,
         "page_keywords": page_keywords,
+        "page_seo": page_seo,
     }
     return render(request, "country_details.html", context)
 
@@ -5621,19 +5625,27 @@ def scholarship_procedure_list(request):
     # Only show countries that have at least one procedure step
     country_ids_with_steps = ScholarshipStep.objects.values_list('country_id', flat=True).distinct()
     countries = Countries.objects.filter(country_id__in=country_ids_with_steps).order_by('country_name')
+    page_seo = PageSEOSettings.objects.filter(
+        page_key="scholarship_procedure_list"
+    ).first()
     
     return render(request, "scholarship_procedure_list.html", {
         "countries": countries,
-        "page_name": "Scholarship Procedure"
+        "page_name": "Scholarship Procedure",
+        "page_seo": page_seo,
     })
 
 
 def procedure_detail(request, country_id):
     country = get_object_or_404(Countries, country_id=country_id)
     steps = ScholarshipStep.objects.filter(country=country).order_by('step_number')
+    page_seo = PageSEOSettings.objects.filter(
+        page_key="scholarship_procedure_list"
+    ).first()
     
     return render(request, "procedure_detail.html", {
         "country": country,
         "steps": steps,
-        "page_name": f"{country.country_name} Procedure"
+        "page_name": f"{country.country_name} Procedure",
+        "page_seo": page_seo,
     })

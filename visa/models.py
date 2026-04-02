@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 import os
+from uuid import uuid4
 from django.utils.text import slugify
 import unicodedata
 from django.conf import settings
@@ -1281,6 +1282,8 @@ class SEOSettings(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        # Preserve keyword normalization and also force a unique OG image path
+        # for newly uploaded files so social preview caches do not reuse an old image URL.
         if self.meta_keywords:
             normalized_keywords = [
                 keyword.strip().lower()
@@ -1288,6 +1291,12 @@ class SEOSettings(models.Model):
                 if keyword.strip()
             ]
             self.meta_keywords = ", ".join(dict.fromkeys(normalized_keywords))
+
+        if self.og_image and not getattr(self.og_image, "_committed", True):
+            _, ext = os.path.splitext(self.og_image.name)
+            ext = ext or ".jpg"
+            self.og_image.name = f"seo/og/{uuid4().hex}{ext.lower()}"
+
         super().save(*args, **kwargs)
 
 
@@ -1355,6 +1364,8 @@ class PageSEOSettings(models.Model):
         return self.get_page_key_display()
 
     def save(self, *args, **kwargs):
+        # Preserve keyword normalization and also force a unique OG image path
+        # for newly uploaded files so page-specific social previews get a fresh image URL.
         if self.meta_keywords:
             normalized_keywords = [
                 keyword.strip().lower()
@@ -1362,4 +1373,10 @@ class PageSEOSettings(models.Model):
                 if keyword.strip()
             ]
             self.meta_keywords = ", ".join(dict.fromkeys(normalized_keywords))
+
+        if self.og_image and not getattr(self.og_image, "_committed", True):
+            _, ext = os.path.splitext(self.og_image.name)
+            ext = ext or ".jpg"
+            self.og_image.name = f"seo/og/pages/{uuid4().hex}{ext.lower()}"
+
         super().save(*args, **kwargs)

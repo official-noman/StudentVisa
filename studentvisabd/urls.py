@@ -643,7 +643,14 @@ urlpatterns =[
         name="view_scholarship",
     ),
     path(
-        "delete-scholarship-uploaded/<int:scholarship_id>/",
+        "delete-scholarship-uploaded/<int:scholarship_id>/", 
+        
+        
+        
+        
+        
+        
+        
         rootviews.delete_scholarship_uploaded,
         name="delete_scholarship_uploaded",
     ),
