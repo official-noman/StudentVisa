@@ -5,214 +5,204 @@
 {% block custom_css %}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+<link rel="stylesheet" href="{% static 'assets/dist/css/user_account_settings.css' %}">
+<link rel="stylesheet" href="{% static 'assets/dist/css/consultant_profile_premium.css' %}">
+<style>
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+</style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script> {% endcomment %}
-
-    <link rel="stylesheet" href="{% static "assets/dist/css/user_account_settings.css" %}">
-    <style>
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    input[type="number"] {
-        -moz-appearance: textfield; /* Firefox */
-    }
-    </style>
-    
 {% endblock custom_css %}
 
 {% block content %}
 
-<div class="container-xl px-4 mt-4">
-    <!-- Account page navigation-->
-    <div class="page-header d-flex justify-content-center col-lg-12 col-md-12 col-12 mb-4">
-        <h4 class="my-auto">Profile settings</h4>
-    </div>
-    <div class="card-body">
+<div class="content-wrapper consultant-profile-shell">
+    <div class="consultant-profile-inner">
+        <section class="consultant-profile-hero">
+            <div class="consultant-profile-hero-grid">
+                <div>
+                    <span class="consultant-profile-badge"><i class="mdi mdi-shield-account-outline"></i> Consultant Workspace</span>
+                    <h1>Shape a polished first impression.</h1>
+                    <p>Keep your agency profile sharp, credible, and current so students and guardians always see a professional identity, reliable contact information, and a confident brand presence.</p>
+                </div>
+                <div class="consultant-profile-hero-meta">
+                    <div class="consultant-profile-stat">
+                        <span class="consultant-profile-stat-label">Agency</span>
+                        <span class="consultant-profile-stat-value">{{ user.company_name|default:"Not set yet" }}</span>
+                    </div>
+                    <div class="consultant-profile-stat">
+                        <span class="consultant-profile-stat-label">Consultant</span>
+                        <span class="consultant-profile-stat-value">{{ user.full_name|default:"Profile owner" }}</span>
+                    </div>
+                    <div class="consultant-profile-stat">
+                        <span class="consultant-profile-stat-label">Phone</span>
+                        <span class="consultant-profile-stat-value">{{ user.phone|default:"Pending" }}</span>
+                    </div>
+                    <div class="consultant-profile-stat">
+                        <span class="consultant-profile-stat-label">Website</span>
+                        <span class="consultant-profile-stat-value">{% if user.website and user.website != 'None' %}{{ user.website }}{% else %}Not added{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {% if messages %}
-          <div class="messages">
+        <div class="messages mb-4">
             {% for message in messages %}
-              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
-          </div>
-        {% endif %}
         </div>
-    <form method="POST" action="" enctype="multipart/form-data" id="profile-form">
-        {% csrf_token %}
-        <div class="row card-container-row">
-            <div class="col-xl-4 px-lg-4 px-0 card-container">
-                <div class="row">
-                    <!-- Profile picture card-->
-                    <div class="card mb-4 mb-xl-0 px-0">
-                        <div class="card-header d-flex justify-content-center">Profile Picture</div>
-                        <div class="card-body text-center py-3">
-                            <!-- Profile picture image-->
-                            <div class="d-flex justify-content-center">
-                                <div class="profile-pic-div">
-                                    {% if user.consultant_img %}
-                                        <img id="wizardPicturePreview" class="img-account-profile picture-src mb-2" src="{{ user.consultant_img.url }}" alt="Content Image">
-                                    {% else %}
-                                        <img id="wizardPicturePreview" class="img-account-profile picture-src mb-2" src="{% static 'assets/images/content_img.png' %}" alt="">
-                                    {% endif %}
-                                    <div class="input-pic">
-                                        <input type="file" id="wizard-picture" name="consultant_img" class="">
-                                    </div>
-                                    <div class="camera-icon d-flex justify-content-center">
-                                        <i class="fa-solid fa-camera my-auto"></i>
-                                    </div>
+        {% endif %}
+
+        <form method="POST" action="" enctype="multipart/form-data" id="profile-form">
+            {% csrf_token %}
+            <div class="consultant-profile-grid">
+                <aside class="consultant-profile-sidebar">
+                    <section class="consultant-profile-card consultant-profile-picture-card">
+                        <div class="consultant-profile-picture-shell">
+                            <div class="profile-pic-div">
+                                {% if user.consultant_img %}
+                                <img id="wizardPicturePreview" class="img-account-profile picture-src" src="{{ user.consultant_img.url }}" alt="Consultant profile image">
+                                {% else %}
+                                <img id="wizardPicturePreview" class="img-account-profile picture-src" src="{% static 'assets/images/content_img.png' %}" alt="Default profile image">
+                                {% endif %}
+                                <div class="input-pic">
+                                    <input type="file" id="wizard-picture" name="consultant_img">
+                                </div>
+                                <div class="camera-icon d-flex justify-content-center">
+                                    <i class="fa-solid fa-camera my-auto"></i>
                                 </div>
                             </div>
-                            <!-- Profile picture help block-->
-                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                            <!-- Profile picture upload button-->
-                            <button class="btn btn-primary profile-pic-btn" type="button">Upload new image</button>
                         </div>
-                    </div>
+                        <h2 class="consultant-profile-title">{{ user.full_name|default:"Consultant profile" }}</h2>
+                        <p class="consultant-profile-subtitle">Use a clean square image so your agency identity feels trustworthy and consistent across the platform.</p>
 
-                    <!-- Change password-->
-                    <div class="card mb-4 mb-xl-0 px-0 mt-2">
+                        <div class="consultant-profile-meta-list">
+                            <div class="consultant-profile-meta-item">
+                                <span class="label">Company</span>
+                                <span class="value">{{ user.company_name|default:"Not added" }}</span>
+                            </div>
+                            <div class="consultant-profile-meta-item">
+                                <span class="label">Experience</span>
+                                <span class="value">{% if consultant_details.experience and consultant_details.experience != 'None' %}{{ consultant_details.experience }} year{{ consultant_details.experience|pluralize }}{% else %}Not added{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <div class="small font-italic text-muted mb-4">Upload JPG or PNG format for the best quality presentation.</div>
+                        <button class="btn btn-primary profile-pic-btn" type="button">Upload New Image</button>
+                    </section>
+
+                    <section class="consultant-profile-card p-0">
                         <div class="card-header password-card-header d-flex justify-content-center">Change Password</div>
                         <div id="password-card-body" class="card-body text-center password-card-body">
                             <div class="mt-3 mb-3">
                                 <label class="mb-1 ms-0" for="old-password">Old Password</label>
-                                <input class="" id="old-password" type="password" name="old_password" placeholder="Old Password" value="">
+                                <input id="old-password" type="password" name="old_password" placeholder="Old Password" value="">
                             </div>
                             <div class="mt-3 mb-3">
                                 <label class="mb-1 ms-0" for="new-password">New Password</label>
-                                <input class="" id="new-password" type="password" name="new_password" placeholder="New Password" value="">
+                                <input id="new-password" type="password" name="new_password" placeholder="New Password" value="">
                             </div>
                             <div class="mb-3">
                                 <label class="mb-1" for="confirm-password">Confirm Password</label>
-                                <input class="" id="confirm-password" type="password" name="confirm_password" placeholder="Confirm Password" value="">
+                                <input id="confirm-password" type="password" name="confirm_password" placeholder="Confirm Password" value="">
                             </div>
-                            <!-- Profile picture upload button-->
                             <div class="d-flex justify-content-center">
-                                <button class="btn btn-primary change-password-btn" type="button">Change Password</button>
+                                <button class="btn change-password-btn" type="button">Save Password Change</button>
                             </div>
                         </div>
+                    </section>
+                </aside>
+
+                <section class="consultant-profile-main-card">
+                    <div class="consultant-profile-main-head">
+                        <div>
+                            <h2>Account Details</h2>
+                            <p>Update your agency identity, contact channels, and professional overview without changing any existing business logic or workflow.</p>
+                        </div>
+                        <span class="consultant-profile-status">Editable Profile</span>
                     </div>
-                </div>
-                
-            </div>
-            <div class="col-xl-8 px-lg-4 px-0">
-                <!-- Account details card-->
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-center">Account Details</div>
-                    <div class="card-body py-3">
-                        
-                            <!-- Form Group (username)-->
-                            <div class="row">
-                               <div class="mb-3 col-md-6 col-12">
-                                    <label class="mb-1" for="company-name">Companty Name <span class="text-danger">*</span></label>
-                                    <input id="company-name" type="text" name="company_name" placeholder="Enter your username" value="{{user.company_name}}">
-                                </div>
-                                <div class="mb-3 col-md-6 col-12">
-                                    <label class="mb-1" for="full-name">Full Name <span class="text-danger">*</span></label>
-                                    <input id="full-name" type="text" name="full_name" placeholder="Enter Full Name" value="{{user.full_name}}">
-                                </div>
-                            </div>
 
-                            <!-- Form Row-->
-                            <div class="row gx-3 mb-3">
-                                <!-- Form Group (first name)-->
-                                <div class="col-md-6 col-12">
-                                    <label class="mb-1" for="phone">Mobile Phone <span class="text-danger">*</span></label>
-                                    <input id="phone" type="tel" name="phone" placeholder="Cell No." value="{{user.phone}}">
-                                </div>
-                                <!-- Form Group (last name)-->
-                                <div class="col-md-6 col-12">
-                                    <label class="mb-1" for="land-phone">Land Phone</label>
-                                    {% if user.land_phone is None %}{% endif %}
-                                    <input id="land-phone" type="tel" name="land_phone" placeholder="Land Phone" value="{% if user.land_phone == 'None' %} {% else %}{{ user.land_phone }}{% endif %}">
-                                </div>
-                            </div>
-
-                            <div class="row gx-3 mb-3">
-                                <!-- Form Group (first name)-->
-                                <div class="col-md-6 col-12">
-                                    <label class="mb-1" for="phone">Fax</label>
-                                    <input id="fax" type="text" name="fax_no" placeholder="Fax No." value="{% if user.fax_no == 'None' %} {% else %}{{ user.fax_no }}{% endif %}">
-                                </div>
-                                <!-- Form Group (last name)-->
-                                <div class="col-md-6 col-12">
-                                    <label for="est-date" class="signup-label">Est. Date</label>
-                                    <input type="text" id="est-date" class="datepicker date-input" name="est_date" placeholder="Date" value="{% if user.est_date == None %}{% else %}{{ user.est_date }}{% endif %}" readonly />
-                                </div>
-                            </div>
-
-                            <!-- Form Row        -->
-                            <div class="row gx-3 mb-3">
-                                <!-- Form Group (organization name)-->
-                                <div class="col-md-6">
-                                    <label class="mb-1" for="address">Office Address</label>
-                                    <input id="address" type="text" name="address" placeholder="Office Address" value="{% if user.address == 'None' %} {% else %}{{ user.address }}{% endif %}">
-                                </div>
-                                <!-- Form Group (location)-->
-                                <div class="col-md-6">
-                                    <label class="mb-1" for="website">Website</label>
-                                    <input id="website" type="text" name="website" placeholder="https://www.example.com" value="{% if user.website == 'None' %} {% else %}{{ user.website }}{% endif %}">
-                                </div>
-                            </div>
-                            
-
-                            <div class="row gx-3 mb-3">
-                                <!-- Form Group (organization name)-->
-                                <div class="col-md-6">
-                                    <label class="mb-1" for="experience">Experience</label>
-                                    <input id="experience" type="number" name="experience" placeholder="Experience" value="{% if consultant_details.experience == 'None' %} {% else %}{{ consultant_details.experience }}{% endif %}" inputmode="numeric">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="mb-1" for="designation">Designation</label>
-                                    <input id="designation" type="text" name="designation" placeholder="Designation" value="{% if consultant_details.consultant_designation == 'None' %} {% else %}{{ consultant_details.consultant_designation }}{% endif %}" inputmode="numeric">
-                                </div>
-                                <!-- Form Group (location)-->
-                            
-                            </div>
-
-                            <div class="row gx-3 mb-3">
-                                <!-- Form Group (organization name)-->
-                                <div class="col-12">
-                                    <label class="mb-1" for="about">About <span class="text-danger">*</span></label>
-                                    <textarea id="about" name="about" >{% if user.about == 'None' %} {% else %} {{ user.about }} {% endif %}</textarea>
-                                </div>
-                            </div>
-
-                            <!--Error messages starts-->
-                            <div class="w-100">
-                                <div id="error-message-div" class="d-flex error-message-div">
-                                    <p><span id="message-text" class="message-text text-center"></span></p>
-                                </div>
-                            </div>
-                            <!--Error messages ends-->
-
-                            <!-- Save changes button-->
-                            <div class="d-flex justify-content-center mt-3">
-                                <button id="profile-submit-btn" class="btn btn-primary p-2" type="submit">Save changes</button>
-                            </div>
-                            
-                        </form>
+                    <div class="consultant-profile-form-grid">
+                        <div>
+                            <label for="company-name">Company Name <span class="text-danger">*</span></label>
+                            <input id="company-name" type="text" name="company_name" placeholder="Enter your company name" value="{{ user.company_name }}">
+                        </div>
+                        <div>
+                            <label for="full-name">Full Name <span class="text-danger">*</span></label>
+                            <input id="full-name" type="text" name="full_name" placeholder="Enter full name" value="{{ user.full_name }}">
+                        </div>
+                        <div>
+                            <label for="phone">Mobile Phone <span class="text-danger">*</span></label>
+                            <input id="phone" type="tel" name="phone" placeholder="Cell No." value="{{ user.phone }}">
+                        </div>
+                        <div>
+                            <label for="land-phone">Land Phone</label>
+                            <input id="land-phone" type="tel" name="land_phone" placeholder="Land phone" value="{% if user.land_phone == 'None' %}{% else %}{{ user.land_phone }}{% endif %}">
+                        </div>
+                        <div>
+                            <label for="fax">Fax</label>
+                            <input id="fax" type="text" name="fax_no" placeholder="Fax number" value="{% if user.fax_no == 'None' %}{% else %}{{ user.fax_no }}{% endif %}">
+                        </div>
+                        <div>
+                            <label for="est-date">Est. Date</label>
+                            <input type="text" id="est-date" class="datepicker date-input" name="est_date" placeholder="Date" value="{% if user.est_date == None %}{% else %}{{ user.est_date }}{% endif %}" readonly>
+                        </div>
+                        <div>
+                            <label for="website">Website</label>
+                            <input id="website" type="text" name="website" placeholder="https://www.example.com" value="{% if user.website == 'None' %}{% else %}{{ user.website }}{% endif %}">
+                        </div>
+                        <div>
+                            <label for="designation">Designation</label>
+                            <input id="designation" type="text" name="designation" placeholder="Designation" value="{% if consultant_details.consultant_designation == 'None' %}{% else %}{{ consultant_details.consultant_designation }}{% endif %}">
+                        </div>
+                        <div class="consultant-profile-field-span">
+                            <label for="address">Office Address</label>
+                            <input id="address" type="text" name="address" placeholder="Office address" value="{% if user.address == 'None' %}{% else %}{{ user.address }}{% endif %}">
+                        </div>
+                        <div>
+                            <label for="experience">Experience</label>
+                            <input id="experience" type="number" name="experience" placeholder="Years of experience" value="{% if consultant_details.experience == 'None' %}{% else %}{{ consultant_details.experience }}{% endif %}" inputmode="numeric">
+                        </div>
+                        <div class="consultant-profile-field-span">
+                            <label for="about">About <span class="text-danger">*</span></label>
+                            <textarea id="about" name="about">{% if user.about == 'None' %}{% else %}{{ user.about }}{% endif %}</textarea>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="w-100">
+                        <div id="error-message-div" class="d-flex error-message-div">
+                            <p><span id="message-text" class="message-text text-center"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="consultant-profile-submit-row">
+                        <div class="consultant-profile-submit-copy">
+                            <h4>Save your latest profile updates</h4>
+                            <p>Your consultant identity is shown through the details above, so it is worth keeping everything accurate and professionally written.</p>
+                        </div>
+                        <button id="profile-submit-btn" class="btn btn-primary p-2" type="submit">Save Changes</button>
+                    </div>
+                </section>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 
 <div id="popup-container" class="popup-container">
     <div class="popup d-flex justify-content-center">
-        <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
+        <img src="{% static 'assets/images/404-tick.png' %}" alt="Success tick" class="success-tick">
         <div class="registration-success-div py-4">
             <p class="mb-2"><span class="successful-text text-center">Profile Updated Successfully</span></p>
         </div>
-        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #7b8aa3;"></i></span>
     </div>
 </div>
 
@@ -264,11 +254,17 @@
                 $('.password-card-body').addClass('show');
             })
 
+            $('.close-icon').on('click', function(){
+                $('#popup-container').removeClass('show');
+            })
+
             // fetch data to save the data
             $('#profile-form').on('submit', function(event){
                 event.preventDefault();
                 var formData = new FormData(this);
-                var userId = parseInt('{{user.id}}')
+                // The profile object uses the Users table id, but the save endpoint authorizes with CustomUser.id.
+                // var userId = parseInt('{{user.id}}')
+                var userId = parseInt('{{ request.user.id }}')
                 console.log('userId: ', userId);
                 console.log('userId type: ', typeof(userId));
 
@@ -283,7 +279,9 @@
 
                 formData.append('consultant_about', aboutValue);
                 
-                fetch('/save_consultant_profile/' + userId + '/', {
+                // Previous underscore route kept for reference after URL hyphenation updates.
+                // fetch('/save_consultant_profile/' + userId + '/', {
+                fetch('/save-consultant-profile/' + userId + '/', {
                     method: 'POST',
                     //body: JSON.stringify(data),
                     body: formData,
