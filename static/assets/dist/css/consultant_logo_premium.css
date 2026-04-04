@@ -1,0 +1,496 @@
+:root {
+    --clp-bg: #eef4fb;
+    --clp-surface: rgba(255, 255, 255, 0.95);
+    --clp-text: #132238;
+    --clp-muted: #66768f;
+    --clp-border: #d9e4f2;
+    --clp-primary: #2563eb;
+    --clp-primary-dark: #1d4ed8;
+    --clp-danger: #dc2626;
+    --clp-success: #16a34a;
+    --clp-shadow: 0 20px 52px rgba(15, 23, 42, 0.08);
+    --clp-shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.06);
+    --clp-radius-lg: 28px;
+    --clp-radius-md: 20px;
+    --clp-radius-sm: 16px;
+}
+
+.consultant-logo-shell {
+    min-height: calc(100vh - var(--layout-navbar-height));
+    padding: 28px 24px 40px;
+    background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 30%),
+        linear-gradient(180deg, #f7fbff 0%, var(--clp-bg) 100%);
+}
+
+.consultant-logo-inner {
+    max-width: 1380px;
+    margin: 0 auto;
+}
+
+.consultant-logo-hero {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 26px;
+    padding: 34px 36px;
+    border-radius: 32px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.97), rgba(29, 78, 216, 0.92));
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+    color: #fff;
+}
+
+.consultant-logo-hero::before,
+.consultant-logo-hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.consultant-logo-hero::before {
+    width: 240px;
+    height: 240px;
+    top: -90px;
+    right: -70px;
+}
+
+.consultant-logo-hero::after {
+    width: 180px;
+    height: 180px;
+    left: 44%;
+    bottom: -70px;
+}
+
+.consultant-logo-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
+    gap: 20px;
+    align-items: end;
+}
+
+.consultant-logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.consultant-logo-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 2vw, 2.65rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.consultant-logo-hero p {
+    margin: 12px 0 0;
+    max-width: 760px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.consultant-logo-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.consultant-logo-stat {
+    min-height: 96px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+}
+
+.consultant-logo-stat .label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.consultant-logo-stat .value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.consultant-logo-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.consultant-logo-card {
+    background: var(--clp-surface);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: var(--clp-radius-lg);
+    box-shadow: var(--clp-shadow);
+    backdrop-filter: blur(16px);
+}
+
+.consultant-logo-upload-card,
+.consultant-logo-preview-card {
+    padding: 24px;
+}
+
+.consultant-logo-upload-card h2,
+.consultant-logo-preview-card h2 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clp-text);
+}
+
+.consultant-logo-upload-card p,
+.consultant-logo-preview-card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--clp-muted);
+}
+
+.consultant-logo-preview-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 220px;
+    margin: 22px auto 18px;
+    padding: 14px;
+    border-radius: 32px;
+    background: linear-gradient(145deg, rgba(37, 99, 235, 0.16), rgba(59, 130, 246, 0.05));
+}
+
+.consultant-logo-preview-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 26px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #eff6ff, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(37, 99, 235, 0.10);
+}
+
+.consultant-logo-preview-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.consultant-logo-meta {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.consultant-logo-meta-item {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(37, 99, 235, 0.05);
+    border: 1px solid rgba(37, 99, 235, 0.08);
+}
+
+.consultant-logo-meta-item .label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7a93;
+}
+
+.consultant-logo-meta-item .value {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--clp-text);
+    word-break: break-word;
+}
+
+.consultant-logo-form {
+    margin-top: 22px;
+}
+
+.photos-div {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 260px;
+    padding: 18px;
+    border-radius: 24px;
+    border: 1.5px dashed rgba(37, 99, 235, 0.28);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.98));
+    cursor: pointer;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.photos-div:hover {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+}
+
+.photos-div input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0 !important;
+    cursor: pointer;
+    z-index: 4;
+}
+
+.consultant-logo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    color: var(--clp-muted);
+    pointer-events: none;
+}
+
+.consultant-logo-placeholder i {
+    font-size: 42px;
+    color: var(--clp-primary);
+}
+
+.consultant-logo-placeholder .main {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--clp-text);
+}
+
+.consultant-logo-placeholder .sub {
+    display: block;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#wizardPicturePreview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #fff;
+}
+
+.consultant-logo-guideline {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.08);
+}
+
+.consultant-logo-guideline p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--clp-muted);
+}
+
+.consultant-logo-guideline strong {
+    color: var(--clp-text);
+}
+
+.error-message-div {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    padding: 15px 18px;
+    border-radius: 18px;
+    background: rgba(220, 38, 38, 0.10);
+    border: 1px solid rgba(220, 38, 38, 0.16);
+}
+
+.error-message-div.error-message-show {
+    display: flex;
+}
+
+.message-text,
+.error-text {
+    margin: 0;
+    color: var(--clp-danger);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.consultant-logo-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.consultant-logo-actions .submit-btn {
+    min-height: 52px;
+    border: 0;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: var(--clp-shadow-soft);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.consultant-logo-actions .submit-btn:hover {
+    transform: translateY(-1px);
+}
+
+.consultant-logo-actions .form-upload {
+    background: #e8f1ff;
+    color: var(--clp-primary-dark);
+}
+
+.consultant-logo-actions .form-submit {
+    background: linear-gradient(135deg, var(--clp-primary), #3b82f6);
+    color: #fff;
+}
+
+.popup-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.34);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    z-index: 1080;
+}
+
+.popup-container.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.popup {
+    position: relative;
+    width: min(440px, 100%);
+    padding: 28px 28px 24px;
+    border-radius: 28px;
+    background: #fff;
+    box-shadow: 0 30px 70px rgba(15, 23, 42, 0.18);
+    flex-direction: column;
+    text-align: center;
+}
+
+.success-tick {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 12px;
+    object-fit: contain;
+}
+
+.registration-success-div {
+    position: static;
+}
+
+.registration-success-div p span {
+    color: var(--clp-text);
+}
+
+.close-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4fb;
+    cursor: pointer;
+}
+
+.successful-text {
+    font-size: 1.02rem;
+    font-weight: 800;
+}
+
+@media (max-width: 1199.98px) {
+    .consultant-logo-hero-grid,
+    .consultant-logo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .consultant-logo-hero-stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991.98px) {
+    .consultant-logo-shell {
+        padding: 20px 16px 28px;
+    }
+
+    .consultant-logo-hero,
+    .consultant-logo-upload-card,
+    .consultant-logo-preview-card {
+        padding: 24px 20px;
+    }
+
+    .consultant-logo-hero-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .consultant-logo-hero,
+    .consultant-logo-upload-card,
+    .consultant-logo-preview-card {
+        padding: 20px 16px;
+        border-radius: 24px;
+    }
+
+    .consultant-logo-hero-stats,
+    .consultant-logo-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .consultant-logo-preview-frame {
+        width: 190px;
+        height: 190px;
+    }
+}

@@ -3,7 +3,8 @@
 {% block custom_css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href={% static "assets/dist/css/consultant_logo.css"%} rel="stylesheet">
+    <link href="{% static 'assets/dist/css/consultant_logo.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/dist/css/consultant_logo_premium.css' %}" rel="stylesheet">
     <style>
         .error-text {
             color: red;
@@ -12,76 +13,113 @@
     
 {% endblock custom_css %}
 {% block content %}
-<div class="logo-container mt-5">
-    <div class="row justify-content-center">
-        <div class="card-div">
-            <div class="card image-page-card justify-content-center">
-                <div class="card-header">
-                    <h2 class="text-center ">Consultant Logo</h2>
+<div class="content-wrapper consultant-logo-shell">
+    <div class="consultant-logo-inner">
+        <section class="consultant-logo-hero">
+            <div class="consultant-logo-hero-grid">
+                <div>
+                    <span class="consultant-logo-badge"><i class="mdi mdi-image-filter-center-focus"></i> Brand Identity</span>
+                    <h1>Keep your agency logo polished and recognizable.</h1>
+                    <p>Your logo appears across the consultant workspace and branding touchpoints. Upload a clean square logo so your profile feels more professional and instantly recognizable.</p>
                 </div>
-                <div class="card-body image-page-card-body">
-
-                    <!-- Form for adding images -->
-                    <form id="logo-form" method="post" enctype="multipart/form-data" action="">
-                        {% csrf_token %}
-                        <div class="row justify-content-center">
-                            <div class="photos-div col-12">
-                                <p class="text-center add-pics py-3 my-auto"><span>Add Picture</span></p>
-                                <input class="" type="file" name="logo" id="photos">
-                                {% if consultant_details.consultant_logo %}
-                                {% if consultant_details.consultant_logo.url %}
-                                    <img id="wizardPicturePreview" class="img-account-profile mb-2" src="{{ consultant_details.consultant_logo.url }}">
-                                {% else %}
-                                    <img id="wizardPicturePreview" class="img-account-profile mb-2" src="{% static 'path_to_default_image/default_image.jpg' %}">
-                                {% endif %}
-                            {% else %}
-                                <img id="wizardPicturePreview" class="img-account-profile mb-2" src="{% static 'path_to_default_image/default_image.jpg' %}">
-                            {% endif %}
-                            </div>
-                            <div class="right-caption-div col-12">
-                                <!--Error messages starts-->
-                                <div class="w-100">
-                                    <div id="error-message-div" class="d-flex error-message-div">
-                                        <p><span id="message-text" class="message-text text-center"></span></p>
-                                    </div>
-                                </div>
-                                   <div class="w-100">
-                                
-                                          <p style="font-size: 14px; font-weight: 600;      margin-left: 109px; color:red !important;">Width: 120px; Height: 120px</p>
-                                  </div>
-                                <!--Error messages ends-->
-                                <div class="d-flex justify-content-center mt-3">
-                                    
-                                    <button type="button" class="submit-btn form-upload btn btn-danger me-2">Upload Image</button>
-                                    <button type="submit" class="form-submit submit-btn btn btn-success ms-2">Save Image</button>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <!--<div class="row justify-content-center">
-                            <div class="col-md-4 col-12">
-                                <label for="caption" class="form-label text-center">Caption:</label>
-                                <input type="text" name="caption" required>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-center mt-3">
-                            <button type="button" class="submit-btn form-upload custom-submit-btn me-2">Upload Image</button>
-                            <button type="submit" class="form-submit submit-btn custom-submit-btn ms-2">Save Image</button>
-                        </div>-->
-                    </form>
+                <div class="consultant-logo-hero-stats">
+                    <div class="consultant-logo-stat">
+                        <span class="label">Recommended Size</span>
+                        <span class="value">120 x 120</span>
+                    </div>
+                    <div class="consultant-logo-stat">
+                        <span class="label">Upload Type</span>
+                        <span class="value">Single Logo</span>
+                    </div>
+                    <div class="consultant-logo-stat">
+                        <span class="label">Brand Name</span>
+                        <span class="value">{{ consultant.company_name|default:"Consultant Brand" }}</span>
+                    </div>
+                    <div class="consultant-logo-stat">
+                        <span class="label">Current Status</span>
+                        <span class="value">{% if consultant_details.consultant_logo %}Logo Added{% else %}No Logo Yet{% endif %}</span>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <div class="consultant-logo-grid">
+            <section class="consultant-logo-card consultant-logo-preview-card">
+                <h2>Current Logo Preview</h2>
+                <p>This preview reflects the logo identity currently tied to your consultant workspace.</p>
+
+                <div class="consultant-logo-preview-frame">
+                    <div class="consultant-logo-preview-inner">
+                        {% if consultant_details.consultant_logo and consultant_details.consultant_logo.url %}
+                        <img src="{{ consultant_details.consultant_logo.url }}" alt="Current consultant logo">
+                        {% else %}
+                        <img src="{% static 'assets/images/logo.png' %}" alt="Default consultant logo">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="consultant-logo-meta">
+                    <div class="consultant-logo-meta-item">
+                        <span class="label">Company</span>
+                        <span class="value">{{ consultant.company_name|default:"Not added" }}</span>
+                    </div>
+                    <div class="consultant-logo-meta-item">
+                        <span class="label">Display Use</span>
+                        <span class="value">Navbar, branding, and consultant-facing identity</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="consultant-logo-card consultant-logo-upload-card">
+                <h2>Upload Consultant Logo</h2>
+                <p>Choose a clean, square logo file that represents your consultancy brand well. The existing upload and save workflow remains intact.</p>
+
+                <form id="logo-form" method="post" enctype="multipart/form-data" action="" class="consultant-logo-form">
+                    {% csrf_token %}
+
+                    <div class="photos-div">
+                        <div class="consultant-logo-placeholder">
+                            <i class="fa-regular fa-image"></i>
+                            <div>
+                                <span class="main">Click to choose a logo image</span>
+                                <span class="sub">Preview updates instantly before you save the new logo.</span>
+                            </div>
+                        </div>
+                        <input type="file" name="logo" id="photos">
+                        {% if consultant_details.consultant_logo and consultant_details.consultant_logo.url %}
+                        <img id="wizardPicturePreview" class="img-account-profile mb-2" src="{{ consultant_details.consultant_logo.url }}" alt="Logo preview">
+                        {% else %}
+                        <img id="wizardPicturePreview" class="img-account-profile mb-2" src="{% static 'assets/images/logo.png' %}" alt="Logo preview">
+                        {% endif %}
+                    </div>
+
+                    <div class="consultant-logo-guideline">
+                        <p><strong>Recommended:</strong> Keep the logo square and lightweight. Best display size for this screen is 120px by 120px.</p>
+                    </div>
+
+                    <div class="w-100">
+                        <div id="error-message-div" class="d-flex error-message-div">
+                            <p><span id="message-text" class="message-text text-center"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="consultant-logo-actions">
+                        <button type="button" class="submit-btn form-upload btn btn-danger me-2">Upload Image</button>
+                        <button type="submit" class="form-submit submit-btn btn btn-success ms-2">Save Image</button>
+                    </div>
+                </form>
+            </section>
         </div>
     </div>
 </div>
-</div>
+
 <div id="popup-container" class="popup-container">
     <div class="popup d-flex justify-content-center">
-        <img src="{% static 'assets/images/404-tick.png' %}" alt="" class="success-tick">
+        <img src="{% static 'assets/images/404-tick.png' %}" alt="Success tick" class="success-tick">
         <div class="registration-success-div py-4">
             <p class="mb-2"><span class="successful-text text-center">Logo Updated Successfully</span></p>
         </div>
-        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #7b8aa3;"></i></span>
     </div>
 </div>
 {% endblock content %}
@@ -93,14 +131,6 @@
     $("#photos").change(function(){
         readURL(this);
     });
-
-    var imagesArray = [
-        {% for image in images %}
-            { imageUrl: '{{ image.image.url }}', caption: '{{ image.caption }}' },
-        {% endfor %}
-    ];
-    
-    console.log('imagesArray: ', imagesArray);
 
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -126,15 +156,29 @@
     // fetch data to save the data
     $('#logo-form').on('submit', function(event){
         event.preventDefault();
+        $('#error-message-div').removeClass('error-message-show');
+        $('#message-text').removeClass('error-text').text('');
+
         var formData = new FormData(this);
-        var fileSize = $('#photos')[0].files[0].size;
+        var selectedFile = $('#photos')[0].files[0];
+
+        if (!selectedFile) {
+            $('#message-text').text('Please choose a logo before saving.').addClass('error-text');
+            $('#error-message-div').addClass('error-message-show');
+            return;
+        }
+
+        var fileSize = selectedFile.size;
         // Check if file size is greater than 50KB
         if (fileSize > 51200) {
             $('#message-text').text('File size exceeds the limit of 50KB.').addClass('error-text');
             $('#error-message-div').addClass('error-message-show');
-           
+            return;
         }
-        fetch('/save_logo/', {
+
+        // Previous underscore route kept for reference after URL hyphenation updates.
+        // fetch('/save_logo/', {
+        fetch('/save-logo/', {
             method: 'POST',
             //body: JSON.stringify(data),
             body: formData,
@@ -169,6 +213,10 @@
             // Handle errors, e.g., show an error message
             console.error('Error:', error);
         });
+    })
+
+    $('.close-icon').on('click', function(){
+        $('#popup-container').removeClass('show');
     })
 
 </script>
