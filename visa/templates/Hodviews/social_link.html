@@ -6,97 +6,148 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css" integrity="sha512-8RxmFOVaKQe/xtg6lbscU9DU0IRhURWEuiI0tXevv+lXbAHfkpamD4VKFQRto9WgfOJDwOZ74c/s9Yesv3VvIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/fontawesome.min.css" integrity="sha512-d0olNN35C6VLiulAobxYHZiXJmq+vl+BGIgAxQtD5+kqudro/xNMvv2yIHAciGHpExsIbKX3iLg+0B6d0k4+ZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/regular.min.css" integrity="sha512-TzeemgHmrSO404wTLeBd76DmPp5TjWY/f2SyZC6/3LsutDYMVYfOx2uh894kr0j9UM6x39LFHKTeLn99iz378A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-<style>
-    .pickr .pcr-button {
-        position: relative;
-        height: 2em;
-        width: 23em;
-        padding: .5em;
-        cursor: pointer;
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Helvetica Neue",Arial,sans-serif;
-        border-radius: .15em;
-        background: url(data:image/svg+xml;utf8, <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" stroke=\"%2342445A\" stroke-width=\"5px\" stroke-linecap=\"round\"><path d=\"M45,45L5,5\"></path><path d=\"M45,5L5,45\"></path></svg>) no-repeat center;
-        background-size: 0;
-        transition: all .3s;
-    }
-
-    .color-preview {
-        width: 30px;
-        height: 30px;
-        display: inline-block;
-        margin-left: 10px;
-        border: 1px solid #ccc;
-    }
-
-    .form-group label {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .form-group label.facebook-label {
-        font-size: 22px;
-    }
-
-    .example-text {
-        font-size: 14px;
-        font-style: italic;
-    }
-</style>
+<link href="{% static 'assets/dist/css/consultant_social_links_premium.css' %}" rel="stylesheet">
 {% endblock custom_css %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Update Social Links</h4>
-                    {% if success_message %}
-                    <div class="alert alert-success">
-                        {{ success_message }}
+<div class="content-wrapper consultant-social-shell">
+    <div class="consultant-social-inner">
+        <section class="consultant-social-hero">
+            <div class="consultant-social-hero-grid">
+                <div>
+                    <span class="consultant-social-badge">
+                        <i class="mdi mdi-share-variant"></i>
+                        Social Channels
+                    </span>
+                    <h1>Keep your social presence aligned with your consultant brand.</h1>
+                    <p>
+                        Add your main public links in one place so students and guardians can discover your official
+                        profiles with confidence. The update flow and backend save logic remain exactly the same.
+                    </p>
+                </div>
+                <div class="consultant-social-hero-stats">
+                    <div class="consultant-social-stat">
+                        <span class="label">Facebook</span>
+                        <span class="value">{% if consultant_details.consultant_facebook %}Connected{% else %}Pending{% endif %}</span>
                     </div>
-                {% endif %}
-                            
-                {% if error_message %}
-                    <div class="alert alert-danger">
-                        {{ error_message }}
+                    <div class="consultant-social-stat">
+                        <span class="label">Website</span>
+                        <span class="value">{% if consultant_details.consultant_website %}Connected{% else %}Pending{% endif %}</span>
                     </div>
-                {% endif %}
-                
-                    <form method="post" action="{% url 'update_social_links' %}">
-                        {% csrf_token %}
-       
-
-                        <div class="form-group">
-                            <label for="consultant_facebook" class="facebook-label"><i class="fab fa-facebook-square"></i> Facebook: <span class="example-text">(Example: https://www.facebook.com/IGLWebLtd)</span></label>
-                            <p style="color: red;">Your Company Name should be between 5 and 15 characters</p>
-                            <input type="text" id="consultant_facebook" name="consultant_facebook" class="form-control" value="{{ consultant_details.consultant_facebook|default_if_none:'' }}">
-    
-                        </div>
-
-                        <div class="form-group">
-                            <label for="consultant_website"><i class="fas fa-globe"></i> Website: <span class="example-text">(Example: https://www.studentvisabd.com/username)</span></label>
-                            <input type="text" id="consultant_website" name="consultant_website" class="form-control" value="{{ consultant_details.consultant_website|default_if_none:'' }}">
-                         
-                        </div>
-
-                        <div class="form-group">
-                            <label for="consultant_twitter"><i class="fab fa-twitter-square"></i> Twitter: <span class="example-text">(Example: https://twitter.com/IGLWebLtd)</span></label>
-                            <input type="text" id="consultant_twitter" name="consultant_twitter" class="form-control" value="{{ consultant_details.consultant_twitter|default_if_none:'' }}">
-                           
-                        </div>
-
-                        <div class="form-group">
-                            <label for="consultant_googleplus"><i class="fab fa-google-plus-square"></i> Google+: <span class="example-text">(Example: https://plus.google.com/116076662842739407127)</span></label>
-                            <input type="text" id="consultant_googleplus" name="consultant_googleplus" class="form-control" value="{{ consultant_details.consultant_googleplus|default_if_none:'' }}">
-                           
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    <div class="consultant-social-stat">
+                        <span class="label">Twitter</span>
+                        <span class="value">{% if consultant_details.consultant_twitter %}Connected{% else %}Pending{% endif %}</span>
+                    </div>
+                    <div class="consultant-social-stat">
+                        <span class="label">Google+</span>
+                        <span class="value">{% if consultant_details.consultant_googleplus %}Connected{% else %}Pending{% endif %}</span>
+                    </div>
                 </div>
             </div>
-            </div>
+        </section>
+
+        <div class="consultant-social-grid">
+            <aside class="consultant-social-side">
+                <section class="consultant-social-card consultant-social-preview-card">
+                    <h2>Current Link Snapshot</h2>
+                    <p>Review the current public links tied to your consultant account before making updates.</p>
+
+                    <ul class="consultant-social-preview-list">
+                        <li>
+                            <i class="fab fa-facebook-f"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">Facebook</span>
+                                <span class="value {% if not consultant_details.consultant_facebook %}empty{% endif %}">{{ consultant_details.consultant_facebook|default_if_none:"Not added yet" }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-globe"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">Website</span>
+                                <span class="value {% if not consultant_details.consultant_website %}empty{% endif %}">{{ consultant_details.consultant_website|default_if_none:"Not added yet" }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fab fa-x-twitter"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">Twitter</span>
+                                <span class="value {% if not consultant_details.consultant_twitter %}empty{% endif %}">{{ consultant_details.consultant_twitter|default_if_none:"Not added yet" }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fab fa-google-plus-g"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">Google+</span>
+                                <span class="value {% if not consultant_details.consultant_googleplus %}empty{% endif %}">{{ consultant_details.consultant_googleplus|default_if_none:"Not added yet" }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="consultant-social-card consultant-social-guideline">
+                    <h2>Good Practice</h2>
+                    <p>Use official and active profile links so visitors can trust the contact points shown on your page.</p>
+                    <ul>
+                        <li><i class="mdi mdi-check-circle"></i><span>Always paste the full public URL, not only the username.</span></li>
+                        <li><i class="mdi mdi-check-circle"></i><span>Keep links branded and consistent across all consultant touchpoints.</span></li>
+                        <li><i class="mdi mdi-check-circle"></i><span>Update inactive or outdated profiles so applicants do not land on broken pages.</span></li>
+                    </ul>
+                </section>
+            </aside>
+
+            <section class="consultant-social-main-card">
+                <div class="consultant-social-main-head">
+                    <div>
+                        <h2>Update Social Links</h2>
+                        <p>Manage the public-facing channels that support your consultant identity without changing any existing workflow.</p>
+                    </div>
+                    <span class="consultant-social-status">Editable</span>
+                </div>
+
+                {% if success_message %}
+                <div class="alert alert-success">
+                    {{ success_message }}
+                </div>
+                {% endif %}
+
+                {% if error_message %}
+                <div class="alert alert-danger">
+                    {{ error_message }}
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'update_social_links' %}" class="consultant-social-form">
+                    {% csrf_token %}
+
+                    <div class="consultant-social-form-grid">
+                        <div class="consultant-social-field">
+                            <label for="consultant_facebook"><i class="fab fa-facebook-square"></i> Facebook</label>
+                            <input type="text" id="consultant_facebook" name="consultant_facebook" value="{{ consultant_details.consultant_facebook|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://www.facebook.com/IGLWebLtd</p>
+                            <p class="consultant-social-warning">Your Company Name should be between 5 and 15 characters</p>
+                        </div>
+
+                        <div class="consultant-social-field">
+                            <label for="consultant_website"><i class="fas fa-globe"></i> Website</label>
+                            <input type="text" id="consultant_website" name="consultant_website" value="{{ consultant_details.consultant_website|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://www.studentvisabd.com/username</p>
+                        </div>
+
+                        <div class="consultant-social-field">
+                            <label for="consultant_twitter"><i class="fab fa-twitter-square"></i> Twitter</label>
+                            <input type="text" id="consultant_twitter" name="consultant_twitter" value="{{ consultant_details.consultant_twitter|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://twitter.com/IGLWebLtd</p>
+                        </div>
+
+                        <div class="consultant-social-field">
+                            <label for="consultant_googleplus"><i class="fab fa-google-plus-square"></i> Google+</label>
+                            <input type="text" id="consultant_googleplus" name="consultant_googleplus" value="{{ consultant_details.consultant_googleplus|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://plus.google.com/116076662842739407127</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn consultant-social-submit">Save Social Links</button>
+                </form>
+            </section>
         </div>
     </div>
 </div>

@@ -1,70 +1,159 @@
 {% extends "Hodviews/base.html" %}
-
 {% load static %}
-{% block custom_css %}
-<style>
-  /* Custom CSS */
-  .custom-form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
-  /* Style for the image */
-  .img-preview {
-    max-width: 200px; /* Adjust this value as needed */
-    max-height: 200px; /* Adjust this value as needed */
-  }
-</style>
+{% block custom_css %}
+<link href="{% static 'assets/dist/css/consultant_requirement_premium.css' %}" rel="stylesheet">
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Add Your Requirement</h4>
+<div class="content-wrapper consultant-requirement-shell">
+    <div class="consultant-requirement-inner">
+        <section class="consultant-requirement-hero">
+            <div class="consultant-requirement-hero-grid">
+                <div>
+                    <span class="consultant-requirement-badge">
+                        <i class="mdi mdi-clipboard-text-outline"></i>
+                        Consultant Requirement
+                    </span>
+                    <h1>Present your requirement details in a structured, client-ready format.</h1>
+                    <p>
+                        This section helps you explain application requirements, document expectations, and process notes
+                        in one polished place. The save workflow stays exactly the same, only the presentation is refined.
+                    </p>
+                </div>
+                <div class="consultant-requirement-hero-stats">
+                    <div class="consultant-requirement-stat">
+                        <span class="label">Status</span>
+                        <span class="value">{% if consultant_details.consultant_requirement %}Requirement Added{% else %}Awaiting Content{% endif %}</span>
+                    </div>
+                    <div class="consultant-requirement-stat">
+                        <span class="label">Image Size</span>
+                        <span class="value">500 x 378</span>
+                    </div>
+                    <div class="consultant-requirement-stat">
+                        <span class="label">Content Mode</span>
+                        <span class="value">Rich Text Editor</span>
+                    </div>
+                    <div class="consultant-requirement-stat">
+                        <span class="label">Form State</span>
+                        <span class="value">{% if created %}New Setup{% else %}Editable{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    {% if messages %}
+        <div class="consultant-requirement-grid">
+            <aside class="consultant-requirement-side">
+                <section class="consultant-requirement-card consultant-requirement-preview-card">
+                    <h2>Current Requirement Visual</h2>
+                    <p>Your latest uploaded requirement image is shown here so you can review presentation quality before saving changes.</p>
+
+                    <div class="consultant-requirement-preview-frame">
+                        <div class="consultant-requirement-preview-inner">
+                            {% if consultant_details and consultant_details.consultant_requirement_image %}
+                            <img id="consultant-requirement-preview" src="{{ consultant_details.consultant_requirement_image.url }}" alt="Requirement image preview" class="img-preview">
+                            {% else %}
+                            <img id="consultant-requirement-preview" src="{% static 'assets/images/images.jpg' %}" alt="Requirement image placeholder" class="img-preview">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="consultant-requirement-meta">
+                        <div class="consultant-requirement-meta-item">
+                            <span class="label">Current State</span>
+                            <span class="value">{% if consultant_details.consultant_requirement_image %}Image uploaded{% else %}No requirement image uploaded yet{% endif %}</span>
+                        </div>
+                        <div class="consultant-requirement-meta-item">
+                            <span class="label">Content Availability</span>
+                            <span class="value">{% if consultant_details.consultant_requirement %}Requirement text available{% else %}Requirement text not added{% endif %}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="consultant-requirement-card consultant-requirement-guideline">
+                    <h2>Publishing Guidance</h2>
+                    <p>Keep the requirement section useful, clear, and easy for applicants to follow.</p>
+                    <ul>
+                        <li><i class="mdi mdi-check-circle"></i><span>Summarize document needs, timelines, and conditions in a structured order.</span></li>
+                        <li><i class="mdi mdi-check-circle"></i><span>Use a clean supporting image that visually matches your requirement content.</span></li>
+                        <li><i class="mdi mdi-check-circle"></i><span>Recommended image size is 500px width by 378px height for the best display.</span></li>
+                    </ul>
+                </section>
+            </aside>
+
+            <section class="consultant-requirement-main-card">
+                <div class="consultant-requirement-main-head">
+                    <div>
+                        <h2>Update Requirement Details</h2>
+                        <p>Edit your consultant requirement text and supporting image without changing any backend logic or workflow.</p>
+                    </div>
+                    <span class="consultant-requirement-status">Ready to Publish</span>
+                </div>
+
+                {% if messages %}
                     {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}" role="alert">
                         {{ message }}
                     </div>
                     {% endfor %}
-                    {% endif %}
+                {% endif %}
 
-                    <form method="post" action="{% url 'consultant_requirement' %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="consultant_requirement">Requirement:</label>
-                            <!-- Add CKEditor textarea -->
-                            <textarea id="consultant_requirement" name="consultant_requirement" required>{% if consultant_details %}{{ consultant_details.consultant_requirement|default:'' }}{% endif %}</textarea>
-                        </div>
+                <form method="post" action="{% url 'consultant_requirement' %}" enctype="multipart/form-data" class="consultant-requirement-form">
+                    {% csrf_token %}
 
-                        <div class="form-group custom-form-group">
-                            <label for="consultant_requirement_image">Requirement Image:</label>
-                            <input type="file" id="consultant_requirement_image"  style="margin:10px;" name="consultant_requirement_image">
-                            
-                            
-                            {% if consultant_details and consultant_details.consultant_requirement_image %}
-                            <img src="{{ consultant_details.consultant_requirement_image.url }}" alt="Requirement Image" class="img-preview">
-                            {% endif %}
-                        </div>
-                        <p class="recommended-pic-size-text mx-auto" style="font-size: 15px; color:red;">width: 500px and height: 378px</p>
-                        <button type="submit" class="btn btn-primary">Update Requirement</button>
-                    </form>
+                    <div class="form-group">
+                        <label for="consultant_requirement">Requirement Content</label>
+                        <textarea id="consultant_requirement" name="consultant_requirement" required>{% if consultant_details %}{{ consultant_details.consultant_requirement|default:'' }}{% endif %}</textarea>
+                    </div>
 
-                    <!-- Include CKEditor library -->
-                    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-                    <script>
-                        {% comment %} CKEDITOR.replace('consultant_requirement'); {% endcomment %}
-                        <script>CKEDITOR.replace('consultant_requirement', { versionCheck: false });</script>
-                    </script>
-                </div>
-              </div>
-            </div>
+                    <div class="consultant-requirement-upload-wrap">
+                        <label for="consultant_requirement_image">Requirement Image</label>
+                        <label class="consultant-requirement-upload-box" for="consultant_requirement_image">
+                            <div class="consultant-requirement-placeholder">
+                                <i class="mdi mdi-image-plus"></i>
+                                <span class="main">Choose a requirement image</span>
+                                <span class="sub">The preview updates instantly after you select a new image file.</span>
+                            </div>
+                            <input type="file" id="consultant_requirement_image" name="consultant_requirement_image" accept="image/*">
+                        </label>
+                        <p class="consultant-requirement-note">
+                            Recommended image size: 500px width and 378px height. Leaving the field empty will keep your existing image unchanged.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn consultant-requirement-submit">Update Requirement</button>
+                </form>
+            </section>
         </div>
     </div>
 </div>
 {% endblock content %}
+
+{% block custom_js %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('consultant_requirement', { versionCheck: false });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var requirementImageInput = document.getElementById('consultant_requirement_image');
+        var requirementPreview = document.getElementById('consultant-requirement-preview');
+
+        if (!requirementImageInput || !requirementPreview) {
+            return;
+        }
+
+        requirementImageInput.addEventListener('change', function (event) {
+            var selectedFile = event.target.files && event.target.files[0];
+            if (!selectedFile) {
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (loadEvent) {
+                requirementPreview.src = loadEvent.target.result;
+            };
+            reader.readAsDataURL(selectedFile);
+        });
+    });
+</script>
+{% endblock custom_js %}
