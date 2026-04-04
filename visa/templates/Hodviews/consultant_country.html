@@ -3,6 +3,7 @@
 {% block custom_css %}
 <!-- Add Select2 CSS and JS files -->
 <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
+<link href="{% static 'assets/dist/css/consultant_country_premium.css' %}" rel="stylesheet">
 <style>
   .select2-container{
     margin-top: 10px !important;
@@ -42,61 +43,98 @@ label {
 </style>
 {% endblock custom_css %}
 {% block content %}
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
-          <div class="row">
-            <div class="col-md-7">
-              <div class="card-body">
-                <h4 class="card-title">Add Country</h4>
-                {% comment %} <p class="card-description">Add class <code>.btn-icon</code> for buttons with only icons</p> {% endcomment %}
-                <div class="template-demo d-flex justify-content-between flex-nowrap">
-                  <form method="post" action="{% url 'consultant_country' %}">
-                    {% csrf_token %}
-                    <select name="consultant_countries" id="select-country" class="js-example-basic-single" required>
-                      <option value="" selected disabled>Select a country</option>
-                      {% for country in available_countries %}
-                          <option value="{{ country.country_id }}">{{ country.country_name }}</option>
-                      {% endfor %}
-                  </select>
-                     <br>
-                    <br>
-                    <button type="submit" class="btn btn-info btn-sm">Submit</button>
-                  </form>
-                </div>
-              </div>
-            </div>
+<div class="content-wrapper consultant-country-shell">
+  <div class="consultant-country-inner">
+    <section class="consultant-country-hero">
+      <div class="consultant-country-hero-grid">
+        <div>
+          <span class="consultant-country-badge">
+            <i class="mdi mdi-earth"></i>
+            Working Countries
+          </span>
+          <h1>Manage the countries your consultancy actively serves.</h1>
+          <p>
+            Keep your working-country coverage updated so students can quickly understand where your team can support them.
+            The add and remove workflow remains exactly the same.
+          </p>
+        </div>
+        <div class="consultant-country-hero-stats">
+          <div class="consultant-country-stat">
+            <span class="label">Saved Countries</span>
+            <span class="value">{{ saved_countries|length }}</span>
+          </div>
+          <div class="consultant-country-stat">
+            <span class="label">Available to Add</span>
+            <span class="value">{{ available_countries|length }}</span>
+          </div>
+          <div class="consultant-country-stat">
+            <span class="label">Selection Mode</span>
+            <span class="value">Single Add</span>
+          </div>
+          <div class="consultant-country-stat">
+            <span class="label">Management</span>
+            <span class="value">Editable</span>
           </div>
         </div>
       </div>
-      <div class="col-md-4 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Your Country</h4>
-            <div class="table-responsive">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Country Name</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for country in saved_countries %}
-                  <tr>
-                    <td>{{ country.country_name }}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-country="{{ country.consultant_countries__country_name }}">Delete</button>
-                    </td>
-                </tr>
+    </section>
+
+    <div class="consultant-country-grid">
+      <section class="consultant-country-card consultant-country-add-card">
+        <h2>Add a Working Country</h2>
+        <p>Select a country from the searchable list and save it to your consultancy coverage.</p>
+
+        <div class="consultant-country-select-wrap">
+          <form method="post" action="{% url 'consultant_country' %}">
+            {% csrf_token %}
+            <select name="consultant_countries" id="select-country" class="js-example-basic-single" required>
+              <option value="" selected disabled>Select a country</option>
+              {% for country in available_countries %}
+              <option value="{{ country.country_id }}">{{ country.country_name }}</option>
               {% endfor %}
-                </tbody>
-              </table>
+            </select>
+
+            <div class="consultant-country-actions">
+              <button type="submit" class="btn consultant-country-submit">Add Country</button>
             </div>
-          </div>
+          </form>
         </div>
-      </div>
+      </section>
+
+      <section class="consultant-country-card consultant-country-list-card">
+        <h2>Your Saved Countries</h2>
+        <p>These countries are currently shown as active destinations in your consultant workspace.</p>
+
+        <div class="consultant-country-table-wrap">
+          {% if saved_countries %}
+          <table class="consultant-country-table">
+            <thead>
+              <tr>
+                <th>Country Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for country in saved_countries %}
+              <tr>
+                <td>
+                  <span class="consultant-country-pill">
+                    <i class="mdi mdi-map-marker-radius-outline"></i>
+                    {{ country.country_name }}
+                  </span>
+                </td>
+                <td>
+                  <button type="button" class="btn consultant-country-delete delete-btn" data-country="{{ country.country_name }}">Delete</button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="consultant-country-empty">No country has been added yet.</div>
+          {% endif %}
+        </div>
+      </section>
     </div>
   </div>
 </div>

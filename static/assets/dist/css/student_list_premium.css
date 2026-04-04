@@ -1,0 +1,294 @@
+.student-list-shell {
+    min-height: calc(100vh - var(--layout-navbar-height));
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px 40px;
+    background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.11), transparent 28%),
+        linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+}
+
+.student-list-inner {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 1380px;
+    min-width: 0;
+    margin: 0 auto;
+}
+
+.student-list-panel {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
+}
+
+.student-list-hero {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 26px;
+    padding: 34px 36px;
+    border-radius: 34px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(29, 78, 216, 0.95));
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+    color: #fff;
+}
+
+.student-list-hero::before,
+.student-list-hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.student-list-hero::before {
+    width: 220px;
+    height: 220px;
+    top: -90px;
+    right: -60px;
+}
+
+.student-list-hero::after {
+    width: 180px;
+    height: 180px;
+    left: 44%;
+    bottom: -70px;
+}
+
+.student-list-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.9fr);
+    gap: 22px;
+    align-items: end;
+}
+
+.student-list-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.student-list-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 2vw, 2.7rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.student-list-hero p {
+    margin: 12px 0 0;
+    max-width: 760px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.student-list-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.student-list-stat {
+    min-height: 96px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+}
+
+.student-list-stat .label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+}
+
+.student-list-stat .value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.student-list-card {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 22px 54px rgba(15, 23, 42, 0.08) !important;
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+}
+
+.student-list-card .card-body {
+    padding: 28px;
+}
+
+.student-list-card .card-title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #16273d;
+    margin-bottom: 18px !important;
+}
+
+.lead-btn {
+    min-height: 46px;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(29, 78, 216, 0.10) !important;
+    color: #1d4ed8 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+    margin: 0 10px 10px 0;
+}
+
+.lead-btn.active,
+.lead-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+    color: #fff !important;
+}
+
+.lead-tables {
+    margin-top: 18px;
+}
+
+.lead-table {
+    border-radius: 24px;
+    overflow: auto;
+    border: 1px solid rgba(217, 230, 242, 0.95);
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.custom-table {
+    margin-bottom: 0 !important;
+}
+
+.custom-table thead th {
+    background: #f6faff !important;
+    color: #6b7d95 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(217, 230, 242, 0.95) !important;
+}
+
+.custom-table tbody td {
+    color: #16273d;
+    font-size: 14px;
+    background: transparent !important;
+}
+
+.custom-table tbody tr:hover td {
+    background: rgba(29, 78, 216, 0.04) !important;
+}
+
+.view-btn,
+#proceed-btn,
+#view-cancel-btn,
+#view-cancel-btn-error,
+.modal-footer .btn-danger,
+.modal-footer .btn-info,
+.modal-footer .btn-success {
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+}
+
+.modal-content {
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+    border-radius: 26px !important;
+    box-shadow: 0 22px 54px rgba(15, 23, 42, 0.12) !important;
+    overflow: hidden;
+}
+
+.modal-header,
+.modal-footer {
+    border-color: rgba(217, 230, 242, 0.9) !important;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #16273d;
+}
+
+.certificate-images-div {
+    margin-bottom: 14px;
+}
+
+.certificate-images {
+    width: 100%;
+    max-width: 180px;
+    border-radius: 16px;
+    border: 1px solid rgba(217, 230, 242, 0.95);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+    cursor: zoom-in;
+}
+
+.popup,
+.popup-content,
+.popup-image {
+    border-radius: 22px;
+}
+
+@media (max-width: 1199.98px) {
+    .student-list-hero-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .student-list-shell {
+        padding: 20px 16px 28px;
+    }
+
+    .student-list-hero,
+    .student-list-card .card-body {
+        padding: 24px 20px;
+    }
+
+    .student-list-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .student-list-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .lead-btn {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .student-list-hero,
+    .student-list-card .card-body {
+        padding: 20px 16px;
+        border-radius: 24px;
+    }
+}

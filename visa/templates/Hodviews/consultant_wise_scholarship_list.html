@@ -6,6 +6,189 @@
    
 
     <style>
+        .scholarship-list-shell {
+          min-height: calc(100vh - var(--layout-navbar-height));
+          display: flex;
+          flex-direction: column;
+          padding: 28px 24px 40px;
+          background:
+            radial-gradient(circle at top left, rgba(59, 130, 246, 0.11), transparent 28%),
+            linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+        }
+
+        .scholarship-list-inner {
+          flex: 1 1 auto;
+          width: 100%;
+          max-width: 1380px;
+          margin: 0 auto;
+        }
+
+        .scholarship-list-hero {
+          position: relative;
+          overflow: hidden;
+          margin-bottom: 26px;
+          padding: 34px 36px;
+          border-radius: 32px;
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.97), rgba(29, 78, 216, 0.92));
+          box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
+          color: #fff;
+        }
+
+        .scholarship-list-hero::before,
+        .scholarship-list-hero::after {
+          content: "";
+          position: absolute;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .scholarship-list-hero::before {
+          width: 240px;
+          height: 240px;
+          top: -90px;
+          right: -70px;
+        }
+
+        .scholarship-list-hero::after {
+          width: 180px;
+          height: 180px;
+          left: 44%;
+          bottom: -70px;
+        }
+
+        .scholarship-list-hero-grid {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+          gap: 20px;
+          align-items: end;
+        }
+
+        .scholarship-list-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 14px;
+          padding: 8px 14px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.12);
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.92);
+        }
+
+        .scholarship-list-hero h1 {
+          margin: 0;
+          font-size: clamp(2rem, 2vw, 2.6rem);
+          font-weight: 700;
+          letter-spacing: -0.03em;
+        }
+
+        .scholarship-list-hero p {
+          margin: 12px 0 0;
+          max-width: 760px;
+          font-size: 15px;
+          line-height: 1.75;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .scholarship-list-stats {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+
+        .scholarship-list-stat {
+          min-height: 96px;
+          padding: 16px 18px;
+          border-radius: 20px;
+          background: rgba(255, 255, 255, 0.10);
+          backdrop-filter: blur(12px);
+        }
+
+        .scholarship-list-stat .label {
+          display: block;
+          margin-bottom: 8px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.62);
+        }
+
+        .scholarship-list-stat .value {
+          display: block;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.45;
+        }
+
+        .scholarship-list-main-card {
+          border: 1px solid rgba(255, 255, 255, 0.55);
+          border-radius: 30px;
+          box-shadow: 0 22px 54px rgba(15, 23, 42, 0.08);
+          background: rgba(255, 255, 255, 0.94);
+          backdrop-filter: blur(16px);
+          overflow: hidden;
+        }
+
+        .scholarship-list-main-card .card-body {
+          padding: 28px;
+        }
+
+        .scholarship-list-main-head {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 18px;
+          margin-bottom: 24px;
+          padding-bottom: 18px;
+          border-bottom: 1px solid rgba(217, 230, 242, 0.95);
+        }
+
+        .scholarship-list-main-head h4 {
+          margin: 0 0 8px;
+          font-size: 1.55rem;
+          font-weight: 700;
+          color: #16273d;
+        }
+
+        .scholarship-list-main-head p {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.7;
+          color: #66768f;
+        }
+
+        .scholarship-add-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 48px;
+          padding: 0 22px;
+          border: 0;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+          color: #fff !important;
+          font-weight: 700;
+          box-shadow: 0 16px 34px rgba(37, 99, 235, 0.25);
+          white-space: nowrap;
+        }
+
+        .scholarship-add-btn:hover {
+          color: #fff !important;
+          text-decoration: none;
+        }
+
+        .scholarship-table-wrap {
+          border-radius: 24px;
+          overflow: hidden;
+          border: 1px solid rgba(217, 230, 242, 0.95);
+          background: rgba(255, 255, 255, 0.92);
+        }
 
 
         /* Add custom styles for DataTables */
@@ -58,20 +241,82 @@
 
             margin: 14px !important;
         }
+
+        @media (max-width: 1199.98px) {
+          .scholarship-list-hero-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 767.98px) {
+          .scholarship-list-main-head {
+            flex-direction: column;
+          }
+
+          .scholarship-list-stats {
+            grid-template-columns: 1fr;
+          }
+
+          .scholarship-list-hero,
+          .scholarship-list-main-card .card-body {
+            padding: 22px 18px;
+          }
+        }
     </style>
     <!-- Additional custom CSS can be added here -->
 {% endblock custom_css %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <a href="{% url 'consultant_wise' %}" class="btn btn-primary mt-3">Add Scholarship</a>
-            <br>
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Consultant Uploaded Scholarship List</h4>
+<div class="content-wrapper scholarship-list-shell">
+    <div class="scholarship-list-inner">
+        <section class="scholarship-list-hero">
+            <div class="scholarship-list-hero-grid">
+                <div>
+                    <span class="scholarship-list-badge">
+                        <i class="mdi mdi-school-outline"></i>
+                        Scholarship Records
+                    </span>
+                    <h1>Manage all consultant-uploaded scholarships from one clean, searchable workspace.</h1>
+                    <p>
+                        Review uploaded scholarship records, open edit actions quickly, and keep your country-based
+                        opportunities organized without changing the existing backend workflow.
+                    </p>
+                </div>
+                <div class="scholarship-list-stats">
+                    <div class="scholarship-list-stat">
+                        <span class="label">Total Records</span>
+                        <span class="value">{{ uploaded_scholarships|length }}</span>
+                    </div>
+                    <div class="scholarship-list-stat">
+                        <span class="label">Table Mode</span>
+                        <span class="value">DataTables</span>
+                    </div>
+                    <div class="scholarship-list-stat">
+                        <span class="label">Manage Actions</span>
+                        <span class="value">Edit & Delete</span>
+                    </div>
+                    <div class="scholarship-list-stat">
+                        <span class="label">Content Source</span>
+                        <span class="value">Consultant Uploads</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card scholarship-list-main-card">
+            <div class="card-body">
+                <div class="scholarship-list-main-head">
+                    <div>
+                        <h4>Consultant Uploaded Scholarship List</h4>
+                        <p>Browse every uploaded scholarship, search quickly, and use the existing action buttons to maintain records.</p>
+                    </div>
+                    <a href="{% url 'consultant_wise' %}" class="scholarship-add-btn">
+                        <i class="mdi mdi-plus-circle-outline mr-2"></i>
+                        Add Scholarship
+                    </a>
+                </div>
+
+                <div class="scholarship-table-wrap">
                     <table id="scholarshiplist"class="table table-bordered">
                         <thead>
                             <tr>
@@ -106,13 +351,9 @@
                         </tbody>
                     </table>
                 </div>
-          
             </div>
-            
-        </div>
-        
+        </section>
     </div>
-</div>
 </div>
 <div class="modal fade" id="editScholarshipModal" tabindex="-1" role="dialog" aria-labelledby="editScholarshipModalTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -137,7 +378,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"  onclick="window.location.reload()>Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="window.location.reload()">Close</button>
                 <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
             </div>
         </div>
@@ -231,14 +472,22 @@ $('.btn-edit').click(function(e) {
         type: 'GET',
         url: `/edit_consultant_wise_scholarship_list/${scholarshipId}/`,
         success: function(response) {
-            {% comment %} CKEDITOR.replace('editSchpDescription'); {% endcomment %}
-            <script>CKEDITOR.replace('editSchpDescription', { versionCheck: false });</script>
-            {% comment %} CKEDITOR.replace('editApplyProcess'); {% endcomment %}
-            <script>CKEDITOR.replace('editApplyProcess', { versionCheck: false });</script>
+            // Previous inline script injection broke the outer script block and leaked JS above the footer.
+            // Legacy broken pattern removed:
+            // CKEDITOR.replace('editSchpDescription', { versionCheck: false });
+            // CKEDITOR.replace('editApplyProcess', { versionCheck: false });
+            if (CKEDITOR.instances.editSchpDescription) {
+                CKEDITOR.instances.editSchpDescription.destroy(true);
+            }
+            if (CKEDITOR.instances.editApplyProcess) {
+                CKEDITOR.instances.editApplyProcess.destroy(true);
+            }
+            CKEDITOR.replace('editSchpDescription', { versionCheck: false });
+            CKEDITOR.replace('editApplyProcess', { versionCheck: false });
 
             // Populate modal with scholarship details
-            $('#editSchpDescription').val(response.schp_description);
-            $('#editApplyProcess').val(response.apply_process);
+            CKEDITOR.instances.editSchpDescription.setData(response.schp_description || '');
+            CKEDITOR.instances.editApplyProcess.setData(response.apply_process || '');
 
             // Show the modal
             $('#editScholarshipModal').modal('show');

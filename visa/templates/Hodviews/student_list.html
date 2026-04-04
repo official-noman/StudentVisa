@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@10"></link>
   <link rel="stylesheet" href="{% static 'assets/css/student_list.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/dist/css/student_list_premium.css' %}?v=20260404b">
   <style>
     
     .close-icon-div{
@@ -62,10 +63,40 @@
 
 {% endblock custom_css %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
+<div class="content-wrapper student-list-shell">
+    <div class="student-list-inner">
+        <section class="student-list-hero">
+            <div class="student-list-hero-grid">
+                <div>
+                    <span class="student-list-badge">
+                        <i class="mdi mdi-account-group-outline"></i>
+                        Student Leads
+                    </span>
+                    <h1>Review available students, lead tiers, and contact unlock flow from one workspace.</h1>
+                    <p>
+                        This screen keeps your lead pipeline organized across My Lead and tier-based student access.
+                        All existing modal, view, and proceed logic remains unchanged.
+                    </p>
+                </div>
+                <div class="student-list-stats">
+                    <div class="student-list-stat">
+                        <span class="label">My Lead</span>
+                        <span class="value">{{ my_lead_included|length }}</span>
+                    </div>
+                    <div class="student-list-stat">
+                        <span class="label">Pipeline Rows</span>
+                        <span class="value">{{ student_levels|length }}</span>
+                    </div>
+                    <div class="student-list-stat">
+                        <span class="label">Lead Tiers</span>
+                        <span class="value">5 Levels</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="student-list-panel">
+            <div class="card student-list-card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Your Student List</h4>
                     <!-- Lead Buttons -->
@@ -165,8 +196,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+</div>
 </div>
 
 
@@ -494,7 +525,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 <div id="popup-container" class="popup-container">
     <div class="popup">
