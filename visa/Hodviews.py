@@ -27,6 +27,15 @@ from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.files.storage import default_storage
 
+
+def normalize_public_url(value):
+    value = (value or "").strip()
+    if not value:
+        return ""
+    if not value.startswith(("http://", "https://")):
+        value = f"https://{value.lstrip('/')}"
+    return value
+
 def is_consultant(user):
     return user.is_authenticated and user.user_type == 1
 
@@ -1245,10 +1254,24 @@ def update_social_links(request):
         consultant_details = None
 
     if request.method == 'POST':
-        consultant_facebook = request.POST.get('consultant_facebook')
-        consultant_website = request.POST.get('consultant_website')
-        consultant_twitter = request.POST.get('consultant_twitter')
-        consultant_googleplus = request.POST.get('consultant_googleplus')
+        consultant_facebook = normalize_public_url(
+            request.POST.get('consultant_facebook')
+        )
+        consultant_website = normalize_public_url(
+            request.POST.get('consultant_website')
+        )
+        consultant_twitter = normalize_public_url(
+            request.POST.get('consultant_twitter')
+        )
+        consultant_googleplus = normalize_public_url(
+            request.POST.get('consultant_googleplus')
+        )
+        consultant_youtube = normalize_public_url(
+            request.POST.get('consultant_youtube')
+        )
+        consultant_linkedin = normalize_public_url(
+            request.POST.get('consultant_linkedin')
+        )
 
         try:
             if consultant_details:
@@ -1256,6 +1279,8 @@ def update_social_links(request):
                 consultant_details.consultant_website = consultant_website
                 consultant_details.consultant_twitter = consultant_twitter
                 consultant_details.consultant_googleplus = consultant_googleplus
+                consultant_details.consultant_youtube = consultant_youtube
+                consultant_details.consultant_linkedin = consultant_linkedin
                 consultant_details.save()
             else:
                 consultant_details = get_consultant_details_instance(consultant, create=True)
@@ -1263,6 +1288,8 @@ def update_social_links(request):
                 consultant_details.consultant_website = consultant_website
                 consultant_details.consultant_twitter = consultant_twitter
                 consultant_details.consultant_googleplus = consultant_googleplus
+                consultant_details.consultant_youtube = consultant_youtube
+                consultant_details.consultant_linkedin = consultant_linkedin
                 consultant_details.save()
 
             success_message = "Social links successfully updated."

@@ -38,6 +38,14 @@
                         <span class="value">{% if consultant_details.consultant_twitter %}Connected{% else %}Pending{% endif %}</span>
                     </div>
                     <div class="consultant-social-stat">
+                        <span class="label">LinkedIn</span>
+                        <span class="value">{% if consultant_details.consultant_linkedin %}Connected{% else %}Pending{% endif %}</span>
+                    </div>
+                    <div class="consultant-social-stat">
+                        <span class="label">YouTube</span>
+                        <span class="value">{% if consultant_details.consultant_youtube %}Connected{% else %}Pending{% endif %}</span>
+                    </div>
+                    <div class="consultant-social-stat">
                         <span class="label">Google+</span>
                         <span class="value">{% if consultant_details.consultant_googleplus %}Connected{% else %}Pending{% endif %}</span>
                     </div>
@@ -56,28 +64,66 @@
                             <i class="fab fa-facebook-f"></i>
                             <div class="consultant-social-preview-copy">
                                 <span class="label">Facebook</span>
-                                <span class="value {% if not consultant_details.consultant_facebook %}empty{% endif %}">{{ consultant_details.consultant_facebook|default_if_none:"Not added yet" }}</span>
+                                {% if consultant_details.consultant_facebook %}
+                                <a href="{{ consultant_details.consultant_facebook }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_facebook }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
                             </div>
                         </li>
                         <li>
                             <i class="fas fa-globe"></i>
                             <div class="consultant-social-preview-copy">
                                 <span class="label">Website</span>
-                                <span class="value {% if not consultant_details.consultant_website %}empty{% endif %}">{{ consultant_details.consultant_website|default_if_none:"Not added yet" }}</span>
+                                {% if consultant_details.consultant_website %}
+                                <a href="{{ consultant_details.consultant_website }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_website }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
                             </div>
                         </li>
                         <li>
                             <i class="fab fa-x-twitter"></i>
                             <div class="consultant-social-preview-copy">
                                 <span class="label">Twitter</span>
-                                <span class="value {% if not consultant_details.consultant_twitter %}empty{% endif %}">{{ consultant_details.consultant_twitter|default_if_none:"Not added yet" }}</span>
+                                {% if consultant_details.consultant_twitter %}
+                                <a href="{{ consultant_details.consultant_twitter }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_twitter }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fab fa-linkedin-in"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">LinkedIn</span>
+                                {% if consultant_details.consultant_linkedin %}
+                                <a href="{{ consultant_details.consultant_linkedin }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_linkedin }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fab fa-youtube"></i>
+                            <div class="consultant-social-preview-copy">
+                                <span class="label">YouTube</span>
+                                {% if consultant_details.consultant_youtube %}
+                                <a href="{{ consultant_details.consultant_youtube }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_youtube }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
                             </div>
                         </li>
                         <li>
                             <i class="fab fa-google-plus-g"></i>
                             <div class="consultant-social-preview-copy">
                                 <span class="label">Google+</span>
-                                <span class="value {% if not consultant_details.consultant_googleplus %}empty{% endif %}">{{ consultant_details.consultant_googleplus|default_if_none:"Not added yet" }}</span>
+                                {% if consultant_details.consultant_googleplus %}
+                                <a href="{{ consultant_details.consultant_googleplus }}" target="_blank" rel="noopener noreferrer" class="value">{{ consultant_details.consultant_googleplus }}</a>
+                                {% else %}
+                                <span class="value empty">Not added yet</span>
+                                {% endif %}
                             </div>
                         </li>
                     </ul>
@@ -136,6 +182,18 @@
                             <label for="consultant_twitter"><i class="fab fa-twitter-square"></i> Twitter</label>
                             <input type="text" id="consultant_twitter" name="consultant_twitter" value="{{ consultant_details.consultant_twitter|default_if_none:'' }}">
                             <p class="consultant-social-example">Example: https://twitter.com/IGLWebLtd</p>
+                        </div>
+
+                        <div class="consultant-social-field">
+                            <label for="consultant_linkedin"><i class="fab fa-linkedin"></i> LinkedIn</label>
+                            <input type="text" id="consultant_linkedin" name="consultant_linkedin" value="{{ consultant_details.consultant_linkedin|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://www.linkedin.com/company/igl-web-ltd</p>
+                        </div>
+
+                        <div class="consultant-social-field">
+                            <label for="consultant_youtube"><i class="fab fa-youtube"></i> YouTube</label>
+                            <input type="text" id="consultant_youtube" name="consultant_youtube" value="{{ consultant_details.consultant_youtube|default_if_none:'' }}">
+                            <p class="consultant-social-example">Example: https://www.youtube.com/@StudentVisaBD</p>
                         </div>
 
                         <div class="consultant-social-field">

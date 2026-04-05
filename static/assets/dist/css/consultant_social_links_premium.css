@@ -226,6 +226,12 @@
     line-height: 1.6;
     color: var(--csl-text);
     overflow-wrap: anywhere;
+    text-decoration: none;
+}
+
+.consultant-social-preview-copy a.value:hover {
+    color: var(--csl-primary);
+    text-decoration: underline;
 }
 
 .consultant-social-preview-copy .value.empty {

@@ -539,15 +539,31 @@ iframe[Attributes Style] {
                                             
                               
                             <ul class="social-links clearfix">
-                                <li><a href="index.html"><i class="fab fa-twitter"></i></a></li>
+                                <li>
+                                    <a href="{{ consultant_details.consultant_twitter|default:'#' }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                </li>
                                 <li>
                                     <a href="{{ consultant_details.consultant_facebook|default:'#' }}" target="_blank" rel="noopener noreferrer">
                                         <i class="fab fa-facebook-f"></i>
                                     </a>
                                 </li>
-                                <li><a href="index.html"><i class="fab fa-instagram"></i></a></li>
-                                <li><a href="index.html"><i class="fab fa-google-plus-g"></i></a></li>
-                                <li><a href="index.html"><i class="fab fa-linkedin-in"></i></a></li>
+                                <li>
+                                    <a href="{{ consultant_details.consultant_website|default:'#' }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-globe"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ consultant_details.consultant_youtube|default:'#' }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-youtube"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ consultant_details.consultant_linkedin|default:'#' }}" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>

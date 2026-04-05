@@ -294,6 +294,8 @@ class ConsultantDetails(models.Model):
     consultant_website = models.CharField(max_length=150, blank=True, null=True)
     consultant_twitter = models.CharField(max_length=50, blank=True, null=True)
     consultant_googleplus = models.CharField(max_length=50, blank=True, null=True)
+    consultant_youtube = models.CharField(max_length=150, blank=True, null=True)
+    consultant_linkedin = models.CharField(max_length=150, blank=True, null=True)
     consultant_countries = models.ManyToManyField(
         Countries, related_name="consultant_details", null=True
     )
