@@ -113,7 +113,7 @@
                 <!-- Image Container (Fixed Aspect Ratio) -->
                 <div class="sp-img-container">
                     {% if country.country_flag %}
-                    <img src="/static/assets/countries/flags/{{ country.country_flag }}" 
+                    <img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}" 
                          alt="{{ country.country_name }}" 
                          class="sp-flag-img"
                          onerror="this.onerror=function(){this.onerror=null;this.src='{% static 'assets/countries/flags/placeholder.svg' %}';};this.src='/static/assets/countries/flags/{{ country.country_flag }}';">

@@ -420,13 +420,10 @@
               <!-- Image (Fixed: Using country_flag CharField) -->
               <div class="card-img-wrap">
                 {% if country.country_flag %}
-                  <img src="{% static 'assets/countries/flags/' %}{{ country.country_flag }}" 
-     alt="{{ country.country_name }}"
-     class="country-img"
-     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                  <div class="img-placeholder" style="display:none;">
-                    <i class="bi bi-globe-europe-africa"></i>
-                  </div>
+                  <img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}"
+                       alt="{{ country.country_name }}"
+                       class="country-img"
+                       onerror="this.onerror=function(){this.onerror=null;this.src='{% static 'assets/countries/flags/placeholder.svg' %}';};this.src='{% static 'assets/countries/flags/' %}{{ country.country_flag }}';">
                 {% else %}
                   <div class="img-placeholder">
                     <i class="bi bi-globe-europe-africa"></i>

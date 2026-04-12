@@ -133,7 +133,10 @@
               <tr>
                 <td style="display: flex; align-items: center; font-weight: 700;">
                   {% if step.country.country_flag %}
-                    <img src="/static/assets/countries/flags/{{ step.country.country_flag }}" class="flag-avatar me-2" alt="flag">
+                    <img src="{% static 'assets/countries/flags-medium/' %}{{ step.country.country_flag }}" 
+                         class="flag-avatar me-2" 
+                         alt="flag"
+                         onerror="this.onerror=function(){this.onerror=null;this.src='{% static 'assets/countries/flags/placeholder.svg' %}';};this.src='{% static 'assets/countries/flags/' %}{{ step.country.country_flag }}';">
                   {% endif %}
                   {{ step.country.country_name }} <span class="ms-2 badge bg-primary" style="font-size: 12px; border-radius: 20px;">Step {{ step.step_number }}</span>
                 </td>
