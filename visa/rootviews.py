@@ -684,6 +684,16 @@ def offer_letters(request):
 
 @login_required
 @root_required
+@require_POST
+def delete_offer_letter(request, item_id):
+    item = get_object_or_404(OfferLetters, pk=item_id)
+    item.delete()
+    messages.success(request, "Offer letter deleted successfully.")
+    return redirect("offer_letters")
+
+
+@login_required
+@root_required
 def root_countries(request):
     # Fetch the list of countries
     country_list = Countries.objects.all()
@@ -848,13 +858,22 @@ def country_wise_scholarship_list(request):
     # Fetch related country information for each scholarship
     scholarship_data = []
     for scholarship in scholarships:
-        country = Countries.objects.get(country_id=scholarship.scw_country_id)
-        scholarship_data.append(
-            {
-                "scholarship": scholarship,
-                "country_name": country.country_name,
-            }
-        )
+        country = Countries.objects.filter(country_id=scholarship.scw_country_id).first()
+        if country:
+            scholarship_data.append(
+                {
+                    "scholarship": scholarship,
+                    "country_name": country.country_name,
+                }
+            )
+        else:
+            # Optional: handle scholarships with missing countries
+            scholarship_data.append(
+                {
+                    "scholarship": scholarship,
+                    "country_name": "Unknown Country (Deleted)",
+                }
+            )
 
     return render(
         request,

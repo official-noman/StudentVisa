@@ -304,6 +304,32 @@ input[type="file"].form-control::file-selector-button:hover {
   box-shadow: 0 5px 15px -5px rgba(37, 99, 235, 0.5);
 }
 
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.page-btn-danger {
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 220px;
+}
+
+.page-btn-danger:hover {
+  transform: translateY(-2px);
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: 0 15px 30px -8px rgba(239, 68, 68, 0.18);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .content-wrapper {
@@ -315,6 +341,11 @@ input[type="file"].form-control::file-selector-button:hover {
   }
   
   .page-btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .page-btn-danger {
     width: 100%;
     text-align: center;
   }
@@ -486,6 +517,17 @@ input[type="file"].form-control::file-selector-button:hover {
                 Create Offer Letter
               {% endif %}
             </button>
+
+            {% if instance %}
+              <button
+                type="button"
+                class="page-btn page-btn-danger btn-delete-offer-letter"
+                data-id="{{ instance.id }}"
+                data-url="{% url 'delete_offer_letter' instance.id %}"
+              >
+                Delete Offer Letter
+              </button>
+            {% endif %}
           </div>
         </form>
       </div>
@@ -496,11 +538,27 @@ input[type="file"].form-control::file-selector-button:hover {
 
 {% block custom_js %}
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+  // CSRF token helper
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
   CKEDITOR.replace('description', {
     height: 300,
     versionCheck: false,
-    // Additional CKEditor configuration for better mobile experience
     toolbarGroups: [
       { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
       { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
@@ -518,14 +576,53 @@ input[type="file"].form-control::file-selector-button:hover {
     removeButtons: 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,TextColor,BGColor,Maximize,ShowBlocks,About'
   });
 
-  // Optional: Add smooth scroll to form on error
+  // Delete Offer Letter with SweetAlert
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('btn-delete-offer-letter')) {
+      const deleteUrl = e.target.getAttribute('data-url');
+      
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it!',
+        padding: '2em',
+        customClass: {
+          popup: 'swal2-premium-popup',
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Send POST request for deletion
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = deleteUrl;
+          
+          const csrfInput = document.createElement('input');
+          csrfInput.type = 'hidden';
+          csrfInput.name = 'csrfmiddlewaretoken';
+          csrfInput.value = getCookie('csrftoken');
+          
+          form.appendChild(csrfInput);
+          document.body.appendChild(form);
+          form.submit();
+        }
+      });
+    }
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('error') || document.querySelector('.alert')) {
-      document.querySelector('.page-card').scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      });
+      const card = document.querySelector('.page-card');
+      if (card) {
+        card.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
     }
   });
 </script>

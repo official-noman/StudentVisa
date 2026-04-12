@@ -26,6 +26,7 @@ from django.views.static import serve
 
 urlpatterns =[
     path('root/manage-procedure/', rootviews.manage_procedure, name='manage_procedure'),
+    path("root/delete-offer-letter/<int:item_id>/", rootviews.delete_offer_letter, name="delete_offer_letter"),
     path('scholarship-procedures/', views.scholarship_procedure_list, name='scholarship_procedure_list'),
     path('scholarship-procedure/<int:country_id>/', views.procedure_detail, name='procedure_detail'),
     path("", views.home, name="home"),

@@ -26,6 +26,120 @@
     .content-div {
         flex-grow: 1; /* Take up the remaining space */
     }
+
+    /* Premium SaaS look */
+    .ol-shell {
+        --ol-radius: 16px;
+        --ol-text: #0f172a;
+        --ol-muted: #64748b;
+        --ol-border: rgba(15, 23, 42, 0.10);
+        --ol-glass: rgba(255, 255, 255, 0.72);
+        font-family: "Sora", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .ol-glass {
+        background: var(--ol-glass);
+        border: 1px solid var(--ol-border);
+        border-radius: var(--ol-radius);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .ol-card-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 18px 0 18px;
+    }
+
+    .ol-title {
+        margin: 0;
+        color: var(--ol-text);
+        font-weight: 800;
+        letter-spacing: 0.2px;
+    }
+
+    .ol-subtitle {
+        margin: 6px 0 0 0;
+        color: var(--ol-muted);
+        font-weight: 500;
+    }
+
+    .ol-card-body {
+        padding: 16px 18px 18px 18px;
+    }
+
+    .ol-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .ol-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--ol-border);
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--ol-text);
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .ol-btn:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        transform: translateY(-1px);
+    }
+
+    .ol-btn-danger {
+        border-color: rgba(239, 68, 68, 0.25);
+        color: #b91c1c;
+        background: rgba(239, 68, 68, 0.06);
+    }
+
+    .ol-steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .ol-step {
+        border-radius: 14px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.65);
+        padding: 14px 12px;
+        text-align: left;
+    }
+
+    .ol-step .icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: rgba(13, 110, 253, 0.10);
+        border: 1px solid rgba(13, 110, 253, 0.18);
+        margin-bottom: 10px;
+    }
+
+    .ol-step h4 {
+        margin: 0;
+        color: var(--ol-text);
+        font-weight: 800;
+        font-size: 15px;
+        line-height: 1.25;
+    }
+
+    @media (max-width: 991.98px) {
+        .ol-steps { grid-template-columns: 1fr; }
+    }
 </style>
 
 {% endblock custom_css %}
@@ -52,7 +166,7 @@
         <!--End Page Title-->
 
         <!-- contact-page-section -->
-        <div class="sidebar-page-container">
+        <div class="sidebar-page-container ol-shell">
             <div class="auto-container">
                 <div class="row clearfix px-0">
                     <div class="sidebar-side col-lg-4">
@@ -173,7 +287,7 @@
                         </div> 
                     </div>
                     <div class="col-lg-8">
-                        <div class="coaching-details-content service-details-content">
+                        <div class="coaching-details-content service-details-content ol-glass">
                             {% if offer_letters %}
                             {% with offer_letter=offer_letters.0 %}
                             <div class="content-style-one">
@@ -182,18 +296,37 @@
                                     <img src="{% if offer_letter.image %}{{ offer_letter.image.url }}{% else %}{% static 'assets/images/service-14.jpg' %}{% endif %}" alt=""> {% endcomment %}
                                     
                                     
-                                <div class="group-title">
-                                    <h2>Students Visa By Offer Letter</h2>
-                                    <div class="dotted-box">
-                                        <span class="dotted"></span>
-                                        <span class="dotted"></span>
-                                        <span class="dotted"></span>
+                                <div class="ol-card-head">
+                                    <div>
+                                        <h2 class="ol-title">Students Visa By Offer Letter</h2>
+                                        <p class="ol-subtitle">High-trust, step-by-step guidance in a premium portal layout.</p>
                                     </div>
                                 </div>
-                                <div class="text">
-                                    <h3>{{offer_letter.title}}</h3>
-                                    <p>{{ offer_letter.description | safe }}</p>
+                                <div class="ol-card-body">
+                                    {% if offer_letter.image %}
+                                    <div class="mb-4 text-center">
+                                        <img src="{{ offer_letter.image.url }}" alt="{{ offer_letter.title }}" style="max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                                    </div>
+                                    {% endif %}
+                                    <div class="text">
+                                        <h3 style="margin:0 0 10px 0; color:#0f172a; font-weight:800;">{{offer_letter.title}}</h3>
+                                        <div style="color:#334155; font-weight:500;">{{ offer_letter.description | safe }}</div>
+                                    </div>
 
+                                    <div class="ol-steps">
+                                        <div class="ol-step">
+                                            <div class="icon-box"><i class="flaticon-document"></i></div>
+                                            <h4>Fill In The<br/>Required Form</h4>
+                                        </div>
+                                        <div class="ol-step">
+                                            <div class="icon-box"><i class="flaticon-copy"></i></div>
+                                            <h4>Submit Your<br/>Original Documents</h4>
+                                        </div>
+                                        <div class="ol-step">
+                                            <div class="icon-box"><i class="flaticon-send"></i></div>
+                                            <h4>Get Support<br/>From Our Team</h4>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             {% endwith %}

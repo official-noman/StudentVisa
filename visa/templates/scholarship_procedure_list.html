@@ -1,29 +1,141 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="auto-container py-5" style="max-width: 1150px !important; margin: auto;">
-    <div class="text-center mb-5">
-        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; color: #1E293B;">Select Country</h2>
-        <p style="color: #64748B;">Choose a country to view its scholarship procedure timeline</p>
+
+<!-- Premium SaaS Font Integration -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* Premium Light SaaS Styles */
+  .sp-wrapper {
+    background-color: #f8fafc;
+    min-height: 80vh;
+    padding: 60px 0 !important;
+  }
+  
+  .sp-header-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 2.5rem;
+    letter-spacing: -0.03em;
+    margin-bottom: 15px;
+  }
+
+  .sp-header-subtitle {
+    color: #64748b;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 50px auto;
+  }
+
+  .sp-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .sp-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+  }
+
+  /* Fixed Rectangular Image Container to prevent Pixelation */
+  .sp-img-container {
+    width: 100%;
+    height: 160px; /* Uniform height like By Country page */
+    background-color: #f1f5f9;
+    overflow: hidden;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .sp-flag-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Keeps proportion, prevents stretching */
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .sp-card:hover .sp-flag-img {
+    transform: scale(1.05);
+  }
+
+  .sp-card-content {
+    padding: 20px 15px;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+
+  .sp-country-title {
+    margin: 0;
+    font-family: 'Sora', 'Inter', sans-serif;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .empty-state {
+    padding: 60px;
+    background: #fff;
+    border-radius: 20px;
+    border: 2px dashed #e2e8f0;
+    width: 100%;
+  }
+</style>
+
+<div class="container-fluid px-2 sp-wrapper">
+    <!-- Header Section -->
+    <div class="text-center">
+        <h2 class="sp-header-title">Scholarship Procedures</h2>
+        <p class="sp-header-subtitle">Select a destination to explore detailed, step-by-step scholarship application timelines and requirements.</p>
     </div>
-    <div class="row">
+
+    <!-- Cards Grid -->
+    <div class="row g-2 g-md-3"> <!-- Small grid gap for tight rectangular look -->
         {% for country in countries %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <a href="{% url 'procedure_detail' country.country_id %}" 
-               class="card text-center text-decoration-none shadow-sm h-100" 
-               style="border-radius: 12px; border: 1px solid rgba(15,23,42,0.08); transition: 0.3s; padding: 20px;">
-                <div class="card-body">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <a href="{% url 'procedure_detail' country.country_id %}" class="sp-card">
+                <!-- Image Container (Fixed Aspect Ratio) -->
+                <div class="sp-img-container">
                     {% if country.country_flag %}
                     <img src="/static/assets/countries/flags/{{ country.country_flag }}" 
-                         alt="flag" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #f1f5f9;">
+                         alt="{{ country.country_name }}" 
+                         class="sp-flag-img"
+                         onerror="this.onerror=function(){this.onerror=null;this.src='{% static 'assets/countries/flags/placeholder.svg' %}';};this.src='/static/assets/countries/flags/{{ country.country_flag }}';">
+                    {% else %}
+                    <img src="{% static 'assets/countries/flags/placeholder.svg' %}" class="sp-flag-img" alt="Placeholder">
                     {% endif %}
-                    <h5 style="color: #1E293B; font-weight: 600; margin: 0;">{{ country.country_name }}</h5>
+                </div>
+                
+                <!-- Text Content Area -->
+                <div class="sp-card-content">
+                    <h5 class="sp-country-title">{{ country.country_name }}</h5>
                 </div>
             </a>
         </div>
         {% empty %}
-        <div class="col-12 text-center text-muted">No procedures have been added yet.</div>
+        <div class="col-12">
+            <div class="empty-state text-center">
+                <p class="mb-0 text-muted">No scholarship procedures have been listed yet. Please check back later.</p>
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
+
 {% endblock %}

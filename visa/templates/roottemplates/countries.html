@@ -356,8 +356,9 @@
 
                     <button
                       type="button"
-                      class="btn btn-sm btn-soft-danger"
-                      onclick="deleteCountry({{ country.country_id }})"
+                      class="btn btn-sm btn-soft-danger btn-delete-country"
+                      data-id="{{ country.country_id }}"
+                      data-url="{% url 'delete_country' country.country_id %}"
                       title="Delete"
                     >
                       Delete
@@ -412,43 +413,45 @@
     });
   });
 
-  function deleteCountry(countryId) {
+  $(document).on('click', '.btn-delete-country', function() {
+    const countryId = $(this).data('id');
+    const deleteUrl = $(this).data('url');
+
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You won\\'t be able to revert this!',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      padding: '2em',
     }).then((result) => {
-      if (!result.isConfirmed) return;
-
-      fetch('/delete_country/' + countryId + '/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          if (countryTable) {
-            countryTable.row($('#country-row-' + countryId)).remove().draw(false);
-          } else {
-            location.reload();
+      if (result.isConfirmed) {
+        $.ajax({
+          url: deleteUrl,
+          type: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          success: function(response) {
+            if (response.success) {
+              if (countryTable) {
+                countryTable.row($('#country-row-' + countryId)).remove().draw(false);
+              } else {
+                $('#country-row-' + countryId).fadeOut(400, function() { $(this).remove(); });
+              }
+              Swal.fire('Deleted!', response.message || 'Country deleted successfully.', 'success');
+            } else {
+              Swal.fire('Error', response.message || 'Failed to delete country.', 'error');
+            }
+          },
+          error: function() {
+            Swal.fire('Error', 'An error occurred while deleting the country.', 'error');
           }
-
-          Swal.fire('Deleted!', data.message || 'Country deleted successfully.', 'success');
-        } else {
-          Swal.fire('Error', data.message || 'Failed to delete country.', 'error');
-        }
-      })
-      .catch(() => {
-        Swal.fire('Error', 'An error occurred while deleting the country.', 'error');
-      });
+        });
+      }
     });
-  }
+  });
 </script>
 {% endblock custom_js %}

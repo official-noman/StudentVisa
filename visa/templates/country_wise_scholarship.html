@@ -21,6 +21,78 @@
 <link href="{% static 'assets/css/color/theme-color.css' %}" id="jssDefault" rel="stylesheet">
 
 <link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet">
+<style>
+    /* Premium Country Wise Scholarship cards */
+    .cws-cards-row {
+        --bs-gutter-x: 2px;
+        --bs-gutter-y: 2px;
+        margin-left: -1px !important;
+        margin-right: -1px !important;
+    }
+
+    .cws-card-col {
+        padding-left: 1px !important;
+        padding-right: 1px !important;
+        margin-bottom: 2px !important;
+        display: flex;
+    }
+
+    .cws-card {
+        background: #ffffff !important;
+        border-radius: 16px !important;
+        overflow: hidden;
+        border: 1px solid rgba(17, 24, 39, 0.06);
+        transition: box-shadow 0.2s ease;
+    }
+
+    .cws-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .cws-card .image-box {
+        margin: 0;
+        flex: 0 0 auto;
+    }
+
+    .cws-card .image-box a {
+        display: block;
+    }
+
+    .cws-card .image-box img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .cws-card .lower-content {
+        padding: 18px 18px 16px !important;
+    }
+
+    .cws-card .lower-content h3 {
+        margin: 0 0 12px 0;
+        font-size: 1.05rem;
+        line-height: 1.35;
+    }
+
+    .cws-card .lower-content h3 a {
+        color: #111827;
+        text-decoration: none;
+    }
+
+    .cws-card .lower-content h3 a:hover {
+        color: #0d6efd;
+    }
+
+    .cws-card .link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #0d6efd;
+        text-decoration: none;
+    }
+</style>
 {% endblock custom_css %}
 
 {% block content %}
@@ -79,31 +151,29 @@
 
         <!-- news-section -->
         <section class="news-section blog-grid sec-pad-2">
-            <div class="auto-container">
-                <div class="row justify-content-start">
+            <div class="container-fluid px-0">
+                <div class="row justify-content-start align-items-stretch cws-cards-row">
                     {% if country_wise %}
                     {% for scholarship in country_wise %}
-                        <div class="col-lg-4 col-md-6 col-sm-12 news-block">
-                            <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms">
-                                <div class="inner-box">
-                                    <figure class="image-box">
-                                        <a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">
-                                            {% if scholarship.scw_image %}
-                                                <img src="{{ scholarship.scw_image.url }}" alt="{{ scholarship.scw_title }}">
-                                            {% else %}
-                                                <img src="/static/images/placeholder.png" alt="No image available">
-                                            {% endif %}
-                                        </a>
-                                    </figure>
-                                    <div class="lower-content">
-                                        <div class="post-date">
-                                            <h2>{{ scholarship.created_at|date:"d" }}</h2>
-                                            <span>{{ scholarship.created_at|date:"M" }}</span>
-                                        </div>
-                                        <h3><a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">{{ scholarship.scw_title }}</a></h3>
-                                        <div class="link">
-                                            <a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">Learn More<i class="flaticon-send"></i></a>
-                                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12 news-block cws-card-col">
+                            <div class="cws-card h-100 d-flex flex-column w-100 wow fadeInUp animated animated" data-wow-delay="00ms" data-wow-duration="1500ms">
+                                <figure class="image-box">
+                                    <a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">
+                                        {% if scholarship.scw_image %}
+                                            <img src="{{ scholarship.scw_image.url }}" alt="{{ scholarship.scw_title }}">
+                                        {% else %}
+                                            <img src="/static/images/placeholder.png" alt="No image available">
+                                        {% endif %}
+                                    </a>
+                                </figure>
+                                <div class="lower-content d-flex flex-column flex-grow-1">
+                                    <h3><a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">{{ scholarship.scw_title }}</a></h3>
+                                    <div class="cws-date d-none">
+                                        <span>{{ scholarship.created_at|date:"d" }}</span>
+                                        <span>{{ scholarship.created_at|date:"M" }}</span>
+                                    </div>
+                                    <div class="link mt-auto">
+                                        <a href="{% url 'country_wise_scholarship_single' scw_id=scholarship.scw_id %}">Learn More<i class="flaticon-send"></i></a>
                                     </div>
                                 </div>
                             </div>

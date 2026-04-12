@@ -448,50 +448,57 @@
     }
 
     $(document).ready(function () {
-      const scholarshipTable = $('#scholarshiplist').DataTable({
-        pageLength: 10,
-        order: [[0, 'desc']]
-      });
+      let scholarshipTable;
+      try {
+        scholarshipTable = $('#scholarshiplist').DataTable({
+          pageLength: 10,
+          order: [[0, 'desc']]
+        });
+      } catch (e) {
+        console.warn("DataTable initialization failed, falling back to standard row removal.", e);
+      }
 
-      $('#scholarshiplist tbody').on('click', 'a.delete-scholarship', function (e) {
+      $(document).on('click', '.delete-scholarship', function (e) {
         e.preventDefault();
         const scwId = $(this).data('scw-id');
+        const rowElement = $('#row_' + scwId);
 
         Swal.fire({
           title: 'Are you sure?',
-          text: 'You won\\'t be able to revert this!',
+          text: "You won't be able to revert this!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
           cancelButtonColor: '#3085d6',
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
-          if (!result.isConfirmed) return;
-          deleteScholarship(scwId);
-        });
-      });
-
-      function deleteScholarship(scwId) {
-        $.ajax({
-          url: '/delete-scholarship/' + scwId + '/',
-          method: 'POST',
-          dataType: 'json',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          success: function (data) {
-            if (data.success) {
-              scholarshipTable.row($('#row_' + scwId)).remove().draw(false);
-              Swal.fire('Deleted!', 'Scholarship has been deleted.', 'success');
-            } else {
-              Swal.fire('Error!', 'Failed to delete scholarship. ' + (data.message || ''), 'error');
-            }
-          },
-          error: function () {
-            Swal.fire('Error!', 'An error occurred during the AJAX request.', 'error');
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '/delete-scholarship/' + scwId + '/',
+              method: 'POST',
+              dataType: 'json',
+              headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+              },
+              success: function (data) {
+                if (data.success) {
+                  if (scholarshipTable) {
+                    scholarshipTable.row(rowElement).remove().draw(false);
+                  } else {
+                    rowElement.fadeOut(400, function() { $(this).remove(); });
+                  }
+                  Swal.fire('Deleted!', 'Scholarship has been deleted.', 'success');
+                } else {
+                  Swal.fire('Error!', 'Failed to delete scholarship. ' + (data.message || ''), 'error');
+                }
+              },
+              error: function () {
+                Swal.fire('Error!', 'An error occurred during the AJAX request.', 'error');
+              }
+            });
           }
         });
-      }
+      });
     });
   </script>
 {% endblock custom_js %}
