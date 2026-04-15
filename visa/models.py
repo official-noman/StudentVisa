@@ -1149,7 +1149,26 @@ class Users(models.Model):
             )
             new_name = new_name.replace("_", "-")
             self.consultant_img.name = new_name
+
         super().save(*args, **kwargs)
+
+
+class TopConsultant(models.Model):
+    consultant = models.OneToOneField(
+        Users, 
+        on_delete=models.SET_NULL, 
+        
+        related_name="top_featured",
+        db_constraint=False
+    )
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return self.consultant.full_name
 
 
 # class StudentViewLog(models.Model):

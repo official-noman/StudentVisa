@@ -1,723 +1,453 @@
-{% extends 'base.html' %} {% load static %}
+{% extends 'base.html' %} 
+{% load static %}
 
 {% block custom_css %}
+<!-- Premium Fonts Integration -->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-    .process-explanation-div {
-        max-height: 170px;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 6;
-        line-clamp: 6;
-        -webkit-box-orient: vertical;
+    :root {
+        --saas-primary: #2563eb;
+        --saas-secondary: #64748b;
+        --saas-dark: #0f172a;
+        --saas-bg: #f8fafc;
+        --saas-border: #e2e8f0;
+        --saas-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        --saas-card-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
     }
 
-    .product {
-        border-radius: 0 0 4px 4px;
-    }
+    body { font-family: 'Inter', sans-serif; background-color: var(--saas-bg); }
 
-    .process-explanation-text {
-        color: rgb(0, 0, 0);
-        font-size: 15px;
-        font-weight: 500;
-        text-decoration: none;
-        display: -webkit-box;
-        -webkit-line-clamp: 6;
-        line-clamp: 6;
-        -webkit-box-orient: vertical;
-    }
-
-    .content-div {
-        width: 100%;
-        max-width: 950px;
-    }
-
-    .service-block-two .inner-box .lower-content {
-        height: 275px;
-    }
-
-    .sec-title:before {
-        position: absolute;
-        content: '';
-        width: 40px;
-        height: 3px;
-        left: 0;
-        bottom: 0px;
-    }
-
-    .sec-title:before {
-        background: white;
-    }
-
-    @media(min-width: 993px) {
-        .image-column-mobile-view {
-            display: none;
-        }
-    }
-
-    @media(max-width: 992px) {
-        .image-column {
-            display: none;
-        }
-    }
-    /* New Professional Visa Card CSS */
-    .visa-card {
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+    /* ── Premium Hero Banner ── */
+    .banner-section.style-two {
         padding: 0;
-        border: 1px solid rgba(0,0,0,0.05) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-top: 0 !important;
     }
-    .visa-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.12) !important;
+    .cover-image {
+        min-height: 600px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        position: relative;
     }
-    .visa-img-wrapper {
-        height: 220px;
+    .cover-image::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.2) 100%);
+    }
+    .welcome-text-div {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        color: #fff;
+    }
+    .welcome-text-div h1 {
+        font-family: 'Sora', sans-serif;
+        font-weight: 800;
+        font-size: 3.5rem;
+        line-height: 1.1;
+        margin-bottom: 20px;
+    }
+    .welcome-text {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* ── Professional Section Titles ── */
+    .sec-title { margin-bottom: 50px; position: relative; }
+    .sec-title h2 { 
+        font-family: 'Sora', sans-serif; font-weight: 800; 
+        color: var(--saas-dark); font-size: 2.5rem; 
+    }
+
+    /* ── Premium Showcase Styles ── */
+    .service-showcase-section .sec-title h2 span {
+        font-weight: 300;
+        color: var(--saas-secondary);
+    }
+    
+    .showcase-card {
+        display: block;
+        text-decoration: none !important;
+        padding: 10px;
+    }
+
+    .card-inner {
+        background: #fff;
+        border-radius: 28px;
+        border: 1px solid var(--saas-border);
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .image-wrap {
+        height: 240px;
         overflow: hidden;
         position: relative;
     }
-    .visa-img-wrapper img {
+
+    .image-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s;
+        transition: 0.8s ease;
     }
-    .visa-card:hover .visa-img-wrapper img {
+
+    .hover-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(37, 99, 235, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.4s;
+        backdrop-filter: blur(4px);
+    }
+
+    .hover-overlay span {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transform: translateY(20px);
+        transition: 0.4s;
+    }
+
+    .showcase-card:hover .card-inner {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.12);
+        border-color: var(--saas-primary);
+    }
+
+    .showcase-card:hover .image-wrap img {
         transform: scale(1.1);
     }
-    .visa-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(0, 123, 255, 0.9);
-        color: white;
-        padding: 4px 12px;
-        border-radius: 20px;
+
+    .showcase-card:hover .hover-overlay {
+        opacity: 1;
+    }
+
+    .showcase-card:hover .hover-overlay span {
+        transform: translateY(0);
+    }
+
+    .content-wrap {
+        padding: 30px;
+    }
+
+    .category-tag {
+        display: inline-block;
         font-size: 11px;
-        font-weight: bold;
-        z-index: 1;
+        font-weight: 800;
+        color: var(--saas-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
     }
-    .btn-details {
-        border-radius: 30px;
-        font-weight: 600;
-        padding: 8px 25px;
+
+    .content-wrap h4 {
+        font-family: 'Sora', sans-serif;
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--saas-dark);
+        margin-bottom: 12px;
+    }
+
+    .content-wrap p {
+        font-size: 0.95rem;
+        color: var(--saas-secondary);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Slider Nav */
+    .nav-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px solid var(--saas-border);
+        background: #fff;
+        color: var(--saas-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: 0.3s;
-        border: 2px solid #007bff;
+        cursor: pointer;
     }
-    .btn-details:hover {
-        background: #007bff;
-        color: white;
+
+    .nav-btn:hover {
+        background: var(--saas-primary);
+        color: #fff;
+        border-color: var(--saas-primary);
     }
+
+    /* Dots Styling */
+    .visa-services-carousel .owl-dots {
+        margin-top: 40px !important;
+    }
+    .visa-services-carousel .owl-dot span {
+        width: 12px !important;
+        height: 6px !important;
+        background: #cbd5e1 !important;
+        border-radius: 30px !important;
+        transition: 0.3s !important;
+    }
+    .visa-services-carousel .owl-dot.active span {
+        width: 30px !important;
+        background: var(--saas-primary) !important;
+    }
+
+    /* ── Top Consultant Section ── */
+    .team-section { background: #fff; padding: 100px 0; }
+    .consultant-premium-card {
+        background: #fff;
+        border-radius: 24px;
+        border: 1px solid var(--saas-border);
+        padding: 30px 20px;
+        text-align: center;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .consultant-premium-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border-color: var(--saas-primary);
+    }
+    .consultant-img-circle {
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .consultant-name {
+        font-family: 'Sora', sans-serif;
+        font-weight: 700; font-size: 19px; color: var(--saas-dark);
+        margin-bottom: 5px;
+    }
+    .consultant-company {
+        color: var(--saas-secondary);
+        font-size: 14px; font-weight: 500;
+        display: block;
+        margin-bottom: 12px;
+    }
+    .rating-stars { color: #facc15; margin-bottom: 20px; font-size: 13px; }
+
+    /* ── Process Explanation ── */
+    .about-style-two { padding: 100px 0; background: var(--saas-bg); }
+    .exp-img-box {
+        border-radius: 30px; overflow: hidden;
+        box-shadow: var(--saas-card-shadow);
+    }
+    .theme-btn-two {
+        background: var(--saas-dark); color: #fff !important;
+        padding: 15px 35px; border-radius: 50px; font-weight: 600;
+    }
+
+    /* Utility */
+    .centred { text-align: center; }
 </style>
 {% endblock custom_css %}
 
 {% block content %}
-<!-- banner-section -->
-<section class="banner-section mt-2 style-two">
-    <div class="cover-image">
-        <div class="d-flex">
-            <div class="welcome-text-div px-4">
-                <!--<h1><span class="welcome-text-heading">Welcome To Student Visa BD</span></h1>-->
-                {% if customize and customize.image %}
-                <p class="mt-3 welcome-text">{{ customize.description|safe }}</p>
-                <style>
-                    .cover-image {
-                        background-image: url('{{ customize.image.url }}');
-                    }
-                </style>
-                {% else %}
-                <p class="mt-3 welcome-text">Welcome to Student Visa BD</p>
-                {% endif %}
+<!-- Premium Banner Section -->
+<section class="banner-section style-two">
+    <div class="cover-image" style="background-image: url('{% if customize and customize.image %}{{ customize.image.url }}{% else %}{% static 'assets/images/banner/banner-1.jpg' %}{% endif %}');">
+        <div class="auto-container">
+            <div class="welcome-text-div">
+                <h1>Unlock Your Global <br>Education Potential</h1>
+                <div class="welcome-text">
+                    {% if customize %}
+                        {{ customize.description|safe }}
+                    {% else %}
+                        Welcome to Student Visa BD - Your trusted partner for international education and visa consultancy services.
+                    {% endif %}
+                </div>
             </div>
-
-            {% comment %} <div class="ad-section-div d-flex justify-content-end">
-                <img src="{% static 'assets/images/add1.jpg' %}" alt="">
-            </div> {% endcomment %}
         </div>
     </div>
 </section>
-<!-- banner-section end -->
 
-
-<!-- visa-services-section -->
-<!-- visa-services-section -->
+<!-- Visa Services Showcase Slider -->
 {% if visa_services %}
-<section class="service-style-two" style="padding: 60px 0; background-color: #f8f9fa;">
+<section class="service-showcase-section" style="padding: 100px 0; background: #fff; overflow: hidden;">
     <div class="auto-container">
-        <div class="sec-title centred">
-            <p>What We Offer</p>
-            <h2>Our Visa Services</h2>
-            <div class="dotted-box">
-                <span class="dotted"></span>
-                <span class="dotted"></span>
-                <span class="dotted"></span>
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div class="sec-title mb-0">
+                <h2 style="font-size: 2.8rem; font-family: 'Sora', sans-serif; font-weight: 800;">Visa <span>Services</span></h2>
+            </div>
+            <div class="slider-nav-btns d-none d-md-flex gap-3">
+                <button class="nav-btn prev-btn" style="box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;"><i class="fas fa-arrow-left"></i></button>
+                <button class="nav-btn next-btn" style="box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; background: var(--saas-primary); color: #fff; border-color: var(--saas-primary);"><i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
-        <div class="row clearfix">
+
+        <div class="visa-services-carousel owl-carousel owl-theme">
             {% for service in visa_services %}
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4 wow fadeInUp animated" data-wow-delay="{{ forloop.counter0 }}00ms">
-                <div class="card visa-card border-0">
-                    <div class="visa-img-wrapper">
-                        {% if service.image %}
-                        <img src="{{ service.image.url }}" alt="{{ service.title }}">
-                        {% endif %}
-                        <div class="visa-badge text-uppercase">{{ service.subtitle }}</div>
-                    </div>
-                    <div class="card-body text-center p-4 d-flex flex-column">
-                        <h4 class="fw-bold text-dark mb-2" style="font-size: 18px;">{{ service.title }}</h4>
-                        <p class="text-muted flex-grow-1" style="font-size: 14px; margin-bottom: 0;">
-                            {{ service.short_description|truncatewords:15 }}
-                        </p>
-                        <hr class="my-3 opacity-25">
-                        <div class="mt-auto">
-                            <a href="{% url 'service_detail' service.slug %}" class="btn btn-outline-primary btn-details">
-                                View Details <i class="flaticon-send ms-1"></i>
-                            </a>
+            <div class="item">
+                <a href="{% url 'service_detail' service.slug %}" class="showcase-card">
+                    <div class="card-inner">
+                        <div class="image-wrap">
+                            {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.title }}">
+                            {% endif %}
+                            <div class="hover-overlay">
+                                <span>Explore Program <i class="fas fa-arrow-right ms-2"></i></span>
+                            </div>
+                        </div>
+                        <div class="content-wrap">
+                            <span class="category-tag">{{ service.subtitle }}</span>
+                            <h4>{{ service.title }}</h4>
+                            <p>{{ service.short_description|truncatewords:12 }}</p>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
-<!-- visa-services-section end -->
-<!-- visa-services-section end -->
 
-<!-- feature-style-two -->
-<!-- <section class="feature-style-two">
-            <div class="auto-container">
-                <div class="inner-container">
-                    <div class="row clearfix">
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-two">
-                                <div class="inner-box">
-                                    <div class="title-inner">
-                                        <a href="">
-                                            <div class="icon-box"><i class="flaticon-management"></i></div>
-                                            <h3>S2 Magister Manajemen</h3>
-                                        </a>
-                                    </div>
-                                    <div class="text">
-                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
-                                    </div>
-                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-two">
-                                <div class="inner-box">
-                                    <div class="title-inner">
-                                        <div class="icon-box"><i class="flaticon-work"></i></div>
-                                        <h3>S2 Magister P2WL</h3>
-                                    </div>
-                                    <div class="text">
-                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
-                                    </div>
-                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 feature-block">
-                            <div class="feature-block-two">
-                                <div class="inner-box">
-                                    <div class="title-inner">
-                                        <div class="icon-box"><i class="flaticon-payment-method"></i></div>
-                                        <h3>S2 Magister Hukum</h3>
-                                    </div>
-                                    <div class="text">
-                                        <p>Nunc quam arcpretim quis lobortis sem consequat cons newtetur diam ...</p>
-                                    </div>
-                                    <div class="link"><a href="index-2.html"><span>Read More</span><i class="flaticon-send"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-<!-- feature-style-two end -->
-
-
-<!-- about-style-two -->
+<!-- Process Explanation Section -->
 <section class="about-style-two">
     <div class="auto-container">
-        <div class="row clearfix">
-            <div class="col-lg-6 col-md-12 col-sm-12 content-column">
-                <div id="content_block_1">
-                    <div class="content-box">
-                        <div class="sec-title">
-                            <p>Why Need This Student Portal</p>
-                            <h2>Process Explanation</h2>
-                            <div class="dotted-box">
-                                <span class="dotted"></span>
-                                <span class="dotted"></span>
-                                <span class="dotted"></span>
-                            </div>
-                        </div>
-                        <div class="image-column-mobile-view col-lg-6 col-md-12 col-sm-12 mb-3">
-                            <div id="image_block_2">
-                                <div class="image-box">
-                                    <figure class="image-1"><img src="{{ process_explanation.exp_img.url }}" alt="">
-                                    </figure>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bold-text">
-                            <p>{{ process_explanation.exp_title | safe }}</p>
-                        </div>
-                        <div class="text process-explanation-div">
-                            <p class="process-explanation-text">{{ process_explanation.exp_des | safe }}</p>
-                        </div>
-                        <div class="btn-box">
-                            <a href="{% url 'process_explanation' %}" class="theme-btn-two">Read More<i
-                                    class="flaticon-send"></i></a>
-                        </div>
-                    </div>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="sec-title">
+                    <p>How it Works</p>
+                    <h2>{{ process_explanation.exp_title|safe }}</h2>
                 </div>
+                <div class="text mb-4 text-secondary" style="font-size: 16px; line-height: 1.8;">
+                    {{ process_explanation.exp_des|safe|truncatewords:60 }}
+                </div>
+                <a href="{% url 'process_explanation' %}" class="theme-btn-two shadow-sm">Explore Timeline <i class="flaticon-send ms-2"></i></a>
             </div>
-            <div class="col-lg-6 col-md-12 col-sm-12 image-column">
-                <div id="image_block_2">
-                    <div class="image-box">
-                        <figure class="image-1"><img src="{{ process_explanation.exp_img.url }}" alt=""></figure>
-
-                    </div>
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="exp-img-box">
+                    <img src="{{ process_explanation.exp_img.url }}" class="img-fluid" alt="Process">
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- about-style-two end -->
 
-
-<!-- service-style-two -->
-<section class="service-style-two bg-color-3">
-    <div class="auto-container">
-        <div class="sec-title centred">
-            <!-- <p>countries we offer support</p> -->
-            <h2>Concentracy P2WL</h2>
-            <span>Visa consultants are well-versed in the intricacies of student visa processes.<br> They can provide
-                expert guidance on the requirements and procedures.</span>
-            <div class="dotted-box">
-                <span class="dotted"></span>
-                <span class="dotted"></span>
-                <span class="dotted"></span>
-            </div>
-        </div>
-        <div class="three-item-carousel owl-carousel owl-theme owl-nav-none">
-            <div class="service-block-two">
-                <div class="inner-box">
-                    <figure class="image-box"><a href=""><img src={% static "assets/images/service/service-1.jpg" %}
-                                alt=""></a></figure>
-                    <div class="lower-content">
-                        <div class="box">
-                            <div class="icon-box"><i class="flaticon-manager"></i></div>
-                            <h3><a href="{% url 'consultant_list' %}">Initial Consultation</a></h3>
-                            <p>Conducting one-on-one consultations with students to understand their educational and
-                                career goals.</p>
-                        </div>
-                        {% comment %} <div class="link"><a href="service-details.html">Read More<i
-                                    class="flaticon-send"></i></a></div> {% endcomment %}
-                    </div>
-                </div>
-            </div>
-            <div class="service-block-two">
-                <div class="inner-box">
-                    <figure class="image-box"><a href=""><img src={% static "assets/images/service/service-2.jpg" %}
-                                alt=""></a></figure>
-                    <div class="lower-content">
-                        <div class="box">
-                            <div class="icon-box"><i class="flaticon-flight"></i></div>
-                            <h3><a href="{% url 'process_explanation' %}">Information and Guidance</a></h3>
-                            <p>Providing guidance on admission requirements, academic prerequisites, and language
-                                proficiency exams.</p>
-                        </div>
-                        {% comment %} <div class="link"><a href="service-details.html">Read More<i
-                                    class="flaticon-send"></i></a></div> {% endcomment %}
-                    </div>
-                </div>
-            </div>
-            <div class="service-block-two">
-                <div class="inner-box">
-                    <figure class="image-box"><a href="{% url 'offer_letter' %}"><img src={%
-                                static "assets/images/service/service-3.jpg" %} alt=""></a></figure>
-                    <div class="lower-content">
-                        <div class="box">
-                            <div class="icon-box"><i class="flaticon-air-freight"></i></div>
-                            <h3><a href="{% url 'offer_letter' %}">Visa Requirements</a></h3>
-                            <p>Assisting in the preparation of necessary documentation, such as letters of acceptance,
-                                financial statements ...</p>
-                        </div>
-                        {% comment %} <div class="link"><a href="service-details.html">Read More<i
-                                    class="flaticon-send"></i></a></div> {% endcomment %}
-                    </div>
-                </div>
-            </div>
-            <div class="service-block-two">
-                <div class="inner-box">
-                    <figure class="image-box"><a href="{% url 'consultant_list' %}"><img src={%
-                                static "assets/images/service/service-1.jpg" %} alt=""></a></figure>
-                    <div class="lower-content">
-                        <div class="box">
-                            <div class="icon-box"><i class="flaticon-manager"></i></div>
-                            <h3><a href="{% url 'consultant_list' %}">Counseling and Support</a></h3>
-                            <p>Offering emotional and practical support to students as they navigate the challenges of
-                                studying in a foreign country.</p>
-                        </div>
-                        {% comment %} <div class="link"><a href="service-details.html">Read More<i
-                                    class="flaticon-send"></i></a></div> {% endcomment %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- service-style-two end -->
-
-
-<!-- apply-style-two -->
-<!-- <section class="apply-style-two">
-            <div class="auto-container">
-                <div class="top-inner">
-                    <div class="row clearfix">
-                        <div class="col-lg-5 col-md-12 col-sm-12 title-column">
-                            <div class="sec-title">
-                                <p>How we help clients</p>
-                                <h2>Following Steps Apply Online Visa</h2>
-                                <div class="dotted-box">
-                                    <span class="dotted"></span>
-                                    <span class="dotted"></span>
-                                    <span class="dotted"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-7 col-md-12 col-sm-12 text-column">
-                            <div class="text">
-                                <p>Sponsoring and managing work visas parts now becoming results the experience aute irure dolor in reprehenderit cepteur sint ocae cat cupidatat non proident sunt in culpa quis.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row clearfix">
-                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
-                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="00ms" data-wow-duration="1500ms">
-                            <div class="inner-box">
-                                <h6>Step 1</h6>
-                                <div class="icon-box">
-                                    <div class="arrow" style="background-image: url(assets/images/icons/arrow-1.png);"></div>
-                                    <i class="flaticon-document"></i>
-                                </div>
-                                <h3><a href="index-2.html">Fill In The <br />Required Form</a></h3>
-                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
-                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="300ms" data-wow-duration="1500ms">
-                            <div class="inner-box">
-                                <h6>Step 2</h6>
-                                <div class="icon-box">
-                                    <div class="arrow" style="background-image: url(assets/images/icons/arrow-1.png);"></div>
-                                    <i class="flaticon-copy"></i>
-                                </div>
-                                <h3><a href="index-2.html">Submit All Your <br />Attested Documents</a></h3>
-                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12 single-column">
-                        <div class="single-item wow fadeInUp animated animated text-center" data-wow-delay="600ms" data-wow-duration="1500ms">
-                            <div class="inner-box">
-                                <h6>Step 3</h6>
-                                <div class="icon-box"><i class="flaticon-plane"></i></div>
-                                <h3><a href="index-2.html">Get Ready To <br />Receive your Visa</a></h3>
-                                <p>Kaoreet efficitur leo. Aliquam era volutpat lobortis em consequat sed ipsum.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-<!-- apply-style-two -->
-
-
-<!-- offer-section -->
-<!-- <section class="offer-section">
-            <div class="pattern-layer" style="background-image: url(assets/images/shape/pattern-5.png);"></div>
-            <div class="auto-container">
-                <div class="sec-title light centred">
-                    <p>countries we offer support</p>
-                    <h2>Apply For Quick Visa</h2>
-                    <div class="dotted-box">
-                        <span class="dotted"></span>
-                        <span class="dotted"></span>
-                        <span class="dotted"></span>
-                    </div>
-                </div>
-                <div class="four-item-carousel owl-carousel owl-theme owl-dots-none">
-                    <div class="single-item">
-                        <div class="inner-box">
-                            <figure class="image-box"><img src="assets/images/resource/offer-1.jpg" alt=""></figure>
-                            <div class="text"><h4><a href="index-2.html">United States</a></h4></div>
-                        </div>
-                    </div>
-                    <div class="single-item">
-                        <div class="inner-box">
-                            <figure class="image-box"><img src="assets/images/resource/offer-2.jpg" alt=""></figure>
-                            <div class="text"><h4><a href="index-2.html">Europe</a></h4></div>
-                        </div>
-                    </div>
-                    <div class="single-item">
-                        <div class="inner-box">
-                            <figure class="image-box"><img src="assets/images/resource/offer-3.jpg" alt=""></figure>
-                            <div class="text"><h4><a href="index-2.html">Australia</a></h4></div>
-                        </div>
-                    </div>
-                    <div class="single-item">
-                        <div class="inner-box">
-                            <figure class="image-box"><img src="assets/images/resource/offer-4.jpg" alt=""></figure>
-                            <div class="text"><h4><a href="index-2.html">NewZealand</a></h4></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-<!-- offer-section end -->
-
-
-<!-- team-section -->
+<!-- Top Consultants Section (Premium Redesign) -->
 <section class="team-section">
     <div class="auto-container">
-        <div class="top-inner">
-            <div class="row clearfix">
-                <div class="col-lg-5 col-md-12 col-sm-12 title-column">
-                    <div class="sec-title">
-                        <p>How we help clients</p>
-                        <h2>Best Consultant Ready To Help</h2>
-
-                    </div>
-                </div>
-                <div class="col-lg-7 col-md-12 col-sm-12 text-column">
-                    <div class="text">
-                        <p>We bridge the gap between students and the finest visa consultants, empowering you with
-                            access to professionals who excel in navigating the complexities of international education.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row clearfix">
-    {% for consultant, details in top_consultants %}
-    <div class="col-lg-3 col-md-6 col-sm-12 team-block">
-        <div class="team-block-one wow fadeInUp animated" data-wow-delay="00ms" data-wow-duration="1500ms">
-            <div class="inner-box">
-
-                <figure class="image-box" style="height:170px !important;">
-
-                    {% if consultant.consultant_img %}
-                    <img src="{{ consultant.consultant_img.url }}" alt="{{ consultant.full_name }}">
-                    {% else %}
-                    <img src="{% static 'images/default-consultant.jpg' %}" alt="{{ consultant.full_name }}">
-                    {% endif %}
-
-                    <ul class="social-links clearfix">
-                        <li>
-                            <a href="{{ details.consultant_twitter }}" target="_blank">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ details.consultant_facebook }}" target="_blank">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                        </li>
-                    </ul>
-
-                </figure>
-
-                <div class="lower-content">
-                    <h4>
-                        <a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}">
-                            {{ consultant.full_name }}
-                        </a>
-                    </h4>
-                    <span class="designation">{{ consultant.company_name }}</span>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
-{% comment %} <section class="testimonial-style-two bg-color-3">
-    <div class="pattern-layer" style="background-image: url({% static 'assets/images/shape/pattern-6.png'%});"></div>
-    <div class="auto-container">
         <div class="sec-title centred">
-            <p>clients testimonials</p>
-            <h2>What Customers <br />Saying About Student Visa BD</h2>
-            <div class="dotted-box">
-                <span class="dotted"></span>
-                <span class="dotted"></span>
-                <span class="dotted"></span>
-            </div>
+            <h2 style="font-family: 'Sora', sans-serif; font-weight: 800;">Top Rated <span>Consultants</span></h2>
         </div>
-        <div class="two-column-carousel owl-carousel owl-theme owl-nav-none">
-            <div class="testimonial-block-one">
-                <div class="inner-box">
-                    <div class="author-inner">
-                        <figure class="image-box"><img src={% static "assets/images/resource/testimonial-1.png" %}
-                                alt="">
-                        </figure>
-                        <h5>James Thomas</h5>
-                        <span class="designation">California, USA</span>
-                    </div>
-                    <div class="content-inner">
-                        <div class="rating-box">
-                            <h6>Green Card Approved</h6>
-                            <ul class="rating">
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                            </ul>
+        
+        <div class="row g-4">
+            {% if top_consultants %}
+                {% for consultant, details in top_consultants %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="consultant-premium-card">
+                        <a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}" class="text-decoration-none">
+                            {% if consultant.consultant_img %}
+                            <img src="{{ consultant.consultant_img.url }}" class="consultant-img-circle" alt="{{ consultant.full_name }}">
+                            {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ consultant.full_name }}&background=random" class="consultant-img-circle" alt="{{ consultant.full_name }}">
+                            {% endif %}
+                            
+                            <h4 class="consultant-name">{{ consultant.full_name }}</h4>
+                            <span class="consultant-company">{{ consultant.company_name }}</span>
+                        </a>
+                        
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="ms-1 text-muted">({{ consultant.rating|default:"4.9" }})</span>
                         </div>
-                        <div class="text">
-                            <p>Dolor sitam consectetur sed adipisicing eiusmod tempor cididunt laboret dolors
-                                magn aliquat enim sed minim veniam eu nostrud lorem ipsum dolor.</p>
+                        
+                        <hr class="my-3 opacity-10">
+                        
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <img src="{% static 'assets/images/logo-icon.png' %}" alt="StudentVisa" style="height: 20px; width: auto; opacity: 0.8;" onerror="this.onerror=null;this.src='https://studentvisabd.com/static/assets/images/logo-icon.png';">
+                            <span style="font-size: 11px; font-weight: 700; color: var(--saas-primary); text-transform: uppercase; letter-spacing: 0.05em;">Verified Partner</span>
                         </div>
                     </div>
                 </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5 text-muted">No featured consultants yet.</div>
+            {% endif %}
         </div>
     </div>
-</section> {% endcomment %}
-<!-- testimonial-style-two end -->
-
-
-<!-- news-section -->
-<section class="news-section">
-    {% comment %} <div class="auto-container">
-        <div class="top-inner">
-            <div class="row clearfix">
-                <div class="col-lg-5 col-md-12 col-sm-12 title-column">
-                    <div class="sec-title">
-                        <p>How we help clients</p>
-                        <h2>Informasi Terkini</h2>
-                        <div class="dotted-box">
-                            <span class="dotted"></span>
-                            <span class="dotted"></span>
-                            <span class="dotted"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-7 col-md-12 col-sm-12 text-column">
-                    <div class="text">
-                        <p>Sponsoring and managing work visas parts now becoming results the experience aute
-                            irure dolor in reprehenderit cepteur sint ocae cat cupidatat non proident sunt in
-                            culpa quis.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row clearfix">
-            <div class="col-lg-4 col-md-6 col-sm-12 news-block">
-                <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="00ms"
-                    data-wow-duration="1500ms">
-                    <div class="inner-box">
-                        <figure class="image-box"><a href="blog-details.html"><img src={%
-                                    static "assets/images/news/news-1.jpg" %} alt=""></a></figure>
-                        <div class="lower-content">
-                            <div class="post-date">
-                                <h2>18</h2><span>apr</span>
-                            </div>
-                            <h3><a href="blog-details.html">Covid-19 And Its Impact On USA Immigration</a></h3>
-                            <ul class="post-info clearfix">
-                                <li><a href="index.html">By Admin</a></li>
-                                <li><a href="index.html">Study Visa</a>,<a href="index.html">Work</a></li>
-                            </ul>
-                            <div class="link"><a href="blog-details.html">Learn More<i class="flaticon-send"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 news-block">
-                <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="300ms"
-                    data-wow-duration="1500ms">
-                    <div class="inner-box">
-                        <figure class="image-box"><a href="blog-details.html"><img src={%
-                                    static "assets/images/news/news-2.jpg" %} alt=""></a></figure>
-                        <div class="lower-content">
-                            <div class="post-date">
-                                <h2>17</h2><span>apr</span>
-                            </div>
-                            <h3><a href="blog-details.html">UK To Offers Point-Based Immigration Process</a>
-                            </h3>
-                            <ul class="post-info clearfix">
-                                <li><a href="index.html">By Admin</a></li>
-                                <li><a href="index.html">Europe Permit</a></li>
-                            </ul>
-                            <div class="link"><a href="blog-details.html">Learn More<i class="flaticon-send"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 news-block">
-                <div class="news-block-one wow fadeInUp animated animated" data-wow-delay="600ms"
-                    data-wow-duration="1500ms">
-                    <div class="inner-box">
-                        <figure class="image-box"><a href="blog-details.html"><img src={%
-                                    static "assets/images/news/news-3.jpg" %} alt=""></a></figure>
-                        <div class="lower-content">
-                            <div class="post-date">
-                                <h2>16</h2><span>apr</span>
-                            </div>
-                            <h3><a href="blog-details.html">Kickstart Your Visa ApprovalWith 4 Easy Steps</a>
-                            </h3>
-                            <ul class="post-info clearfix">
-                                <li><a href="index.html">By Admin</a></li>
-                                <li><a href="index.html">Immigration</a></li>
-                            </ul>
-                            <div class="link"><a href="blog-details.html">Learn More<i class="flaticon-send"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
 </section>
 
-<!-- news-section end -->
-
-
-<!-- clients-section -->
-<section class="clients-section">
+<!-- Clients Logo Section -->
+<section class="clients-section py-5" style="border-top: 1px solid var(--saas-border); overflow: hidden;">
     <div class="auto-container">
-        {% if clients|length > 1 %}
-        <div class="four-item-carousel owl-carousel owl-theme owl-dots-none owl-nav-none">
+        <div class="marquee-container" style="display: flex; white-space: nowrap; animation: marquee 20s linear infinite;">
             {% for client in clients %}
-            <figure class="logo-image"><a href="{{ client.client_url }}" target="_blank"><img
-                        src="{{ client.client_image.url }}" alt=""></a></figure>
+            <div style="flex: 0 0 auto; margin: 0 40px;">
+                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; filter: grayscale(100%); transition: filter 0.3s;">
+            </div>
+            {% endfor %}
+            {% for client in clients %}
+            <div style="flex: 0 0 auto; margin: 0 40px;">
+                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; filter: grayscale(100%); transition: filter 0.3s;">
+            </div>
             {% endfor %}
         </div>
-        {% else %}
-        <figure class="logo-image"><a href="{{ clients.0.client_url }}" target="_blank"><img
-                    src="{{ clients.0.client_image.url }}" alt=""></a></figure>
-        {% endif %}
     </div>
 </section>
-<!-- clients-section end -->
+
+<style>
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .marquee-container img:hover {
+        filter: grayscale(0%);
+    }
+</style>
+
 {% endblock content %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var owl = $('.visa-services-carousel');
+        if (owl.length > 0) {
+            owl.owlCarousel({
+                loop: true,
+                margin: 30,
+                nav: false,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                smartSpeed: 1000,
+                responsive: {
+                    0: { items: 1 },
+                    600: { items: 2 },
+                    1000: { items: 3 }
+                }
+            });
+
+            // Custom Nav
+            $('.next-btn').click(function() {
+                owl.trigger('next.owl.carousel');
+            })
+            $('.prev-btn').click(function() {
+                owl.trigger('prev.owl.carousel');
+            })
+        }
+    });
+</script>
+{% endblock js %}

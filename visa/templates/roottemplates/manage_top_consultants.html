@@ -1,0 +1,153 @@
+{% extends 'roottemplates/base.html' %}
+{% load static %}
+
+{% block title %}Manage Top Consultants{% endblock %}
+
+{% block custom_css %}
+<style>
+  :root {
+    --bg: #F4F7FE;
+    --surface: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-muted: #64748B;
+    --accent: #2563eb;
+    --border: rgba(15, 23, 42, 0.08);
+    --radius-lg: 22px;
+    --shadow-card: 0 12px 32px rgba(15,23,42,0.06);
+  }
+
+  .content-wrapper { background: var(--bg) !important; color: var(--text-primary); padding: 28px !important; }
+  .db-page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+  .db-page-title { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; }
+  .db-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 7px; }
+  .db-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  .g-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 26px; margin-bottom: 24px; }
+  .g-card-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+
+  .clean-select, .clean-input { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; font-size: 14px; background: #F8FAFC; transition: 0.3s; outline: none; }
+  .btn-submit { background: var(--accent); color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; transition: 0.3s; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2); width: 100%; }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.3); }
+
+  .consultant-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #F8FAFC; border-radius: 16px; margin-bottom: 12px; transition: 0.3s; border: 1px solid transparent; }
+  .consultant-item:hover { border-color: var(--accent); background: #fff; transform: translateX(5px); }
+  .c-info { display: flex; align-items: center; gap: 15px; }
+  .c-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .c-name { font-weight: 700; font-size: 15px; margin: 0; color: var(--text-primary); }
+  .c-meta { font-size: 12px; color: var(--text-muted); margin: 0; }
+  
+  .btn-remove { background: #fee2e2; color: #ef4444; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 12px; transition: 0.3s; }
+  .btn-remove:hover { background: #fecaca; transform: scale(1.05); }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="db-page-header">
+    <div>
+      <div class="db-eyebrow">Homepage Management</div>
+      <h1 class="db-page-title">Featured Consultants</h1>
+      <p class="text-muted">Select and rank top consultants to showcase on the landing page.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="g-card">
+        <h3 class="g-card-title mb-4">Add to Featured</h3>
+        <form id="addConsultantForm">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Select Consultant</label>
+            <select name="consultant_id" class="clean-select" required>
+              <option value="" disabled selected>— Select from active list —</option>
+              {% for c in available_consultants %}
+                <option value="{{ c.id }}">{{ c.full_name }} ({{ c.company_name }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="form-label small fw-bold">Display Order (Sorting)</label>
+            <input type="number" name="order" class="clean-input" value="0" min="0">
+          </div>
+          <button type="submit" class="btn-submit">Feature this Consultant</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="g-card">
+        <h3 class="g-card-title mb-4">Currently Featured ({{ featured.count }})</h3>
+        <div id="featuredList">
+          {% for f in featured %}
+          <div class="consultant-item" id="featured-{{ f.id }}">
+            <div class="c-info">
+              {% if f.consultant.consultant_img %}
+                <img src="{{ f.consultant.consultant_img.url }}" class="c-img">
+              {% else %}
+                <img src="{% static 'images/default-consultant.jpg' %}" class="c-img">
+              {% endif %}
+              <div>
+                <p class="c-name">{{ f.consultant.full_name }}</p>
+                <p class="c-meta">{{ f.consultant.company_name }} • Order: {{ f.order }}</p>
+              </div>
+            </div>
+            <button class="btn-remove remove-btn" data-id="{{ f.id }}">Remove</button>
+          </div>
+          {% empty %}
+            <div class="text-center py-5 text-muted">No consultants featured yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function() {
+    // Add Consultant
+    $('#addConsultantForm').on('submit', function(e) {
+      e.preventDefault();
+      $.ajax({
+        url: "{% url 'add_top_consultant' %}",
+        type: 'POST',
+        data: $(this).serialize(),
+        success: function(res) {
+          if(res.success) {
+            Swal.fire('Success!', 'Consultant added to featured list.', 'success').then(() => location.reload());
+          } else {
+            Swal.fire('Error!', res.message || 'Failed to add.', 'error');
+          }
+        }
+      });
+    });
+
+    // Remove Consultant
+    $(document).on('click', '.remove-btn', function() {
+      const id = $(this).data('id');
+      Swal.fire({
+        title: 'Remove from featured?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: `/root/top-consultants/remove/${id}/`,
+            type: 'POST',
+            data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+            success: function(res) {
+              if(res.success) {
+                $(`#featured-${id}`).fadeOut();
+              }
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

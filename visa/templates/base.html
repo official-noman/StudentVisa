@@ -500,98 +500,48 @@
 
 
 
-  <!-- main-footer -->
-  <footer class="main-footer bg-color-2">
+  <!-- Premium Footer -->
+<footer style="background-color: var(--saas-dark); color: #94a3b8; padding: 80px 0 30px; font-family: 'Inter', sans-serif;">
     <div class="auto-container">
-        <div class="footer-top">
-            <div class="widget-section">
-                <div class="row clearfix">
-                    <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
-                        <div class="footer-widget logo-widget">
-                            <figure class="footer-logo"><a href="{% url 'home' %}"><img
-                                        {# Original footer image path kept for reference because the file is missing in static assets. #}
-                                        {# src={% static "assets/images/footer.png" %} #}
-                                        {# Use the existing footer logo asset to prevent 404 errors in production. #}
-                                        src={% static "assets/images/footer-logo.png" %} alt=""></a></figure>
-                            <div class="text">
-                                <p>Student Visa Bd is a sister concern of IGL Group of Company, IGL Web Ltd is an exclusive Web Design, Web Hosting, Web Application, Mobile Apps and Desktop Based Application Provider of Bangladesh in working all over the world since 2007.
-                                </p>
-                            </div>
-
-
-                            <ul class="social-links clearfix">
-                                <li><a href="https://www.facebook.com/StudentVisaBD"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="https://www.facebook.com/StudentVisaBD"><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href="https://www.facebook.com/StudentVisaBD"><i class="fab fa-instagram"></i></a></li>
-                                <li><a href="https://www.facebook.com/StudentVisaBD"><i class="fab fa-google-plus-g"></i></a></li>
-                                <li><a href="https://www.facebook.com/StudentVisaBD"><i class="fab fa-linkedin-in"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
-                        <div class="footer-widget links-widget">
-                            <div class="widget-title">
-                                <h3>Our Partner</h3>
-                            </div>
-                            <div class="widget-content">
-
-                                <ul class="list clearfix">
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php" target="_blank"> About IGL Web Ltd</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php" target="_blank">Mission, Vition &amp; Goal</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php" target="_blank"> Board of Director</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php" target="_blank">Board of Adviser</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php" target="_blank">Board of Officer/Staff</a></li>     
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php"> Board of Adviser</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php"> Board of Officer/Staff</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php"> Some of Our Client List</a></li>
-                                    <li><a href="https://iglweb.com/web/igl-about-us.php"> Current Project</a></li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-              
-                    <div class="col-lg-3 col-md-6 col-sm-12 footer-column">
-                        <div class="footer-widget links-widget">
-                            <div class="widget-title">
-                                <h3>important Link</h3>
-                            </div>
-                            <div class="widget-content">
-                                <ul class="list clearfix">
-                                    <li><a href="https://unicodeconverter.info" target="_blank"> Bangla Converter</a></li>  
-                                    <li><a href="http://www.passport.gov.bd/" target="_blank"> Passport</a></li>                                                       
-                                    <li><a href="https://bangladesh.gov.bd" target="_blank"> Bangladesh</a></li>                                                        
-                                    <li><a href="http://www.bangladeshpost.gov.bd/find-post-code.html" target="_blank"> Find Postal Code</a></li>
-                                    <li><a href="https://moedu.gov.bd/" target="_blank"> Ministry of Education</a></li>                                                          
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                  
-                </div>
+        <div class="row clearfix">
+            <!-- Brand Column -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h3 style="color: #fff; font-family: 'Sora', sans-serif; margin-bottom: 20px;">Student Visa BD</h3>
+                <p style="line-height: 1.8; margin-bottom: 25px;">Your trusted partner for international education and visa consultancy services, committed to excellence and transparency in every step of your journey.</p>
+                <ul class="social-links clearfix" style="display: flex; gap: 15px; padding: 0; list-style: none;">
+                    <li><a href="https://www.facebook.com/StudentVisaBD" style="color: #fff; background: rgba(255,255,255,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#" style="color: #fff; background: rgba(255,255,255,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" style="color: #fff; background: rgba(255,255,255,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" style="color: #fff; background: rgba(255,255,255,0.1); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;"><i class="fab fa-linkedin-in"></i></a></li>
+                </ul>
+            </div>
+            <!-- Partners -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h4 style="color: #fff; margin-bottom: 20px;">Our Partners</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">About IGL Web Ltd</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Mission, Vition & Goal</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Board of Director</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Board of Adviser</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Board of Officer/Staff</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Some of Our Client List</a></li>
+                    <li style="margin-bottom: 10px;"><a href="https://iglweb.com/web/igl-about-us.php" target="_blank" style="color: #94a3b8; transition: 0.3s;">Current Project</a></li>
+                </ul>
+            </div>
+            <!-- Important Links -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h4 style="color: #fff; margin-bottom: 20px;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="https://bangladesh.gov.bd" target="_blank" style="color: #94a3b8; transition: 0.3s;">Government of Bangladesh</a></li>
+                    <li style="margin-bottom: 10px;"><a href="http://www.passport.gov.bd/" target="_blank" style="color: #94a3b8; transition: 0.3s;">Passport Services</a></li>
+                </ul>
             </div>
         </div>
-          <div class="footer-bottom clearfix">
-            <div class="copyright pull-left">
-                {% comment %} <p align="center" id="style1" style="color: #fff;"> 
-                    CopyRight © <color style="color: #fff;">Student Visa BD</color> 2018<br>
-                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/domainchecker.php">Domain Registration</a>,
-                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/hosting_regular_shared.php">Web Hosting</a> and 
-                <a target="_blank" style="color: #fff" href="http://iglweb.com/web/training_web_design.php">Web Design</a>
-                 by: <a target="_blank" href="http://iglweb.com/" style="padding:0 0 0 0;color: #fff">IGL Web Ltd</a>
-            </p> {% endcomment %}
-                <p>(&copy;) 2018 <a href="index.https://studentvisabd.iglweb.com" target="_blank">Student Visa BD</a>  All rights reserved.
-                </p>
-            </div>
-            <ul class="footer-nav pull-right clearfix">
-                <li><a href="http://iglweb.com/web/domainchecker.php">Domain Registration</a></li>
-                <li><a href="http://iglweb.com/web/hosting_regular_shared.php">Web Hosting</a></li>
-                <li><a href="http://iglweb.com/">IGL Web Ltd</a></li>
-            </ul>
+        <!-- Copyright -->
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 30px; text-align: center; color: #cbd5e1;">
+            <p style="margin: 0;">&copy; 2026 Student Visa BD. All rights reserved.</p>
         </div>
     </div>
-
-    
 </footer>
 
 

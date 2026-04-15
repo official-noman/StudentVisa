@@ -84,6 +84,40 @@ def role_and_permission_required(permission):
 
 @login_required
 @root_required
+def manage_top_consultants(request):
+    featured = TopConsultant.objects.all().select_related('consultant')
+    # Consultants who are not already featured
+    featured_ids = featured.values_list('consultant_id', flat=True)
+    available_consultants = Users.objects.filter(user_role=5).exclude(id__in=featured_ids)
+    
+    return render(request, "roottemplates/manage_top_consultants.html", {
+        "featured": featured,
+        "available_consultants": available_consultants
+    })
+
+@login_required
+@root_required
+@require_POST
+def add_top_consultant(request):
+    consultant_id = request.POST.get('consultant_id')
+    order = request.POST.get('order', 0)
+    
+    if consultant_id:
+        consultant = get_object_or_404(Users, id=consultant_id)
+        TopConsultant.objects.get_or_create(consultant=consultant, defaults={'order': order})
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False, "message": "Consultant ID missing"})
+
+@login_required
+@root_required
+@require_POST
+def remove_top_consultant(request, featured_id):
+    featured = get_object_or_404(TopConsultant, id=featured_id)
+    featured.delete()
+    return JsonResponse({"success": True})
+
+@login_required
+@root_required
 def root_home(request):
     # Count the total number of students, consultants, countries, and universities
     total_students = Students.objects.count()

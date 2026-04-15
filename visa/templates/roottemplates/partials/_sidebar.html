@@ -441,6 +441,15 @@
       </div>
     </li>
 
+    <!-- Top Consultants -->
+    <li class="nav-item">
+      <a class="nav-link {% if request.resolver_match.url_name == 'manage_top_consultants' %}active-page{% endif %}"
+         href="{% url 'manage_top_consultants' %}">
+        <i class="mdi mdi-account-star menu-icon"></i>
+        <span class="menu-title">Top Consultants</span>
+      </a>
+    </li>
+
     <!-- Countries -->
     <li class="nav-item">
       <a class="nav-link {% if request.resolver_match.url_name == 'root_countries' %}active-page{% endif %}"

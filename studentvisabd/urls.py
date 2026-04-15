@@ -25,7 +25,10 @@ from django.urls import re_path
 from django.views.static import serve
 
 urlpatterns =[
-    path('root/manage-procedure/', rootviews.manage_procedure, name='manage_procedure'),
+    path("root/top-consultants/", rootviews.manage_top_consultants, name="manage_top_consultants"),
+    path("root/top-consultants/add/", rootviews.add_top_consultant, name="add_top_consultant"),
+    path("root/top-consultants/remove/<int:featured_id>/", rootviews.remove_top_consultant, name="remove_top_consultant"),
+    path("root/manage-procedure/", rootviews.manage_procedure, name="manage_procedure"),
     path("root/delete-offer-letter/<int:item_id>/", rootviews.delete_offer_letter, name="delete_offer_letter"),
     path('scholarship-procedures/', views.scholarship_procedure_list, name='scholarship_procedure_list'),
     path('scholarship-procedure/<int:country_id>/', views.procedure_detail, name='procedure_detail'),
