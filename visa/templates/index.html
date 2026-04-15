@@ -256,6 +256,9 @@
 
     /* Utility */
     .centred { text-align: center; }
+
+    /* 🎯 Hide Owl Default Nav */
+    .owl-nav { display: none !important; }
 </style>
 {% endblock custom_css %}
 
@@ -265,7 +268,7 @@
     <div class="cover-image" style="background-image: url('{% if customize and customize.image %}{{ customize.image.url }}{% else %}{% static 'assets/images/banner/banner-1.jpg' %}{% endif %}');">
         <div class="auto-container">
             <div class="welcome-text-div">
-                <h1>Unlock Your Global <br>Education Potential</h1>
+                <!-- <h1>Unlock Your Global <br>Education Potential</h1> -->
                 <div class="welcome-text">
                     {% if customize %}
                         {{ customize.description|safe }}
@@ -343,6 +346,7 @@
 </section>
 
 <!-- Top Consultants Section (Premium Redesign) -->
+{% if top_consultants %}
 <section class="team-section">
     <div class="auto-container">
         <div class="sec-title centred">
@@ -350,45 +354,42 @@
         </div>
         
         <div class="row g-4">
-            {% if top_consultants %}
-                {% for consultant, details in top_consultants %}
-                <div class="col-lg-3 col-md-6">
-                    <div class="consultant-premium-card">
-                        <a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}" class="text-decoration-none">
-                            {% if consultant.consultant_img %}
-                            <img src="{{ consultant.consultant_img.url }}" class="consultant-img-circle" alt="{{ consultant.full_name }}">
-                            {% else %}
-                            <img src="https://ui-avatars.com/api/?name={{ consultant.full_name }}&background=random" class="consultant-img-circle" alt="{{ consultant.full_name }}">
-                            {% endif %}
-                            
-                            <h4 class="consultant-name">{{ consultant.full_name }}</h4>
-                            <span class="consultant-company">{{ consultant.company_name }}</span>
-                        </a>
+            {% for consultant, details in top_consultants %}
+            <div class="col-lg-3 col-md-6">
+                <div class="consultant-premium-card">
+                    <a href="{% url 'singel_consultant_profile' consultant_id=consultant.id %}" class="text-decoration-none">
+                        {% if consultant.consultant_img %}
+                        <img src="{{ consultant.consultant_img.url }}" class="consultant-img-circle" alt="{{ consultant.full_name }}">
+                        {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ consultant.full_name }}&background=random" class="consultant-img-circle" alt="{{ consultant.full_name }}">
+                        {% endif %}
                         
-                        <div class="rating-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1 text-muted">({{ consultant.rating|default:"4.9" }})</span>
-                        </div>
-                        
-                        <hr class="my-3 opacity-10">
-                        
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <img src="{% static 'assets/images/logo-icon.png' %}" alt="StudentVisa" style="height: 20px; width: auto; opacity: 0.8;" onerror="this.onerror=null;this.src='https://studentvisabd.com/static/assets/images/logo-icon.png';">
-                            <span style="font-size: 11px; font-weight: 700; color: var(--saas-primary); text-transform: uppercase; letter-spacing: 0.05em;">Verified Partner</span>
-                        </div>
+                        <h4 class="consultant-name">{{ consultant.full_name }}</h4>
+                        <span class="consultant-company">{{ consultant.company_name }}</span>
+                    </a>
+                    
+                    <div class="rating-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span class="ms-1 text-muted">({{ consultant.rating|default:"4.9" }})</span>
+                    </div>
+                    
+                    <hr class="my-3 opacity-10">
+                    
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <img src="{% static 'assets/images/1627792877.png' %}" alt="StudentVisa" style="height: 20px; width: auto; opacity: 0.8;" onerror="this.onerror=null;this.src='{% static 'assets/images/1627792877.png' %}';">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--saas-primary); text-transform: uppercase; letter-spacing: 0.05em;">Verified Partner</span>
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-12 text-center py-5 text-muted">No featured consultants yet.</div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- Clients Logo Section -->
 <section class="clients-section py-5" style="border-top: 1px solid var(--saas-border); overflow: hidden;">

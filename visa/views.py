@@ -671,31 +671,21 @@ def home(request):
     print("customize: ", customize)
 
     # Fetch Top Consultants from our new model with try-except safety
+    top_consultants = []
+    consultant_details = []
     try:
         top_featured = TopConsultant.objects.all().select_related('consultant')[:4]
         
-        top_consultants = []
-        consultant_details = []
-        
         if top_featured.exists():
             for f in top_featured:
-                top_consultants.append(f.consultant)
-                details = get_consultant_details_instance(f.consultant)
-                consultant_details.append(details)
-        else:
-            # Fallback to highest rated if none featured
-            top_consultants = Users.objects.filter(user_role=5).order_by("-rating")[:4]
-            for consultant in top_consultants:
-                details = get_consultant_details_instance(consultant)
-                consultant_details.append(details)
+                if f.consultant:
+                    top_consultants.append(f.consultant)
+                    details = get_consultant_details_instance(f.consultant)
+                    consultant_details.append(details)
     except Exception as e:
         print("TopConsultant Error (Likely missing table): ", e)
-        # Fallback to original logic if table doesn't exist
-        top_consultants = Users.objects.filter(user_role=5).order_by("-rating")[:4]
+        top_consultants = []
         consultant_details = []
-        for consultant in top_consultants:
-            details = get_consultant_details_instance(consultant)
-            consultant_details.append(details)
 
     visa_services = VisaService.objects.filter(is_active=True)
 

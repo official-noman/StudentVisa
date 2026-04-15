@@ -1156,8 +1156,7 @@ class Users(models.Model):
 class TopConsultant(models.Model):
     consultant = models.OneToOneField(
         Users, 
-        on_delete=models.SET_NULL, 
-        
+        on_delete=models.CASCADE, 
         related_name="top_featured",
         db_constraint=False
     )
