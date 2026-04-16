@@ -397,12 +397,12 @@
         <div class="marquee-container" style="display: flex; white-space: nowrap; animation: marquee 20s linear infinite;">
             {% for client in clients %}
             <div style="flex: 0 0 auto; margin: 0 40px;">
-                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; filter: grayscale(100%); transition: filter 0.3s;">
+                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; transition: filter 0.3s;">
             </div>
             {% endfor %}
             {% for client in clients %}
             <div style="flex: 0 0 auto; margin: 0 40px;">
-                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; filter: grayscale(100%); transition: filter 0.3s;">
+                <img src="{{ client.client_image.url }}" alt="Client" style="height: 40px; width: auto; transition: filter 0.3s;">
             </div>
             {% endfor %}
         </div>
