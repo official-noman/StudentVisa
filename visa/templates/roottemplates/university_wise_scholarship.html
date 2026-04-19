@@ -6,327 +6,284 @@
   <link href="https://cdn.jsdelivr.net/npm/select2@latest/dist/css/select2.min.css" rel="stylesheet" />
 
   <style>
-    .university-scholarship-page {
-      width: 100%;
-      padding: 24px 20px 40px;
-      box-sizing: border-box;
+    .uw-admin-container {
+      padding: 30px;
+      background: #f8fafc;
+      min-height: 100vh;
     }
 
-    .university-scholarship-page .uw-shell {
-      width: 100%;
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
-    .university-scholarship-page .uw-hero {
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .university-scholarship-page .uw-eyebrow {
-      display: inline-block;
-      margin-bottom: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #2563eb;
-    }
-
-    .university-scholarship-page .uw-title {
-      margin: 0 0 8px;
-      font-size: 32px;
-      line-height: 1.2;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .university-scholarship-page .uw-subtitle {
-      margin: 0 auto;
-      max-width: 760px;
-      font-size: 15px;
-      line-height: 1.7;
-      color: #64748b;
-    }
-
-    .university-scholarship-page .uw-card {
-      width: 100%;
-      max-width: 920px;
-      margin: 0 auto;
+    .premium-card {
       background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.02);
       border: 1px solid rgba(15, 23, 42, 0.08);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
-      overflow: hidden;
+      padding: 30px;
+      margin-bottom: 30px;
     }
 
-    .university-scholarship-page .uw-card-body {
-      padding: 24px;
-    }
-
-    .university-scholarship-page .uw-card-head {
-      margin-bottom: 22px;
-      text-align: center;
-    }
-
-    .university-scholarship-page .uw-section-kicker {
-      display: inline-block;
-      margin-bottom: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #2563eb;
-    }
-
-    .university-scholarship-page .uw-section-title {
-      margin: 0 0 8px;
-      font-size: 24px;
-      line-height: 1.25;
+    .form-section-title {
+      font-size: 20px;
       font-weight: 700;
       color: #0f172a;
-    }
-
-    .university-scholarship-page .uw-section-subtitle {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #64748b;
-    }
-
-    .university-scholarship-page .uw-alert {
-      border-radius: 14px;
-      margin-bottom: 16px;
-    }
-
-    .university-scholarship-page .uw-form {
-      display: grid;
-      gap: 20px;
-    }
-
-    .university-scholarship-page .uw-field {
-      width: 100%;
-    }
-
-    .university-scholarship-page .uw-label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .university-scholarship-page .uw-input {
-      width: 100%;
-      min-height: 46px;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      background: #ffffff;
-      color: #334155;
-      box-shadow: none;
-      outline: none;
-    }
-
-    .university-scholarship-page .uw-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.12);
-    }
-
-    .university-scholarship-page .uw-actions {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f1f5f9;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-top: 2px;
+      gap: 10px;
     }
 
-    .university-scholarship-page .uw-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 0 22px;
-      border: 0;
-      border-radius: 12px;
-      background: #2563eb;
-      color: #fff;
+    .form-section-title i { color: #2563eb; }
+
+    .uw-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 10px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .uw-input {
+      width: 100%;
+      height: 45px; /* Fixed height for perfect alignment */
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
       font-size: 14px;
-      font-weight: 600;
-      transition: 0.2s ease;
-      cursor: pointer;
+      color: #1e293b;
+      background-color: #ffffff;
+      transition: all 0.2s ease;
     }
 
-    .university-scholarship-page .uw-btn:hover {
-      background: #1d4ed8;
-      color: #fff;
+    /* Select2 Posh Styling to match height with input */
+    .select2-container--default .select2-selection--single {
+        height: 45px !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
-    .university-scholarship-page .cke {
-      width: 100% !important;
-      display: block !important;
-      border: 1px solid #cbd5e1 !important;
-      border-radius: 14px !important;
-      overflow: hidden !important;
-      box-shadow: none !important;
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 20px !important;
+        color: #1e293b !important;
+        font-size: 14px !important;
+        padding-left: 0 !important;
     }
 
-    .university-scholarship-page .cke_top {
-      background: #f8fafc !important;
-      border-bottom: 1px solid #e2e8f0 !important;
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 43px !important;
+        right: 10px !important;
     }
 
-    .university-scholarship-page .cke_bottom {
-      background: #f8fafc !important;
-      border-top: 1px solid #e2e8f0 !important;
-    }
-
-    .university-scholarship-page .cke_contents {
-      min-height: 220px !important;
-    }
-
-    /* Scoped Select2 */
-    .university-scholarship-page .select2-container {
-      width: 100% !important;
-      margin-top: 8px !important;
-    }
-
-    .university-scholarship-page .select2-container--default .select2-selection--single {
-      min-height: 46px !important;
-      border: 1px solid rgba(15, 23, 42, 0.10) !important;
-      background: #F8FAFC !important;
-      border-radius: 14px !important;
-      padding: 8px 12px !important;
-      display: flex !important;
-      align-items: center !important;
-    }
-
-    .university-scholarship-page .select2-container--default .select2-selection--single .select2-selection__rendered {
-      color: #334155 !important;
-      line-height: 28px !important;
-      font-size: 14px !important;
-      padding-left: 0 !important;
-      padding-right: 24px !important;
-    }
-
-    .university-scholarship-page .select2-container--default .select2-selection--single .select2-selection__arrow {
-      height: 44px !important;
-      right: 8px !important;
-    }
-
-    .university-scholarship-page .select2-container--open .select2-dropdown--below {
-      border-radius: 8px !important;
-      border: 1px solid rgba(15, 23, 42, 0.10) !important;
-    }
-
-    .university-scholarship-page .select2-container--default .select2-search--dropdown .select2-search__field {
-      border-radius: 8px !important;
-      border: 1px solid rgba(15, 23, 42, 0.10) !important;
+    .select2-container--default .select2-selection--single:focus,
+    .uw-input:focus {
+      border-color: #2563eb !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
       outline: none;
     }
 
-    @media (max-width: 991.98px) {
-      .university-scholarship-page {
-        padding: 20px 16px 32px;
-      }
-
-      .university-scholarship-page .uw-title {
-        font-size: 28px;
-      }
-
-      .university-scholarship-page .uw-card-body {
-        padding: 18px;
-      }
+    .location-row {
+        background: #fdfdfd;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px dashed #e2e8f0;
+        margin-bottom: 25px;
     }
 
-    @media (max-width: 767.98px) {
-      .university-scholarship-page {
-        padding: 16px 12px 28px;
-      }
-
-      .university-scholarship-page .uw-title {
-        font-size: 24px;
-      }
-
-      .university-scholarship-page .uw-subtitle {
-        font-size: 14px;
-      }
-
-      .university-scholarship-page .uw-section-title {
-        font-size: 20px;
-      }
-
-      .university-scholarship-page .uw-card-body {
-        padding: 14px;
-      }
-
-      .university-scholarship-page .uw-actions {
-        width: 100%;
-      }
-
-      .university-scholarship-page .uw-actions .uw-btn {
-        width: 100%;
-      }
+    .btn-publish {
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 40px;
+      border-radius: 10px;
+      font-weight: 700;
+      border: none;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
     }
+
+    .btn-publish:hover {
+      background: #00ffaa;
+      color: #090e17;
+      transform: translateY(-2px);
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .status-active { background: #dcfce7; color: #166534; }
   </style>
 {% endblock custom_css %}
 
 {% block content %}
-<div class="university-scholarship-page">
-  <div class="uw-shell">
-    <div class="uw-hero">
-      <div>
-        <div class="uw-eyebrow">Scholarship Management</div>
-        <h1 class="uw-title">University Wise Scholarship</h1>
-        <p class="uw-subtitle">
-          Create scholarship details for a university with description and eligibility content.
-        </p>
-      </div>
+<div class="uw-admin-container">
+  <div class="container-fluid">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0 font-weight-bold" style="color: #0f172a;">University Wise Scholarship</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent p-0 m-0">
+                <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                <li class="breadcrumb-item active">University Scholarship</li>
+            </ol>
+        </nav>
     </div>
 
-    <div class="uw-card">
-      <div class="uw-card-body">
-        <div class="uw-card-head">
-          <div>
-            <div class="uw-section-kicker">Scholarship Entry</div>
-            <h3 class="uw-section-title">Add University Wise Scholarship</h3>
-            <p class="uw-section-subtitle">
-              Publish university-specific scholarship information in a structured format.
-            </p>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      <!-- Add Form -->
+      <div class="col-lg-12">
+        <div class="premium-card">
+          <form method="post" action="{% url 'university_wise' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-section-title">
+              <i class="fas fa-plus-circle"></i> Create New Listing
+            </div>
+
+            <div class="row location-row">
+                <!-- Location Selection -->
+                <div class="col-md-3">
+                  <label class="uw-label">Country <span class="text-danger">*</span></label>
+                  <select name="country_id" id="country_selector" class="uw-select2" required>
+                    <option value="">— Select Country —</option>
+                    {% for c in countries %}
+                      <option value="{{ c.country_id }}" data-name="{{ c.country_name }}">{{ c.country_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="uw-label">State / Region <span class="text-danger">*</span></label>
+                  <select name="state_name" id="state_selector" class="uw-select2" required disabled>
+                    <option value="">— Select State —</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="uw-label">City <span class="text-danger">*</span></label>
+                  <select name="city_name" id="city_selector" class="uw-select2" required disabled>
+                    <option value="">— Select City —</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="uw-label">University Name <span class="text-danger">*</span></label>
+                  <input type="text" name="university_name" class="uw-input" placeholder="Enter University Name" required>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="uw-label">Scholarship Title <span class="text-danger">*</span></label>
+                  <input type="text" name="title" class="uw-input" placeholder="e.g. Presidential Global Excellence Scholarship" required>
+                </div>
+                <div class="col-md-3 mb-4">
+                  <label class="uw-label">Scholarship Image</label>
+                  <input type="file" name="image" class="uw-input pt-2" accept="image/*">
+                  <small class="text-muted" style="font-size: 11px;">Main display image</small>
+                </div>
+                <div class="col-md-3 mb-4">
+                  <label class="uw-label">University Logo</label>
+                  <input type="file" name="university_logo" class="uw-input pt-2" accept="image/*">
+                  <small class="text-muted" style="font-size: 11px;">Small official logo</small>
+                </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="uw-label">About Scholarship</label>
+              <textarea name="description" id="description"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label class="uw-label">Application Procedure <span class="text-danger">*</span></label>
+                  <textarea name="apply_procedure" id="apply_procedure" required></textarea>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label class="uw-label">Visa Requirements <span class="text-danger">*</span></label>
+                  <textarea name="visa_requirements" id="visa_requirements" required></textarea>
+                </div>
+            </div>
+
+            <div class="text-right mt-3">
+              <button type="submit" class="btn-publish">
+                <i class="fas fa-paper-plane mr-2"></i> Publish Scholarship
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Listings Table -->
+      <div class="col-lg-12">
+        <div class="premium-card">
+          <div class="form-section-title">
+            <i class="fas fa-list-ul"></i> Active Scholarships
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover border-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="border-0">Title</th>
+                  <th class="border-0">University</th>
+                  <th class="border-0">Location</th>
+                  <th class="border-0">Created</th>
+                  <th class="border-0">Status</th>
+                  <th class="border-0 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in instances %}
+                <tr>
+                  <td class="font-weight-bold" style="max-width: 250px;">{{ item.title }}</td>
+                  <td>{{ item.university.name }}</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if item.university.country.country_flag %}
+                            <img src="/static/assets/countries/flags/{{ item.university.country.country_flag }}" style="width: 20px; border-radius: 2px;">
+                        {% endif %}
+                        <span class="small text-muted">{{ item.university.city }}, {{ item.university.country.country_name }}</span>
+                    </div>
+                  </td>
+                  <td>{{ item.created_at|date:"M d, Y" }}</td>
+                  <td><span class="status-badge status-active">Active</span></td>
+                  <td class="text-center" style="white-space: nowrap;">
+                    <a href="{% url 'edit_university_scholarship' uws_id=item.uws_id %}" class="btn btn-sm btn-primary px-3 shadow-sm" style="border-radius: 6px; font-weight: 600; font-size: 12px; letter-spacing: 0.3px;">
+                        <i class="fas fa-edit mr-1"></i> EDIT
+                    </a>
+                    <button class="btn btn-sm btn-danger px-3 shadow-sm delete-uws-btn ml-1" 
+                            data-id="{{ item.uws_id }}" 
+                            data-title="{{ item.title }}"
+                            style="border-radius: 6px; font-weight: 600; font-size: 12px; letter-spacing: 0.3px;">
+                        <i class="fas fa-trash mr-1"></i> DELETE
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center py-5 text-muted">No entries found. Start by creating one above.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
-
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} uw-alert">
-              {{ message }}
-            </div>
-          {% endfor %}
-        {% endif %}
-
-        <form method="post" action="{% url 'university_wise' %}" class="uw-form">
-          {% csrf_token %}
-
-          <div class="uw-field">
-            <label for="university_id" class="uw-label">Select University</label>
-            <select id="university_id" name="uw_university_name" class="uw-input" required>
-              <option value="">Select University</option>
-            </select>
-          </div>
-
-          <div class="uw-field">
-            <label for="uw_text" class="uw-label">Description</label>
-            <textarea id="uw_text" name="uw_text" class="uw-input" required></textarea>
-          </div>
-
-          <div class="uw-field">
-            <label for="uw_whocanapply" class="uw-label">Who Can Apply</label>
-            <textarea id="uw_whocanapply" name="uw_whocanapply" class="uw-input"></textarea>
-          </div>
-
-          <div class="uw-actions">
-            <button type="submit" class="uw-btn">Save</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
@@ -337,54 +294,107 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
+<!-- Custom JS for Country-State-City logic -->
 <script>
   $(document).ready(function() {
-    CKEDITOR.replace('uw_text', {
+    $('.uw-select2').select2({ width: '100%' });
+
+    // CKEditor Setup
+    const editorConfig = {
       versionCheck: false,
-      height: 220,
-      toolbar: [
-        ['Bold', 'Italic', 'Underline'],
-        ['NumberedList', 'BulletedList'],
-        ['Link', 'Unlink'],
-        ['Undo', 'Redo']
-      ]
+      height: 200,
+      toolbar: [['Bold','Italic','Underline','Strike'],['NumberedList','BulletedList'],['Link','Unlink'],['Source']]
+    };
+    CKEDITOR.replace('description', editorConfig);
+    CKEDITOR.replace('apply_procedure', editorConfig);
+    CKEDITOR.replace('visa_requirements', editorConfig);
+
+    // Dynamic Country-State-City Logic using CountriesNow API
+    const baseUrl = 'https://countriesnow.space/api/v0.1/countries';
+
+    $('#country_selector').on('change', function() {
+        const countryName = $(this).find(':selected').data('name');
+        const $stateSel = $('#state_selector');
+        const $citySel = $('#city_selector');
+
+        // Reset and Disable
+        $stateSel.empty().append('<option value="">— Loading States —</option>').prop('disabled', true);
+        $citySel.empty().append('<option value="">— Select City —</option>').prop('disabled', true);
+
+        if (!countryName) return;
+
+        // Fetch States
+        fetch(`${baseUrl}/states`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ country: countryName })
+        })
+        .then(res => res.json())
+        .then(data => {
+            $stateSel.empty().append('<option value="">— Select State —</option>');
+            if (data.data && data.data.states) {
+                data.data.states.forEach(state => {
+                    $stateSel.append(`<option value="${state.name}">${state.name}</option>`);
+                });
+                $stateSel.prop('disabled', false);
+            }
+        });
     });
 
-    CKEDITOR.replace('uw_whocanapply', {
-      versionCheck: false,
-      height: 220,
-      toolbar: [
-        ['Bold', 'Italic', 'Underline'],
-        ['NumberedList', 'BulletedList'],
-        ['Link', 'Unlink'],
-        ['Undo', 'Redo']
-      ]
+    $('#state_selector').on('change', function() {
+        const countryName = $('#country_selector').find(':selected').data('name');
+        const stateName = $(this).val();
+        const $citySel = $('#city_selector');
+
+        $citySel.empty().append('<option value="">— Loading Cities —</option>').prop('disabled', true);
+
+        if (!stateName) return;
+
+        // Fetch Cities
+        fetch(`${baseUrl}/state/cities`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ country: countryName, state: stateName })
+        })
+        .then(res => res.json())
+        .then(data => {
+            $citySel.empty().append('<option value="">— Select City —</option>');
+            if (data.data) {
+                data.data.forEach(city => {
+                    $citySel.append(`<option value="${city}">${city}</option>`);
+                });
+                $citySel.prop('disabled', false);
+            }
+        });
     });
 
-    fetch('/static/assets/json/universities.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    // Premium Delete Logic
+    $('.delete-uws-btn').on('click', function() {
+        const uwsId = $(this).data('id');
+        const title = $(this).data('title');
+        
+        if (confirm(`Are you sure you want to delete the scholarship: "${title}"?`)) {
+            const $btn = $(this);
+            const $row = $btn.closest('tr');
+            
+            fetch(`/delete-university-scholarship/${uwsId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    $row.fadeOut(400, function() { $(this).remove(); });
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => alert('Network error occurred.'));
         }
-        return response.json();
-      })
-      .then(data => {
-        const selectElement = document.getElementById('university_id');
-
-        data.forEach(function(university) {
-          const option = document.createElement('option');
-          option.text = university;
-          option.value = university;
-          selectElement.appendChild(option);
-        });
-
-        $('#university_id').select2({
-          width: '100%'
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching JSON:', error);
-      });
+    });
   });
 </script>
 {% endblock custom_js %}

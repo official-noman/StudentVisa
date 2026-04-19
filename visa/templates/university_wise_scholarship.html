@@ -1,0 +1,309 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block custom_css %}
+<style>
+    /* Premium Page Title Section - Matching your site's style */
+    .uni-page-title {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 100px 0 100px;
+        position: relative;
+        text-align: center;
+        background-image: url({% static 'assets/images/background/page-title-2.jpg' %});
+    }
+
+    .uni-page-title:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(9, 14, 23, 0.7);
+    }
+
+    .uni-page-title .auto-container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .uni-page-title h1 {
+        font-size: 48px;
+        line-height: 58px;
+        color: #fff;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    /* Posh Search Bar Integration */
+    .uni-search-section {
+        margin-top: -45px;
+        margin-bottom: 60px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .posh-search-box {
+        background: #fff;
+        padding: 10px;
+        border-radius: 60px;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        max-width: 900px;
+        margin: 0 auto;
+        border: 1px solid #f0f0f0;
+    }
+
+    .posh-search-box i {
+        padding: 0 20px;
+        color: #2b4570;
+        font-size: 18px;
+    }
+
+    .posh-search-input {
+        border: none !important;
+        box-shadow: none !important;
+        flex: 1;
+        font-size: 16px;
+        color: #1a2b4b;
+        outline: none;
+        background: transparent;
+    }
+
+    .posh-search-btn {
+        background: #2b4570;
+        color: #fff;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: 0.3s;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .posh-search-btn:hover {
+        background: #00ffaa;
+        color: #090e17;
+    }
+
+    /* Scholarship Cards Grid */
+    .scholarship-block {
+        margin-bottom: 30px;
+    }
+
+    .scholarship-card-inner {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+        transition: 0.4s;
+        border: 1px solid #f0f0f0;
+        height: 100%;
+    }
+
+    .scholarship-card-inner:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .card-image-box {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .card-image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-country-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #fff;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #2b4570;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .card-country-badge img {
+        width: 16px;
+        height: auto;
+    }
+
+    .card-info-box {
+        padding: 25px;
+    }
+
+    .uni-tag {
+        font-size: 12px;
+        color: #00ffaa;
+        background: #090e17;
+        padding: 2px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .card-meta {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-btn {
+        font-size: 14px;
+        font-weight: 700;
+        color: #2b4570;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+
+    .card-btn:hover {
+        color: #00ffaa;
+        gap: 12px;
+    }
+
+    @media (max-width: 767px) {
+        .posh-search-box {
+            border-radius: 20px;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .posh-search-input {
+            width: 100%;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .posh-search-btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock custom_css %}
+
+{% block content %}
+    <!-- Page Title -->
+    <section class="uni-page-title">
+        <div class="auto-container">
+            <h1>University Scholarships</h1>
+            <ul class="bread-crumb clearfix justify-content-center" style="display: flex; gap: 10px; list-style: none; color: rgba(255,255,255,0.8);">
+                <li><a href="{% url 'home' %}" style="color: #fff;"><i class="fas fa-home"></i> Home</a></li>
+                <li>/</li>
+                <li>University Wise</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <div class="uni-search-section">
+        <div class="auto-container">
+            <form action="{% url 'university_wise_scholarship' %}" method="get" class="posh-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" class="posh-search-input" placeholder="Search by University, City or Country name..." value="{{ query|default:'' }}">
+                <button type="submit" class="posh-search-btn">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Listings Section -->
+    <section class="scholarship-grid pb-5">
+        <div class="auto-container">
+            {% if scholarships %}
+                <div class="row clearfix">
+                    {% for item in scholarships %}
+                        <div class="col-lg-4 col-md-6 col-sm-12 scholarship-block">
+                            <div class="scholarship-card-inner">
+                                <div class="card-image-box">
+                                    {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                                    {% else %}
+                                        <img src="{% static 'assets/images/resource/news-1.jpg' %}" alt="">
+                                    {% endif %}
+                                    <div class="card-country-badge">
+                                        {% if item.university.country.country_flag %}
+                                            <img src="/static/assets/countries/flags/{{ item.university.country.country_flag }}" alt="">
+                                        {% endif %}
+                                        {{ item.university.country.country_name }}
+                                    </div>
+                                </div>
+                                <div class="card-info-box">
+                                    <span class="uni-tag">{{ item.university.name }}</span>
+                                    <h3 class="card-title">{{ item.title }}</h3>
+                                    <div class="card-meta">
+                                        <i class="fas fa-map-marker-alt" style="color: #00ffaa;"></i>
+                                        {{ item.university.city }}, {{ item.university.state }}
+                                    </div>
+                                    <a href="{% url 'university_wise_scholarship_single' uws_id=item.uws_id %}" class="card-btn">
+                                        View Scholarship <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if scholarships.has_other_pages %}
+                <div class="pagination-wrapper text-center mt-4">
+                    <ul class="pagination posh-pagination justify-content-center">
+                        {% if scholarships.has_previous %}
+                            <li><a href="?page={{ scholarships.previous_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fas fa-angle-left"></i></a></li>
+                        {% endif %}
+                        
+                        {% for i in scholarships.paginator.page_range %}
+                            {% if scholarships.number == i %}
+                                <li class="active" style="background: #2b4570; color: #fff; padding: 5px 12px; border-radius: 4px; margin: 0 4px;"><span>{{ i }}</span></li>
+                            {% else %}
+                                <li><a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}" style="padding: 5px 12px; color: #2b4570;">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if scholarships.has_next %}
+                            <li><a href="?page={{ scholarships.next_page_number }}{% if query %}&q={{ query }}{% endif %}"><i class="fas fa-angle-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-search-minus" style="font-size: 60px; color: #e2e8f0;"></i>
+                    </div>
+                    <h3 style="color: #64748b;">No scholarships found.</h3>
+                    <p>Try searching with a different university or country name.</p>
+                    <a href="{% url 'university_wise_scholarship' %}" class="btn btn-primary mt-3" style="background: #2b4570; border-radius: 30px; padding: 10px 30px;">Reset All Filters</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

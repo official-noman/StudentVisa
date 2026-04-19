@@ -3540,6 +3540,68 @@ def country_wise_scholarship_single(request, scw_id):
     )
 
 
+def university_wise_scholarship(request):
+    query = request.GET.get("q")
+    
+    scholarships = UniversityWiseScholarship.objects.filter(status=1).select_related(
+        'university', 'university__country'
+    ).order_by("-created_at")
+
+    if query:
+        scholarships = scholarships.filter(
+            Q(university__name__icontains=query) |
+            Q(university__city__icontains=query) |
+            Q(university__state__icontains=query) |
+            Q(university__country__country_name__icontains=query) |
+            Q(title__icontains=query)
+        )
+
+    page_name = "University Wise Scholarships"
+    page_description = "Explore top university-wise scholarships across the globe. Find procedures, requirements, and visa details."
+    page_keywords = "university scholarship, study abroad, international scholarship, university application procedure"
+
+    items_per_page = 9
+    paginator = Paginator(scholarships, items_per_page)
+    page = request.GET.get("page")
+
+    try:
+        scholarship_list = paginator.page(page)
+    except PageNotAnInteger:
+        scholarship_list = paginator.page(1)
+    except EmptyPage:
+        scholarship_list = paginator.page(paginator.num_pages)
+
+    return render(
+        request,
+        "university_wise_scholarship.html",
+        {
+            "scholarships": scholarship_list,
+            "page_name": page_name,
+            "page_description": page_description,
+            "page_keywords": page_keywords,
+            "query": query,
+        },
+    )
+
+
+def university_wise_scholarship_single(request, uws_id):
+    scholarship = get_object_or_404(UniversityWiseScholarship, uws_id=uws_id)
+    page_name = f"{scholarship.title} | {scholarship.university.name}"
+    page_description = f"Details for {scholarship.title} at {scholarship.university.name}. Application procedure and visa requirements."
+    page_keywords = f"{scholarship.university.name} scholarship, {scholarship.university.country.country_name} study visa"
+
+    return render(
+        request,
+        "university_wise_scholarship_single.html",
+        {
+            "scholarship": scholarship,
+            "page_name": page_name,
+            "page_description": page_description,
+            "page_keywords": page_keywords,
+        },
+    )
+
+
 def offer_letter(request):
     offer_letters = OfferLetters.objects.all()
     customizes = Customizes.objects.all()  # Fetch Customizes data

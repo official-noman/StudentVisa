@@ -1061,40 +1061,109 @@ def country_wise_scholarship(request):
     "visa.add_scholarships", "visa.change_scholarships", raise_exception=True
 )
 def university_wise_scholarship(request):
-    universities = UniversityWise.objects.all()
+    countries = Countries.objects.all().order_by('country_name')
 
     if request.method == "POST":
-        uw_text = request.POST.get("uw_text")
-        uw_whocanapply = request.POST.get("uw_whocanapply")
-        uw_status = request.POST.get("uw_status")
-        uw_university_name = request.POST.get("uw_university_name")
+        title = request.POST.get("title")
+        country_id = request.POST.get("country_id")
+        state_name = request.POST.get("state_name")
+        city_name = request.POST.get("city_name")
+        university_name = request.POST.get("university_name")
+        
+        description = request.POST.get("description")
+        apply_procedure = request.POST.get("apply_procedure")
+        visa_requirements = request.POST.get("visa_requirements")
+        image = request.FILES.get("image")
+        status = request.POST.get("status", 1)
 
-        instance = UniversityWise(
-            uw_text=uw_text,
-            uw_whocanapply=uw_whocanapply,
-            uw_status=uw_status,
-            uw_university_name=uw_university_name,
-            created_at=timezone.now(),
-            updated_at=timezone.now(),
-        )
+        try:
+            # First, handle the University (get or create)
+            university, created = University.objects.get_or_create(
+                name=university_name,
+                country_id=country_id,
+                state=state_name,
+                city=city_name,
+                defaults={'status': 1}
+            )
 
-        if not uw_status:
-            instance.uw_status = 1
+            # Update logo if provided
+            uni_logo = request.FILES.get("university_logo")
+            if uni_logo:
+                university.university_logo = uni_logo
+                university.save()
 
-        operation_type = "created"
-        instance.save()
+            # Now create the Scholarship
+            UniversityWiseScholarship.objects.create(
+                title=title,
+                university=university,
+                description=description,
+                apply_procedure=apply_procedure,
+                visa_requirements=visa_requirements,
+                image=image,
+                status=status
+            )
+            messages.success(request, f"Scholarship for '{university_name}' created successfully.")
+        except Exception as e:
+            messages.error(request, f"Error creating scholarship: {e}")
+        
+        return redirect('university_wise')
 
-        messages.success(
-            request, f"University Wise Scholarship {operation_type} successfully."
-        )
-
-    instances = UniversityWise.objects.all()
+    instances = UniversityWiseScholarship.objects.select_related('university', 'university__country').all().order_by('-created_at')
 
     return render(
         request,
         "roottemplates/university_wise_scholarship.html",
-        {"instances": instances, "universities": universities},
+        {
+            "instances": instances, 
+            "countries": countries
+        },
     )
+
+@login_required
+@root_required
+def edit_university_scholarship(request, uws_id):
+    instance = get_object_or_404(UniversityWiseScholarship, uws_id=uws_id)
+    countries = Countries.objects.all().order_by('country_name')
+
+    if request.method == "POST":
+        instance.title = request.POST.get("title")
+        instance.description = request.POST.get("description")
+        instance.apply_procedure = request.POST.get("apply_procedure")
+        instance.visa_requirements = request.POST.get("visa_requirements")
+        
+        new_image = request.FILES.get("image")
+        if new_image:
+            instance.image = new_image
+            
+        # Update University Info
+        uni = instance.university
+        uni.name = request.POST.get("university_name")
+        uni.country_id = request.POST.get("country_id")
+        uni.state = request.POST.get("state_name")
+        uni.city = request.POST.get("city_name")
+        
+        new_logo = request.FILES.get("university_logo")
+        if new_logo:
+            uni.university_logo = new_logo
+        
+        uni.save()
+        instance.save()
+        
+        messages.success(request, "Scholarship updated successfully.")
+        return redirect('university_wise')
+
+    return render(request, "roottemplates/edit_university_scholarship.html", {
+        "instance": instance,
+        "countries": countries
+    })
+
+@login_required
+@root_required
+@require_POST
+def delete_university_scholarship(request, uws_id):
+    instance = get_object_or_404(UniversityWiseScholarship, uws_id=uws_id)
+    instance.delete()
+    return JsonResponse({"success": True, "message": "Scholarship deleted successfully."})
 
 
 @login_required
@@ -3709,11 +3778,18 @@ def manage_universities(request):
     if request.method == "POST":
         name = request.POST.get('name')
         country_id = request.POST.get('country_id')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
         
         if name and country_id:
             try:
                
-                University.objects.create(name=name, country_id=country_id)
+                University.objects.create(
+                    name=name, 
+                    country_id=country_id,
+                    state=state,
+                    city=city
+                )
                 messages.success(request, f"'{name}' has been added successfully!")
             except Exception as e:
                 messages.error(request, f"Could not save university. Error: {e}")

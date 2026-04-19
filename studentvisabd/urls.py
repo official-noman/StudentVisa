@@ -146,6 +146,16 @@ urlpatterns =[
         views.country_wise_scholarship_single,
         name="country_wise_scholarship_single",
     ),
+    path(
+        "university-wise-scholarship/",
+        views.university_wise_scholarship,
+        name="university_wise_scholarship",
+    ),
+    path(
+        "university-wise-scholarship-single/<int:uws_id>/",
+        views.university_wise_scholarship_single,
+        name="university_wise_scholarship_single",
+    ),
     path("addresses/", views.address_view, name="addresses"),
     path("feedback-home/", views.feedback_view, name="feedback-home"),
     path("maps/", views.map_view, name="maps"),
@@ -394,6 +404,16 @@ urlpatterns =[
         "university-wise/",
         rootviews.university_wise_scholarship,
         name="university_wise",
+    ),
+    path(
+        "edit-university-scholarship/<int:uws_id>/",
+        rootviews.edit_university_scholarship,
+        name="edit_university_scholarship",
+    ),
+    path(
+        "delete-university-scholarship/<int:uws_id>/",
+        rootviews.delete_university_scholarship,
+        name="delete_university_scholarship",
     ),
     path("root-users-list/", rootviews.root_users_list, name="root_users_list"),
     path("create-root/", rootviews.create_root, name="create_root"),

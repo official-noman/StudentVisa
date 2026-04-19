@@ -161,31 +161,62 @@ class Countries(models.Model):
 
 class University(models.Model):
     university_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    abbreviation = models.CharField(max_length=20)
-    established_date = models.DateField(blank=True, null=True)
-    website = models.URLField(max_length=200, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    status = models.IntegerField(
-        default=0
-    )  # You may adjust the default value based on your requirements
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=255)
+    abbreviation = models.CharField(max_length=50, blank=True, null=True)
     country = models.ForeignKey(
         Countries,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
+        related_name="universities_new",
         null=True,
         blank=True,
-        related_name="universities",
     )
+    state = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    university_logo = models.ImageField(upload_to="university_logos/", blank=True, null=True)
+    website = models.URLField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    status = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "universities"
+        verbose_name = "University"
+        verbose_name_plural = "Universities"
+
+    def __str__(self):
+        return f"{self.name} ({self.city}, {self.country.country_name})"
+
+
+class UniversityWiseScholarship(models.Model):
+    uws_id = models.AutoField(primary_key=True)
+    university = models.ForeignKey(
+        University,
+        on_delete=models.CASCADE,
+        related_name="scholarships"
+    )
+    title = models.CharField(max_length=500)
+    image = models.ImageField(upload_to="university_scholarships/", blank=True, null=True)
+    apply_procedure = CKEditor5Field("Apply Procedure", config_name="extends")
+    visa_requirements = CKEditor5Field("Visa Requirements", config_name="extends")
+    description = CKEditor5Field("Scholarship Description", config_name="extends")
+    status = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "university_wise_scholarships"
+        verbose_name = "University Wise Scholarship"
+        verbose_name_plural = "University Wise Scholarships"
+
+    def __str__(self):
+        return f"{self.title} - {self.university.name}"
+
 
 class ScholarshipStep(models.Model):
     country = models.ForeignKey(
-        Countries, 
-        on_delete=models.CASCADE, 
+        Countries,
+        on_delete=models.CASCADE,
         related_name="scholarship_steps"
     )
     step_number = models.IntegerField()
@@ -199,20 +230,6 @@ class ScholarshipStep(models.Model):
 
     def __str__(self):
         return f"{self.country.country_name} - Step {self.step_number}: {self.title}"
-
-
-# class UniversityWise(models.Model):
-#     uw_id = models.AutoField(primary_key=True)
-#     uw_university_name = models.CharField(max_length=500)
-#     uw_text = models.TextField()
-#     uw_whocanapply = models.TextField(db_column="uw_whoCanApply", blank=True, null=True)
-#     uw_status = models.IntegerField()
-#     created_at = models.DateTimeField(default=timezone.now)
-#     updated_at = models.DateTimeField(default=timezone.now)
-
-#     class Meta:
-#         db_table = "university_wises"
-
 
 
 def image_upload_path(instance, filename):
@@ -1212,29 +1229,6 @@ class OTPRequest(models.Model):
 
     def __str__(self):
         return f"OTP request for {self.phone_number} at {self.timestamp}"
-    
-# class University(models.Model):
-#     name = models.CharField(max_length=255)
-#     country = models.ForeignKey(
-#         'Countries',
-#         on_delete=models.PROTECT,
-#         related_name='universities'
-#     )
-#     university_logo = models.ImageField(
-#         upload_to='university_logos/',
-#         null=True,
-#         blank=True
-#     )
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-timestamp']
-        verbose_name = 'University'
-        verbose_name_plural = 'Universities'
-
-    def __str__(self):
-        return f"{self.name} ({self.country})"
-
 
 class SelfFundedProgram(models.Model):
     university = models.ForeignKey(

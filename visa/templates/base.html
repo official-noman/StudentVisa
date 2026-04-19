@@ -488,11 +488,11 @@
                                         <li class="dropdown {% if request.path == '/consaltant_wise_scholarship/' %}current active{% endif %} {% if request.path == '/country_wise_scholarship/' %}current active{% endif %}"  >
                                             <a href="#">Scholarship</a>
                                             <ul>
-                                                <li class="{% if request.path == '/consaltant_wise_scholarship/' %}current active{% endif %}">
-                                                    <a href="{% url 'consaltant_wise_scholarship' %}">Consultant Wise</a>
-                                                </li>
                                                 <li class="{% if request.path == '/country_wise_scholarship/' %}current active{% endif %}">
                                                     <a href="{% url 'country_wise_scholarship' %}">Country Wise</a>
+                                                </li>
+                                                <li class="{% if request.path == '/university_wise_scholarship/' %}current active{% endif %}">
+                                                    <a href="{% url 'university_wise_scholarship' %}">University Wise</a>
                                                 </li>
                                                 <li><a href="{% url 'self_funded_programs' %}">Self Funded</a></li>
                                             </ul>
