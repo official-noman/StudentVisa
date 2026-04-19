@@ -495,18 +495,8 @@
                                                     <a href="{% url 'country_wise_scholarship' %}">Country Wise</a>
                                                 </li>
                                                 <li><a href="{% url 'self_funded_programs' %}">Self Funded</a></li>
-                                                <li><a href="{% url 'scholarship_procedure_list' %}">Scholarship Procedure</a></li>
                                             </ul>
                                         </li>
-
-
-
-
-                                  
-
-
-
-
 
 
 
@@ -518,6 +508,9 @@
                                                 </li>
                                                 <li class="{% if request.path == '/by_country/' %}current active{% endif %}">
                                                     <a href="{% url 'by_country' %}">By Country</a>
+                                                </li>
+                                                <li class="{% if request.path == '/scholarship-procedures/' %}current active{% endif %}">
+                                                    <a href="{% url 'scholarship_procedure_list' %}">Apply Procedure</a>
                                                 </li>
                                             </ul>
                                         </li>

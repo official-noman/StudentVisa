@@ -3474,8 +3474,18 @@ def consaltant_wise_scholarship_singel_page(request, scholarship_id):
 
 
 def country_wise_scholarship(request):
+    query = request.GET.get("q")
     # Get all instances of CountryWises
-    country_wise_list = CountryWises.objects.all()
+    country_wise_list = CountryWises.objects.all().order_by("-created_at")
+
+    if query:
+        # Find countries matching the query
+        matching_countries = Countries.objects.filter(country_name__icontains=query).values_list('country_id', flat=True)
+        # Filter CountryWises by those country IDs or by title
+        country_wise_list = country_wise_list.filter(
+            Q(scw_country_id__in=matching_countries) | Q(scw_title__icontains=query)
+        )
+
     page_name = "Scholarship | Country Wise "
     page_description = "This is a top level student visa related information web portal, you can get any types of information from here. also you can take lates of visa agent information from here."
     page_keywords = "education visa consultant agent in dhaka, student visa informatin agent, student visa need, student visa consultant company, need student visa from dhaka,"
@@ -3507,6 +3517,7 @@ def country_wise_scholarship(request):
             "page_name": page_name,
             "page_description": page_description,
             "page_keywords": page_keywords,
+            "query": query,
         },
     )
 
@@ -5681,7 +5692,7 @@ def scholarship_procedure_list(request):
     
     return render(request, "scholarship_procedure_list.html", {
         "countries": countries,
-        "page_name": "Scholarship Procedure",
+        "page_name": "Apply Procedure",
         "page_seo": page_seo,
     })
 
