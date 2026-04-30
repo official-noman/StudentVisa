@@ -3441,7 +3441,6 @@ def consaltant_wise_scholarship(request):
     return render(request, "consaltant_wise.html", context)
 
 
-@login_required(login_url="login_student")
 def consaltant_wise_scholarship_singel_page(request, scholarship_id):
     # Fetch a specific scholarship using the provided scholarship_id
     # Fetch a specific scholarship using the provided scholarship_id
@@ -3522,7 +3521,6 @@ def country_wise_scholarship(request):
     )
 
 
-@login_required(login_url="login_student")
 def country_wise_scholarship_single(request, scw_id):
     scholarship = get_object_or_404(CountryWises, scw_id=scw_id)
     page_name = "Scholarship | Country Wise|Details"

@@ -31,10 +31,10 @@
                         <img src="{% static 'assets/countries/flags-medium/' %}{{ country.country_flag }}" alt="{{ country.country_name }} Flag">
                     </div>
                 
-                    <div class="clearfix" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px; text-align:justify;">
-                        <p class="how-to-apply-text">
-                            <strong>{{ country_howtoapply | safe }}</strong>
-                        </p>
+                    <div class="clearfix rich-text" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px; text-align:justify;">
+                        <div class="how-to-apply-text">
+                            {{ country_howtoapply | safe }}
+                        </div>
                     </div>
                 </div>
             </section>

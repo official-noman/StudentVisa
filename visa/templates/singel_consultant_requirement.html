@@ -11,7 +11,7 @@
         margin-left: 0 !important;
     }
 
-    ol > li {
+    .rich-text ol > li {
         counter-increment: my-counter;
         {% comment %} display: flex; /* Use flexbox for inline display */ {% endcomment %}
         font-size: 14px !important;
@@ -26,15 +26,15 @@
 
     } {% endcomment %}
 
-    ol > li > ul > li{
+    .rich-text ol > li > ul > li{
         display: block;
     }
 
-    ul {
+    .rich-text ul {
         list-style-type: disc;
     }
 
-    ul > li {
+    .rich-text ul > li {
         position: relative;
         margin-bottom: 10px;
     }
@@ -52,7 +52,7 @@
         clear: both;
     }
 
-    li p{
+    .rich-text li p{
         font-size: 14px !important;
     }
     .sec-title:before {
@@ -143,7 +143,7 @@
                 
                         <div class="bold-text">
                             {% if consultant_details.consultant_requirement %}
-                                {{ consultant_details.consultant_requirement|safe }}
+                                <div class="rich-text">{{ consultant_details.consultant_requirement|safe }}</div>
                             {% else %}
                             <h3>No requirements found</h3>
                             {% endif %}

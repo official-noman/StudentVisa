@@ -3,18 +3,24 @@
   $(function() {
 
     function setThemeColors() {
-      var selectedSidebarTheme = localStorage.getItem('selectedSidebarTheme');
-      var selectedNavbarTheme = localStorage.getItem('selectedNavbarTheme');
+      var selectedSidebarTheme = localStorage.getItem('selectedSidebarTheme') || 'sidebar-light';
+      var selectedNavbarTheme = localStorage.getItem('selectedNavbarTheme') || 'navbar-primary';
 
       $body.removeClass(sidebar_classes);
       $body.addClass(selectedSidebarTheme);
       $(".sidebar-bg-options").removeClass("selected");
-      $("#" + selectedSidebarTheme + "-theme").addClass("selected");
+      if ($("#" + selectedSidebarTheme + "-theme").length) {
+        $("#" + selectedSidebarTheme + "-theme").addClass("selected");
+      }
 
       $(".navbar").removeClass(navbar_classes);
       $(".navbar").addClass(selectedNavbarTheme);
       $(".tiles").removeClass("selected");
-      $(".tiles." + selectedNavbarTheme.split(" ")[1]).addClass("selected");
+      var navbarThemeParts = selectedNavbarTheme.split(" ");
+      var tileClass = navbarThemeParts.length > 1 ? navbarThemeParts[1] : selectedNavbarTheme.replace("navbar-", "");
+      if (tileClass && $(".tiles." + tileClass).length) {
+        $(".tiles." + tileClass).addClass("selected");
+      }
 
       console.log("Current Sidebar Theme:", selectedSidebarTheme);
       console.log("Current Navbar Theme:", selectedNavbarTheme);
@@ -64,7 +70,7 @@
       $(".navbar").addClass("navbar-success");
       $(".tiles").removeClass("selected");
       $(this).addClass("selected");
-      localStorage.setItem('selectedNavbarTheme', 'navbar-successy');
+      localStorage.setItem('selectedNavbarTheme', 'navbar-success');
       setThemeColors();
 
     });

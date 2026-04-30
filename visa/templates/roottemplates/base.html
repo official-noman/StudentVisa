@@ -146,6 +146,26 @@
         });
     </script>
 
+    <script>
+        window.getWordLikeCkeditorConfig = function (overrides) {
+            var baseConfig = {
+                versionCheck: false,
+                toolbar: 'Full',
+                allowedContent: true,
+                extraAllowedContent: '*(*);*{*}',
+                format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
+                font_names: 'Arial/Arial, Helvetica, sans-serif;Calibri/Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;Cambria/Cambria, Georgia, serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Helvetica/Helvetica, Arial, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif',
+                fontSize_sizes: '8/8px;9/9px;10/10px;11/11px;12/12px;14/14px;16/16px;18/18px;20/20px;22/22px;24/24px;26/26px;28/28px;32/32px;36/36px;48/48px;72/72px',
+                removeButtons: '',
+                pasteFilter: null,
+                pasteFromWordRemoveFontStyles: false,
+                pasteFromWordRemoveStyles: false
+            };
+
+            return Object.assign(baseConfig, overrides || {});
+        };
+    </script>
+
     {% block custom_js %}{% endblock custom_js %}
 </body>
 </html>

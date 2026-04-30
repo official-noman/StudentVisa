@@ -159,24 +159,9 @@
         font-size: 17px;
     }
 
-    .rich-content ul {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .rich-content ul li {
-        position: relative;
-        padding-left: 30px;
-        margin-bottom: 12px;
-    }
-
-    .rich-content ul li::before {
-        content: "\f00c";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        position: absolute;
-        left: 0;
-        color: var(--accent-gold);
+    .rich-text ul,
+    .rich-text ol {
+        color: var(--text-main);
     }
 
     .sidebar-card {
@@ -301,7 +286,7 @@
                             <div class="label-icon"><i class="fas fa-info-circle"></i></div>
                             <h3>About Scholarship</h3>
                         </div>
-                        <div class="rich-content">
+                        <div class="rich-content rich-text">
                             {{ scholarship.description|safe }}
                         </div>
                     </div>
@@ -312,7 +297,7 @@
                             <div class="label-icon"><i class="fas fa-tasks"></i></div>
                             <h3>Application Procedure</h3>
                         </div>
-                        <div class="rich-content">
+                        <div class="rich-content rich-text">
                             {{ scholarship.apply_procedure|safe }}
                         </div>
                     </div>
@@ -322,7 +307,7 @@
                             <div class="label-icon"><i class="fas fa-id-card"></i></div>
                             <h3>Visa Requirements</h3>
                         </div>
-                        <div class="rich-content">
+                        <div class="rich-content rich-text">
                             {{ scholarship.visa_requirements|safe }}
                         </div>
                     </div>

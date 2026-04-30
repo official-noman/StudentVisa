@@ -12,7 +12,7 @@
         margin-left: 0 !important;
     }
 
-    ol > li {
+    .rich-text ol > li {
         counter-increment: my-counter;
         {% comment %} display: flex; /* Use flexbox for inline display */ {% endcomment %}
         font-size: 14px !important;
@@ -27,15 +27,15 @@
 
     } {% endcomment %}
 
-    ol > li > ul > li{
+    .rich-text ol > li > ul > li{
         display: block;
     }
 
-    ul {
+    .rich-text ul {
         list-style-type: disc;
     }
 
-    ul > li {
+    .rich-text ul > li {
         position: relative;
         margin-bottom: 10px;
     }
@@ -53,7 +53,7 @@
         clear: both;
     }
 
-    li p{
+    .rich-text li p{
         font-size: 14px !important;
     }
     .sec-title:before {
@@ -131,14 +131,13 @@
                 {% endif %}
                 </div>
         
-            <div class="clearfix" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px;">
-                <h2 class="how-to-apply-text" >
-                    <strong>{{ scholarship.scw_text|safe }}</strong>
-                </p>
-                   <h4>
-            
-                    <strong>{{ scholarship.scw_whocanapply|safe }}</strong>
-            </h4>
+            <div class="clearfix rich-text" style="font-size: 16px; color: #333; line-height: 1.5; margin-top: 10px;">
+                <div class="how-to-apply-text">
+                    {{ scholarship.scw_text|safe }}
+                </div>
+                <div>
+                    {{ scholarship.scw_whocanapply|safe }}
+                </div>
             </div>
             {% comment %} </div> {% endcomment %}
         </div>

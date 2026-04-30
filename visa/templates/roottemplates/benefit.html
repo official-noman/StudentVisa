@@ -267,17 +267,10 @@
 {% endblock content %}
 
 {% block custom_js %}
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/full-all/ckeditor.js"></script>
 <script>
-  CKEDITOR.replace('benefit_list', {
-    versionCheck: false,
-    height: 260,
-    toolbar: [
-      ['Bold', 'Italic', 'Underline'],
-      ['NumberedList', 'BulletedList'],
-      ['Link', 'Unlink'],
-      ['Undo', 'Redo']
-    ]
-  });
+  CKEDITOR.replace('benefit_list', getWordLikeCkeditorConfig({
+    height: 260
+  }));
 </script>
 {% endblock custom_js %}

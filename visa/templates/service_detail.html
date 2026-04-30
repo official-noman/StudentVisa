@@ -10,7 +10,7 @@
             <img src="{{ service.image.url }}" class="img-fluid rounded mb-4 w-100" alt="{{ service.title }}"
                 style="max-height: 400px; object-fit: cover;">
             {% endif %}
-            <div class="service-content lead">
+            <div class="service-content lead rich-text">
                 {{ service.content|safe }}
             </div>
             <a href="{% url 'home' %}" class="btn btn-secondary mt-4">&larr; Back to Home</a>

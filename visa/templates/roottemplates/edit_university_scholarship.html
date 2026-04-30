@@ -103,11 +103,11 @@
 
 {% block custom_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/full-all/ckeditor.js"></script>
 <script>
   $(document).ready(function() {
     $('.uw-select2').select2({ width: '100%' });
-    const editorConfig = { versionCheck: false, height: 200, toolbar: [['Bold','Italic','Underline'],['NumberedList','BulletedList'],['Link','Source']] };
+    const editorConfig = getWordLikeCkeditorConfig({ height: 200 });
     CKEDITOR.replace('description', editorConfig);
     CKEDITOR.replace('apply_procedure', editorConfig);
     CKEDITOR.replace('visa_requirements', editorConfig);

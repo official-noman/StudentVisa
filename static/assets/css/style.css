@@ -143,6 +143,49 @@ ul,li{
   margin:0px; 
 }
 
+/* Scoped rich text wrapper for CKEditor output */
+.rich-text ul,
+.rich-text ol {
+  margin: 0 0 1rem 1.5rem !important;
+  padding-left: 1.25rem !important;
+}
+
+.rich-text ul {
+  list-style-type: disc !important;
+}
+
+.rich-text ol {
+  list-style-type: decimal !important;
+}
+
+.rich-text li {
+  margin: 0.35rem 0;
+  list-style-position: outside;
+}
+
+.rich-text ul > li {
+  list-style-type: disc !important;
+}
+
+.rich-text ol > li {
+  list-style-type: decimal !important;
+}
+
+.rich-text p {
+  margin: 0 0 1rem;
+  line-height: 1.8;
+}
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 {
+  margin: 1.1rem 0 0.6rem;
+  line-height: 1.35;
+}
+
 input{
   transition: all 500ms ease;
 }

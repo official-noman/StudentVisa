@@ -39,8 +39,8 @@
     color: #1d4ed8;
   }
   /* CKEditor Content Styling */
-  .rich-content h3 { font-family: 'Sora', sans-serif; font-size: 18px; margin-top: 20px; color: #1e293b; }
-  .rich-content ul { padding-left: 20px; color: #475569; }
+  .rich-text h3 { font-family: 'Sora', sans-serif; font-size: 18px; margin-top: 20px; color: #1e293b; }
+  .rich-text { color: #475569; }
 </style>
 {% endblock %}
 
@@ -68,7 +68,7 @@
       <!-- Requirements Card -->
       <div class="details-card mb-4">
         <h2 class="section-title">Admission Requirements</h2>
-        <div class="rich-content">
+        <div class="rich-content rich-text">
           {{ program.requirements|safe }}
         </div>
       </div>
@@ -76,7 +76,7 @@
       <!-- Policy Card -->
       <div class="details-card">
         <h2 class="section-title">Foreign Student Policy</h2>
-        <div class="rich-content">
+        <div class="rich-content rich-text">
           {{ program.foreign_student_policy|safe }}
         </div>
       </div>

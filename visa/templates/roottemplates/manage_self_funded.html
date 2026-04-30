@@ -149,11 +149,53 @@
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
 <script>
   let reqEditor, polEditor;
-  ClassicEditor.create(document.querySelector('#id_requirements'), { toolbar:['heading','bold','italic','bulletedList','numberedList'] }).then(e => reqEditor = e);
-  ClassicEditor.create(document.querySelector('#id_policy'), { toolbar: ['heading','bold','italic','bulletedList','numberedList'] }).then(e => polEditor = e);
+  const ck5WordLikeConfig = {
+    toolbar: {
+      items: [
+        'undo', 'redo',
+        '|', 'heading',
+        '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+        '|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat',
+        '|', 'alignment',
+        '|', 'numberedList', 'bulletedList', 'outdent', 'indent',
+        '|', 'link', 'insertTable', 'blockQuote', 'horizontalLine', 'specialCharacters',
+        '|', 'codeBlock', 'sourceEditing'
+      ],
+      shouldNotGroupWhenFull: true
+    },
+    fontFamily: {
+      supportAllValues: true
+    },
+    fontSize: {
+      options: [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 48, 72],
+      supportAllValues: true
+    },
+    heading: {
+      options: [
+        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
+      ]
+    },
+    htmlSupport: {
+      allow: [
+        {
+          name: /.*/,
+          attributes: true,
+          classes: true,
+          styles: true
+        }
+      ]
+    }
+  };
+
+  CKEDITOR.ClassicEditor.create(document.querySelector('#id_requirements'), ck5WordLikeConfig).then(e => reqEditor = e);
+  CKEDITOR.ClassicEditor.create(document.querySelector('#id_policy'), ck5WordLikeConfig).then(e => polEditor = e);
 
   document.querySelector('form').addEventListener('submit', function () {
     if(reqEditor) document.querySelector('#id_requirements').value = reqEditor.getData();

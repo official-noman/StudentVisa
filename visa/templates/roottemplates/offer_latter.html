@@ -537,7 +537,7 @@ input[type="file"].form-control::file-selector-button:hover {
 {% endblock content %}
 
 {% block custom_js %}
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/full-all/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   // CSRF token helper
@@ -556,25 +556,9 @@ input[type="file"].form-control::file-selector-button:hover {
     return cookieValue;
   }
 
-  CKEDITOR.replace('description', {
-    height: 300,
-    versionCheck: false,
-    toolbarGroups: [
-      { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-      { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-      { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
-      { name: 'forms' },
-      { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-      { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-      { name: 'links' },
-      { name: 'insert' },
-      { name: 'styles' },
-      { name: 'colors' },
-      { name: 'tools' },
-      { name: 'others' }
-    ],
-    removeButtons: 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,TextColor,BGColor,Maximize,ShowBlocks,About'
-  });
+  CKEDITOR.replace('description', getWordLikeCkeditorConfig({
+    height: 300
+  }));
 
   // Delete Offer Letter with SweetAlert
   document.addEventListener('click', function(e) {

@@ -161,13 +161,13 @@
                 
                             {% if consultant_details.consultant_bio %}
                             <div class="text process-explanation-div">
-                                <p>{{ consultant_details.consultant_bio|safe }}</p>
+                                <div class="rich-text">{{ consultant_details.consultant_bio|safe }}</div>
                             </div>
                             {% endif %}
 
                             <div class="text process-explanation-div">
                             {% if consultant_details.consultant_description %}
-                                <p>{{consultant_details.consultant_description|safe}}</p>
+                                <div class="rich-text">{{ consultant_details.consultant_description|safe }}</div>
                             {% else %}
                             {% endif %} 
                             </div>

@@ -427,7 +427,7 @@
         var owl = $('.visa-services-carousel');
         if (owl.length > 0) {
             owl.owlCarousel({
-                loop: true,
+                loop: $('.visa-services-carousel .item').length > 3,
                 margin: 30,
                 nav: false,
                 dots: true,

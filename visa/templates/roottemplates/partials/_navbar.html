@@ -256,7 +256,7 @@
         {% if request.user.is_authenticated and user_data.consultant_img %}
           <img src="{{ user_data.consultant_img.url }}" alt="Consultant Logo" />
         {% else %}
-          <img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" />
+          <img src="{% static 'assets/dist/images/logo-mini.svg' %}" alt="logo" />
         {% endif %}
       </a>
 
@@ -264,7 +264,7 @@
         {% if request.user.is_authenticated and user_data.consultant_img %}
           <img src="{{ user_data.consultant_img.url }}" alt="Consultant Logo" />
         {% else %}
-          <img src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" />
+          <img src="{% static 'assets/dist/images/logo-mini.svg' %}" alt="logo" />
         {% endif %}
       </a>
     </div>
@@ -346,7 +346,7 @@
               {% if message.profile_pic %}
                 <img src="{{ message.profile_pic.url }}" alt="image" class="img-sm profile-pic">
               {% else %}
-                <img src="{% static 'assets/images/faces/face1.jpg' %}" alt="image" class="img-sm profile-pic">
+                <img src="{% static 'assets/dist/images/faces/face2.jpg' %}" alt="image" class="img-sm profile-pic">
               {% endif %}
             </div>
             <div class="preview-item-content flex-grow py-2">
@@ -365,7 +365,7 @@
           {% if request.user.is_authenticated and user_data.consultant_img %}
             <img class="img-xs rounded-circle" src="{{ user_data.consultant_img.url }}" alt="Profile image" />
           {% else %}
-            <img class="img-xs rounded-circle" src="{% static 'assets/images/logo-mini.svg' %}" alt="logo" />
+            <img class="img-xs rounded-circle" src="{% static 'assets/dist/images/logo-mini.svg' %}" alt="logo" />
           {% endif %}
         </a>
 

@@ -358,7 +358,7 @@
 
 {% block custom_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@latest/dist/js/select2.min.js"></script>
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/full-all/ckeditor.js"></script>
 
 <script>
   $(document).ready(function() {
@@ -366,27 +366,13 @@
       width: '100%'
     });
 
-    CKEDITOR.replace('scw_whocanapply', {
-      versionCheck: false,
-      height: 220,
-      toolbar: [
-        ['Bold', 'Italic', 'Underline'],
-        ['NumberedList', 'BulletedList'],
-        ['Link', 'Unlink'],
-        ['Undo', 'Redo']
-      ]
-    });
+    CKEDITOR.replace('scw_whocanapply', getWordLikeCkeditorConfig({
+      height: 220
+    }));
 
-    CKEDITOR.replace('scw_text', {
-      versionCheck: false,
-      height: 220,
-      toolbar: [
-        ['Bold', 'Italic', 'Underline'],
-        ['NumberedList', 'BulletedList'],
-        ['Link', 'Unlink'],
-        ['Undo', 'Redo']
-      ]
-    });
+    CKEDITOR.replace('scw_text', getWordLikeCkeditorConfig({
+      height: 220
+    }));
   });
 </script>
 {% endblock custom_js %}
